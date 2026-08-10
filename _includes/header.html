@@ -1,0 +1,11 @@
+<header class="site-header d-flex flex-column flex-md-row align-items-md-center pb-3 mb-5 border-bottom">
+  <div class="brand-block">
+    <a href="{{ '/' | relative_url }}" class="text-decoration-none"><span class="site-title">{{ site.title }}</span></a>
+    <div class="site-description">{{ site.description }}</div>
+  </div>
+  <nav class="d-inline-flex flex-wrap mt-3 mt-md-0 ms-md-auto" aria-label="Primary navigation">
+    {% for item in site.data.settings.menu %}
+      <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url | relative_url }}">{{ item.name }}</a>
+    {% endfor %}
+  </nav>
+</header>

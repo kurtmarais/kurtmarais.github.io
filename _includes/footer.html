@@ -1,0 +1,11 @@
+<footer class="pt-5 mt-5 text-muted border-top">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+    <div><strong>{{ site.title }}</strong><br>{{ site.description }}</div>
+    <div class="social-media-icons">
+      {% for item in site.data.settings.social %}
+        <a href="{{ item.link }}" class="ms-3 fs-5" aria-label="{{ item.icon }}"><i class="fab fa-{{ item.icon }}"></i></a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="small mt-4">© 2026 {{ site.title }}</div>
+</footer>

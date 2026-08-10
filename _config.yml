@@ -1,0 +1,14 @@
+url: "https://YOURUSERNAME.github.io"
+baseurl: ""
+title: "Kurt Marais"
+description: "Lecturer and researcher in computational social science"
+lang: "en"
+markdown: kramdown
+permalink: /:categories/:title/
+plugins:
+  - jekyll-feed
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - academic.gemspec
+  - vendor

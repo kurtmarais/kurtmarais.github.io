@@ -1,0 +1,9 @@
+<div class="row g-5 mb-5">
+  <div>
+    <h3 class="fw-bold border-bottom pb-3 mb-4">Selected publications</h3>
+    {% for item in site.data.publications.featured %}
+      <p class="publication-item"><a href="{{ item.url }}">{{ item.name }}</a></p>
+    {% endfor %}
+    <p><a class="text-link" href="{{ '/publications/' | relative_url }}">View publications →</a></p>
+  </div>
+</div>
