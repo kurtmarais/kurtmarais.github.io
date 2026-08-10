@@ -40,13 +40,13 @@ published:
 
 datasets:
 
-- title: "Sentiment lexicon for depression-specific social media texts (DPR lexicon)"
-  authors: "Marais, K"
-  type: "Dataset"
-  year: 2026 
-  doi: "https://doi.org/10.25413/sun.30455444"
-  publication_url: "https://doi.org/10.25413/sun.30455444"
-  #reference:
+  - title: "Sentiment lexicon for depression-specific social media texts (DPR lexicon)"
+    authors: "Marais, K"
+    type: "Dataset"
+    year: 2026 
+    doi: "https://doi.org/10.25413/sun.30455444"
+    publication_url: "https://doi.org/10.25413/sun.30455444"
+    #reference:
 
 
 #preprints:
