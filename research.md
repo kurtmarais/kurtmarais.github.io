@@ -10,7 +10,7 @@ My research investigates information, sentiment and behavioural dynamics in conn
 
 Research examining how sentiment states propagate through social networks, including the role of network structure, neighbouring states, temporal dependence and individual characteristics.
 
-/* [View research project →]({{ '/research/sentiment-diffusion/' | relative_url }}) */
+<!-- [View research project →]({{ '/research/sentiment-diffusion/' | relative_url }}) -->
 
 ## Information diffusion
 
