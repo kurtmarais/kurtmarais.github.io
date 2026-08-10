@@ -1,19 +1,22 @@
-<div class="row g-5 mb-5">
+<div class="row g-5 mb-5" id="contact">
   <div>
-    <h3 class="fw-bold border-bottom pb-3 mb-5">Contact</h3>
-    {% for contact in site.data.settings.contacts %}
-    <div class="row g-5 mb-5">
+    <h3 class="fw-bold border-bottom pb-3 mb-5">CONTACT</h3>
+
+    <div class="row g-5">
       <div class="col-md-6">
-        <h4>{{ Kurt Marais }}</h4>
-        <p>{{ Lecturer }} | {{ Department of Logistics }}</p>
-        <p>{{ Stellenbosch University }} | {{ Stellenbosch, South Africa }}</p>
-        <p>Phone: {{ +27218083877 }}</p>
-        <p>Email: {{ mailto:maraisk@sun.ac.za }}</p>
+        <h4>Kurt Marais</h4>
+        <p>Lecturer | Department of Logistics</p>
+        <p>Stellenbosch University | Stellenbosch, South Africa</p>
+        <p>Phone: +27 21 808 3877</p>
+        <p>
+          Email:
+          <a href="mailto:maraisk@sun.ac.za">maraisk@sun.ac.za</a>
+        </p>
       </div>
+
       <div class="col-md-6">
-        <img src="{{ site.github.url }}/{{ contact.image }}" alt="Contact" width="100%">
+        <!-- Optional contact image -->
       </div>
     </div>
-    {% endfor %}
   </div>
 </div>
