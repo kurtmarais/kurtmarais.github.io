@@ -3,208 +3,216 @@
 
     <!-- PUBLISHED -->
 
-    <h3 class="fw-bold border-bottom pb-3 mb-4">
-      Published
-    </h3>
+    {% if site.data.publications.published and site.data.publications.published.size > 0 %}
+      <h3 class="fw-bold border-bottom pb-3 mb-4">
+        Published
+      </h3>
 
-    {% for item in site.data.publications.published %}
+      {% for item in site.data.publications.published %}
 
-      <div class="publication-item mb-5">
+        <div class="publication-item mb-5">
 
-        <h4 class="mb-2">
-          {{ item.title }}
-        </h4>
+          <h4 class="mb-2">
+            {{ item.title }}
+          </h4>
 
-        <p class="mb-1">
-          {{ item.authors }} ({{ item.year }}).
-          <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% endif %}{% if item.issue %}({{ item.issue }}){% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
-        </p>
-
-        {% if item.doi %}
-          <p class="mb-1 small">
-            DOI:
-            <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
-              {{ item.doi | remove: "https://doi.org/" }}
-            </a>
+          <p class="mb-1">
+            {{ item.authors }} ({{ item.year }}).
+            <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% endif %}{% if item.issue %}({{ item.issue }}){% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
           </p>
-        {% endif %}
 
-        <p class="mb-0">
-
-          {% if item.reference %}
-            <a href="{{ item.reference | relative_url }}" class="text-link" download>
-              Download reference
-            </a>
+          {% if item.doi %}
+            <p class="mb-1 small">
+              DOI:
+              <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                {{ item.doi | remove: "https://doi.org/" }}
+              </a>
+            </p>
           {% endif %}
 
-          {% if item.publication_url %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View publication
-            </a>
-          {% elsif item.doi %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View publication
-            </a>
-          {% endif %}
+          <p class="mb-0">
 
-        </p>
+            {% if item.reference %}
+              <a href="{{ item.reference | relative_url }}" class="text-link" download>
+                Download reference
+              </a>
+            {% endif %}
 
-      </div>
+            {% if item.publication_url %}
+              {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+              <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+                View publication
+              </a>
+            {% elsif item.doi %}
+              {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+              <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
+                View publication
+              </a>
+            {% endif %}
 
-    {% endfor %}
-
-
-    <!-- PREPRINTS -->
-
-    <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">
-      Preprints
-    </h3>
-
-    {% for item in site.data.publications.preprints %}
-
-      <div class="publication-item mb-5">
-
-        <h4 class="mb-2">
-          {{ item.title }}
-        </h4>
-
-        <p class="mb-1">
-          {{ item.authors }} ({{ item.year }}).
-        </p>
-
-        {% if item.doi %}
-          <p class="mb-1 small">
-            DOI:
-            <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
-              {{ item.doi | remove: "https://doi.org/" }}
-            </a>
           </p>
-        {% endif %}
 
-        <p class="mb-0">
+        </div>
 
-          {% if item.reference %}
-            <a href="{{ item.reference | relative_url }}" class="text-link" download>
-              Download reference
-            </a>
-          {% endif %}
-
-          {% if item.publication_url %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View preprint
-            </a>
-          {% endif %}
-
-        </p>
-
-      </div>
-
-    {% endfor %}
-
-
-    <!-- THESES -->
-
-    <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">
-      Theses
-    </h3>
-
-    {% for item in site.data.publications.theses %}
-
-      <div class="publication-item mb-5">
-
-        <h4 class="mb-2">
-          {{ item.title }}
-        </h4>
-
-        <p class="mb-1">
-          {{ item.authors }} ({{ item.year }}).
-          {% if item.degree %}{{ item.degree }}{% endif %}{% if item.institution %}, {{ item.institution }}{% endif %}.
-        </p>
-
-        <p class="mb-0">
-
-          {% if item.reference %}
-            <a href="{{ item.reference | relative_url }}" class="text-link" download>
-              Download reference
-            </a>
-          {% endif %}
-
-          {% if item.publication_url %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View thesis
-            </a>
-          {% endif %}
-
-        </p>
-
-      </div>
-
-    {% endfor %}
+      {% endfor %}
+    {% endif %}
 
 
     <!-- DATASETS -->
 
-    <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">
-      Datasets
-    </h3>
+    {% if site.data.publications.datasets and site.data.publications.datasets.size > 0 %}
+      <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">
+        Datasets
+      </h3>
 
-    {% for item in site.data.publications.datasets %}
+      {% for item in site.data.publications.datasets %}
 
-      <div class="publication-item mb-5">
+        <div class="publication-item mb-5">
 
-        <h4 class="mb-2">
-          {{ item.title }}
-        </h4>
+          <h4 class="mb-2">
+            {{ item.title }}
+          </h4>
 
-        <p class="mb-1">
-          {{ item.authors }} ({{ item.year }}).
-          {% if item.type %}<em>{{ item.type }}</em>{% endif %}
-        </p>
-
-        {% if item.description %}
-          <p class="mb-2">
-            {{ item.description }}
+          <p class="mb-1">
+            {{ item.authors }} ({{ item.year }}).
+            {% if item.type %}<em>{{ item.type }}</em>{% endif %}
           </p>
-        {% endif %}
 
-        {% if item.doi %}
-          <p class="mb-1 small">
-            DOI:
-            <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
-              {{ item.doi | remove: "https://doi.org/" }}
-            </a>
-          </p>
-        {% endif %}
-
-        <p class="mb-0">
-
-          {% if item.reference %}
-            <a href="{{ item.reference | relative_url }}" class="text-link" download>
-              Download reference
-            </a>
+          {% if item.description %}
+            <p class="mb-2">
+              {{ item.description }}
+            </p>
           {% endif %}
 
-          {% if item.publication_url %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View dataset
-            </a>
-          {% elsif item.doi %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View dataset
-            </a>
+          {% if item.doi %}
+            <p class="mb-1 small">
+              DOI:
+              <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                {{ item.doi | remove: "https://doi.org/" }}
+              </a>
+            </p>
           {% endif %}
 
-        </p>
+          <p class="mb-0">
 
-      </div>
+            {% if item.reference %}
+              <a href="{{ item.reference | relative_url }}" class="text-link" download>
+                Download reference
+              </a>
+            {% endif %}
 
-    {% endfor %}
+            {% if item.publication_url %}
+              {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+              <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+                View dataset
+              </a>
+            {% elsif item.doi %}
+              {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+              <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
+                View dataset
+              </a>
+            {% endif %}
+
+          </p>
+
+        </div>
+
+      {% endfor %}
+    {% endif %}
+
+
+    <!-- THESES AND DISSERTATIONS -->
+
+    {% if site.data.publications.theses and site.data.publications.theses.size > 0 %}
+      <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">
+        Theses and Dissertations
+      </h3>
+
+      {% for item in site.data.publications.theses %}
+
+        <div class="publication-item mb-5">
+
+          <h4 class="mb-2">
+            {{ item.title }}
+          </h4>
+
+          <p class="mb-1">
+            {{ item.authors }} ({{ item.year }}).
+            {% if item.degree %}{{ item.degree }}{% endif %}{% if item.institution %}, {{ item.institution }}{% endif %}.
+          </p>
+
+          <p class="mb-0">
+
+            {% if item.reference %}
+              <a href="{{ item.reference | relative_url }}" class="text-link" download>
+                Download reference
+              </a>
+            {% endif %}
+
+            {% if item.publication_url %}
+              {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+              <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+                View dissertation
+              </a>
+            {% endif %}
+
+          </p>
+
+        </div>
+
+      {% endfor %}
+    {% endif %}
+
+
+    <!-- PREPRINTS -->
+
+    {% if site.data.publications.preprints and site.data.publications.preprints.size > 0 %}
+      <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">
+        Preprints
+      </h3>
+
+      {% for item in site.data.publications.preprints %}
+
+        <div class="publication-item mb-5">
+
+          <h4 class="mb-2">
+            {{ item.title }}
+          </h4>
+
+          <p class="mb-1">
+            {{ item.authors }} ({{ item.year }}).
+          </p>
+
+          {% if item.doi %}
+            <p class="mb-1 small">
+              DOI:
+              <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                {{ item.doi | remove: "https://doi.org/" }}
+              </a>
+            </p>
+          {% endif %}
+
+          <p class="mb-0">
+
+            {% if item.reference %}
+              <a href="{{ item.reference | relative_url }}" class="text-link" download>
+                Download reference
+              </a>
+            {% endif %}
+
+            {% if item.publication_url %}
+              {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+              <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+                View preprint
+              </a>
+            {% endif %}
+
+          </p>
+
+        </div>
+
+      {% endfor %}
+    {% endif %}
 
   </div>
 </div>
