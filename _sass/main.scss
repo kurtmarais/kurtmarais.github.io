@@ -4,6 +4,10 @@ $bodyFont: Inter, -apple-system, BlinkMacSystemFont, "Gotham", Arial, Helvetica,
 $linkColor: #365b52;
 $serifFont: "Source Serif 4", Georgia, serif;
 
+html {
+  font-size: 80%;
+}
+
 @font-face {
   font-family: "Gotham";
   src: url("/assets/fonts/Gotham-Book.woff2") format("woff2");
