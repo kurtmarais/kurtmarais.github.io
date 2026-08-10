@@ -1,0 +1,40 @@
+<div class="row g-5 mb-5">
+  <div>
+
+    {% for item in site.data.publications.index %}
+      <div class="publication-item mb-5">
+
+        <h3 class="mb-2">
+          {{ item.title }}
+        </h3>
+
+        <p class="mb-1">
+          {{ item.authors }} ({{ item.year }}).
+          <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% endif %}{% if item.issue %}({{ item.issue }}){% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
+        </p>
+
+        <p class="mb-0">
+          {% if item.reference %}
+            <a href="{{ item.reference | relative_url }}" class="text-link" download>
+              Download reference
+            </a>
+          {% endif %}
+
+          {% if item.publication_url %}
+            <span class="mx-2">|</span>
+            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+              View publication
+            </a>
+          {% elsif item.doi %}
+            <span class="mx-2">|</span>
+            <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
+              View publication
+            </a>
+          {% endif %}
+        </p>
+
+      </div>
+    {% endfor %}
+
+  </div>
+</div>
