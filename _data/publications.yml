@@ -1,9 +1,48 @@
 featured:
-- {title: "Thematic Analysis of Posts from r/Depression Subreddit", authors: "Marais, K.", journal: "The International Journal of Health, Wellness, and Society", year: 2026, doi: "https://doi.org/10.18848/2156-8960/CGP/A454"}
-- {name: 'Add selected publication here', url: '#'}
-- {name: 'Add selected publication here', url: '#'}
+
+  - title: "Title of Publication 1"
+    authors: "Author 1, Author 2, Author 3"
+    journal: "Journal Name"
+    year: 2026
+    volume: "10"
+    issue: "2"
+    pages: "123–145"
+    doi: "https://doi.org/10.xxxx/xxxxx"
+    publication_url: "https://example.com/publication"
+    reference: "/assets/references/publication-1.bib"
+
+  - title: "Title of Publication 2"
+    authors: "Author 1, Author 2"
+    journal: "Journal Name"
+    year: 2025
+    volume: "9"
+    issue: "4"
+    pages: "55–72"
+    doi: "https://doi.org/10.xxxx/xxxxx"
+    publication_url: "https://example.com/publication"
+    reference: "/assets/references/publication-2.bib"
+
 
 index:
-- {title: "Thematic Analysis of Posts from r/Depression Subreddit", authors: "Marais, K.", journal: "The International Journal of Health, Wellness, and Society", year: 2026, doi: "https://doi.org/10.18848/2156-8960/CGP/A454"}
-- {name: 'Add publication here', url: '#'}
-- {name: 'Add publication here', url: '#'}
+
+  - title: "Title of Publication 1"
+    authors: "Author 1, Author 2, Author 3"
+    journal: "Journal Name"
+    year: 2026
+    volume: "10"
+    issue: "2"
+    pages: "123–145"
+    doi: "https://doi.org/10.xxxx/xxxxx"
+    publication_url: "https://example.com/publication"
+    reference: "/assets/references/publication-1.bib"
+
+  - title: "Title of Publication 2"
+    authors: "Author 1, Author 2, Author 3"
+    journal: "Journal Name"
+    year: 2025
+    volume: "9"
+    issue: "4"
+    pages: "55–72"
+    doi: "https://doi.org/10.xxxx/xxxxx"
+    publication_url: "https://example.com/publication"
+    reference: "/assets/references/publication-2.bib"
