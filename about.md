@@ -12,7 +12,6 @@ My research focus relates to natural language processing tasks and simulation fr
 
 <br>
 &nbsp;
-<br>
 
 ### Research interests
 
@@ -26,6 +25,9 @@ My research focus relates to natural language processing tasks and simulation fr
 - Human behaviour and decision-making
 - Data mining and information retrieval
 - Social media research
+
+<br>
+&nbsp;
 
 ### Academic position
 
