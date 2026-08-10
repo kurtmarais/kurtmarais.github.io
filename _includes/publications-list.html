@@ -1,12 +1,12 @@
 <div class="row g-5 mb-5">
   <div>
 
-    {% for item in site.data.publications.index %}
+    <h3 class="fw-bold border-bottom pb-3 mb-4">Published</h3>
+
+    {% for item in site.data.publications.published %}
       <div class="publication-item mb-5">
 
-        <h3 class="mb-2">
-          {{ item.title }}
-        </h3>
+        <h4 class="mb-2">{{ item.title }}</h4>
 
         <p class="mb-1">
           {{ item.authors }} ({{ item.year }}).
@@ -21,14 +21,76 @@
           {% endif %}
 
           {% if item.publication_url %}
-            <span class="mx-2">|</span>
+            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
             <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
               View publication
             </a>
           {% elsif item.doi %}
-            <span class="mx-2">|</span>
+            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
             <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
               View publication
+            </a>
+          {% endif %}
+        </p>
+
+      </div>
+    {% endfor %}
+
+
+    <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">Preprints</h3>
+
+    {% for item in site.data.publications.preprints %}
+      <div class="publication-item mb-5">
+
+        <h4 class="mb-2">{{ item.title }}</h4>
+
+        <p class="mb-1">
+          {{ item.authors }} ({{ item.year }}).
+        </p>
+
+        <p class="mb-0">
+          {% if item.reference %}
+            <a href="{{ item.reference | relative_url }}" class="text-link" download>
+              Download reference
+            </a>
+          {% endif %}
+
+          {% if item.publication_url %}
+            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+              View preprint
+            </a>
+          {% endif %}
+        </p>
+
+      </div>
+    {% endfor %}
+
+
+    <h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">Theses</h3>
+
+    {% for item in site.data.publications.theses %}
+      <div class="publication-item mb-5">
+
+        <h4 class="mb-2">{{ item.title }}</h4>
+
+        <p class="mb-1">
+          {{ item.authors }} ({{ item.year }}).
+          {% if item.degree %}{{ item.degree }},{% endif %}
+          {% if item.institution %} {{ item.institution }}.{% endif %}
+        </p>
+
+        <p class="mb-0">
+          {% if item.reference %}
+            <a href="{{ item.reference | relative_url }}" class="text-link" download>
+              Download reference
+            </a>
+          {% endif %}
+
+          {% if item.publication_url %}
+            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
+            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
+              View thesis
             </a>
           {% endif %}
         </p>
