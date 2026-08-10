@@ -1,7 +1,7 @@
 url: "https://YOURUSERNAME.github.io"
 baseurl: ""
 title: "Kurt Marais"
-description: "Lecturer and researcher in computational social science"
+# description: "Lecturer and researcher" 
 lang: "en"
 markdown: kramdown
 permalink: /:categories/:title/
