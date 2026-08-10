@@ -4,4 +4,6 @@ title: "Publications"
 permalink: /publications/
 ---
 
-Peer-reviewed research, conference outputs, datasets, software and other scholarly work.
+My list of publications is also on [Google Scholar]([https://www.sun.ac.za/](https://scholar.google.com/citations?user=V0FVb_UAAAAJ&hl=en)).
+
+
