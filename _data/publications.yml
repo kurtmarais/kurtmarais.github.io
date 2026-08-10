@@ -50,12 +50,6 @@ datasets:
     #reference:
 
 
-#preprints:
-
-#- title: "Example Preprint"
-#    authors: "Marais, K. & Author, A."
-#    year: 2026
-#    publication_url: "https://example.com/preprint"
 
 theses:
 
@@ -65,3 +59,11 @@ theses:
     institution: "Stellenbosch University"
     year: 2026
     publication_url: "https://scholar.sun.ac.za/items/0e580108-6db8-4b17-9619-e5e963df7be0"
+
+
+#preprints:
+
+#- title: "Example Preprint"
+#    authors: "Marais, K. & Author, A."
+#    year: 2026
+#    publication_url: "https://example.com/preprint"
