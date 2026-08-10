@@ -3,7 +3,7 @@
     <div><strong>{{ site.title }}</strong><br>{{ site.description }}</div>
     <div class="social-media-icons">
       {% for item in site.data.settings.social %}
-        <a href="{{ item.link }}" class="ms-3 fs-5" aria-label="{{ item.icon }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-{{ item.icon }}"></i></a>
+        <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="ms-3 fs-5" aria-label="{{ item.icon }}"><i class="fab fa-{{ item.icon }}"></i></a>
       {% endfor %}
     </div>
   </div>
