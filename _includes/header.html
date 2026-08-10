@@ -5,7 +5,11 @@
   </div>
   <nav class="d-inline-flex flex-wrap mt-3 mt-md-0 ms-md-auto" aria-label="Primary navigation">
     {% for item in site.data.settings.menu %}
-      <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url | relative_url }}">{{ item.name }}</a>
+      {% if item.url contains '#' %}
+        <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url }}">{{ item.name }}</a>
+      {% else %}
+        <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url | relative_url }}">{{ item.name }}</a>
+      {% endif %}
     {% endfor %}
   </nav>
 </header>
