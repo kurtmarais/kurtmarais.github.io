@@ -1,18 +1,17 @@
 featured:
-- title: "Thematic Analysis of Posts from r/Depression Subreddit"
-    authors: "Marais, K."
-    journal: "The International Journal of Health, Wellness, and Society"
-    year: 2026
-    doi: "https://doi.org/10.18848/2156-8960/CGP/A454"
+- {title: "Thematic Analysis of Posts from r/Depression Subreddit",
+    authors: "Marais, K.",
+    journal: "The International Journal of Health, Wellness, and Society",
+    year: 2026,
+    doi: "https://doi.org/10.18848/2156-8960/CGP/A454"}
 - {name: 'Add selected publication here', url: '#'}
 - {name: 'Add selected publication here', url: '#'}
 
 index:
-- title: "Thematic Analysis of Posts from r/Depression Subreddit"
-    authors: "Marais, K."
-    journal: "The International Journal of Health, Wellness, and Society"
-    year: 2026
-    pages: 1-26
-    doi: "https://doi.org/10.18848/2156-8960/CGP/A454"
+- {title: "Thematic Analysis of Posts from r/Depression Subreddit",
+    authors: "Marais, K.",
+    journal: "The International Journal of Health, Wellness, and Society",
+    year: 2026,
+    doi: "https://doi.org/10.18848/2156-8960/CGP/A454"}
 - {name: 'Add publication here', url: '#'}
 - {name: 'Add publication here', url: '#'}
