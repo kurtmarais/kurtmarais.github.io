@@ -1,7 +1,7 @@
 ---
 layout: page
-title: "Speaking"
-permalink: /speaking/
+title: "Engagements"
+permalink: /engagements/
 ---
 
 ## Speaking and engagements
