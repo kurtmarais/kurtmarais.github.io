@@ -3,7 +3,7 @@
     <a href="{{ '/' | relative_url }}" class="text-decoration-none"><span class="site-title">{{ site.title }}</span></a>
     <div class="site-description">{{ site.description }}</div>
   </div>
-  <nav class="d-inline-flex flex-wrap mt-3 mt-md-5 ms-md-auto" aria-label="Primary navigation">
+  <nav class="d-inline-flex flex-wrap mt-3 mt-md-0 ms-md-auto" aria-label="Primary navigation">
     {% for item in site.data.settings.menu %}
       {% if item.url contains '#' %}
         <a class="nav-link me-3  mt-5 py-2 text-decoration-none" href="{{ item.url }}">{{ item.name }}</a>
