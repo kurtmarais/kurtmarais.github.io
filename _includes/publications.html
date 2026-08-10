@@ -5,7 +5,7 @@
     {% for item in site.data.publications.featured %}
       <div class="publication-item mb-4">
 
-        <h4 class="mb-1">
+        <h4 class="mb-2">
           {{ item.title }}
         </h4>
 
@@ -15,6 +15,7 @@
         </p>
 
         <p class="mb-0">
+
           {% if item.reference %}
             <a href="{{ item.reference | relative_url }}" class="text-link" download>
               Download reference
@@ -22,16 +23,17 @@
           {% endif %}
 
           {% if item.publication_url %}
-            <span class="mx-2">|</span>
+            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
             <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
               View publication
             </a>
           {% elsif item.doi %}
-            <span class="mx-2">|</span>
+            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
             <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
               View publication
             </a>
           {% endif %}
+
         </p>
 
       </div>
