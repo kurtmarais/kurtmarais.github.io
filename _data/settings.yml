@@ -2,10 +2,11 @@ menu:
 - {name: 'about', url: '/about/'}
 - {name: 'research', url: '/research/'}
 - {name: 'teaching', url: '/teaching/'}
-#- {name: 'supervision', url: '/supervision/'}
+- {name: 'supervision', url: '/supervision/'}
 #- {name: 'speaking', url: '/speaking/'}
 - {name: 'publications', url: '/publications/'}
-#- {name: 'cv', url: '/cv/'}
+- {name: 'cv', url: '/cv/'}
+- {name: 'Contact', url: '#contact'}
 
 social:
 #- {icon: 'github', link: '#'}
