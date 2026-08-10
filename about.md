@@ -26,5 +26,5 @@ My research focus relates to natural language processing tasks and simulation fr
 ## Academic position
 
 **Lecturer**  
-Stellenbosch University · Department of Logistics
+Stellenbosch University · Department of Logistics · 
 South Africa
