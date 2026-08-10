@@ -3,7 +3,13 @@
     <div><strong>{{ site.title }}</strong><br>{{ site.description }}</div>
     <div class="social-media-icons">
       {% for item in site.data.settings.social %}
-        <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="ms-3 fs-5" aria-label="{{ item.icon }}"><i class="fa-brands fa-{{ item.icon }}"></i>
+        <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="ms-3 fs-5" aria-label="{{ item.icon }}">
+          {% if item.icon == 'x-twitter' %}
+            <span class="x-twitter-icon">X</span>
+          {% else %}
+            <i class="fab fa-{{ item.icon }}"></i>
+          {% endif %}
+        </a>
       {% endfor %}
     </div>
   </div>
