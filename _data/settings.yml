@@ -8,6 +8,6 @@ menu:
 - {name: 'cv', url: '/cv/'}
 
 social:
-- {icon: 'github', url: '#'}
+- {icon: 'github', link: '#'}
 - {icon: 'linkedin', link: 'https://www.linkedin.com/in/kurtmarais/'}
 - {icon: 'orcid', link: 'https://orcid.org/0000-0002-8820-044X'}
