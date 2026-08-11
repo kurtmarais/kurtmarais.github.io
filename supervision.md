@@ -90,7 +90,7 @@ Project title: Scheduling of the World Choir Games
 
 *Timothy Whitehead* (BComHons (Quantitative Management), 2019)<br>
 Project title: Maximising the number of parking bays in the Eikestad Mall parking lot
-<br><br><br>
+<br><br>
 
 
 ### Prospective students
