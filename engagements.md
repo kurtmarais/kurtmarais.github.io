@@ -3,6 +3,7 @@ layout: page
 title: "Engagements"
 permalink: /engagements/
 ---
+<!-- Split into conferences, talks/colloquiua, media coverage, etc., similar to how it is done for "Publications" -->
 
 <!-- ## Speaking and engagements
 
