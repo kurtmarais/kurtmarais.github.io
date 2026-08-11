@@ -13,7 +13,7 @@ Conference presentations, invited talks, seminars and public-facing research eng
 **Mental health as a social system: what online networks can teach us about supporting well-being in education**<br>
 Guest lecture: Global Service Learning · Stellenbosch, South Africa<br>
 Keywords: mental health; learning behaviours; reflection; topic modelling
-
+<br><br>
 
 ### 2025 
 
@@ -44,8 +44,8 @@ Keywords: infodemiology; well-being; information; sustainable development goals
 Faculty of EMS Research Day · Stellenbosch, South Africa<br>
 Keywords: infodemiology; topic modelling; mental health; depression; emotional contagion
 <br><br>
-**Thinking Beyond the Box**
-Maties NextGen for new students · Stellenbosch, South Africa
+**Thinking Beyond the Box**<br>
+Maties NextGen for new students · Stellenbosch, South Africa<br>
 Keywords: innovation; lateral thinking; graduate attributes; brain teasers
 <br><br>
 
