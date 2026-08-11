@@ -1,7 +1,7 @@
 menu:
 - {name: 'about', url: '/about/'}
 #- {name: 'research', url: '/research/'}
-#- {name: 'teaching', url: '/teaching/'}
+- {name: 'teaching', url: '/teaching/'}
 - {name: 'supervision', url: '/supervision/'}
 - {name: 'engagements', url: '/engagements/'}
 - {name: 'publications', url: '/publications/'}
