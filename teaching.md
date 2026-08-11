@@ -6,7 +6,9 @@ permalink: /teaching/
 
 ### Teaching philosophy
 
-Replace this section with your teaching philosophy. It can explain your approach to quantitative reasoning, applied problem-solving, computational methods and the connection between theory and practice.
+<!-- Replace this section with your teaching philosophy. It can explain your approach to quantitative reasoning, applied problem-solving, computational methods and the connection between theory and practice. -->
+<br>
+<br>
 
 ### Undergraduate courses
 
