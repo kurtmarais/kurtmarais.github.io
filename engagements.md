@@ -4,9 +4,9 @@ title: "Engagements"
 permalink: /engagements/
 ---
 
-## Speaking and engagements
+<!-- ## Speaking and engagements
 
-Conference presentations, invited talks, seminars and public-facing research engagement.
+Conference presentations, invited talks, seminars and public-facing research engagement. -->
 
 ### 2026
 
