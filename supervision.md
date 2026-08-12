@@ -42,7 +42,11 @@ This research investigates the relationship between information diffusion and se
 
 **Teboho Mochai** · BComHons (Operations Research) · 2024<br>
 Project title: *Anomaly detection on features extracted using natural language processing*
+<details class="supervision-abstract"><summary>Abstract</summary>
+This research investigates the relationship between information diffusion and sentiment in online social networks. The study examines how affective information propagates through social connections and how individual characteristics influence this process.
+
 <br>
+</details>
 
 **Tina Ntambi** · BComHons (Operations Research) · 2024<br>
 Project title: *Link prediction in bipartite social networks*
