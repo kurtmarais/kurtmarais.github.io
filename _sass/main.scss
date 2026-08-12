@@ -181,6 +181,7 @@ h4 {
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9rem;
+  margin: 0 !important;
 }
 
 .supervision-abstract summary:hover {
@@ -195,6 +196,9 @@ h4 {
   line-height: 1.6;
 }
 
+.supervision-abstract + * {
+  margin-top: 0;
+}
 
 /* SOCIAL MEDIA */
 
