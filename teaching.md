@@ -13,37 +13,37 @@ permalink: /teaching/
 ### Undergraduate courses
 
 **Business Analytics 214** (2020‒2025)<br>
-Short description, level and teaching role.
+Introduction to decision theory and decision-making under uncertainty, introduction to linear programming and mathematical formulations
 <br>
 
 **Business Analytics 244** (2024‒)<br>
-Short description, level and teaching role.
+Social network analytics, scripting in RStudio, network data collection
 <br>
 
 **Information Systems 112** (2021‒)<br>
-Short description, level and teaching role.
+Introduction to Microsoft Office Suite, Excel at beginner and intermediate level, logic functions, basic scripting in Visual Basic for Applications
 <br>
 
 **Operations Research 244** (2018‒2021)<br>
-Short description, level and teaching role.
+Linear programming, simplex algorithm, sensitivity analysis, duality and complementary slackness, applications and special cases
 <br>
 
 **Operations Research 314** (2019‒2020)<br>
-Short description, level and teaching role.
+Integer programming, branch-and-bound method, knapsack problems, implicit enumeration and cutting plane methods, game theory, dynamic programming, search heuristics for discrete optimisation
 <br>
 
 **Operations Research 326** (2020)<br>
-Short description, level and teaching role.
+Decision theory, decision-making under uncertainty, utility theory, prospect theory and framing, decision trees, multi-attribute utility theory, analytic hierarchy process, forecasting
 <br>
 
 **Operations Research 344** (2019‒2020)<br>
-Short description, level and teaching role.
+Convex and concave functions, non-linear programming, goal programming
 <br><br>
 
 ### Postgraduate courses
 
 **Methods of Operations Research** (2020, 2021, 2023‒)<br>
-Short description, level and teaching role.
+Collaboration with industry, project-based work aimed at solving real-world problems through Operations Research and mathematical optimisation
 <br><br>
 
 <!-- ### Teaching resources
