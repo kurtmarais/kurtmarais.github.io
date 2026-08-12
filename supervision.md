@@ -35,9 +35,9 @@ Project title: *Feature engineering for song success prediction*
 **Tineke Wilcocks** · BDatSci (Analytics and Optimisation) · 2025<br>
 Project title: *Enhancing fashion image classification using deep learning and targeted dataset segmentation*
 <details class="supervision-abstract"><summary>Abstract</summary>
-This research investigates the relationship between information diffusion and sentiment in online social networks. The study examines how affective information propagates through social connections and how individual characteristics influence this process.
+The fashion industry is one of the largest categories in the global e-commerce industry and demands integration advanced technology more than ever before. This research addresses the fashion image classification problem by way of artificial intelligence techniques and compares the power of simplicity to the performance of complex operations. The methodology consists of several fundamental steps. Data preprocessing was performed, such as feature selection, the handling of missing values, class groupings and the removal of duplicate features. Additionally, the dataset was categorised into five different subsets to be used for model training and image classification to determine if creating subsets for unique genders or item subcategories would improve the models’ performance. A simple and a complex implementation of the convolutional neural network architectures were proposed for the classification of eleven multi-class outputs, with the residual network consisting of fifty layers as the baseline. The models were trained on each of the subsets to determine the most beneficial split of the dataset for model performance. Model performance was evaluated based on accuracy, F1-scores, and precision scores, as well as AUC-ROC plots for the binary outputs of the models. The models were evaluated for each attribute according to each subset of the full dataset. The results indicated that the simple implementation of the convolutional neural network outperformed its counterparts on the basis of stability, scalability, and performance. Furthermore, the division of the dataset into female and male subsets reflected the most favourable results. Future research directions may consider the compilation of more comprehensive datasets, or tuning the hyperparameters regarding the batch size and number of epochs used in training of the convolutional neural network implementations to improve classification performance.
 
- <br class="abstract-spacing">
+ <br><br>
 </details>
 
 **Teboho Mochai** · BComHons (Operations Research) · 2024<br>
@@ -45,7 +45,7 @@ Project title: *Anomaly detection on features extracted using natural language p
 <details class="supervision-abstract"><summary>Abstract</summary>
 This research investigates the relationship between information diffusion and sentiment in online social networks. The study examines how affective information propagates through social connections and how individual characteristics influence this process.
 
- <br class="abstract-spacing">
+<br><br>
 </details>
 
 **Tina Ntambi** · BComHons (Operations Research) · 2024<br>
@@ -53,7 +53,7 @@ Project title: *Link prediction in bipartite social networks*
 <details class="supervision-abstract"><summary>Abstract</summary>
 This research investigates the relationship between information diffusion and sentiment in online social networks. The study examines how affective information propagates through social connections and how individual characteristics influence this process.
 
- <br class="abstract-spacing">
+<br><br>
 </details>
 
 **Jaco Verryne** · BDatSci (Analytics and Optimisation) · 2024<br>
