@@ -196,6 +196,10 @@ h4 {
   line-height: 1.6;
 }
 
+.supervision-abstract p:last-child {
+  margin-bottom: 0.5rem;
+}
+
 .supervision-abstract + * {
   margin-top: 0;
 }
