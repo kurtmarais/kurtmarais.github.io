@@ -37,7 +37,7 @@ Project title: *Enhancing fashion image classification using deep learning and t
 <details class="supervision-abstract"><summary>Abstract</summary>
 This research investigates the relationship between information diffusion and sentiment in online social networks. The study examines how affective information propagates through social connections and how individual characteristics influence this process.
 </details>
-
+<br>
 
 **Teboho Mochai** · BComHons (Operations Research) · 2024<br>
 Project title: *Anomaly detection on features extracted using natural language processing*
