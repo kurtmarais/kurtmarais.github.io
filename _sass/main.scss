@@ -172,8 +172,8 @@ h4 {
 /* SUPERVISION ABSTRACTS */
 
 .supervision-abstract {
-  margin-top: 0.75rem;
-  margin-bottom: 1.5rem;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .supervision-abstract summary {
@@ -188,7 +188,7 @@ h4 {
 }
 
 .supervision-abstract p {
-  margin-top: 0.75rem;
+  margin-top: 0 !important;
   margin-bottom: 0;
   color: #69706b;
   font-size: 0.92rem;
