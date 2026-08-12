@@ -196,21 +196,12 @@ h4 {
   line-height: 1.6;
 }
 
-.supervision-abstract p:last-child {
-  margin-bottom: 1.5rem;
+
+.supervision-abstract .abstract-text {
+  margin: 0 !important;
+  padding: 0 0 1.5rem 0 !important;
 }
 
-.supervision-abstract + * {
-  margin-top: 0;
-}
-
-.supervision-abstract p:last-of-type {
-  padding-bottom: 1.5rem !important;
-}
-
-.supervision-abstract {
-  padding-bottom: 1.5rem !important;
-}
 
 /* SOCIAL MEDIA */
 
