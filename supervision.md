@@ -33,9 +33,8 @@ Project title: *Feature engineering for song success prediction*
 <br>
 
 **Tineke Wilcocks** · BDatSci (Analytics and Optimisation) · 2025<br>
-Project title: *Enhancing fashion image classification using deep learning and targeted dataset segmentation*<br>
-<details class="supervision-abstract">
-<summary>Abstract</summary>
+Project title: *Enhancing fashion image classification using deep learning and targeted dataset segmentation*
+<details class="supervision-abstract"><summary>Abstract</summary>
 
 This research investigates the relationship between information diffusion and sentiment in online social networks. The study examines how affective information propagates through social connections and how individual characteristics influence this process.
 
