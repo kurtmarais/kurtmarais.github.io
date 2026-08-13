@@ -397,32 +397,40 @@ body.dark-mode .social-media-icons a:hover {
   color: #9ab8aa;
 }
 
-body.dark-mode .back-to-top {
-  background: #f7f6f1;
-  color: #202421;
-}
-
-body.dark-mode .back-to-top:hover {
-  color: #202421;
-}
-
-
-.footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+/* BACK TO TOP */
 
 .back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+
   color: #69706b;
-  font-size: inherit;
+  font-size: 0.85rem;
   text-decoration: none;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: translateY(5px);
+  transition: opacity 0.25s ease, transform 0.2s ease;
+
+  z-index: 1000;
+}
+
+.back-to-top.show {
+  opacity: 0.9;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .back-to-top:hover {
   color: $linkColor;
   text-decoration: underline;
 }
+
+/* DARK MODE */
 
 body.dark-mode .back-to-top {
   color: #f7f6f1;
