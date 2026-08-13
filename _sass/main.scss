@@ -426,15 +426,38 @@ body.dark-mode .back-to-top:hover {
   border-radius: 50%;
   font-size: 0.95rem;
 
-  opacity: 0.9;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: opacity 0.25s ease, transform 0.2s ease;
+  transform: translateY(5px);
+
   z-index: 1000;
+}
+
+.back-to-top.show {
+  opacity: 0.9;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .back-to-top:hover {
   color: #f7f6f1;
   opacity: 1;
   transform: translateY(-2px);
+}
+
+/* DARK MODE */
+
+body.dark-mode .back-to-top {
+  background: #f7f6f1;
+  color: #202421;
+}
+
+body.dark-mode .back-to-top:hover {
+  color: #202421;
 }
 
 
