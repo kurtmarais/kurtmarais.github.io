@@ -244,6 +244,54 @@ h4 {
     top: -4px;
   }
 
+  @media (max-width: 767px) {
+
+  .back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: $linkColor;
+    color: #f7f6f1;
+
+    border-radius: 50%;
+
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(5px);
+    transition: opacity 0.25s ease, transform 0.2s ease;
+  }
+
+  .back-to-top.show {
+    opacity: 0.9;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    color: #f7f6f1;
+    text-decoration: none;
+  }
+
+  .back-to-top-text {
+    display: none;
+  }
+
+  .back-to-top-icon {
+    display: block;
+  }
 
   h1 {
     font-size: 2.2rem;
@@ -324,6 +372,16 @@ body.dark-mode .site-title {
 
 body.dark-mode .site-description {
   color: #aeb3ae;
+}
+
+body.dark-mode .back-to-top {
+    background: #f7f6f1;
+    color: #202421;
+  }
+
+  body.dark-mode .back-to-top:hover {
+    color: #202421;
+  }
 }
 
 /* NAVIGATION */
@@ -429,6 +487,11 @@ body.dark-mode .social-media-icons a:hover {
   color: $linkColor;
   text-decoration: underline;
 }
+
+.back-to-top-icon {
+  display: none;
+}
+
 
 /* DARK MODE */
 
@@ -558,4 +621,53 @@ body.dark-mode .back-to-top:hover {
     margin-left: 0;
   }
 
+  @media (max-width: 767px) {
+
+  .back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: $linkColor;
+    color: #f7f6f1;
+
+    border-radius: 50%;
+
+    font-size: 0.9rem;
+    text-decoration: none;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transform: translateY(5px);
+    transition: opacity 0.25s ease, transform 0.2s ease;
+  }
+
+  .back-to-top.show {
+    opacity: 0.9;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .back-to-top:hover {
+    color: #f7f6f1;
+    text-decoration: none;
+  }
+
+  .back-to-top-text {
+    display: none;
+  }
+
+  .back-to-top-icon {
+    display: block;
+  }
+    
 }
