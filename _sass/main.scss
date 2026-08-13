@@ -558,4 +558,51 @@ body.dark-mode .back-to-top:hover {
     margin-left: 0;
   }
 
+  /* MOBILE BACK TO TOP */
+
+  .back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1.5px solid $linkColor;
+    border-radius: 50%;
+
+    background: transparent;
+    color: $linkColor;
+
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .back-to-top-text {
+    display: none;
+  }
+
+  .back-to-top-icon {
+    display: block;
+  }
+
+  .back-to-top:hover {
+    background: $linkColor;
+    color: #f7f6f1;
+    text-decoration: none;
+  }
+
+  body.dark-mode .back-to-top {
+    border-color: #9ab8aa;
+    color: #9ab8aa;
+    background: transparent;
+  }
+
+  body.dark-mode .back-to-top:hover {
+    background: #9ab8aa;
+    color: #202421;
+  }
 }
