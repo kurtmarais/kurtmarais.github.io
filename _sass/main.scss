@@ -449,16 +449,31 @@ body.dark-mode .back-to-top:hover {
   transform: translateY(-2px);
 }
 
-/* DARK MODE */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.back-to-top {
+  color: #69706b;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.back-to-top:hover {
+  color: $linkColor;
+  text-decoration: underline;
+}
 
 body.dark-mode .back-to-top {
-  background: #f7f6f1;
-  color: #202421;
+  color: #f7f6f1;
 }
 
 body.dark-mode .back-to-top:hover {
-  color: #202421;
+  color: $linkColor;
 }
+
 
 
 /* MOBILE NAVIGATION */
