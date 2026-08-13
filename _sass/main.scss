@@ -448,6 +448,10 @@ body.dark-mode .social-media-icons a:hover {
     transition: 0.4s ease;
   }
 
+  body.dark-mode .mobile-menu-toggle span {
+    background: #f7f6f1;
+  }
+
   .mobile-menu-toggle[aria-expanded="true"] span:nth-child(1) {
     transform: translateY(9px) rotate(45deg);
   }
