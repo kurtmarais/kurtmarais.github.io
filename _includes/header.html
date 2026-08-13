@@ -1,9 +1,32 @@
 <header class="site-header d-flex flex-column flex-md-row align-items-md-center pb-3 mb-5 border-bottom">
+
   <div class="brand-block">
-    <a href="{{ '/' | relative_url }}" class="text-decoration-none"><span class="site-title">{{ site.title }}</span></a>
+    <a href="{{ '/' | relative_url }}" class="text-decoration-none">
+      <span class="site-title">{{ site.title }}</span>
+    </a>
     <div class="site-description">{{ site.description }}</div>
   </div>
-  <nav class="d-inline-flex flex-wrap mt-3 mt-md-0 ms-md-auto" aria-label="Primary navigation">
+
+  <div class="mobile-controls">
+    <button
+      class="mobile-menu-toggle"
+      type="button"
+      aria-label="Toggle navigation"
+      aria-expanded="false"
+      aria-controls="mobile-navigation">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <label class="theme-switch" aria-label="Toggle dark mode">
+      <input type="checkbox" id="dark-mode-toggle">
+      <span class="theme-slider"></span>
+    </label>
+  </div>
+
+  <nav class="desktop-navigation d-inline-flex flex-wrap mt-3 mt-md-0 ms-md-auto" aria-label="Primary navigation">
+
     {% for item in site.data.settings.menu %}
       {% if item.url contains '#' %}
         <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url }}">{{ item.name }}</a>
@@ -11,9 +34,28 @@
         <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url | relative_url }}">{{ item.name }}</a>
       {% endif %}
     {% endfor %}
-    <label class="theme-switch" aria-label="Toggle dark mode">
-      <input type="checkbox" id="dark-mode-toggle">
+
+    <label class="theme-switch desktop-theme-switch" aria-label="Toggle dark mode">
+      <input type="checkbox" id="dark-mode-toggle-desktop">
       <span class="theme-slider"></span>
     </label>
+
   </nav>
+
+  <nav id="mobile-navigation" class="mobile-navigation" aria-label="Mobile navigation">
+
+    <a class="mobile-nav-link mobile-home-link" href="{{ '/' | relative_url }}">
+      Home
+    </a>
+
+    {% for item in site.data.settings.menu %}
+      {% if item.url contains '#' %}
+        <a class="mobile-nav-link" href="{{ item.url }}">{{ item.name }}</a>
+      {% else %}
+        <a class="mobile-nav-link" href="{{ item.url | relative_url }}">{{ item.name }}</a>
+      {% endif %}
+    {% endfor %}
+
+  </nav>
+
 </header>
