@@ -397,6 +397,46 @@ body.dark-mode .social-media-icons a:hover {
   color: #9ab8aa;
 }
 
+body.dark-mode .back-to-top {
+  background: #f7f6f1;
+  color: #202421;
+}
+
+body.dark-mode .back-to-top:hover {
+  color: #202421;
+}
+
+/* BACK TO TOP */
+
+.back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: $linkColor;
+  color: #f7f6f1;
+  text-decoration: none;
+
+  border-radius: 50%;
+  font-size: 0.95rem;
+
+  opacity: 0.9;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 1000;
+}
+
+.back-to-top:hover {
+  color: #f7f6f1;
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
 
 /* MOBILE NAVIGATION */
 
@@ -407,6 +447,14 @@ body.dark-mode .social-media-icons a:hover {
 
 @media (max-width: 767px) {
 
+  .back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+    width: 38px;
+    height: 38px;
+    font-size: 0.85rem;
+  }
+  
   .home-nav-link {
     display: none;
   }
