@@ -445,7 +445,7 @@ body.dark-mode .social-media-icons a:hover {
     width: 100%;
     height: 2px;
     background: #69706b;
-    transition: 0.2s;
+    transition: 0.35s ease;
   }
 
   .mobile-menu-toggle[aria-expanded="true"] span:nth-child(1) {
@@ -486,6 +486,10 @@ body.dark-mode .social-media-icons a:hover {
     letter-spacing: 0.08em;
     text-decoration: none;
     border-bottom: 1px solid #d9d9d1;
+  }
+
+  .mobile-nav-link:last-child {
+    border-bottom: none;
   }
 
   .mobile-nav-link:hover {
