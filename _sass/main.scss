@@ -561,8 +561,8 @@ body.dark-mode .back-to-top:hover {
   /* MOBILE BACK TO TOP */
 
   .back-to-top {
-    right: 1rem;
-    bottom: calc(1rem + env(safe-area-inset-bottom));
+    right: 1.5rem;
+    bottom: 3rem;
 
     width: 38px;
     height: 38px;
