@@ -37,7 +37,9 @@ html {
 body { background:$backgroundColor; color:$bodyColor; font-family:$bodyFont; line-height:1.65; }
 a { color:$linkColor; }
 
+
 /* HEADER */
+
 .site-header { border-color:#d9d9d1 !important; }
 .site-title {
   font-family: $bodyFont;
@@ -54,6 +56,8 @@ a { color:$linkColor; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+
 /* NAVIGATION */
 
 .nav-link {
@@ -115,6 +119,14 @@ h4 {
   aspect-ratio: 1 / 1;
   object-fit: cover;
   filter: saturate(0.75);
+}
+
+.home-nav-link {
+  font-size: 1.05rem;
+}
+
+.home-nav-link i {
+  font-size: 0.95em;
 }
 
 /* SECTION LABELS */
@@ -391,6 +403,10 @@ body.dark-mode .social-media-icons a:hover {
 }
 
 @media (max-width: 767px) {
+
+  .home-nav-link {
+    display: none;
+  }
   
   .theme-switch {
     transform: translateY(0);
