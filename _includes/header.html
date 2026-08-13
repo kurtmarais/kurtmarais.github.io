@@ -26,7 +26,12 @@
   </div>
 
   <nav class="desktop-navigation d-inline-flex flex-wrap mt-3 mt-md-0 ms-md-auto" aria-label="Primary navigation">
-
+    <a class="nav-link home-nav-link me-3 py-2 text-decoration-none"
+       href="{{ '/' | relative_url }}"
+       aria-label="Home"
+       title="Home">
+      <i class="fas fa-home"></i>
+    </a>
     {% for item in site.data.settings.menu %}
       {% if item.url contains '#' %}
         <a class="nav-link me-3 py-2 text-decoration-none" href="{{ item.url }}">{{ item.name }}</a>
