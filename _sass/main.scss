@@ -242,6 +242,18 @@ h4 {
     font-size: 1.35rem;
   }
 
+  .site-header {
+    align-items: flex-start !important;
+  }
+
+  .brand-block {
+    padding-top: 0;
+  }
+
+  .mobile-header-controls {
+    align-items: flex-start;
+  }
+
   h1 {
     font-size: 2.2rem;
   }
