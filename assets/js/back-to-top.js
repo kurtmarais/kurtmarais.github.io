@@ -2,22 +2,31 @@ const backToTop = document.querySelector(".back-to-top");
 
 if (backToTop) {
 
+  let hideTimer;
+
   function showBackToTop() {
     backToTop.classList.add("show");
+
+    clearTimeout(hideTimer);
+
+    hideTimer = setTimeout(function () {
+      if (window.scrollY > 0) {
+        backToTop.classList.remove("show");
+      }
+    }, 3000);
   }
 
   function updateBackToTop() {
     if (window.scrollY > 0) {
-      backToTop.classList.add("show");
+      showBackToTop();
     } else {
+      clearTimeout(hideTimer);
       backToTop.classList.remove("show");
     }
   }
 
-  /* Normal scrolling */
   window.addEventListener("scroll", updateBackToTop, { passive: true });
 
-  /* Mobile touch scrolling */
   window.addEventListener("touchmove", function () {
     requestAnimationFrame(function () {
       if (window.scrollY > 0) {
@@ -26,12 +35,12 @@ if (backToTop) {
     });
   }, { passive: true });
 
-  /* Set the correct initial state */
   updateBackToTop();
 
-  /* Return to top */
   backToTop.addEventListener("click", function (event) {
     event.preventDefault();
+
+    clearTimeout(hideTimer);
 
     window.scrollTo({
       top: 0,
