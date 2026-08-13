@@ -390,6 +390,10 @@ body.dark-mode .social-media-icons a:hover {
 }
 
 @media (max-width: 767px) {
+  
+  .theme-switch {
+    transform: translateY(0);
+  }
 
   .site-header {
     position: relative;
