@@ -413,7 +413,10 @@ body.dark-mode .social-media-icons a:hover {
   pointer-events: none;
 
   transform: translateY(5px);
-  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease,
+    visibility 0s linear 0.4s;
 
   z-index: 1000;
 }
