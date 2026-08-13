@@ -402,7 +402,7 @@ body.dark-mode .social-media-icons a:hover {
 .back-to-top {
   position: fixed;
   right: 1.5rem;
-  bottom: 1.5rem;
+  bottom: 2rem;
 
   color: #69706b;
   font-size: 0.85rem;
@@ -413,7 +413,7 @@ body.dark-mode .social-media-icons a:hover {
   pointer-events: none;
 
   transform: translateY(5px);
-  transition: opacity 0.25s ease, transform 0.2s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s ease;
 
   z-index: 1000;
 }
