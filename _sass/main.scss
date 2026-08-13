@@ -237,3 +237,49 @@ h4 {
     font-size: 1.7rem;
   }
 }
+
+/* DARK MODE TOGGLE */
+
+.theme-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+  margin-left: 0.25rem;
+  flex-shrink: 0;
+}
+
+.theme-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.theme-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #c7cbc7;
+  border-radius: 20px;
+  transition: 0.2s;
+}
+
+.theme-slider::before {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  left: 3px;
+  top: 3px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.theme-switch input:checked + .theme-slider {
+  background-color: $linkColor;
+}
+
+.theme-switch input:checked + .theme-slider::before {
+  transform: translateX(16px);
+}
