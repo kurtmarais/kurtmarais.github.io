@@ -4,11 +4,11 @@ title: "Teaching"
 permalink: /teaching/
 ---
 
-### Teaching philosophy
+<!--### Teaching philosophy-->
 
 <!-- Replace this section with your teaching philosophy. It can explain your approach to quantitative reasoning, applied problem-solving, computational methods and the connection between theory and practice. -->
-<br>
-<br>
+<!--<br>
+<br>--> 
 
 ### Undergraduate courses
 
