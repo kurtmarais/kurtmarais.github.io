@@ -283,3 +283,99 @@ h4 {
 .theme-switch input:checked + .theme-slider::before {
   transform: translateX(16px);
 }
+
+/* DARK MODE */
+
+body.dark-mode {
+  background: #202421;
+  color: #e8e9e5;
+}
+
+body.dark-mode a {
+  color: #9ab8aa;
+}
+
+/* HEADER */
+
+body.dark-mode .site-header {
+  border-color: #444943 !important;
+}
+
+body.dark-mode .site-title {
+  color: #e8e9e5;
+}
+
+body.dark-mode .site-description {
+  color: #aeb3ae;
+}
+
+/* NAVIGATION */
+
+body.dark-mode .nav-link {
+  color: #aeb3ae;
+}
+
+body.dark-mode .nav-link:hover {
+  color: #ffffff;
+  border-color: #9ab8aa;
+}
+
+/* HEADINGS */
+
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4 {
+  color: #e8e9e5;
+}
+
+/* SECTION LABELS */
+
+body.dark-mode .eyebrow {
+  color: #9ab8aa;
+}
+
+/* RESEARCH STRIP */
+
+body.dark-mode .research-strip {
+  border-color: #444943;
+}
+
+body.dark-mode .research-strip h3 {
+  color: #9ab8aa;
+}
+
+body.dark-mode .research-strip p,
+body.dark-mode .publication-item {
+  color: #aeb3ae;
+}
+
+/* LINKS */
+
+body.dark-mode .text-link {
+  color: #9ab8aa;
+}
+
+/* SUPERVISION ABSTRACTS */
+
+body.dark-mode .supervision-abstract {
+  color: #aeb3ae;
+}
+
+body.dark-mode .supervision-abstract summary {
+  color: #9ab8aa;
+}
+
+body.dark-mode .supervision-abstract p {
+  color: #aeb3ae;
+}
+
+/* SOCIAL MEDIA */
+
+body.dark-mode .social-media-icons a {
+  color: #aeb3ae;
+}
+
+body.dark-mode .social-media-icons a:hover {
+  color: #9ab8aa;
+}
