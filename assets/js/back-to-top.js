@@ -1,9 +1,17 @@
 const backToTop = document.querySelector(".back-to-top");
 
 if (backToTop) {
-  window.addEventListener("scroll", function () {
-    backToTop.classList.toggle("show", window.scrollY > 0);
-  });
+  function updateBackToTop() {
+    if (window.scrollY > 0) {
+      backToTop.classList.add("show");
+    } else {
+      backToTop.classList.remove("show");
+    }
+  }
+
+  window.addEventListener("scroll", updateBackToTop, { passive: true });
+
+  updateBackToTop();
 
   backToTop.addEventListener("click", function (event) {
     event.preventDefault();
