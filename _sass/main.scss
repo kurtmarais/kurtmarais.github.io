@@ -447,10 +447,13 @@ h4 {
   align-items: flex-start;
   justify-content: space-between;
   width: 100%;
+  border-bottom: 1px solid #d9d9d1;
 }
 
 .supervision-title-row h3 {
   margin-top: 0;
+  margin-bottom: 0 !important;
+  padding-bottom: 1rem !important;
 }
 
 .supervision-filters {
@@ -458,6 +461,7 @@ h4 {
   align-items: flex-start;
   gap: 1.5rem;
   padding-top: 0.45rem;
+  padding-bottom: 1rem;
 }
 
 
