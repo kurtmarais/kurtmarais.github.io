@@ -194,13 +194,28 @@ h4 {
 }
 
 .media-item {
-  display: none;
+  display: flex;
   align-items: stretch;
   width: 100%;
+
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  transition:
+    opacity 0.6s ease,
+    visibility 0s linear 0.6s;
 }
 
 .media-item.active {
-  display: flex;
+  opacity: 1;
+  visibility: visible;
+  position: relative;
+
+  transition:
+    opacity 0.6s ease;
 }
 
 .media-thumbnail {
@@ -286,6 +301,7 @@ h4 {
   color: #69706b;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
+  position: relative;
 }
 
 /* VIDEO PLAY ICON */
