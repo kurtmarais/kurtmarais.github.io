@@ -7,198 +7,34 @@ layout: default
 
     <div class="supervision-header">
 
-        <div class="supervision-title-row">
-      
-          <h3 class="fw-bold border-bottom pb-3 mb-5">
-            {{ page.title }}
-          </h3>
-      
-          <div class="supervision-filters">
-      
-            <div class="supervision-filter">
-      
-              <a href="#"
-                 class="supervision-filter-link"
-                 data-filter-toggle="year">
-                ALL YEARS
-                <i class="fas fa-chevron-down filter-chevron" aria-hidden="true"></i>
-              </a>
-      
-              <div
-                class="supervision-filter-options"
-                data-filter-options="year"
-                hidden
-              >
-                <a href="#" data-year="all">ALL YEARS</a>
-      
-                <div class="supervision-year-options">
-                  <!-- Years will be inserted by JavaScript -->
-                </div>
-              </div>
-      
-            </div>
-      
-      
-            <div class="supervision-filter">
-      
-              <a href="#"
-                 class="supervision-filter-link"
-                 data-filter-toggle="sort">
-                NEWEST FIRST
-                <i class="fas fa-chevron-down filter-chevron" aria-hidden="true"></i>
-              </a>
-      
-              <div
-                class="supervision-filter-options"
-                data-filter-options="sort"
-                hidden
-              >
-                <a href="#" data-sort="newest">
-                  NEWEST FIRST
-                </a>
-      
-                <a href="#" data-sort="oldest">
-                  OLDEST FIRST
-                </a>
-              </div>
-      
-            </div>
-      
-      
-            <div class="supervision-filter">
-      
-              <a href="#"
-                 class="supervision-filter-link"
-                 data-filter-toggle="topic">
-                SEARCH TOPICS
-                <i class="fas fa-chevron-down filter-chevron" aria-hidden="true"></i>
-              </a>
-      
-              <div
-                class="supervision-filter-options"
-                data-filter-options="topic"
-                hidden
-              >
-                <input
-                  type="search"
-                  class="supervision-topic-search"
-                  placeholder="SEARCH TOPICS..."
-                  aria-label="Search supervision topics"
-                >
-              </div>
-      
-            </div>
-      
-          </div>
-      
-        </div>
-      
-      
-        <!-- MOBILE FILTERS -->
-      
-        <div class="mobile-supervision-filters">
-      
-          <a
-            href="#"
-            class="mobile-filters-toggle"
-            data-mobile-filters-toggle
-          >
-            FILTERS
-            <i class="fas fa-chevron-down mobile-filters-arrow" aria-hidden="true"></i>
-          </a>
-      
-      
-          <div
-            class="mobile-supervision-filter-list"
-            data-mobile-filter-list
-            hidden
-          >
-      
-            <div class="mobile-supervision-filter">
-      
-              <a
-                href="#"
-                class="mobile-supervision-filter-link"
-                data-mobile-filter-toggle="year"
-              >
-                YEARS
-                <i class="fas fa-chevron-down filter-chevron" aria-hidden="true"></i>
-              </a>
-      
-              <div
-                class="mobile-supervision-filter-options"
-                data-mobile-filter-options="year"
-                hidden
-              >
-                <a href="#" data-mobile-year="all">ALL YEARS</a>
-      
-                <div class="mobile-supervision-year-options">
-                  <!-- Years will be inserted by JavaScript -->
-                </div>
-              </div>
-      
-            </div>
-      
-      
-            <div class="mobile-supervision-filter">
-      
-              <a
-                href="#"
-                class="mobile-supervision-filter-link"
-                data-mobile-filter-toggle="sort"
-              >
-                SORT
-                <i class="fas fa-chevron-down filter-chevron" aria-hidden="true"></i>
-              </a>
-      
-              <div
-                class="mobile-supervision-filter-options"
-                data-mobile-filter-options="sort"
-                hidden
-              >
-                <a href="#" data-mobile-sort="newest">
-                  NEWEST FIRST
-                </a>
-      
-                <a href="#" data-mobile-sort="oldest">
-                  OLDEST FIRST
-                </a>
-              </div>
-      
-            </div>
-      
-      
-            <div class="mobile-supervision-filter">
-      
-              <a
-                href="#"
-                class="mobile-supervision-filter-link"
-                data-mobile-filter-toggle="topic"
-              >
-                TOPICS
-                <i class="fas fa-chevron-down filter-chevron" aria-hidden="true"></i>
-              </a>
-      
-              <div
-                class="mobile-supervision-filter-options"
-                data-mobile-filter-options="topic"
-                hidden
-              >
-                <input
-                  type="search"
-                  class="supervision-topic-search"
-                  placeholder="SEARCH TOPICS..."
-                  aria-label="Search supervision topics"
-                >
-              </div>
-      
-            </div>
-      
-          </div>
-      
-        </div>
-      
-      </div>
+  <div class="supervision-title-row">
+
+    <h3 class="fw-bold border-bottom pb-3 mb-5">
+      {{ page.title }}
+    </h3>
+
+    <div class="supervision-filters">
+
+      <a href="#" class="supervision-filter-link">
+        ALL YEARS
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </a>
+
+      <a href="#" class="supervision-filter-link">
+        NEWEST FIRST
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </a>
+
+      <a href="#" class="supervision-filter-link">
+        SEARCH TOPICS
+        <i class="fas fa-chevron-down" aria-hidden="true"></i>
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
     
     <div class="supervision-list">
 
