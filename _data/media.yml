@@ -5,3 +5,11 @@
   image: "/assets/img/media/test.jpg"
   description: "This is a temporary test entry for the media carousel."
   url: "#"
+  
+- title: "Test video"
+  publication: "Example Video Source"
+  date: "August 2026"
+  type: "video"
+  image: "/assets/img/media/test-video.jpg"
+  description: "This is a temporary test video entry."
+  url: "#"
