@@ -5,46 +5,49 @@ if (backToTop) {
   let hideTimer;
 
   function showBackToTop() {
-    backToTop.classList.add("show");
-
-    clearTimeout(hideTimer);
-
-    hideTimer = setTimeout(function () {
-      if (window.scrollY > 0) {
-        backToTop.classList.remove("show");
-      }
-    }, 3000);
-  }
-
-  function updateBackToTop() {
     if (window.scrollY > 0) {
-      showBackToTop();
-    } else {
+      backToTop.classList.add("show");
+
       clearTimeout(hideTimer);
-      backToTop.classList.remove("show");
+
+      hideTimer = setTimeout(function () {
+        backToTop.classList.remove("show");
+      }, 3000);
     }
   }
 
-  window.addEventListener("scroll", updateBackToTop, { passive: true });
+  function hideBackToTop() {
+    clearTimeout(hideTimer);
+    backToTop.classList.remove("show");
+  }
 
-  window.addEventListener("touchmove", function () {
-    requestAnimationFrame(function () {
-      if (window.scrollY > 0) {
-        showBackToTop();
-      }
-    });
-  }, { passive: true });
+  window.addEventListener("scroll", function () {
 
-  updateBackToTop();
+    if (window.scrollY > 0) {
+      showBackToTop();
+    } else {
+      hideBackToTop();
+    }
+
+  });
+
+  document.addEventListener("mousemove", function () {
+
+    if (window.scrollY > 0) {
+      showBackToTop();
+    }
+
+  });
 
   backToTop.addEventListener("click", function (event) {
-    event.preventDefault();
 
-    clearTimeout(hideTimer);
+    event.preventDefault();
 
     window.scrollTo({
       top: 0,
       behavior: "smooth"
     });
+
   });
+
 }
