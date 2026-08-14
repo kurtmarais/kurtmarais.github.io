@@ -15,9 +15,14 @@
 
   var state = {
     years: new Set(),      // empty set = "all years"
+    degrees: new Set(),    // empty set = "all degrees"
     sort: "newest",        // "newest" | "oldest"
     topics: ""              // lowercase search string
   };
+
+  function hasActiveFilters() {
+    return state.years.size > 0 || state.degrees.size > 0 || state.topics.length > 0;
+  }
 
   /* ---------- Mobile "Filters" panel toggle ---------- */
 
@@ -104,6 +109,34 @@
     }
   }
 
+  /* ---------- Degree level: multi-select ---------- */
+
+  var degreeControl = document.querySelector('.supervision-filter-control[data-filter="degree"]');
+  if (degreeControl) {
+    var degreeValueLabel = degreeControl.querySelector(".supervision-filter-value");
+    var degreeCheckboxes = degreeControl.querySelectorAll('input[type="checkbox"]');
+
+    degreeCheckboxes.forEach(function (checkbox) {
+      checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+          state.degrees.add(checkbox.value);
+        } else {
+          state.degrees.delete(checkbox.value);
+        }
+        updateDegreeLabel();
+        applyFilters();
+      });
+    });
+
+    function updateDegreeLabel() {
+      if (state.degrees.size === 0) {
+        degreeValueLabel.textContent = "All degrees";
+      } else {
+        degreeValueLabel.textContent = Array.from(state.degrees).join(", ");
+      }
+    }
+  }
+
   /* ---------- Sort: single-select ---------- */
 
   var sortControl = document.querySelector('.supervision-filter-control[data-filter="sort"]');
@@ -136,26 +169,36 @@
 
   function entryMatches(entry) {
     var yearMatches = state.years.size === 0 || state.years.has(entry.getAttribute("data-year"));
+    var degreeMatches = state.degrees.size === 0 || state.degrees.has(entry.getAttribute("data-degree-level"));
 
     var topicMatches = true;
     if (state.topics) {
       var keywordsEl = entry.querySelector(".supervision-keywords");
       var keywordsText = keywordsEl ? keywordsEl.textContent.toLowerCase() : "";
-      var titleText = entry.querySelector(".supervision-title");
-      titleText = titleText ? titleText.textContent.toLowerCase() : "";
-      topicMatches = keywordsText.indexOf(state.topics) !== -1 || titleText.indexOf(state.topics) !== -1;
+
+      var titleEl = entry.querySelector(".supervision-title");
+      var titleText = titleEl ? titleEl.textContent.toLowerCase() : "";
+
+      var abstractEl = entry.querySelector(".supervision-abstract p");
+      var abstractText = abstractEl ? abstractEl.textContent.toLowerCase() : "";
+
+      topicMatches =
+        keywordsText.indexOf(state.topics) !== -1 ||
+        titleText.indexOf(state.topics) !== -1 ||
+        abstractText.indexOf(state.topics) !== -1;
     }
 
-    return yearMatches && topicMatches;
+    return yearMatches && degreeMatches && topicMatches;
   }
 
   function applyFilters() {
-    applyToList(currentList, currentHeading);
-    applyToList(completedList, completedHeading);
+    var filtersActive = hasActiveFilters();
+    applyToList(currentList, currentHeading, filtersActive);
+    applyToList(completedList, completedHeading, filtersActive);
     updateEmptyState();
   }
 
-  function applyToList(list, heading) {
+  function applyToList(list, heading, filtersActive) {
     if (!list) return;
     var entries = list.querySelectorAll(".supervision-entry");
     var visibleCount = 0;
@@ -166,8 +209,9 @@
       if (matches) visibleCount += 1;
     });
 
+    // headings disappear as soon as any filter is active, not only once a section is empty
     if (heading) {
-      heading.hidden = visibleCount === 0;
+      heading.hidden = filtersActive || visibleCount === 0;
     }
     list.hidden = visibleCount === 0;
   }
