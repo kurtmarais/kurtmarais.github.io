@@ -33,17 +33,22 @@ layout: default
             {% endif %}
           </div>
 
+          <br>
+          
           {% if student.abstract %}
             <details class="supervision-abstract">
               <summary>Abstract</summary>
               <p>{{ student.abstract }}</p>
+               <br><br>
             </details>
           {% endif %}
 
+      
           <div class="supervision-keywords" hidden>
             {% for keyword in student.keywords %}
               {{ keyword | downcase }}{% unless forloop.last %}, {% endunless %}
             {% endfor %}
+             <br><br>
           </div>
 
         </article>
