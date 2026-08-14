@@ -1,1 +1,265 @@
 
+- name: "Teboho Mochai"
+  surname: "Mochai"
+  programme: "MCom (Operations Research)"
+  degree_level: "Masters"
+  degree_sort: 2
+  status: "current"
+  start_year: 2025
+  end year: 
+  title: "Comparison of traditional machine learning, deep learning and dimensional-based approaches for text-based emotion detection"
+  keywords:
+    - machine learning
+    - deep learning
+    - emotion detection
+  abstract: 
+
+
+- name: "Heeta Amin"
+  surname: "Amin"
+  programme: "BDatSci (Analytics and Optimisation)"
+  degree_level: "BDatSci"
+  degree_sort: 3
+  status: "current"
+  start_year: 2026
+  end_year: 2026
+  title: "Evaluating national happiness through the integration of media sentiment data and socio-economic indicators using machine learning"
+  keywords:
+  abstract: 
+
+
+- name: "Annabelle Meyer"
+  surname: "Meyer"
+  programme: "BDatSci (Analytics and Optimisation)"
+  degree_level: "BDatSci"
+  degree_sort: 3
+  status: "current"
+  start_year: 2026
+  end_year: 2026
+  title: "Sequential emotion modelling in online interpersonal discourse"
+  keywords:
+  abstract: 
+
+- name: "Rebecca Roche"
+  surname: "Roche"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "current"
+  start_year: 2026
+  end_year: 2026
+  title: "Fine-tuning data augmentation techniques for emotion detection in textual data"
+  keywords:
+  abstract: 
+
+- name: "Ntswanano Maswanganye"
+  surname: "Maswanganye"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2025
+  end_year: 2025
+  title: "Feature engineering for predicting movie success"
+  keywords:
+    - feature engineering
+  abstract: The global film industry represents a multi-billion-dollar sector in which production decisions are often made under high uncertainty. Despite the availability of large volumes of data on film performance, accurately predicting a movie’s success prior to release remains a complex and multidimensional challenge. This research investigates how feature engineering, in conjunction with advanced machine learning algorithms, can improve the predictive modelling of movie success. Success is defined through both financial performance, measured by worldwide gross revenue, and critical reception, measured by meta scores from IMDb and Rotten Tomatoes. Data were compiled from publicly available sources, including Kaggle, IMDb, Rotten Tomatoes, and Letterboxd, and subjected to extensive preprocessing procedures involving data cleaning, integration, and transformation. Several derived variables were introduced through feature engineering. Release weekend popularity, marketing efficiency, and annualised revenue to capture the temporal and contextual dimensions of film performance. Feature selection was performed using Pearson correlation and mutual information to identify the most informative predictors while mitigating multicollinearity. Four regression-based machine learning algorithms, namely random forest, light gradient boosting machine (LightGBM), AdaBoost, and linear regression were implemented and optimised through hyperparameter tuning and 10-fold cross-validation. Model performance was assessed using mean squared error, mean absolute error, and the coefficient of determination. The results indicate that feature engineering substantially enhances predictive performance across all models, with ensemble methods random forest and LightGBM consistently outperforming simpler linear models. Furthermore, the analysis of feature importance revealed that variables related to production budget, marketing efficiency, and opening weekend gross revenue were the most influential determinants of film success. This research demonstrates that combining feature engineering with supervised machine learning yields a powerful, interpretable approach to predicting movie success. The outcomes of the study add to the growing literature at the intersection of data science and entertainment economics. Moreover, the insights gained have practical relevance for producers, investors, and marketing teams, who can leverage data-driven models to optimise decision-making and enhance the financial viability of film production and distribution.
+
+
+- name: "Avaniya Pillay"
+  surname: "Pillay"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2025
+  end_year: 2025
+  title: "Feature engineering for song success prediction"
+  keywords:
+    - feature engineering
+  abstract: The introduction of music streaming platforms has led to an increase in music consumption across the globe. As a result, various stakeholders in the music industry are interested in identifying the elements of a song that result in more streams on music streaming platforms, ultimately increasing song popularity. This study identifies the features of a song that contribute to its success on music streaming platforms using feature engineering and machine learning. A Spotify dataset containing various song features of songs from 1950 to 2020 was used, which was obtained from Kaggle. Data cleaning and preprocessing were applied to the dataset. Artist popularity scores were extracted using the Spotify API. Six new song features were engineered. Once all features were engineered, correlation analysis was conducted to remove multicollinear features. Five tree-based ensemble models, namely bagging, random forests, gradient boosting, extreme gradient boosting and light gradient boosting, were constructed to predict song popularity scores. Various model hyperparameters were tested for each model using five-fold cross-validation to determine the optimal model configurations. The results showed that extreme gradient boosting yielded consistently low RMSE, MAE and high <em>R<sup>2</sup></em> scores with an RMSE of 0.1598, MAE of 0.1239 and <em>R<sup>2</sup></em> of 23.10%. All models yielded low <em>R<sup>2</sup></em> scores, suggesting that there were features not accounted for that explain the variation in song popularity scores. This was due to the simplifying assumptions of the model, such that external factors such as social media, were not considered. All models were also tested with and without feature engineering. Feature engineering improved model accuracy and was particularly beneficial to the <em>R<sup>2</sup></em> scores of the random forest, gradient boosting, extreme gradient boosting and light gradient boosting models. Feature importance analysis was also conducted, highlighting that the most significant features of song popularity are the popularity of the main artist and the wordiness of a song. Pop, rock and EDM songs were more popular than other genres. Potential avenues of future research include using more representative song and artist popularity scores, investigating the lyrical content of a song by sections and incorporating virality effects as a feature.
+
+
+- name: "Tineke Wilcocks"
+  surname: "Wilcocks"
+  programme: "BDatSci (Analytics and Optimisation)"
+  degree_level: "BDatSci"
+  degree_sort: 3
+  status: "current"
+  start_year: 2025
+  end_year: 2025
+  title: "Enhancing fashion image classification using deep learning and targeted dataset segmentation"
+  keywords:
+  abstract: The fashion industry is one of the largest categories in the global e-commerce industry and demands integration advanced technology more than ever before. This research addresses the fashion image classification problem by way of artificial intelligence techniques and compares the power of simplicity to the performance of complex operations. The methodology consists of several fundamental steps. Data preprocessing was performed, such as feature selection, the handling of missing values, class groupings and the removal of duplicate features. Additionally, the dataset was categorised into five different subsets to be used for model training and image classification to determine if creating subsets for unique genders or item subcategories would improve the models’ performance. A simple and a complex implementation of the convolutional neural network architectures were proposed for the classification of eleven multi-class outputs, with the residual network consisting of fifty layers as the baseline. The models were trained on each of the subsets to determine the most beneficial split of the dataset for model performance. Model performance was evaluated based on accuracy, F1-scores, and precision scores, as well as AUC-ROC plots for the binary outputs of the models. The models were evaluated for each attribute according to each subset of the full dataset. The results indicated that the simple implementation of the convolutional neural network outperformed its counterparts on the basis of stability, scalability, and performance. Furthermore, the division of the dataset into female and male subsets reflected the most favourable results. Future research directions may consider the compilation of more comprehensive datasets, or tuning the hyperparameters regarding the batch size and number of epochs used in training of the convolutional neural network implementations to improve classification performance.
+
+  
+- name: "Teboho Mochai"
+  surname: "Mochai"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2024
+  end_year: 2024
+  title: "Anomaly detection on features extracted using natural language processing"
+  keywords:
+  abstract: Anomaly detection based on features extracted using natural language processing is investigated with a focus on detecting fraudulent job listings in a labelled job listing dataset. The increasing number of fraudulent job listings highlights the significance of an effective anomaly detection framework. The study uses data preprocessing techniques such as lemmatisation, tokenisation and stops words removal, and feature extraction methods such as bag-of-words and term frequency-inverse document frequency that use natural language processing to extract relevant features from the textual data. Principal component analysis is applied to reduce the dimensionality of the features to allow for effective and faster performance. Machine learning algorithms such as random forest, naïve Bayes, support vector machine and logistic regression are used to detect fraudulent job listings in the dataset. The algorithms are optimised by performing hyperparameter tuning to obtain an optimal set of parameters. The algorithms are trained and assessed using evaluation metrics such as accuracy, precision, recall and F1-score. Additionally, the receiver operating characteristic area under the curve is used to evaluate whether each algorithm is able to differentiate between the real and fake job listings. The results show that random forest with term frequency-inverse document frequency outperforms other approaches across all the evaluation metrics. Additionally, random forest, support vector machines and logistic regression achieved higher accuracy with term frequency-inverse document frequency features, indicating that term frequency-inverse document frequency can efficiently extract more semantic information within textual data than bag-of-words. Naïve Bayes achieved a higher accuracy with bag-of-words features indicating that the raw word counts generated by bag-of-words may be suited for the probabilistic nature of naïve Bayes.
+
+
+- name: "Tina Ntambi"
+  surname: "Ntambi"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2024
+  end_year: 2024
+  title: "Link prediction in bipartite social networks"
+  keywords:
+  abstract: The growing evolution of social networks has inspired numerous studies centred around deep network analysis. Researchers in this field are typically interested in exploring the structures of these networks and observing how they operate with the intention of identifying key attributes and forecasting the changes with the aid of predictive measures. Link prediction is a technique that is used to discern existing links in a network between two entities and predict potential connections accurately based on the learned information of a network. This study focuses on evaluating the effectiveness of link prediction techniques in bipartite social networks. The specific area of focus in this study is Pinterest, a social media sharing platform. The aim is to evaluate the relationships within a pin–board bipartite network, assessing whether traditional link prediction techniques could assist in predicting whether pins of similar nature are associated with common boards. Two models were used in the experimentation where similarity-based methods such as common neighbours, Jaccard’s coefficient and Adamic-Adar index were used as features in the random forest classifier model and a matrix factorisation model using singular value decomposition. These two approaches were applied to three unique Pinterest datasets and were evaluated in terms of their ability in handling the datasets and their predictive performance. The results of this experimentation suggested that the random forest classifier is more effective in link prediction, particularly in sparse bipartite networks and that the matrix factorisation required better connected networks to perform up to the expected standards according to literature.
+
+
+- name: "Jaco Verryne"
+  surname: "Verryne"
+  programme: "BDatSci (Analytics and Optimisation)"
+  degree_level: "BDatSci"
+  degree_sort: 3
+  status: "current"
+  start_year: 2024
+  end_year: 2024
+  title: "A machine learning approach to product review classification of textual data"
+  keywords:
+  abstract: With the rapid growth of e-commerce, reliable customer input have become increasingly vital for businesses to gain insights into customer satisfaction and product feedback. This research addresses the complex task of automating review classification by way of machine learning techniques. The methodology consists of several key steps. Data preprocessing was performed, which entailed manual data cleaning. This process included removing non-ASCII characters, hyperlinks, HTML tags, product IDs and numerical characters. Additionally, terms were standardised by converting British English spellings to American English and replacing slang with more general terms. Common stop words were removed and word stemming was applied to reduce words to their root forms. Feature selection was performed with three features selection techniques, namely lasso regularisation, mutual information and the chi-squared test to remove irrelevant and uninformative terms. The chi-squared test was identified as the most effective technique for this study. Naïve bayes, decision tree, support vector machines, AdaBoost and light gradient boosting were the machine learning models used to classifying product reviews according to their relevant star ratings. The models were trained using the selected features, and optimal model configurations were determined through grid search for predetermined parameter ranges. Model performance was evaluated based on accuracy, recall, precision, F1-score and training time in seconds. To estimate overall performance, a bootstrap resampling method was applied, followed by testing on unseen reviews to assess generalisation capabilities. Results indicate that the light gradient boosting model outperformed other models across all metrics. However, even with optimised machine learning models, the study achieved only a 50.01% accuracy rate. This limitation is attributed to the inherent subjectivity and bias of human opinions and the varied utility scores individuals assign to product experiences. Future research directions could pursue the exploration of more sophisticated models such as neural networks, or relabelling the reviews with the combined application of active and semi-supervised learning.
+
+
+- name: "Peter D'Aguiar"
+  surname: "D'Aguiar"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2023
+  end_year: 2023
+  title: "Virality prediction of Reddit posts with text sentiment analysis and machine learning"
+  keywords:
+  abstract: In the modern day and age, social media is utilised as a powerful and influential societal tool to provide and deliver information, entertainment and awareness of current events occurring in real-time on a global scale. Media that is spread effectively in large numbers is able to influence mass thinking, and the measure of this ability for social media content to spread is referred to as virality. This study aims to investigate whether the virality of Reddit content may be predicted using text sentiment analysis and machine learning. By improving the understanding of relationships that exist between text sentiment analysis features and the virality of Reddit posts, this knowledge can empower Reddit users to design posts that are more likely to gain viral traction. This, in turn, may facilitate a more effective propagation of their thoughts and ideas across the Reddit network. Three unique machine and deep learning techniques will be investigated and compared, namely logistic regression, random forest, and a recurrent neural network approach. These models will be trained on extracted Reddit data obtained through use of the Reddit API. Of these three techniques, it was found that the recurrent neural network produced the most favourable results. The study concludes with an exploratory data analysis of the Reddit dataset as a whole to gain further insight into the relationships that exist between text sentiment and viral Reddit posts.
+
+
+- name: "Emma Davis"
+  surname: "Davis"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2023
+  end_year: 2023
+  title: "A network approach to investigating trending topics on Twitter"
+  keywords:
+  abstract: Trending topics exist on many social media platforms, such as Instagram, Facebook, and Twitter (currently known as X). These topics drive conversations that are popular at a specific time and more awareness about the trend occurs when more is posted about it. Topics may be political and a source of news for some, used by companies as a marketing tool, or simply for entertainment purposes. Users on social media platforms share their opinions or facts about the topic, creating more visibility of the trend. This study investigates three trending topics on Twitter using a network analysis. These trending topics were about ChatGPT, the Netflix series ‘Squid Game’, and the Pfizer vaccine. A network is constructed by assigning each user as a node and two nodes were connected when one user mentions the other user in their tweet. These networks are analysed individually using a social network analysis. Centrality measures, density, transitivity, and average path lengths for each network is calculated and communities are identified within each network. Statistical analysis is also conducted to allow for comparison between networks and comparison with randomly generated networks. The trending topic networks studied were found to be sparse networks. Both the ChatGPT and the Pfizer vaccine networks had one influential user that was related to the topics. The Squid Game network had multiple influential users with multiple distinct communities identified. The networks were established to be similar to a random network generated with the same density. The results from this research may financially benefit organisations and individuals as they can better understand how to market products, services, or themselves as there will be an understanding about how to reach their customers and who to collaborate with. The government can spread information efficiently through a Twitter network by providing information to specific influential users. Twitter may decide to alter the curation algorithm to ensure user satisfaction and users receive information that they seem to be interested in.
+
+
+- name: "Francois Oberholzer"
+  surname: "Oberholzer"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2022
+  end_year: 2022
+  title: "Clustering analysis of hate speech on social media"
+  keywords:
+  abstract: The number of social media users are growing daily, and so is the quantity of information shared on the Internet. While the rise can be beneficial for many users and businesses, it can also be detrimental towards users. With the rise of social media and information being shared, hate speech grows with it and finding a good balance between restricting hate speech and not limiting free speech is difficult. Three clustering models were chosen, namely <em>k</em>-means, fuzzy <em>c</em>-means, and density-based clustering spatial clustering with noise (DBSCAN) to investigate the intensity of words on the hate speech spectrum. The clustering techniques were combined with topic modelling to uncover social phenomena concerning hate speech on social media. Term frequency-inverse document frequency (TF-IDF) was used to transform the data into a matrix to allow for clusters to be formed with the algorithms. With the matrix, principal component analysis (PCA) was applied to the data for two reasons. Firstly, to reduce dimensions to allow for clusters to be visualised and, secondly, to determine if applying PCA to the TF-IDF values before clustering provided more significant results. The <em>k</em>-means algorithm yielded the best results when identifying hidden patterns and semantic structures in tweets regarding hate speech and yielded significant results before applying PCA and after applying PCA. DBSCAN yielded satisfactory results when applying PCA to the TF-IDF values. Fuzzy <em>c</em>-means yielded the poorest results as it was not able to form clusters with the TF-IDF values and required a dimension reduction of the data first.
+
+
+- name: "Zaine Probst"
+  surname: "Probst"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2022
+  end_year: 2022
+  title: "An agent-based modelling approach for trending topics on Twitter"
+  keywords:
+  abstract: Trending topics on Twitter are generated through large magnitudes of social interactions between Twitter users. These trending topics reach millions of users throughout the world and have an influential impact in societal norms and behaviours. Analysing the emergent properties of these interactions may guide our understanding of how trends emerge and what the necessary requirements are to produce trending topics and what the consequences of positive or negative trending topics may be from a network perspectives. An agent-based simulation model is presented where individual Twitter users are modelled as agents on an underlying connected social network. The spatial aspect of the simulation model allows for testing the rate of growth the content throughout the network. This is to analyse what the number of initial promoters required to maximise the effectiveness of the trend to reach a significant portion of the network population in a relatively small amount of time is provided. The simulation utilises social pressure from the entire network and from the users’ local neighbourhood as the driving factor in expanding the engagement of the content while taking information diffusion into consideration to more accurately reflect the decision making process of Twitter users. Performing a sensitivity analysis on the input parameters, it was found that the model is sensitive to a change in the the number of initial content promoters. A decision support tool is developed to optimise the performance of the model with a given density. The decision support tool provides an approximation of the number of initial promoters to achieve this objective to reach the maximum number of users within the smallest possible time period.
+
+
+- name: "Zizipho Gebenga"
+  surname: "Gebenga"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2021
+  end_year: 2021
+  title: "A game theoretic approach to social media engagement"
+  keywords:
+  abstract: Social media is a channel on the Internet, where users interact with audience. Social media spaces have experienced growth in their consumer base and their popularity continues to grow. As a result of this growth companies and brands recognise the need to use social media platforms to promote their brand and often rely on influential users to advertise on their behalf. Influential users add value to these brands and their credibility is regarded as valuable to ensure marketing effectiveness. Influencers aim to convince consumers to have positive attitudes towards the brands they are marketing for by ensuring that they obtain the highest amount of engagement on their posts. Game theory is used in this study to determine the best strategies for influencers or players in social media to follow in order to maximise the amount of engagement they get on posts. The strategies include choosing the type of content to post and the time in which the players make posts on the social media platform Twitter. A game is modeled between three South African users of the social media platform Twitter, who are considered to be influencers on the platform. The cooperative game is modelled in characteristic function form where the amount of engagement is computed for each of the players and is used in solving and analysing the games. Information about the players of the game is extracted using the Twitter API with Tweepy and Python. Strategies for players to follow are recommended, no single standard best time is found for the players, players of the game all have different personalised recommended times to post and personalised recommended types of content based on their follower's preference. A cooperative game between social media users is found to be inessential, since there is no need for coalitions to form as they do not benefit the players. Players' best strategies are found, and it is suggested that the players do not deviate from the recommended strategies should they decide to join coalitions, because that would result in a lesser payoff than when they are working alone. The amount of engagement on posts is significantly influenced by the number of likes compared to the number of retweets. The number of likes are more strongly correlated (have a correlation greater than 0.8) to the amount of engagement than retweets are.
+
+
+- name: "Neline Potgieter"
+  surname: "Gebenga"
+  programme: "BComHons (Quantitative Management)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2021
+  end_year: 2021
+  title: "Predicting the popularity of tweets"
+  keywords:
+  abstract: Social media is part of our daily lives and more businesses are being built with the help of social media. The investment in social media marketing is increasing yearly and is becoming more important. The popularity for a post on social media is measured almost on a weekly basis. The popularity of a tweet can be predicted through the elements of a tweet. The elements of a tweet included the time of day posted, the day of the week and if the tweet had a hashtag or not. The popularity of a tweet was measured by the retweet rate per minute and favourite rate per minute for a tweet. Three regression models were used to make the prediction for the popularity of a tweet. The regression models consist of a multiple linear regression, multivariate polynomial regression and multinomial logistic regression model. The three regression models determined what variables of a tweet have an influence on the popularity and the coefficients that provide some insights from each regression model was also interpreted. The models also show that the hashtag and the source from which the tweet was made had a significant influence on determining the popularity of a tweet. The three regression models were compared and the multivariate polynomial regression model was the most appropriate model, but did not necessarily perform accurate enough to predict the popularity of a tweet in general.
+
+
+- name: "Simanye Roboji"
+  surname: "Roboji"
+  programme: "BComHons (Operations Research)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2020
+  end_year: 2020
+  title: "Identifying the risk of veldfires in the Wellington region"
+  keywords:
+  abstract: This project examines factors that are of most significance for the occurrence of fire in the Western Cape, by using statistical tools. The factors examined is daily wind, relative humidity, rainfall and the average temperature. Based on the evaluation of the factors, a model for predicting fire occurrence is built. In order to test how the factors affect the occurrence of fire, this project analyses weather parameters and uses a multiple linear regression model. The results of this project show that a model may be built from the weather parameters analysed, which can predict the occurrence of fire in the Wellington region.
+
+
+- name: "Liza Viljoen"
+  surname: "Viljoen"
+  programme: "BComHons (Quantitative Management)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2020
+  end_year: 2020
+  title: "Factors linked to depression based on previous research"
+  keywords:
+  abstract: Depression is a common mental disorder affecting 264 million people globally. With an increase in the prevalence of depression, it is important to be aware of the potential factors that may influence or are linked to depression. Over the years, there has been an increase in the number of studies conducted in the domain of depression. This study will consider the factors that are linked to depression based on previous publications. A bibliometric study is conducted on research articles published from 2010 to 2019 in the field of depression. The bibliometric study consists of a combination of a co-citation analysis and a co-word analysis. A co-citation analysis is conducted to determine the popular documents used by other researchers. A co-citation analysis is conducted with the use of a co-citation network. A network is established with all the articles linking with one another. Once a network is formed, the Louvain modularity method is used to form clusters with the articles. The articles clustering together is then considered the articles containing the same subject matter. Once the cluster have formed, the top 10% of articles with the highest degree within in cluster is extracted and analysed. A co-word analysis is then conducted to analyse the content of the articles extracted in the co-citation analysis. The co-word analysis is also conducted with the use of a network. The words co-occurring together are connected with a link between them. The more the words occurring together, the stronger the link between them. The factors linking to depression is then defined as the factors with strong links with the words associated with depression. Once the content is analysed, there are certain terms and words containing strong links with depression. The results found that the factors linking to depression is the loss of a loved one, strokes, growth factors that help your body to function properly, and syndromes, like medical illnesses.
+
+
+
+- name: "Kim Sharp"
+  surname: "Sharp"
+  programme: "BComHons (Quantitative Management)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2019
+  end_year: 2019
+  title: "Scheduling of the World Choir Games"
+  keywords:
+  abstract: The World Choir Games is an international choral event based on the Olympics. Its aim is to unify people and nations through songs in competitions. For this world class event to be successful, an efficient schedule needs to be implemented. The schedule needs to assign jury members to a jury group, where the jury group will be assigned to judge a category. The categories need to be assigned to a time slot in a venue on a day, ensuring no overlap in time slots occur as well as no overlap in time slots where the jury groups need to judge the categories. The schedule must be done in such a way that the cost of hiring the venues is minimised to ensure that the venues are used better. This study addresses this timetabling problem by using integer linear programming. A proposed new schedule was developed to adhere to the constraints specific to this timetabling problem, while still meeting the objective set for this study. The hiring costs of the venues decreases when the proposed new schedule is used, by R 687 000. Therefore, the proposed new schedule helps save the World Choir Games on venue hiring costs and providing a feasible schedule for the event. Furthermore, a sensitivity analysis was performed on the number of days the World Choir Games is scheduled over. It is shown that if the number of days are changed the schedule will change, as well as the total hiring cost of the venues.
+
+
+
+- name: "Timothy Whitehead"
+  surname: "Whitehead"
+  programme: "BComHons (Quantitative Management)"
+  degree_level: "BComHons"
+  degree_sort: 3
+  status: "completed"
+  start_year: 2019
+  end_year: 2019
+  title: "Maximising the number of parking bays in the Eikestad Mall parking lot"
+  keywords:
+  abstract: An increase in the population of Stellenbosch over the years has resulted in an increase in the number of cars on the road. As a result, the demand for parking has risen. This study looks at the parking lot at Eikestad Mall and identifies whether or not it is possible to have more parking bays within the current available space. Linear programming is used to maximise the number of parking bays, based on constraints that emulate the parking standards relevant to South Africa. The current parking lot is separated into seven rectangular sections to make the formulation of the model easier, as only two dimensions are considered. The number of parking bays that can fit in the section, which is dependent on the width of a section, is calculated as a parameter, while the variable is the number of modules that can fit in the length of a section. The original parking lot currently has 253 parking bays, and from the results obtained from the linear programming model, it is possible to accommodate 303 parking bays by rearranging the layout of the parking lot. In the sensitivity analysis, the model identified that the most commonly used parking bays were parking bays at an angle of 75°.
+
