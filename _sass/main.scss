@@ -444,15 +444,16 @@ h4 {
 
 .supervision-title-row {
   display: flex;
+  width: 100%;
+  min-width: 100%;
   align-items: flex-start;
   justify-content: space-between;
-  width: 100%;
   border-bottom: 1px solid #d9d9d1;
+  box-sizing: border-box;
 }
 
 .supervision-title-row h3 {
-  margin-top: 0;
-  margin-bottom: 0 !important;
+  margin: 0 !important;
   padding-bottom: 1rem !important;
 }
 
@@ -605,6 +606,10 @@ body.dark-mode .social-media-icons a {
 
 body.dark-mode .social-media-icons a:hover {
   color: #9ab8aa;
+}
+
+body.dark-mode .supervision-title-row {
+  border-bottom: 1px solid #444943;
 }
 
 /* BACK TO TOP */
