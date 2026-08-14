@@ -181,6 +181,109 @@ h4 {
   padding: 0.35rem 0;
 }
 
+/* MEDIA STRIP */
+
+.media-strip {
+  border-top: 1px solid #d9d9d1;
+  border-bottom: 1px solid #d9d9d1;
+  padding: 1.5rem 0;
+}
+
+.media-strip-header {
+  margin-bottom: 1rem;
+}
+
+.media-strip-header h3 {
+  color: $linkColor;
+  font-family: $bodyFont;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.media-item {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.media-thumbnail {
+  position: relative;
+  flex: 0 0 25%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.media-thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.media-content {
+  flex: 1;
+  padding: 0 0 0 1.5rem;
+}
+
+.media-meta {
+  color: #69706b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.media-content h4 {
+  font-size: 1.2rem;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+}
+
+.media-content p {
+  color: #69706b;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.media-link {
+  color: $linkColor;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.media-link:hover {
+  color: $bodyColor;
+  text-decoration: underline;
+}
+
+/* VIDEO PLAY ICON */
+
+.media-play-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+  background: rgba(32, 36, 33, 0.75);
+  color: #f7f6f1;
+
+  font-size: 0.8rem;
+}
+
 
 /* SUPERVISION ABSTRACTS */
 
@@ -301,6 +404,9 @@ h4 {
   transform: translateX(16px);
 }
 
+
+
+
 /* DARK MODE */
 
 body.dark-mode {
@@ -371,6 +477,36 @@ body.dark-mode .publication-item {
 
 body.dark-mode .text-link {
   color: #9ab8aa;
+}
+
+/* MEDIA STRIP - DARK MODE */
+
+body.dark-mode .media-strip {
+  border-color: #444943;
+}
+
+body.dark-mode .media-strip-header h3 {
+  color: #9ab8aa;
+}
+
+body.dark-mode .media-meta {
+  color: #aeb3ae;
+}
+
+body.dark-mode .media-content h4 {
+  color: #e8e9e5;
+}
+
+body.dark-mode .media-content p {
+  color: #aeb3ae;
+}
+
+body.dark-mode .media-link {
+  color: #9ab8aa;
+}
+
+body.dark-mode .media-link:hover {
+  color: #ffffff;
 }
 
 /* SUPERVISION ABSTRACTS */
@@ -604,4 +740,28 @@ body.dark-mode .back-to-top:hover {
     background: #9ab8aa;
     color: #202421;
   }
+}
+
+
+/* MEDIA STRIP - MOBILE */
+
+@media (max-width: 767px) {
+
+  .media-item {
+    display: block;
+  }
+
+  .media-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  .media-content {
+    padding: 1rem 0 0;
+  }
+
+  .media-content h4 {
+    font-size: 1.1rem;
+  }
+
 }
