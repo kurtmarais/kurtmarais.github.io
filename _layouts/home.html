@@ -26,86 +26,90 @@ layout: default
 <section class="media-strip mb-5">
 
   <div class="media-strip-header">
-    <h3 class="fw-bold border-bottom pb-3 mb-5">In the Media</h3>
+    <h3 class="fw-bold border-bottom pb-3 mb-4">In the Media</h3>
   </div>
 
   <div class="media-carousel">
 
-    {% for item in site.data.media %}
-      <article class="media-item{% if forloop.first %} active{% endif %}">
+    <div class="media-carousel-track">
 
-        <a href="{{ item.url }}"
-           class="media-thumbnail"
-           target="_blank"
-           rel="noopener noreferrer"
-           aria-label="{{ item.title }}">
-
-          <img
-            src="{{ item.image | relative_url }}"
-            alt="{{ item.title }}"
-          >
-
-          {% if item.type == "video" %}
-            <span class="media-play-icon">
-              <i class="fas fa-play"></i>
-            </span>
-          {% endif %}
-
-        </a>
-
-        <div class="media-content">
-
-          <div class="media-meta">
-            {{ item.publication }} · {{ item.date }}
-          </div>
-
-          <h4>{{ item.title }}</h4>
-
-          <p>{{ item.description }}</p>
+      {% for item in site.data.media %}
+        <article class="media-item">
 
           <a href="{{ item.url }}"
-             class="media-link"
+             class="media-thumbnail"
              target="_blank"
-             rel="noopener noreferrer">
+             rel="noopener noreferrer"
+             aria-label="{{ item.title }}">
+
+            <img
+              src="{{ item.image | relative_url }}"
+              alt="{{ item.title }}"
+            >
 
             {% if item.type == "video" %}
-              Watch video →
-            {% else %}
-              Read article →
+              <span class="media-play-icon">
+                <i class="fas fa-play"></i>
+              </span>
             {% endif %}
 
           </a>
 
-        </div>
+          <div class="media-content">
 
-      </article>
-    {% endfor %}
+            <div class="media-meta">
+              {{ item.publication }} · {{ item.date }}
+            </div>
 
-  </div>
+            <h4>{{ item.title }}</h4>
 
-  {% if site.data.media.size > 1 %}
-    <div class="media-carousel-controls">
+            <p>{{ item.description }}</p>
 
-      <button type="button"
-              class="media-carousel-prev"
-              aria-label="Previous media item">
-        <i class="fas fa-arrow-left"></i>
-      </button>
+            <a href="{{ item.url }}"
+               class="media-link"
+               target="_blank"
+               rel="noopener noreferrer">
 
-      <span class="media-carousel-position">
-        <span class="media-current">1</span>
-        /
-        <span class="media-total">{{ site.data.media.size }}</span>
-      </span>
+              {% if item.type == "video" %}
+                Watch video →
+              {% else %}
+                Read article →
+              {% endif %}
 
-      <button type="button"
-              class="media-carousel-next"
-              aria-label="Next media item">
-        <i class="fas fa-arrow-right"></i>
-      </button>
+            </a>
+
+          </div>
+
+        </article>
+      {% endfor %}
 
     </div>
-  {% endif %}
+
+    {% if site.data.media.size > 1 %}
+      <div class="media-carousel-controls">
+
+        <button type="button"
+                class="media-carousel-prev"
+                aria-label="Previous media item">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+
+        <span class="media-carousel-position">
+          <span class="media-current">1</span>
+          /
+          <span class="media-total">{{ site.data.media.size }}</span>
+        </span>
+
+        <button type="button"
+                class="media-carousel-next"
+                aria-label="Next media item">
+          <i class="fas fa-arrow-right"></i>
+        </button>
+
+      </div>
+    {% endif %}
+
+  </div>
 
 </section>
 {% endif %}
