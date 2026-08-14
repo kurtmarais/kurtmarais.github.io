@@ -7,192 +7,186 @@ layout: default
 
     <div class="supervision-header">
 
-  <div class="supervision-title-row">
-
-    <h3 class="fw-bold border-bottom pb-3 mb-5">
-      {{ page.title }}
-    </h3>
-
-      <div class="supervision-filters">
-  
-            <button
-              type="button"
-              class="supervision-filter-link"
-              data-filter-toggle="year"
-              aria-expanded="false"
-            >
-              All years <span class="filter-chevron">⌄</span>
-            </button>
-    
-            <div
-              class="supervision-filter-options"
-              data-filter-options="year"
-              hidden
-            >
-              <button type="button" data-year="all">All years</button>
-            </div>
-    
-          </div>
-    
-    
-          <div class="supervision-filter">
-    
-            <button
-              type="button"
-              class="supervision-filter-link"
-              data-filter-toggle="sort"
-              aria-expanded="false"
-            >
-              Newest first <span class="filter-chevron">⌄</span>
-            </button>
-    
-            <div
-              class="supervision-filter-options"
-              data-filter-options="sort"
-              hidden
-            >
-              <button type="button" data-sort="newest">
-                Newest first
-              </button>
-    
-              <button type="button" data-sort="oldest">
-                Oldest first
-              </button>
-            </div>
-    
-          </div>
-    
-    
-          <div class="supervision-filter">
-    
-            <button
-              type="button"
-              class="supervision-filter-link"
-              data-filter-toggle="topic"
-              aria-expanded="false"
-            >
-              Search topics <span class="filter-chevron">⌄</span>
-            </button>
-    
-            <div
-              class="supervision-filter-options"
-              data-filter-options="topic"
-              hidden
-            >
-              <input
-                type="search"
-                class="supervision-topic-search"
-                placeholder="Search topics..."
-                aria-label="Search supervision topics"
+        <div class="supervision-title-row">
+      
+          <h3 class="fw-bold border-bottom pb-3 mb-5">
+            {{ page.title }}
+          </h3>
+      
+          <div class="supervision-filters">
+      
+            <div class="supervision-filter">
+      
+              <a href="#"
+                 class="supervision-filter-link"
+                 data-filter-toggle="year">
+                All years <span class="filter-chevron">⌄</span>
+              </a>
+      
+              <div
+                class="supervision-filter-options"
+                data-filter-options="year"
+                hidden
               >
+                <a href="#" data-year="all">All years</a>
+      
+                <div class="supervision-year-options">
+                  <!-- Years will be inserted by JavaScript -->
+                </div>
+              </div>
+      
             </div>
-    
-          </div>
-    
-        </div>
-    
-      </div>
-    
-    
-      <div class="mobile-supervision-filters">
-    
-        <button
-          type="button"
-          class="mobile-filters-toggle"
-          aria-expanded="false"
-        >
-          Filters <span class="mobile-filters-arrow">⌄</span>
-        </button>
-    
-    
-        <div
-          class="mobile-supervision-filter-list"
-          hidden
-        >
-    
-          <div class="mobile-supervision-filter">
-    
-            <button
-              type="button"
-              class="mobile-supervision-filter-link"
-              data-mobile-filter-toggle="year"
-              aria-expanded="false"
-            >
-              Years <span class="filter-chevron">⌄</span>
-            </button>
-    
-            <div
-              class="mobile-supervision-filter-options"
-              data-mobile-filter-options="year"
-              hidden
-            >
-              <button type="button" data-mobile-year="all">
-                All years
-              </button>
-            </div>
-    
-          </div>
-    
-    
-          <div class="mobile-supervision-filter">
-    
-            <button
-              type="button"
-              class="mobile-supervision-filter-link"
-              data-mobile-filter-toggle="sort"
-              aria-expanded="false"
-            >
-              Sort <span class="filter-chevron">⌄</span>
-            </button>
-    
-            <div
-              class="mobile-supervision-filter-options"
-              data-mobile-filter-options="sort"
-              hidden
-            >
-              <button type="button" data-mobile-sort="newest">
-                Newest first
-              </button>
-    
-              <button type="button" data-mobile-sort="oldest">
-                Oldest first
-              </button>
-            </div>
-    
-          </div>
-    
-    
-          <div class="mobile-supervision-filter">
-    
-            <button
-              type="button"
-              class="mobile-supervision-filter-link"
-              data-mobile-filter-toggle="topic"
-              aria-expanded="false"
-            >
-              Topics <span class="filter-chevron">⌄</span>
-            </button>
-    
-            <div
-              class="mobile-supervision-filter-options"
-              data-mobile-filter-options="topic"
-              hidden
-            >
-              <input
-                type="search"
-                class="supervision-topic-search"
-                placeholder="Search topics..."
-                aria-label="Search supervision topics"
+      
+      
+            <div class="supervision-filter">
+      
+              <a href="#"
+                 class="supervision-filter-link"
+                 data-filter-toggle="sort">
+                Newest first <span class="filter-chevron">⌄</span>
+              </a>
+      
+              <div
+                class="supervision-filter-options"
+                data-filter-options="sort"
+                hidden
               >
+                <a href="#" data-sort="newest">Newest first</a>
+                <a href="#" data-sort="oldest">Oldest first</a>
+              </div>
+      
             </div>
-    
+      
+      
+            <div class="supervision-filter">
+      
+              <a href="#"
+                 class="supervision-filter-link"
+                 data-filter-toggle="topic">
+                Search topics <span class="filter-chevron">⌄</span>
+              </a>
+      
+              <div
+                class="supervision-filter-options"
+                data-filter-options="topic"
+                hidden
+              >
+                <input
+                  type="search"
+                  class="supervision-topic-search"
+                  placeholder="Search topics..."
+                  aria-label="Search supervision topics"
+                >
+              </div>
+      
+            </div>
+      
           </div>
-    
+      
         </div>
-    
+      
+      
+        <!-- MOBILE FILTERS -->
+      
+        <div class="mobile-supervision-filters">
+      
+          <a
+            href="#"
+            class="mobile-filters-toggle"
+            data-mobile-filters-toggle
+          >
+            Filters <span class="mobile-filters-arrow">⌄</span>
+          </a>
+      
+      
+          <div
+            class="mobile-supervision-filter-list"
+            data-mobile-filter-list
+            hidden
+          >
+      
+            <div class="mobile-supervision-filter">
+      
+              <a
+                href="#"
+                class="mobile-supervision-filter-link"
+                data-mobile-filter-toggle="year"
+              >
+                Years <span class="filter-chevron">⌄</span>
+              </a>
+      
+              <div
+                class="mobile-supervision-filter-options"
+                data-mobile-filter-options="year"
+                hidden
+              >
+                <a href="#" data-mobile-year="all">All years</a>
+      
+                <div class="mobile-supervision-year-options">
+                  <!-- Years will be inserted by JavaScript -->
+                </div>
+              </div>
+      
+            </div>
+      
+      
+            <div class="mobile-supervision-filter">
+      
+              <a
+                href="#"
+                class="mobile-supervision-filter-link"
+                data-mobile-filter-toggle="sort"
+              >
+                Sort <span class="filter-chevron">⌄</span>
+              </a>
+      
+              <div
+                class="mobile-supervision-filter-options"
+                data-mobile-filter-options="sort"
+                hidden
+              >
+                <a href="#" data-mobile-sort="newest">
+                  Newest first
+                </a>
+      
+                <a href="#" data-mobile-sort="oldest">
+                  Oldest first
+                </a>
+              </div>
+      
+            </div>
+      
+      
+            <div class="mobile-supervision-filter">
+      
+              <a
+                href="#"
+                class="mobile-supervision-filter-link"
+                data-mobile-filter-toggle="topic"
+              >
+                Topics <span class="filter-chevron">⌄</span>
+              </a>
+      
+              <div
+                class="mobile-supervision-filter-options"
+                data-mobile-filter-options="topic"
+                hidden
+              >
+                <input
+                  type="search"
+                  class="supervision-topic-search"
+                  placeholder="Search topics..."
+                  aria-label="Search supervision topics"
+                >
+              </div>
+      
+            </div>
+      
+          </div>
+      
+        </div>
+      
       </div>
-    
-    </div>
 
     <div class="supervision-list">
 
