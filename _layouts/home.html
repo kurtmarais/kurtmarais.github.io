@@ -31,26 +31,35 @@ layout: default
 
   <div class="media-carousel">
 
+    {% if site.data.media %}
+<section class="media-strip mb-5">
+
+  <div class="media-strip-header">
+    <h3>In the Media</h3>
+  </div>
+
+  <div class="media-carousel">
+
     {% for item in site.data.media %}
-      <article class="media-item">
+      <article class="media-item{% if forloop.first %} active{% endif %}">
 
         <a href="{{ item.url }}"
            class="media-thumbnail"
            target="_blank"
            rel="noopener noreferrer"
            aria-label="{{ item.title }}">
-        
+
           <img
             src="{{ item.image | relative_url }}"
             alt="{{ item.title }}"
           >
-        
+
           {% if item.type == "video" %}
             <span class="media-play-icon">
               <i class="fas fa-play"></i>
             </span>
           {% endif %}
-        
+
         </a>
 
         <div class="media-content">
@@ -67,11 +76,13 @@ layout: default
              class="media-link"
              target="_blank"
              rel="noopener noreferrer">
+
             {% if item.type == "video" %}
               Watch video →
             {% else %}
               Read article →
             {% endif %}
+
           </a>
 
         </div>
@@ -80,6 +91,30 @@ layout: default
     {% endfor %}
 
   </div>
+
+  {% if site.data.media.size > 1 %}
+    <div class="media-carousel-controls">
+
+      <button type="button"
+              class="media-carousel-prev"
+              aria-label="Previous media item">
+        <i class="fas fa-arrow-left"></i>
+      </button>
+
+      <span class="media-carousel-position">
+        <span class="media-current">1</span>
+        /
+        <span class="media-total">{{ site.data.media.size }}</span>
+      </span>
+
+      <button type="button"
+              class="media-carousel-next"
+              aria-label="Next media item">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+
+    </div>
+  {% endif %}
 
 </section>
 {% endif %}
