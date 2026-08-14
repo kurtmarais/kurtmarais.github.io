@@ -34,18 +34,24 @@ layout: default
     {% for item in site.data.media %}
       <article class="media-item">
 
-        <div class="media-thumbnail">
+        <a href="{{ item.url }}"
+           class="media-thumbnail"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="{{ item.title }}">
+        
           <img
             src="{{ item.image | relative_url }}"
             alt="{{ item.title }}"
           >
-
+        
           {% if item.type == "video" %}
             <span class="media-play-icon">
               <i class="fas fa-play"></i>
             </span>
           {% endif %}
-        </div>
+        
+        </a>
 
         <div class="media-content">
 
