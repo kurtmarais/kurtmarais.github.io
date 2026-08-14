@@ -440,19 +440,24 @@ h4 {
   transform: translateX(16px);
 }
 
-/* SUPERVISION TITLE AND FILTERS */
+/* SUPERVISION TITLE ROW */
 
 .supervision-title-row {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
 }
 
+.supervision-title-row h3 {
+  margin-top: 0;
+}
+
 .supervision-filters {
   display: flex;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 1.5rem;
+  padding-top: 0.45rem;
 }
 
 
