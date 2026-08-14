@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   let currentIndex = 0;
+  let autoPlayTimer;
 
   function showItem(index) {
 
@@ -30,30 +31,52 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
+  function nextItem() {
+
+    currentIndex++;
+
+    if (currentIndex >= items.length) {
+      currentIndex = 0;
+    }
+
+    showItem(currentIndex);
+  }
+
+  function previousItem() {
+
+    currentIndex--;
+
+    if (currentIndex < 0) {
+      currentIndex = items.length - 1;
+    }
+
+    showItem(currentIndex);
+  }
+
+  function resetAutoPlay() {
+
+    clearInterval(autoPlayTimer);
+
+    autoPlayTimer = setInterval(function () {
+      nextItem();
+    }, 15000);
+  }
+
   if (nextButton) {
     nextButton.addEventListener("click", function () {
-
-      currentIndex++;
-
-      if (currentIndex >= items.length) {
-        currentIndex = 0;
-      }
-
-      showItem(currentIndex);
+      nextItem();
+      resetAutoPlay();
     });
   }
 
   if (previousButton) {
     previousButton.addEventListener("click", function () {
-
-      currentIndex--;
-
-      if (currentIndex < 0) {
-        currentIndex = items.length - 1;
-      }
-
-      showItem(currentIndex);
+      previousItem();
+      resetAutoPlay();
     });
   }
+
+  showItem(currentIndex);
+  resetAutoPlay();
 
 });
