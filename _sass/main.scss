@@ -451,6 +451,7 @@ h4 {
   border-bottom: 1px solid #dee2e6; // match Bootstrap's .border-bottom used on every other page.title header
   box-sizing: border-box;
   padding-bottom: 1rem; // matches pb-3
+  // no margin-bottom here — the parent ".row.g-5.mb-5" wrapper already contributes 3rem below this block
 }
 
 .supervision-title-row h3 {
@@ -465,6 +466,208 @@ h4 {
   gap: 1.5rem;
   padding: 0;
   line-height: 1.25; // was inheriting body's line-height: 1.65, which made this box taller than the title and dragged both down
+}
+
+/* SUPERVISION FILTERS — TOGGLE (MOBILE) */
+
+.supervision-filters-wrapper {
+  display: flex;
+  align-items: baseline;
+}
+
+.supervision-filters-toggle {
+  display: none; // shown only under the mobile breakpoint below
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #69706b;
+  cursor: pointer;
+}
+
+.supervision-filters-toggle:hover {
+  color: $bodyColor;
+}
+
+.supervision-filters-toggle .fa-chevron-down {
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+
+.supervision-filters-toggle[aria-expanded="true"] .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+/* SUPERVISION FILTERS — INDIVIDUAL CONTROLS */
+
+.supervision-filter-control {
+  position: relative;
+}
+
+.supervision-filter-mobile-label {
+  display: none; // shown only under the mobile breakpoint below
+}
+
+.supervision-filter-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #69706b;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.supervision-filter-toggle:hover {
+  color: $bodyColor;
+}
+
+.supervision-filter-toggle .fa-chevron-down {
+  font-size: 0.7em;
+  transition: transform 0.15s ease;
+}
+
+.supervision-filter-toggle[aria-expanded="true"] .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.supervision-filter-dropdown {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 20;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0;
+}
+
+.supervision-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  text-align: left;
+  background: none;
+  border: none;
+  color: $bodyColor;
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.supervision-filter-option:hover {
+  background: #f7f6f1;
+}
+
+.supervision-filter-search-input {
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #dee2e6;
+  border-radius: 0.25rem;
+  min-width: 160px;
+}
+
+/* SUPERVISION — EMPTY STATE */
+
+.supervision-empty-state {
+  color: #69706b;
+  font-style: italic;
+  padding: 1rem 0;
+}
+
+/* SUPERVISION FILTERS — MOBILE BREAKPOINT */
+
+@media (max-width: 767.98px) {
+  .supervision-filters-toggle {
+    display: flex;
+  }
+
+  .supervision-filters {
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    width: 100%;
+    position: absolute;
+    top: calc(100% + 0.75rem);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    z-index: 15;
+  }
+
+  .supervision-filters-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .supervision-filters.is-open {
+    display: flex;
+  }
+
+  .supervision-filter-control {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .supervision-filter-mobile-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #69706b;
+    flex-shrink: 0;
+  }
+
+  .supervision-filter-toggle {
+    flex: 1;
+    justify-content: space-between;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 0.4rem 0.6rem;
+  }
+
+  .supervision-filter-dropdown {
+    position: static;
+    box-shadow: none;
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .supervision-filter-search {
+    flex-wrap: wrap;
+  }
+
+  .supervision-filter-search-input {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 
@@ -597,6 +800,47 @@ body.dark-mode .supervision-abstract summary {
 }
 
 body.dark-mode .supervision-abstract p {
+  color: #aeb3ae;
+}
+
+/* SUPERVISION FILTERS */
+
+body.dark-mode .supervision-filters-toggle,
+body.dark-mode .supervision-filter-toggle,
+body.dark-mode .supervision-filter-mobile-label {
+  color: #aeb3ae;
+}
+
+body.dark-mode .supervision-filters-toggle:hover,
+body.dark-mode .supervision-filter-toggle:hover {
+  color: #e8e9e5;
+}
+
+body.dark-mode .supervision-filter-dropdown,
+body.dark-mode .supervision-filters {
+  background: #2b2f2b;
+  border-color: #444943;
+}
+
+body.dark-mode .supervision-filter-option {
+  color: #e8e9e5;
+}
+
+body.dark-mode .supervision-filter-option:hover {
+  background: #363b36;
+}
+
+body.dark-mode .supervision-filter-search-input {
+  background: #2b2f2b;
+  border-color: #444943;
+  color: #e8e9e5;
+}
+
+body.dark-mode .supervision-filter-toggle {
+  border-color: #444943;
+}
+
+body.dark-mode .supervision-empty-state {
   color: #aeb3ae;
 }
 
