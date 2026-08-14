@@ -6,12 +6,13 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  const track = carousel.querySelector(".media-carousel-track");
   const items = carousel.querySelectorAll(".media-item");
   const previousButton = document.querySelector(".media-carousel-prev");
   const nextButton = document.querySelector(".media-carousel-next");
   const currentDisplay = document.querySelector(".media-current");
 
-  if (items.length <= 1) {
+  if (!track || items.length <= 1) {
     return;
   }
 
@@ -20,14 +21,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function showItem(index) {
 
-    items.forEach(function (item) {
-      item.classList.remove("active");
-    });
+    currentIndex = index;
 
-    items[index].classList.add("active");
+    track.style.transform =
+      "translateX(-" + (currentIndex * 100) + "%)";
 
     if (currentDisplay) {
-      currentDisplay.textContent = index + 1;
+      currentDisplay.textContent = currentIndex + 1;
     }
   }
 
