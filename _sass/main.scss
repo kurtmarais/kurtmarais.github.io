@@ -204,9 +204,13 @@ h4 {
 }
 
 .media-item {
-  display: flex;
+  display: none;
   align-items: stretch;
   width: 100%;
+}
+
+.media-item.active {
+  display: flex;
 }
 
 .media-thumbnail {
@@ -265,6 +269,33 @@ h4 {
 .media-link:hover {
   color: $bodyColor;
   text-decoration: underline;
+}
+
+.media-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.media-carousel-controls button {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #69706b;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.media-carousel-controls button:hover {
+  color: $linkColor;
+}
+
+.media-carousel-position {
+  color: #69706b;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
 }
 
 /* VIDEO PLAY ICON */
@@ -512,6 +543,18 @@ body.dark-mode .media-link {
 
 body.dark-mode .media-link:hover {
   color: #ffffff;
+}
+
+body.dark-mode .media-carousel-controls button {
+  color: #aeb3ae;
+}
+
+body.dark-mode .media-carousel-controls button:hover {
+  color: #9ab8aa;
+}
+
+body.dark-mode .media-carousel-position {
+  color: #aeb3ae;
 }
 
 /* SUPERVISION ABSTRACTS */
