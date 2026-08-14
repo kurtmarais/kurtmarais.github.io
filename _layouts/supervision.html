@@ -11,7 +11,13 @@ layout: default
 
     <div class="supervision-list">
 
-      {% for student in site.data.supervision %}
+  <div class="supervision-section-heading supervision-current-heading">
+    <h3 class="fw-bold border-bottom pb-3 mb-4">Current supervision</h3>
+  </div>
+
+  <div class="supervision-current-list">
+    {% for student in site.data.supervision %}
+      {% if student.status == "current" %}
         <article
           class="supervision-entry"
           data-status="{{ student.status }}"
@@ -22,39 +28,75 @@ layout: default
 
           <div class="supervision-student">
             <strong>{{ student.name }}</strong>
-            <span> · {{ student.programme }} · {{ student.start_year }}{% if student.end_year and student.end_year != student.start_year %}–{{ student.end_year }}{% endif %}</span>
+            <span> · {{ student.programme }} · {{ student.start_year }}{% if student.end_year == blank %}–{% elsif student.end_year != student.start_year %}–{{ student.end_year }}{% endif %}</span>
           </div>
 
           <div class="supervision-title">
-            {% if student.status == "current" %}
-              Working title: <em>{{ student.title }}</em>
-            {% else %}
-              Project title: <em>{{ student.title }}</em>
-            {% endif %}
+            Working title: <em>{{ student.title }}</em>
           </div>
 
-          <br>
-          
           {% if student.abstract %}
             <details class="supervision-abstract">
               <summary>Abstract</summary>
               <p>{{ student.abstract }}</p>
-               <br><br>
             </details>
           {% endif %}
 
-      
           <div class="supervision-keywords" hidden>
             {% for keyword in student.keywords %}
               {{ keyword | downcase }}{% unless forloop.last %}, {% endunless %}
             {% endfor %}
-             <br><br>
           </div>
 
         </article>
-      {% endfor %}
+      {% endif %}
+    {% endfor %}
+  </div>
 
-    </div>
+
+  <div class="supervision-section-heading supervision-completed-heading">
+    <h3 class="fw-bold border-bottom pb-3 mb-4">Completed supervision</h3>
+  </div>
+
+  <div class="supervision-completed-list">
+    {% for student in site.data.supervision %}
+      {% if student.status == "completed" %}
+        <article
+          class="supervision-entry"
+          data-status="{{ student.status }}"
+          data-year="{{ student.start_year }}"
+          data-degree-sort="{{ student.degree_sort }}"
+          data-surname="{{ student.surname | downcase }}"
+        >
+
+          <div class="supervision-student">
+            <strong>{{ student.name }}</strong>
+            <span> · {{ student.programme }} · {{ student.start_year }}{% if student.end_year == blank %}–{% elsif student.end_year != student.start_year %}–{{ student.end_year }}{% endif %}</span>
+          </div>
+
+          <div class="supervision-title">
+            Project title: <em>{{ student.title }}</em>
+          </div>
+
+          {% if student.abstract %}
+            <details class="supervision-abstract">
+              <summary>Abstract</summary>
+              <p>{{ student.abstract }}</p>
+            </details>
+          {% endif %}
+
+          <div class="supervision-keywords" hidden>
+            {% for keyword in student.keywords %}
+              {{ keyword | downcase }}{% unless forloop.last %}, {% endunless %}
+            {% endfor %}
+          </div>
+
+        </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+</div>
 
     <section class="prospective-supervision mt-5">
       <h3 class="fw-bold border-bottom pb-3 mb-4">Prospective students</h3>
