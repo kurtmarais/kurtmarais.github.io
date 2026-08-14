@@ -11,24 +11,52 @@ layout: default
         {{ page.title }}
       </h3>
 
-      <div class="supervision-filters">
+      <div class="supervision-filters-wrapper">
 
-      <a href="#" class="supervision-filter-link">
-        ALL YEARS
-        <i class="fas fa-chevron-down" aria-hidden="true"></i>
-      </a>
+        <button type="button" class="supervision-filters-toggle" aria-expanded="false" aria-controls="supervision-filters-panel">
+          <span>Filters</span>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
 
-      <a href="#" class="supervision-filter-link">
-        NEWEST FIRST
-        <i class="fas fa-chevron-down" aria-hidden="true"></i>
-      </a>
+        <div class="supervision-filters" id="supervision-filters-panel">
 
-      <a href="#" class="supervision-filter-link">
-        SEARCH TOPICS
-        <i class="fas fa-chevron-down" aria-hidden="true"></i>
-      </a>
+          <div class="supervision-filter-control" data-filter="years">
+            <span class="supervision-filter-mobile-label">Years</span>
+            <button type="button" class="supervision-filter-toggle" aria-expanded="false">
+              <span class="supervision-filter-value">All years</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="supervision-filter-dropdown" hidden>
+              {% assign supervision_years = site.data.supervision | map: "start_year" | uniq | sort | reverse %}
+              {% for year in supervision_years %}
+                <label class="supervision-filter-option">
+                  <input type="checkbox" value="{{ year }}">
+                  {{ year }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
 
-    </div>
+          <div class="supervision-filter-control" data-filter="sort">
+            <span class="supervision-filter-mobile-label">Sort</span>
+            <button type="button" class="supervision-filter-toggle" aria-expanded="false">
+              <span class="supervision-filter-value">Newest first</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="supervision-filter-dropdown" hidden>
+              <button type="button" class="supervision-filter-option" data-value="newest">Newest first</button>
+              <button type="button" class="supervision-filter-option" data-value="oldest">Oldest first</button>
+            </div>
+          </div>
+
+          <div class="supervision-filter-control supervision-filter-search" data-filter="topics">
+            <span class="supervision-filter-mobile-label">Topics</span>
+            <input type="search" class="supervision-filter-search-input" placeholder="Search topics...">
+          </div>
+
+        </div>
+
+      </div>
 
   </div>
 
@@ -134,6 +162,8 @@ layout: default
     {% endfor %}
   </div>
 
+  <p class="supervision-empty-state" hidden>No supervision entries match your filters.</p>
+
 </div>
 
     <section class="prospective-supervision mt-5">
@@ -150,3 +180,5 @@ layout: default
 
   </div>
 </div>
+
+<script src="{{ '/assets/js/supervision-filters.js' | relative_url }}"></script>
