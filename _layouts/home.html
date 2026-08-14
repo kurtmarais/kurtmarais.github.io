@@ -21,3 +21,59 @@ layout: default
 </div>
 
 {% include publications.html %}
+
+{% if site.data.media %}
+<section class="media-strip mb-5">
+
+  <div class="media-strip-header">
+    <h3>In the Media</h3>
+  </div>
+
+  <div class="media-carousel">
+
+    {% for item in site.data.media %}
+      <article class="media-item">
+
+        <div class="media-thumbnail">
+          <img
+            src="{{ item.image | relative_url }}"
+            alt="{{ item.title }}"
+          >
+
+          {% if item.type == "video" %}
+            <span class="media-play-icon">
+              <i class="fas fa-play"></i>
+            </span>
+          {% endif %}
+        </div>
+
+        <div class="media-content">
+
+          <div class="media-meta">
+            {{ item.publication }} · {{ item.date }}
+          </div>
+
+          <h4>{{ item.title }}</h4>
+
+          <p>{{ item.description }}</p>
+
+          <a href="{{ item.url }}"
+             class="media-link"
+             target="_blank"
+             rel="noopener noreferrer">
+            {% if item.type == "video" %}
+              Watch video →
+            {% else %}
+              Read article →
+            {% endif %}
+          </a>
+
+        </div>
+
+      </article>
+    {% endfor %}
+
+  </div>
+
+</section>
+{% endif %}
