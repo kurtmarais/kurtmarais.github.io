@@ -446,7 +446,7 @@ h4 {
   display: flex;
   width: 100%;
   min-width: 100%;
-  align-items: flex-end;
+  align-items: baseline; // align text baselines, not box edges — immune to the filters' box being a different height than the title
   justify-content: space-between;
   border-bottom: 1px solid #dee2e6; // match Bootstrap's .border-bottom used on every other page.title header
   box-sizing: border-box;
@@ -457,14 +457,15 @@ h4 {
 .supervision-title-row h3 {
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1.2;
+  line-height: 1.25; // matches the site-wide h3 rule — no longer overridden to 1.2
 }
 
 .supervision-filters {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 1.5rem;
   padding: 0;
+  line-height: 1.25; // was inheriting body's line-height: 1.65, which made this box taller than the title and dragged both down
 }
 
 
