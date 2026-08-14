@@ -581,10 +581,18 @@ h4 {
 .supervision-filter-search-input {
   font-family: inherit;
   font-size: 0.85rem;
-  padding: 0.3rem 0.6rem;
-  border: 1px solid #dee2e6;
-  border-radius: 0.25rem;
+  line-height: 1.25; // match the shared control line-height so this doesn't grow the row taller than the title
+  padding: 0; // no padding at desktop scope — kept for mobile only, where it needs to be tappable
+  border: none;
+  border-bottom: 1px solid transparent; // affordance without adding to box height beyond a hairline
+  background: transparent;
   min-width: 160px;
+}
+
+.supervision-filter-search-input:focus,
+.supervision-filter-search-input:hover {
+  border-bottom-color: #dee2e6;
+  outline: none;
 }
 
 /* SUPERVISION — EMPTY STATE */
@@ -667,6 +675,10 @@ h4 {
   .supervision-filter-search-input {
     flex: 1;
     min-width: 0;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    background: #fff;
   }
 }
 
@@ -831,9 +843,12 @@ body.dark-mode .supervision-filter-option:hover {
 }
 
 body.dark-mode .supervision-filter-search-input {
-  background: #2b2f2b;
-  border-color: #444943;
   color: #e8e9e5;
+}
+
+body.dark-mode .supervision-filter-search-input:focus,
+body.dark-mode .supervision-filter-search-input:hover {
+  border-bottom-color: #444943;
 }
 
 body.dark-mode .supervision-filter-toggle {
@@ -956,6 +971,11 @@ body.dark-mode .back-to-top:hover {
 
   body.dark-mode .mobile-menu-toggle span {
     background: #f7f6f1;
+  }
+
+  body.dark-mode .supervision-filter-search-input {
+    background: #2b2f2b;
+    border-color: #444943;
   }
 
   .mobile-menu-toggle[aria-expanded="true"] span:nth-child(1) {
