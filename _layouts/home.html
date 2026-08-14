@@ -31,15 +31,6 @@ layout: default
 
   <div class="media-carousel">
 
-    {% if site.data.media %}
-<section class="media-strip mb-5">
-
-  <div class="media-strip-header">
-    <h3>In the Media</h3>
-  </div>
-
-  <div class="media-carousel">
-
     {% for item in site.data.media %}
       <article class="media-item{% if forloop.first %} active{% endif %}">
 
