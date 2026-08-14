@@ -7,87 +7,292 @@ layout: default
 
     <div class="supervision-header">
 
-  <div class="supervision-title-row">
-
-    <h3 class="fw-bold border-bottom pb-3 mb-5">
-      {{ page.title }}
-    </h3>
-
-    <div class="supervision-filters desktop-supervision-filters">
-
-      <select id="supervision-year-filter" aria-label="Filter by year">
-        <option value="all">All years</option>
-      </select>
-
-      <select id="supervision-sort" aria-label="Sort by year">
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-      </select>
-
-      <input
-        type="search"
-        id="supervision-topic-search"
-        placeholder="Search topics..."
-        aria-label="Search supervision topics"
-      >
-
+      <!-- DESKTOP FILTERS -->
+    
+      <div class="supervision-title-row">
+    
+        <h3 class="fw-bold border-bottom pb-3 mb-5">
+          {{ page.title }}
+        </h3>
+    
+        <nav
+          class="supervision-filters desktop-supervision-filters"
+          aria-label="Supervision filters"
+        >
+    
+          <!-- YEARS -->
+    
+          <div class="supervision-filter">
+    
+            <button
+              type="button"
+              class="supervision-filter-link"
+              data-filter="year"
+              aria-expanded="false"
+              aria-controls="supervision-year-panel"
+            >
+              All years
+              <span class="filter-chevron">⌄</span>
+            </button>
+    
+            <div
+              id="supervision-year-panel"
+              class="supervision-filter-panel"
+              data-panel="year"
+              hidden
+            >
+    
+              <button
+                type="button"
+                class="supervision-option selected"
+                data-year="all"
+              >
+                All years
+              </button>
+    
+              <div class="supervision-year-options">
+                <!-- Available years will be inserted here by JavaScript -->
+              </div>
+    
+            </div>
+    
+          </div>
+    
+    
+          <!-- SORT -->
+    
+          <div class="supervision-filter">
+    
+            <button
+              type="button"
+              class="supervision-filter-link"
+              data-filter="sort"
+              aria-expanded="false"
+              aria-controls="supervision-sort-panel"
+            >
+              Newest first
+              <span class="filter-chevron">⌄</span>
+            </button>
+    
+            <div
+              id="supervision-sort-panel"
+              class="supervision-filter-panel"
+              data-panel="sort"
+              hidden
+            >
+    
+              <button
+                type="button"
+                class="supervision-option selected"
+                data-sort="newest"
+              >
+                Newest first
+              </button>
+    
+              <button
+                type="button"
+                class="supervision-option"
+                data-sort="oldest"
+              >
+                Oldest first
+              </button>
+    
+            </div>
+    
+          </div>
+    
+    
+          <!-- TOPICS -->
+    
+          <div class="supervision-filter">
+    
+            <button
+              type="button"
+              class="supervision-filter-link"
+              data-filter="topic"
+              aria-expanded="false"
+              aria-controls="supervision-topic-panel"
+            >
+              Search topics
+              <span class="filter-chevron">⌄</span>
+            </button>
+    
+            <div
+              id="supervision-topic-panel"
+              class="supervision-filter-panel supervision-topic-panel"
+              data-panel="topic"
+              hidden
+            >
+    
+              <input
+                type="search"
+                class="supervision-topic-search"
+                placeholder="Search topics..."
+                aria-label="Search supervision topics"
+              >
+    
+            </div>
+    
+          </div>
+    
+        </nav>
+    
+      </div>
+    
+    
+      <!-- MOBILE FILTERS -->
+    
+      <div class="mobile-supervision-filters">
+    
+        <button
+          type="button"
+          class="mobile-filters-toggle"
+          aria-expanded="false"
+          aria-controls="mobile-supervision-filter-panel"
+        >
+    
+          <span>Filters</span>
+    
+          <span class="mobile-filters-arrow">⌄</span>
+    
+        </button>
+    
+    
+        <div
+          id="mobile-supervision-filter-panel"
+          class="mobile-supervision-filter-panel"
+          hidden
+        >
+    
+          <!-- MOBILE YEARS -->
+    
+          <div class="mobile-supervision-filter">
+    
+            <button
+              type="button"
+              class="mobile-supervision-filter-link"
+              data-mobile-filter="year"
+              aria-expanded="false"
+              aria-controls="mobile-supervision-year-panel"
+            >
+    
+              <span>Years</span>
+    
+              <span class="filter-chevron">⌄</span>
+    
+            </button>
+    
+    
+            <div
+              id="mobile-supervision-year-panel"
+              class="mobile-supervision-filter-panel-inner"
+              hidden
+            >
+    
+              <button
+                type="button"
+                class="supervision-option selected"
+                data-mobile-year="all"
+              >
+                All years
+              </button>
+    
+              <div class="mobile-supervision-year-options">
+                <!-- Available years will be inserted here by JavaScript -->
+              </div>
+    
+            </div>
+    
+          </div>
+    
+    
+          <!-- MOBILE SORT -->
+    
+          <div class="mobile-supervision-filter">
+    
+            <button
+              type="button"
+              class="mobile-supervision-filter-link"
+              data-mobile-filter="sort"
+              aria-expanded="false"
+              aria-controls="mobile-supervision-sort-panel"
+            >
+    
+              <span>Sort</span>
+    
+              <span class="filter-chevron">⌄</span>
+    
+            </button>
+    
+    
+            <div
+              id="mobile-supervision-sort-panel"
+              class="mobile-supervision-filter-panel-inner"
+              hidden
+            >
+    
+              <button
+                type="button"
+                class="supervision-option selected"
+                data-mobile-sort="newest"
+              >
+                Newest first
+              </button>
+    
+              <button
+                type="button"
+                class="supervision-option"
+                data-mobile-sort="oldest"
+              >
+                Oldest first
+              </button>
+    
+            </div>
+    
+          </div>
+    
+    
+          <!-- MOBILE TOPICS -->
+    
+          <div class="mobile-supervision-filter">
+    
+            <button
+              type="button"
+              class="mobile-supervision-filter-link"
+              data-mobile-filter="topic"
+              aria-expanded="false"
+              aria-controls="mobile-supervision-topic-panel"
+            >
+    
+              <span>Topics</span>
+    
+              <span class="filter-chevron">⌄</span>
+    
+            </button>
+    
+    
+            <div
+              id="mobile-supervision-topic-panel"
+              class="mobile-supervision-filter-panel-inner"
+              hidden
+            >
+    
+              <input
+                type="search"
+                class="supervision-topic-search mobile-topic-search"
+                placeholder="Search topics..."
+                aria-label="Search supervision topics"
+              >
+    
+            </div>
+    
+          </div>
+    
+        </div>
+    
+      </div>
+    
     </div>
-
-  </div>
-
-
-  <div class="mobile-supervision-filters">
-
-    <button
-      type="button"
-      class="mobile-filters-toggle"
-      aria-expanded="false"
-      aria-controls="mobile-supervision-filter-panel"
-    >
-      <span>Filters</span>
-      <span class="mobile-filters-arrow">⌄</span>
-    </button>
-
-
-    <div
-      id="mobile-supervision-filter-panel"
-      class="mobile-supervision-filter-panel"
-    >
-
-      <label for="mobile-supervision-year-filter">
-        Years
-      </label>
-
-      <select id="mobile-supervision-year-filter">
-        <option value="all">All years</option>
-      </select>
-
-
-      <label for="mobile-supervision-sort">
-        Sort
-      </label>
-
-      <select id="mobile-supervision-sort">
-        <option value="newest">Newest first</option>
-        <option value="oldest">Oldest first</option>
-      </select>
-
-
-      <label for="mobile-supervision-topic-search">
-        Topics
-      </label>
-
-      <input
-        type="search"
-        id="mobile-supervision-topic-search"
-        placeholder="Search topics..."
-      >
-
-    </div>
-
-  </div>
-
-</div>
 
     <div class="supervision-list">
 
