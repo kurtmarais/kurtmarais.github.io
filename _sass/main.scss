@@ -440,7 +440,20 @@ h4 {
   transform: translateX(16px);
 }
 
+/* SUPERVISION TITLE AND FILTERS */
 
+.supervision-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.supervision-filters {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+}
 
 
 /* DARK MODE */
