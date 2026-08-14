@@ -44,7 +44,7 @@ layout: default
              aria-label="{{ item.title }}">
 
             <img
-              src="{{ item.image | relative_url }}"
+              src="{% if item.image contains '://' %}{{ item.image }}{% else %}{{ item.image | relative_url }}{% endif %}"
               alt="{{ item.title }}"
             >
 
