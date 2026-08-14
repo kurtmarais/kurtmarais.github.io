@@ -1,0 +1,7 @@
+- title: "Test media article"
+  publication: "Example Publication"
+  date: "August 2026"
+  type: "article"
+  image: "/assets/img/media/test.jpg"
+  description: "This is a temporary test entry for the media carousel."
+  url: "#"
