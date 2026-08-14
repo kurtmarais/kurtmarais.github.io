@@ -37,6 +37,23 @@ layout: default
             </div>
           </div>
 
+          <div class="supervision-filter-control" data-filter="degree">
+            <span class="supervision-filter-mobile-label">Degree</span>
+            <button type="button" class="supervision-filter-toggle" aria-expanded="false">
+              <span class="supervision-filter-value">All degrees</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="supervision-filter-dropdown" hidden>
+              {% assign supervision_degrees = site.data.supervision | map: "degree_level" | uniq | sort %}
+              {% for degree in supervision_degrees %}
+                <label class="supervision-filter-option">
+                  <input type="checkbox" value="{{ degree }}">
+                  {{ degree }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
           <div class="supervision-filter-control" data-filter="sort">
             <span class="supervision-filter-mobile-label">Sort</span>
             <button type="button" class="supervision-filter-toggle" aria-expanded="false">
@@ -76,6 +93,7 @@ layout: default
           data-status="{{ student.status }}"
           data-year="{{ student.start_year }}"
           data-degree-sort="{{ student.degree_sort }}"
+          data-degree-level="{{ student.degree_level }}"
           data-surname="{{ student.surname | downcase }}"
         >
 
@@ -126,6 +144,7 @@ layout: default
           data-status="{{ student.status }}"
           data-year="{{ student.start_year }}"
           data-degree-sort="{{ student.degree_sort }}"
+          data-degree-level="{{ student.degree_level }}"
           data-surname="{{ student.surname | downcase }}"
         >
 
