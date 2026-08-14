@@ -12,3 +12,4 @@ exclude:
   - Gemfile.lock
   - academic.gemspec
   - vendor
+show_media: true
