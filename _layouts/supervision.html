@@ -12,7 +12,7 @@ layout: default
     <div class="supervision-list">
 
   <div class="supervision-section-heading supervision-current-heading">
-    <h3 class="fw-bold border-bottom pb-3 mb-4">Current supervision</h3>
+    <h3 class="fw-bold pb-3 mb-4">Current supervision</h3>
   </div>
 
   <div class="supervision-current-list">
@@ -34,18 +34,24 @@ layout: default
           <div class="supervision-title">
             Working title: <em>{{ student.title }}</em>
           </div>
+  
 
           {% if student.abstract %}
             <details class="supervision-abstract">
+              <br>
               <summary>Abstract</summary>
               <p>{{ student.abstract }}</p>
+              <br>
             </details>
           {% endif %}
-
+          
+          <br>
+          
           <div class="supervision-keywords" hidden>
             {% for keyword in student.keywords %}
               {{ keyword | downcase }}{% unless forloop.last %}, {% endunless %}
             {% endfor %}
+            <br>
           </div>
 
         </article>
@@ -55,7 +61,7 @@ layout: default
 
 
   <div class="supervision-section-heading supervision-completed-heading">
-    <h3 class="fw-bold border-bottom pb-3 mb-4">Completed supervision</h3>
+    <h3 class="fw-bold pb-3 mb-4">Completed supervision</h3>
   </div>
 
   <div class="supervision-completed-list">
@@ -80,15 +86,20 @@ layout: default
 
           {% if student.abstract %}
             <details class="supervision-abstract">
+              <br>
               <summary>Abstract</summary>
               <p>{{ student.abstract }}</p>
+              <br>
             </details>
           {% endif %}
 
+          <br>
+          
           <div class="supervision-keywords" hidden>
             {% for keyword in student.keywords %}
               {{ keyword | downcase }}{% unless forloop.last %}, {% endunless %}
             {% endfor %}
+            <br>
           </div>
 
         </article>
