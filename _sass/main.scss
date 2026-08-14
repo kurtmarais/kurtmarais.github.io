@@ -450,11 +450,12 @@ h4 {
   justify-content: space-between;
   border-bottom: 1px solid #d9d9d1;
   box-sizing: border-box;
+  padding-bottom: 1rem;
 }
 
 .supervision-title-row h3 {
   margin: 0 !important;
-  padding-bottom: 1rem !important;
+  padding: 0 !important;
   line-height: 1.2;
 }
 
@@ -462,7 +463,7 @@ h4 {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  padding-bottom: 1rem;
+  padding: 0;
 }
 
 
