@@ -195,12 +195,13 @@
 
     yearGroups.forEach(function (group) {
       var heading = group.querySelector(".engagement-year-heading");
-      var entries = group.querySelectorAll(".engagement-entry");
+      var wraps = group.querySelectorAll(".engagement-entry-wrap");
       var visibleCount = 0;
 
-      entries.forEach(function (entry) {
-        var matches = entryMatches(entry);
-        entry.hidden = !matches;
+      wraps.forEach(function (wrap) {
+        var entry = wrap.querySelector(".engagement-entry");
+        var matches = entry ? entryMatches(entry) : false;
+        wrap.hidden = !matches; // hide the wrapper (article + its trailing <br><br>) together, so no orphaned gaps remain
         if (matches) visibleCount += 1;
       });
 
