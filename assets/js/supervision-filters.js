@@ -259,41 +259,28 @@
     return !!endYearAttr && startYear === endYearAttr; // e.g. BDatSci/BComHons, start == end
   }
 
-  // Newest first: grouped by year (end year if dated, else start year), descending.
-  // Within a year group: dated students (PhD before Masters) -> single-year students ->
-  // ongoing students (Masters before PhD — an ongoing PhD is the least "resolved" entry of the group).
+  // Newest first: ongoing research on top (no end year at all), then everything resolved
+  // (single-year entries, and by extension any completed multi-year entry once those exist).
+  // Within each group: degree level (PhD, Masters, other), then starting year descending
+  // (most recent start first), then surname.
+  // Oldest is the exact reverse of this entire ordering — not a separately-derived structure.
   function compareForYearDegreeFilterNewest(a, b) {
-    var yearA = isOngoing(a)
-      ? parseInt(a.getAttribute("data-start-year"), 10) || 0
-      : effectiveEndYear(a);
-    var yearB = isOngoing(b)
-      ? parseInt(b.getAttribute("data-start-year"), 10) || 0
-      : effectiveEndYear(b);
-    if (yearA !== yearB) {
-      return yearB - yearA;
+    var ongoingA = isOngoing(a) ? 0 : 1;
+    var ongoingB = isOngoing(b) ? 0 : 1;
+    if (ongoingA !== ongoingB) {
+      return ongoingA - ongoingB;
     }
 
-    function tier(entry) {
-      if (isOngoing(entry)) return 2;
-      if (isSingleYear(entry)) return 1;
-      return 0; // dated, multi-year
-    }
-    var tierA = tier(a);
-    var tierB = tier(b);
-    if (tierA !== tierB) {
-      return tierA - tierB;
+    var degreeA = degreeRank(a.getAttribute("data-degree-level"));
+    var degreeB = degreeRank(b.getAttribute("data-degree-level"));
+    if (degreeA !== degreeB) {
+      return degreeA - degreeB;
     }
 
-    if (tierA === 0) {
-      // dated multi-year: PhD before Masters
-      var degreeA = degreeRank(a.getAttribute("data-degree-level"));
-      var degreeB = degreeRank(b.getAttribute("data-degree-level"));
-      if (degreeA !== degreeB) return degreeA - degreeB;
-    } else if (tierA === 2) {
-      // ongoing: Masters before PhD
-      var oDegreeA = degreeRank(a.getAttribute("data-degree-level"));
-      var oDegreeB = degreeRank(b.getAttribute("data-degree-level"));
-      if (oDegreeA !== oDegreeB) return oDegreeB - oDegreeA;
+    var startA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
+    var startB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
+    if (startA !== startB) {
+      return startB - startA; // most recent starting year first
     }
 
     var surnameA = a.getAttribute("data-surname") || "";
@@ -301,44 +288,8 @@
     return surnameA.localeCompare(surnameB);
   }
 
-  // Oldest first: NOT a reversal of Newest — a separate structure.
-  // Ongoing students (no end date) are pulled into one block at the very bottom regardless of year.
-  // Everyone else (single-year + dated) sorts together by start year ascending; same-year ties go
-  // single-year first, then dated (PhD before Masters).
-  // The ongoing block sorts by degree first (PhD before Masters), then start year ascending.
   function compareForYearDegreeFilterOldest(a, b) {
-    var ongoingA = isOngoing(a);
-    var ongoingB = isOngoing(b);
-    if (ongoingA !== ongoingB) {
-      return ongoingA ? 1 : -1; // ongoing sinks to the bottom
-    }
-
-    var startA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
-    var startB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
-
-    if (ongoingA) {
-      // both ongoing: degree first (PhD before Masters), then start year ascending
-      var degreeA = degreeRank(a.getAttribute("data-degree-level"));
-      var degreeB = degreeRank(b.getAttribute("data-degree-level"));
-      if (degreeA !== degreeB) return degreeA - degreeB;
-      if (startA !== startB) return startA - startB;
-    } else {
-      // both resolved (single-year or dated): start year ascending, tie -> single before dated
-      if (startA !== startB) return startA - startB;
-      var singleA = isSingleYear(a);
-      var singleB = isSingleYear(b);
-      if (singleA !== singleB) return singleA ? -1 : 1;
-      if (!singleA) {
-        // both dated multi-year: PhD before Masters
-        var dDegreeA = degreeRank(a.getAttribute("data-degree-level"));
-        var dDegreeB = degreeRank(b.getAttribute("data-degree-level"));
-        if (dDegreeA !== dDegreeB) return dDegreeA - dDegreeB;
-      }
-    }
-
-    var surnameA = a.getAttribute("data-surname") || "";
-    var surnameB = b.getAttribute("data-surname") || "";
-    return surnameA.localeCompare(surnameB);
+    return -compareForYearDegreeFilterNewest(a, b); // exact reverse, per spec
   }
 
   function compareForYearDegreeFilter(a, b) {
