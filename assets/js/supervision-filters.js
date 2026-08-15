@@ -168,7 +168,17 @@
   /* ---------- Filtering ---------- */
 
   function entryMatches(entry) {
-    var yearMatches = state.years.size === 0 || state.years.has(entry.getAttribute("data-year"));
+    var yearMatches = true;
+    if (state.years.size > 0) {
+      var startYear = parseInt(entry.getAttribute("data-start-year"), 10);
+      var endYearAttr = entry.getAttribute("data-end-year");
+      var endYear = endYearAttr ? parseInt(endYearAttr, 10) : new Date().getFullYear(); // ongoing supervision counts through the current year
+      yearMatches = Array.from(state.years).some(function (y) {
+        var yearNum = parseInt(y, 10);
+        return yearNum >= startYear && yearNum <= endYear;
+      });
+    }
+
     var degreeMatches = state.degrees.size === 0 || state.degrees.has(entry.getAttribute("data-degree-level"));
 
     var topicMatches = true;
@@ -235,8 +245,8 @@
     var entries = Array.from(list.querySelectorAll(".supervision-entry"));
 
     entries.sort(function (a, b) {
-      var yearA = parseInt(a.getAttribute("data-year"), 10) || 0;
-      var yearB = parseInt(b.getAttribute("data-year"), 10) || 0;
+      var yearA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
+      var yearB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
       return state.sort === "newest" ? yearB - yearA : yearA - yearB;
     });
 
