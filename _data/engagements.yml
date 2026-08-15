@@ -1,0 +1,158 @@
+- title: "Study explores emotional content and depressive symptoms on social media"
+  type: "media"
+  year: 2026
+  media_format: "article"
+  publication: "Stellenbosch University"
+  date: "11 August 2026"
+  image: "https://files.su.ac.za/public/styles/responsive_3_1_1600w/public/stellenbosch-university/images/2026-08/social-media-2026png.png?itok=J3WQGyBs"
+  description: "Study highlights ‘emotional reinforcement’ – when people amplify each other’s emotions online. Effect stronger among people with depression. Researcher developed reliable depression-specific lexicon."
+  url: "https://www.su.ac.za/en/news/study-explores-emotional-content-and-depressive-symptoms-social-media"
+
+- title: "Mental health as a social system: what online networks can teach us about supporting well-being in education"
+  type: "guest_lecture"
+  year: 2026
+  venue: "Global Service Learning"
+  location: "Stellenbosch, South Africa"
+  keywords:
+    - mental health
+    - learning behaviours
+    - reflection
+    - topic modelling
+
+- title: "How do we share the future? A panel discussion"
+  type: "panel"
+  year: 2025
+  venue: "Toyota Stellenbosch Woordfees Student Discourse"
+  location: "Stellenbosch, South Africa"
+  description: "Exploring how artificial intelligence, automation, and changing labour market trends are reshaping the future world of work."
+
+- title: "An agent-based approach to simulating states of sentiment spread within a depression-centric online social network"
+  type: "conference"
+  year: 2025
+  venue: "Optimization and Decision Sciences Conference"
+  location: "Milan, Italy"
+  keywords:
+    - agent-based simulation
+    - sentiment analysis
+    - social contagion
+    - twitter
+
+- title: "Constructing a polarity lexicon for depression-specific sentiment analysis of social media posts"
+  type: "conference"
+  year: 2025
+  venue: "EURO Working Group on Operational Research Applied to Health Services (ORAHS)"
+  location: "Trondheim, Norway"
+  keywords:
+    - sentiment analysis
+    - lexicon construction
+    - depression
+    - reddit
+
+- title: "An empirical content analysis of posts made to the r/depression subreddit"
+  type: "conference"
+  year: 2024
+  venue: "Fourteenth International Conference on Health, Wellness, and Society"
+  location: "Malmö, Sweden (Online)"
+  keywords:
+    - topic modelling
+    - exploratory data analysis
+    - mental health
+    - depression
+
+- title: "Infodemiology and its potential impact on digital wellness"
+  type: "seminar"
+  year: 2024
+  venue: "South Africa-Japan University Forum"
+  location: "Stellenbosch, South Africa"
+  keywords:
+    - infodemiology
+    - well-being
+    - information
+    - sustainable development goals
+
+- title: "A social network analysis approach to mental health disorders on social media"
+  type: "seminar"
+  year: 2024
+  venue: "Faculty of EMS Research Day"
+  location: "Stellenbosch, South Africa"
+  keywords:
+    - infodemiology
+    - topic modelling
+    - mental health
+    - depression
+    - emotional contagion
+
+- title: "Thinking Beyond the Box"
+  type: "seminar"
+  year: 2024
+  venue: "Maties NextGen for new students"
+  location: "Stellenbosch, South Africa"
+  keywords:
+    - innovation
+    - lateral thinking
+    - graduate attributes
+    - brain teasers
+
+- title: "A social network analysis approach to mental health disorders on social media"
+  type: "seminar"
+  year: 2023
+  venue: "Departmental Colloquium Series"
+  location: "University of Bath, United Kingdom"
+  keywords:
+    - infodemiology
+    - topic modelling
+    - mental health
+    - depression
+    - emotional contagion
+
+- title: "Scaffolding computer literacy with SAM Cengage: A reflection"
+  type: "conference"
+  year: 2022
+  venue: "Stellenbosch University Scholarship of Teaching and Learning Conference"
+  location: "Online"
+  keywords:
+    - learning technologies
+    - scaffolding
+    - multimodality
+
+- title: "Towards an infodemiological analysis of social media and mental health"
+  type: "conference"
+  year: 2022
+  venue: "Operations Research Society of South Africa Conference"
+  location: "Cape Town, South Africa"
+  keywords:
+    - infodemiology
+    - mental health
+    - depression
+    - emotional contagion
+
+- title: "Decision theory & decision-making processes"
+  type: "seminar"
+  year: 2021
+  venue: "Maties 101 for new students"
+  location: "Stellenbosch, South Africa"
+  keywords:
+    - decision theory
+    - big data
+    - uncertainty
+
+- title: "Poster: Module interest earns returns"
+  type: "conference"
+  year: 2019
+  venue: "Stellenbosch University Scholarship of Teaching and Learning Conference"
+  location: "Somerset West, South Africa"
+  keywords:
+    - operations research
+    - enrolment
+    - interactive learning technologies
+
+- title: "Measuring efficiency in retail planning"
+  type: "conference"
+  year: 2019
+  venue: "Operations Research Society of South Africa Conference"
+  location: "Cape Town, South Africa"
+  keywords:
+    - data envelopment analysis
+    - efficiency
+    - retail optimisation
+    - sales
