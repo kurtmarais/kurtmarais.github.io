@@ -10,19 +10,16 @@
   var completedList = document.querySelector(".supervision-completed-list");
   var currentHeading = document.querySelector(".supervision-current-heading");
   var completedHeading = document.querySelector(".supervision-completed-heading");
+  var sectionSpacer = document.querySelector(".supervision-section-spacer");
   var emptyState = document.querySelector(".empty-state");
   var topicsInput = document.querySelector('.filter-search-input');
 
   var state = {
     years: new Set(),      // empty set = "all years"
     degrees: new Set(),    // empty set = "all degrees"
-    sort: "newest",        // "newest" | "oldest"
+    sort: "newest",        // "newest" | "oldest" | "az" | "za"
     topics: ""              // lowercase search string
   };
-
-  function hasActiveFilters() {
-    return state.years.size > 0 || state.degrees.size > 0 || state.topics.length > 0;
-  }
 
   /* ---------- Mobile "Filters" panel toggle ---------- */
 
@@ -94,7 +91,7 @@
           state.years.delete(checkbox.value);
         }
         updateYearsLabel();
-        applyFilters();
+        refresh();
       });
     });
 
@@ -124,7 +121,7 @@
           state.degrees.delete(checkbox.value);
         }
         updateDegreeLabel();
-        applyFilters();
+        refresh();
       });
     });
 
@@ -151,7 +148,7 @@
         sortValueLabel.textContent = option.textContent;
         sortDropdown.setAttribute("hidden", "");
         sortControl.querySelector(".filter-toggle").setAttribute("aria-expanded", "false");
-        applySort();
+        refresh();
       });
     });
   }
@@ -161,7 +158,7 @@
   if (topicsInput) {
     topicsInput.addEventListener("input", function () {
       state.topics = topicsInput.value.trim().toLowerCase();
-      applyFilters();
+      refresh();
     });
   }
 
@@ -201,47 +198,9 @@
     return yearMatches && degreeMatches && topicMatches;
   }
 
-  function applyFilters() {
-    var filtersActive = hasActiveFilters();
-    applyToList(currentList, currentHeading, filtersActive);
-    applyToList(completedList, completedHeading, filtersActive);
-    updateEmptyState();
-  }
+  /* ---------- Refresh: decides grouped-vs-flattened, sort comparator, and visibility ---------- */
 
-  function applyToList(list, heading, filtersActive) {
-    if (!list) return;
-    var entries = list.querySelectorAll(".supervision-entry");
-    var visibleCount = 0;
-
-    entries.forEach(function (entry) {
-      var matches = entryMatches(entry);
-      entry.hidden = !matches;
-      if (matches) visibleCount += 1;
-    });
-
-    // headings disappear as soon as any filter is active, not only once a section is empty
-    if (heading) {
-      heading.hidden = filtersActive || visibleCount === 0;
-    }
-    list.hidden = visibleCount === 0;
-  }
-
-  function updateEmptyState() {
-    if (!emptyState) return;
-    var currentVisible = currentList ? currentList.querySelectorAll(".supervision-entry:not([hidden])").length : 0;
-    var completedVisible = completedList ? completedList.querySelectorAll(".supervision-entry:not([hidden])").length : 0;
-    emptyState.hidden = (currentVisible + completedVisible) > 0;
-  }
-
-  /* ---------- Sorting ---------- */
-
-  function applySort() {
-    sortList(currentList);
-    sortList(completedList);
-  }
-
-  // PhD ranks first, then Masters, then everything else — used to order supervision entries
-  // by degree level before anything else when sorting Newest/Oldest.
+  // PhD ranks first, then Masters, then everything else.
   var DEGREE_RANK = {
     "phd": 1,
     "masters": 2
@@ -252,41 +211,149 @@
     return DEGREE_RANK.hasOwnProperty(key) ? DEGREE_RANK[key] : 3;
   }
 
-  function sortList(list) {
-    if (!list) return;
-    var entries = Array.from(list.querySelectorAll(".supervision-entry"));
+  function effectiveEndYear(entry) {
+    var endYearAttr = entry.getAttribute("data-end-year");
+    return endYearAttr ? parseInt(endYearAttr, 10) : new Date().getFullYear(); // ongoing supervision counts through the current year
+  }
 
-    entries.sort(function (a, b) {
-      // degree level always takes priority — PhD first, then Masters, then everything else
-      var degreeA = degreeRank(a.getAttribute("data-degree-level"));
-      var degreeB = degreeRank(b.getAttribute("data-degree-level"));
-      if (degreeA !== degreeB) {
-        return degreeA - degreeB;
-      }
+  // "Just sorting" — no filters active. Unchanged: degree first, then whichever Sort mode is selected.
+  function compareDefault(a, b) {
+    var degreeA = degreeRank(a.getAttribute("data-degree-level"));
+    var degreeB = degreeRank(b.getAttribute("data-degree-level"));
+    if (degreeA !== degreeB) {
+      return degreeA - degreeB;
+    }
 
-      if (state.sort === "az" || state.sort === "za") {
-        var nameA = (a.getAttribute("data-name") || "").toLowerCase();
-        var nameB = (b.getAttribute("data-name") || "").toLowerCase();
-        var comparison = nameA.localeCompare(nameB);
+    if (state.sort === "az" || state.sort === "za") {
+      var nameA = (a.getAttribute("data-name") || "").toLowerCase();
+      var nameB = (b.getAttribute("data-name") || "").toLowerCase();
+      var comparison = nameA.localeCompare(nameB);
+      return state.sort === "za" ? -comparison : comparison;
+    }
+
+    var yearA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
+    var yearB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
+    if (yearA !== yearB) {
+      return state.sort === "newest" ? yearB - yearA : yearA - yearB;
+    }
+
+    var surnameA = a.getAttribute("data-surname") || "";
+    var surnameB = b.getAttribute("data-surname") || "";
+    return surnameA.localeCompare(surnameB);
+  }
+
+  // Years and/or degree filters active, no search term — degree drops out of the comparator
+  // entirely and the whole list (current + completed merged) sorts true to the chosen Sort mode.
+  function compareForYearDegreeFilter(a, b) {
+    if (state.sort === "az" || state.sort === "za") {
+      var nameA = (a.getAttribute("data-name") || "").toLowerCase();
+      var nameB = (b.getAttribute("data-name") || "").toLowerCase();
+      var comparison = nameA.localeCompare(nameB);
+      if (comparison !== 0) {
         return state.sort === "za" ? -comparison : comparison;
       }
-
-      // newest / oldest — year next, then surname as the final tiebreak
+      // tiebreak: newest to oldest
       var yearA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
       var yearB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
-      if (yearA !== yearB) {
-        return state.sort === "newest" ? yearB - yearA : yearA - yearB;
-      }
+      return yearB - yearA;
+    }
 
-      var surnameA = a.getAttribute("data-surname") || "";
-      var surnameB = b.getAttribute("data-surname") || "";
-      return surnameA.localeCompare(surnameB);
-    });
+    var yearA2 = parseInt(a.getAttribute("data-start-year"), 10) || 0;
+    var yearB2 = parseInt(b.getAttribute("data-start-year"), 10) || 0;
+    if (yearA2 !== yearB2) {
+      return state.sort === "newest" ? yearB2 - yearA2 : yearA2 - yearB2;
+    }
 
+    var surnameA2 = a.getAttribute("data-surname") || "";
+    var surnameB2 = b.getAttribute("data-surname") || "";
+    return surnameA2.localeCompare(surnameB2);
+  }
+
+  // A search term is active — fixed scheme regardless of years/degree filters or the Sort dropdown.
+  function compareForSearch(a, b) {
+    var endA = effectiveEndYear(a);
+    var endB = effectiveEndYear(b);
+    if (endA !== endB) {
+      return endB - endA; // most recently active/current end year first
+    }
+
+    var degreeA = degreeRank(a.getAttribute("data-degree-level"));
+    var degreeB = degreeRank(b.getAttribute("data-degree-level"));
+    if (degreeA !== degreeB) {
+      return degreeA - degreeB;
+    }
+
+    var surnameA = a.getAttribute("data-surname") || "";
+    var surnameB = b.getAttribute("data-surname") || "";
+    return surnameA.localeCompare(surnameB);
+  }
+
+  function sortWithin(list, comparator) {
+    if (!list) return;
+    var entries = Array.from(list.querySelectorAll(".supervision-entry"));
+    entries.sort(comparator);
     entries.forEach(function (entry) {
       list.appendChild(entry);
     });
   }
 
-  applySort(); // apply the default degree/year/surname order on load, rather than raw YAML file order
+  function refresh() {
+    var hasSearch = state.topics.length > 0;
+    var hasYearOrDegree = state.years.size > 0 || state.degrees.size > 0;
+    var isFiltered = hasSearch || hasYearOrDegree;
+
+    var allEntries = Array.from(document.querySelectorAll(".supervision-entry"));
+
+    if (isFiltered) {
+      // merge current + completed into one flat, sorted sequence — the split stops mattering
+      // the moment any filter is active, matching the headings-hide behavior below
+      var comparator = hasSearch ? compareForSearch : compareForYearDegreeFilter;
+      allEntries.sort(comparator);
+      allEntries.forEach(function (entry) {
+        currentList.appendChild(entry); // reuse .supervision-current-list as the single flat container
+      });
+
+      if (currentHeading) currentHeading.hidden = true;
+      if (completedHeading) completedHeading.hidden = true;
+      if (sectionSpacer) sectionSpacer.hidden = true;
+      if (completedList) completedList.hidden = true;
+    } else {
+      // restore the current/completed split, each independently sorted as before
+      allEntries.forEach(function (entry) {
+        var target = entry.getAttribute("data-status") === "completed" ? completedList : currentList;
+        if (target) target.appendChild(entry);
+      });
+      sortWithin(currentList, compareDefault);
+      sortWithin(completedList, compareDefault);
+      if (sectionSpacer) sectionSpacer.hidden = false;
+    }
+
+    // visibility applies uniformly regardless of grouped/flattened state
+    var totalVisible = 0;
+    allEntries.forEach(function (entry) {
+      var matches = entryMatches(entry);
+      entry.hidden = !matches;
+      if (matches) totalVisible += 1;
+    });
+
+    if (isFiltered) {
+      if (currentList) currentList.hidden = totalVisible === 0;
+    } else {
+      updateHeadingVisibility(currentList, currentHeading);
+      updateHeadingVisibility(completedList, completedHeading);
+    }
+
+    if (emptyState) {
+      emptyState.hidden = totalVisible > 0;
+    }
+  }
+
+  function updateHeadingVisibility(list, heading) {
+    if (!list) return;
+    var visibleCount = list.querySelectorAll(".supervision-entry:not([hidden])").length;
+    if (heading) heading.hidden = visibleCount === 0;
+    list.hidden = visibleCount === 0;
+  }
+
+  refresh(); // apply the default degree/year/surname grouping on load, rather than raw YAML file order
 })();
