@@ -414,15 +414,15 @@ h4 {
 }
 
 
-/* SUPERVISION ABSTRACTS */
+/* ABSTRACT DETAILS (shared: supervision, engagements) */
 
-.supervision-abstract {
+.abstract-block {
   margin-top: -1rem !important;
   margin-bottom: 0.5rem !important;
   color: #69706b;
 }
 
-.supervision-abstract summary {
+.abstract-block summary {
   color: $linkColor;
   cursor: pointer;
   font-weight: 600;
@@ -430,11 +430,11 @@ h4 {
   margin: 0 !important;
 }
 
-.supervision-abstract summary:hover {
+.abstract-block summary:hover {
   text-decoration: underline;
 }
 
-.supervision-abstract p {
+.abstract-block p {
   margin-top: 0 !important;
   color: #69706b;
   margin-bottom: 0.5rem;
@@ -912,17 +912,17 @@ body.dark-mode .media-carousel-position {
   color: #aeb3ae;
 }
 
-/* SUPERVISION ABSTRACTS */
+/* ABSTRACT DETAILS (shared: supervision, engagements) */
 
-body.dark-mode .supervision-abstract {
+body.dark-mode .abstract-block {
   color: #aeb3ae;
 }
 
-body.dark-mode .supervision-abstract summary {
+body.dark-mode .abstract-block summary {
   color: #9ab8aa;
 }
 
-body.dark-mode .supervision-abstract p {
+body.dark-mode .abstract-block p {
   color: #aeb3ae;
 }
 
