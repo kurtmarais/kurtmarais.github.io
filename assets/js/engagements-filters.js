@@ -275,6 +275,36 @@
       }
     });
 
+    // restore a deterministic order within each year group, regardless of any A-Z/Z-A sort that
+    // ran previously — sort_date (if the entry has one) respects the newest/oldest direction;
+    // entries without one fall back to their fixed original position in engagements.yml.
+    yearGroups.forEach(function (group) {
+      var groupWraps = Array.from(group.querySelectorAll(".engagement-entry-wrap"));
+
+      groupWraps.sort(function (a, b) {
+        var entryA = a.querySelector(".engagement-entry");
+        var entryB = b.querySelector(".engagement-entry");
+        var dateA = entryA ? entryA.getAttribute("data-sort-date") : "";
+        var dateB = entryB ? entryB.getAttribute("data-sort-date") : "";
+
+        if (dateA && dateB && dateA !== dateB) {
+          return state.sort === "oldest"
+            ? (dateA < dateB ? -1 : 1)
+            : (dateA < dateB ? 1 : -1);
+        }
+        if (dateA && !dateB) return -1; // entries with a precise date sort before undated ones in the same year
+        if (!dateA && dateB) return 1;
+
+        var orderA = entryA ? parseInt(entryA.getAttribute("data-order"), 10) || 0 : 0;
+        var orderB = entryB ? parseInt(entryB.getAttribute("data-order"), 10) || 0 : 0;
+        return orderA - orderB; // fixed at render time — never affected by prior sorting
+      });
+
+      groupWraps.forEach(function (wrap) {
+        group.appendChild(wrap);
+      });
+    });
+
     var groups = Array.from(list.querySelectorAll(".engagement-year-group"));
     groups.sort(function (a, b) {
       var yearA = parseInt(a.getAttribute("data-year"), 10) || 0;

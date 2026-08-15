@@ -254,7 +254,15 @@
 
       var yearA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
       var yearB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
-      return state.sort === "newest" ? yearB - yearA : yearA - yearB;
+      if (yearA !== yearB) {
+        return state.sort === "newest" ? yearB - yearA : yearA - yearB;
+      }
+
+      // same start year — always break ties by surname, regardless of any A-Z/Z-A sort
+      // that ran previously, rather than relying on whatever order was last left behind
+      var surnameA = a.getAttribute("data-surname") || "";
+      var surnameB = b.getAttribute("data-surname") || "";
+      return surnameA.localeCompare(surnameB);
     });
 
     entries.forEach(function (entry) {
