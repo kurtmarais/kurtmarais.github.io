@@ -27,7 +27,18 @@ layout: default
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
             <div class="filter-dropdown" hidden>
-              {% assign supervision_years = site.data.supervision | map: "start_year" | uniq | sort | reverse %}
+              {% assign supervision_year_string = "" %}
+              {% assign current_year = site.time | date: "%Y" %}
+              {% for student in site.data.supervision %}
+                {% assign e_year = student.end_year %}
+                {% if e_year == blank %}
+                  {% assign e_year = current_year %}
+                {% endif %}
+                {% for y in (student.start_year..e_year) %}
+                  {% assign supervision_year_string = supervision_year_string | append: y | append: "," %}
+                {% endfor %}
+              {% endfor %}
+              {% assign supervision_years = supervision_year_string | split: "," | uniq | sort | reverse %}
               {% for year in supervision_years %}
                 <label class="filter-option">
                   <input type="checkbox" value="{{ year }}">
@@ -91,7 +102,8 @@ layout: default
         <article
           class="supervision-entry"
           data-status="{{ student.status }}"
-          data-year="{{ student.start_year }}"
+          data-start-year="{{ student.start_year }}"
+          data-end-year="{{ student.end_year }}"
           data-degree-sort="{{ student.degree_sort }}"
           data-degree-level="{{ student.degree_level }}"
           data-surname="{{ student.surname | downcase }}"
@@ -142,7 +154,8 @@ layout: default
         <article
           class="supervision-entry"
           data-status="{{ student.status }}"
-          data-year="{{ student.start_year }}"
+          data-start-year="{{ student.start_year }}"
+          data-end-year="{{ student.end_year }}"
           data-degree-sort="{{ student.degree_sort }}"
           data-degree-level="{{ student.degree_level }}"
           data-surname="{{ student.surname | downcase }}"
