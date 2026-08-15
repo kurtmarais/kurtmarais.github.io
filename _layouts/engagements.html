@@ -63,8 +63,8 @@ layout: default
             <div class="filter-dropdown" hidden>
               <button type="button" class="filter-option" data-value="newest">Newest first</button>
               <button type="button" class="filter-option" data-value="oldest">Oldest first</button>
-              <button type="button" class="filter-option" data-value="az">A-Z</button>
-              <button type="button" class="filter-option" data-value="za">Z-A</button>
+              <button type="button" class="filter-option" data-value="az">Sort A-Z</button>
+              <button type="button" class="filter-option" data-value="za">Sort Z-A</button>
             </div>
           </div>
 
@@ -84,12 +84,15 @@ layout: default
     <div class="engagements-list">
 
       {% assign grouped_engagements = site.data.engagements | group_by: "year" | sort: "name" | reverse %}
+      {% assign engagement_order = 0 %}
       {% for group in grouped_engagements %}
         <section class="engagement-year-group" data-year="{{ group.name }}">
 
           <h3 class="engagement-year-heading fw-bold pb-3 mb-4">{{ group.name }}</h3>
 
           {% for item in group.items %}
+
+            {% assign engagement_order = engagement_order | plus: 1 %}
 
             <div class="engagement-entry-wrap">
 
@@ -99,6 +102,8 @@ layout: default
                 class="engagement-entry engagement-media-entry"
                 data-year="{{ item.year }}"
                 data-type="{{ item.type }}"
+                data-order="{{ engagement_order }}"
+                data-sort-date="{{ item.sort_date }}"
               >
                 <a
                   href="{{ item.url }}"
@@ -159,6 +164,8 @@ layout: default
                 class="engagement-entry"
                 data-year="{{ item.year }}"
                 data-type="{{ item.type }}"
+                data-order="{{ engagement_order }}"
+                data-sort-date="{{ item.sort_date }}"
               >
                 <strong class="engagement-title">{{ item.title }}</strong><br>
                 <span class="engagement-venue">{{ item.venue }}</span>{% if item.location %} · <span class="engagement-location">{{ item.location }}</span>{% endif %}<br>
