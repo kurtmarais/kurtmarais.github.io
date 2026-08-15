@@ -91,7 +91,7 @@ layout: default
 
             <div class="engagement-entry-wrap">
 
-            {% if item.type == "media" %}
+            {% if item.media_format %}
 
               <article
                 class="engagement-entry engagement-media-entry"
@@ -120,6 +120,9 @@ layout: default
                   <div class="engagement-media-meta">{{ item.publication }} · {{ item.date }}</div>
                   <h4 class="engagement-media-title">{{ item.title }}</h4>
                   <p class="engagement-description">{{ item.description }}</p>
+                  {% if item.keywords %}
+                    <span class="engagement-keywords" hidden>Keywords: {{ item.keywords | join: "; " }}</span>
+                  {% endif %}
                   <a
                     href="{{ item.url }}"
                     class="engagement-media-link"
