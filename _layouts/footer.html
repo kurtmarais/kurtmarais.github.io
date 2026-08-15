@@ -1,9 +1,8 @@
 <footer class="pt-5 mt-5 text-muted border-top">
-  <div class="d-flex flex-column flex-md-row justify-content-between gap-4">
+  <div class="footer-row">
     <div class="footer-brand"><strong>{{ site.title }}</strong><br>{{ site.description }}</div>
 
     <nav class="footer-links" aria-label="Footer navigation">
-      <div class="footer-links-heading">Pages</div>
       <ul class="footer-links-list list-unstyled">
         <li><a class="footer-link{% if page.url == '/' %} is-current{% endif %}" href="{{ '/' | relative_url }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Home</a></li>
         <li><a class="footer-link{% if page.url == '/about/' %} is-current{% endif %}" href="{{ '/about/' | relative_url }}"{% if page.url == '/about/' %} aria-current="page"{% endif %}>About</a></li>
