@@ -4,14 +4,14 @@
   var filtersPanel = document.getElementById("supervision-filters-panel");
   if (!filtersPanel) return; // this script only runs on the supervision page, but guard anyway
 
-  var mobileToggle = document.querySelector(".supervision-filters-toggle");
-  var filterControls = document.querySelectorAll(".supervision-filter-control");
+  var mobileToggle = document.querySelector(".filters-toggle");
+  var filterControls = document.querySelectorAll(".filter-control");
   var currentList = document.querySelector(".supervision-current-list");
   var completedList = document.querySelector(".supervision-completed-list");
   var currentHeading = document.querySelector(".supervision-current-heading");
   var completedHeading = document.querySelector(".supervision-completed-heading");
-  var emptyState = document.querySelector(".supervision-empty-state");
-  var topicsInput = document.querySelector('.supervision-filter-search-input');
+  var emptyState = document.querySelector(".empty-state");
+  var topicsInput = document.querySelector('.filter-search-input');
 
   var state = {
     years: new Set(),      // empty set = "all years"
@@ -36,8 +36,8 @@
   /* ---------- Individual dropdown open/close ---------- */
 
   filterControls.forEach(function (control) {
-    var toggle = control.querySelector(".supervision-filter-toggle");
-    var dropdown = control.querySelector(".supervision-filter-dropdown");
+    var toggle = control.querySelector(".filter-toggle");
+    var dropdown = control.querySelector(".filter-dropdown");
     if (!toggle || !dropdown) return;
 
     toggle.addEventListener("click", function (event) {
@@ -45,12 +45,12 @@
       var willOpen = dropdown.hasAttribute("hidden");
 
       // close any other open dropdown first
-      document.querySelectorAll(".supervision-filter-dropdown").forEach(function (other) {
+      document.querySelectorAll(".filter-dropdown").forEach(function (other) {
         if (other !== dropdown) {
           other.setAttribute("hidden", "");
         }
       });
-      document.querySelectorAll(".supervision-filter-toggle").forEach(function (other) {
+      document.querySelectorAll(".filter-toggle").forEach(function (other) {
         if (other !== toggle) {
           other.setAttribute("aria-expanded", "false");
         }
@@ -71,19 +71,19 @@
     if (filtersPanel.contains(event.target)) return;
     if (mobileToggle && mobileToggle.contains(event.target)) return;
 
-    document.querySelectorAll(".supervision-filter-dropdown").forEach(function (dropdown) {
+    document.querySelectorAll(".filter-dropdown").forEach(function (dropdown) {
       dropdown.setAttribute("hidden", "");
     });
-    document.querySelectorAll(".supervision-filter-toggle").forEach(function (toggle) {
+    document.querySelectorAll(".filter-toggle").forEach(function (toggle) {
       toggle.setAttribute("aria-expanded", "false");
     });
   });
 
   /* ---------- Years: multi-select ---------- */
 
-  var yearsControl = document.querySelector('.supervision-filter-control[data-filter="years"]');
+  var yearsControl = document.querySelector('.filter-control[data-filter="years"]');
   if (yearsControl) {
-    var yearsValueLabel = yearsControl.querySelector(".supervision-filter-value");
+    var yearsValueLabel = yearsControl.querySelector(".filter-value");
     var yearCheckboxes = yearsControl.querySelectorAll('input[type="checkbox"]');
 
     yearCheckboxes.forEach(function (checkbox) {
@@ -111,9 +111,9 @@
 
   /* ---------- Degree level: multi-select ---------- */
 
-  var degreeControl = document.querySelector('.supervision-filter-control[data-filter="degree"]');
+  var degreeControl = document.querySelector('.filter-control[data-filter="degree"]');
   if (degreeControl) {
-    var degreeValueLabel = degreeControl.querySelector(".supervision-filter-value");
+    var degreeValueLabel = degreeControl.querySelector(".filter-value");
     var degreeCheckboxes = degreeControl.querySelectorAll('input[type="checkbox"]');
 
     degreeCheckboxes.forEach(function (checkbox) {
@@ -139,18 +139,18 @@
 
   /* ---------- Sort: single-select ---------- */
 
-  var sortControl = document.querySelector('.supervision-filter-control[data-filter="sort"]');
+  var sortControl = document.querySelector('.filter-control[data-filter="sort"]');
   if (sortControl) {
-    var sortValueLabel = sortControl.querySelector(".supervision-filter-value");
-    var sortOptions = sortControl.querySelectorAll(".supervision-filter-option");
-    var sortDropdown = sortControl.querySelector(".supervision-filter-dropdown");
+    var sortValueLabel = sortControl.querySelector(".filter-value");
+    var sortOptions = sortControl.querySelectorAll(".filter-option");
+    var sortDropdown = sortControl.querySelector(".filter-dropdown");
 
     sortOptions.forEach(function (option) {
       option.addEventListener("click", function () {
         state.sort = option.getAttribute("data-value");
         sortValueLabel.textContent = option.textContent;
         sortDropdown.setAttribute("hidden", "");
-        sortControl.querySelector(".supervision-filter-toggle").setAttribute("aria-expanded", "false");
+        sortControl.querySelector(".filter-toggle").setAttribute("aria-expanded", "false");
         applySort();
       });
     });
