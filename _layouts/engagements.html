@@ -1,0 +1,166 @@
+---
+layout: default
+---
+
+<div class="row g-5 mb-5">
+  <div class="col-md-12">
+
+    <div class="page-title-row">
+
+      <h3 class="fw-bold">
+        {{ page.title }}
+      </h3>
+
+      <div class="filters-wrapper">
+
+        <button type="button" class="filters-toggle" aria-expanded="false" aria-controls="engagements-filters-panel">
+          <span>Filters</span>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
+
+        <div class="filters-panel" id="engagements-filters-panel">
+
+          <div class="filter-control" data-filter="type">
+            <span class="filter-mobile-label">Type</span>
+            <button type="button" class="filter-toggle" aria-expanded="false">
+              <span class="filter-value">All types</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="filter-dropdown" hidden>
+              {% assign engagement_types = site.data.engagements | map: "type" | uniq | sort %}
+              {% for type in engagement_types %}
+                <label class="filter-option">
+                  <input type="checkbox" value="{{ type }}">
+                  {{ type | replace: "_", " " | capitalize }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="filter-control" data-filter="years">
+            <span class="filter-mobile-label">Years</span>
+            <button type="button" class="filter-toggle" aria-expanded="false">
+              <span class="filter-value">All years</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="filter-dropdown" hidden>
+              {% assign engagement_years = site.data.engagements | map: "year" | uniq | sort | reverse %}
+              {% for year in engagement_years %}
+                <label class="filter-option">
+                  <input type="checkbox" value="{{ year }}">
+                  {{ year }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="filter-control" data-filter="sort">
+            <span class="filter-mobile-label">Sort</span>
+            <button type="button" class="filter-toggle" aria-expanded="false">
+              <span class="filter-value">Newest first</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="filter-dropdown" hidden>
+              <button type="button" class="filter-option" data-value="newest">Newest first</button>
+              <button type="button" class="filter-option" data-value="oldest">Oldest first</button>
+            </div>
+          </div>
+
+          <div class="filter-control filter-search" data-filter="topics">
+            <span class="filter-mobile-label">Topics</span>
+            <input type="search" class="filter-search-input" placeholder="Search topics...">
+          </div>
+
+        </div>
+
+      </div>
+
+  </div>
+
+</div>
+
+    <div class="engagements-list">
+
+      {% assign grouped_engagements = site.data.engagements | group_by: "year" | sort: "name" | reverse %}
+      {% for group in grouped_engagements %}
+        <section class="engagement-year-group" data-year="{{ group.name }}">
+
+          <h3 class="engagement-year-heading fw-bold pb-3 mb-4">{{ group.name }}</h3>
+
+          {% for item in group.items %}
+
+            {% if item.type == "media" %}
+
+              <article
+                class="engagement-entry engagement-media-entry"
+                data-year="{{ item.year }}"
+                data-type="{{ item.type }}"
+              >
+                <a
+                  href="{{ item.url }}"
+                  class="engagement-media-thumb"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="{{ item.title }}"
+                >
+                  <img
+                    src="{% if item.image contains '://' %}{{ item.image }}{% else %}{{ item.image | relative_url }}{% endif %}"
+                    alt="{{ item.title }}"
+                  >
+                  {% if item.media_format == "video" %}
+                    <span class="engagement-media-play-icon">
+                      <i class="fas fa-play"></i>
+                    </span>
+                  {% endif %}
+                </a>
+
+                <div class="engagement-media-content">
+                  <div class="engagement-media-meta">{{ item.publication }} · {{ item.date }}</div>
+                  <h4 class="engagement-media-title">{{ item.title }}</h4>
+                  <p class="engagement-description">{{ item.description }}</p>
+                  <a
+                    href="{{ item.url }}"
+                    class="engagement-media-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {% if item.media_format == "video" %}Watch video →{% else %}Read article →{% endif %}
+                  </a>
+                </div>
+              </article>
+
+              <br><br>
+
+            {% else %}
+
+              <article
+                class="engagement-entry"
+                data-year="{{ item.year }}"
+                data-type="{{ item.type }}"
+              >
+                <strong class="engagement-title">{{ item.title }}</strong><br>
+                {{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}<br>
+                {% if item.keywords %}
+                  <span class="engagement-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
+                {% elsif item.description %}
+                  <span class="engagement-description">Description: {{ item.description }}</span><br>
+                {% endif %}
+              </article>
+
+              <br><br>
+
+            {% endif %}
+
+          {% endfor %}
+
+        </section>
+      {% endfor %}
+
+      <p class="empty-state" hidden>No engagements match your filters.</p>
+
+    </div>
+
+  </div>
+</div>
+
+<script src="{{ '/assets/js/engagements-filters.js' | relative_url }}"></script>

@@ -22,7 +22,8 @@ layout: default
 
 {% include publications.html %}
 
-{% if site.show_media and site.data.media %}
+{% assign media_items = site.data.engagements | where: "type", "media" %}
+{% if site.show_media and media_items.size > 0 %}
 <section class="media-strip mb-5">
 
   <div class="media-strip-header">
@@ -34,7 +35,7 @@ layout: default
 
     <div class="media-carousel-track">
 
-      {% for item in site.data.media %}
+      {% for item in media_items %}
         <article class="media-item">
 
           <a href="{{ item.url }}"
@@ -48,7 +49,7 @@ layout: default
               alt="{{ item.title }}"
             >
 
-            {% if item.type == "video" %}
+            {% if item.media_format == "video" %}
               <span class="media-play-icon">
                 <i class="fas fa-play"></i>
               </span>
@@ -71,7 +72,7 @@ layout: default
                target="_blank"
                rel="noopener noreferrer">
 
-              {% if item.type == "video" %}
+              {% if item.media_format == "video" %}
                 Watch video →
               {% else %}
                 Read article →
@@ -86,7 +87,7 @@ layout: default
 
     </div>
 
-    {% if site.data.media.size > 1 %}
+    {% if media_items.size > 1 %}
       <div class="media-carousel-controls">
 
         <button type="button"
@@ -98,7 +99,7 @@ layout: default
         <span class="media-carousel-position">
           <span class="media-current">1</span>
           /
-          <span class="media-total">{{ site.data.media.size }}</span>
+          <span class="media-total">{{ media_items.size }}</span>
         </span>
 
         <button type="button"
