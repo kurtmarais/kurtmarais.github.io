@@ -240,11 +240,30 @@
     sortList(completedList);
   }
 
+  // PhD ranks first, then Masters, then everything else — used to order supervision entries
+  // by degree level before anything else when sorting Newest/Oldest.
+  var DEGREE_RANK = {
+    "phd": 1,
+    "masters": 2
+  };
+
+  function degreeRank(degreeLevel) {
+    var key = (degreeLevel || "").toLowerCase();
+    return DEGREE_RANK.hasOwnProperty(key) ? DEGREE_RANK[key] : 3;
+  }
+
   function sortList(list) {
     if (!list) return;
     var entries = Array.from(list.querySelectorAll(".supervision-entry"));
 
     entries.sort(function (a, b) {
+      // degree level always takes priority — PhD first, then Masters, then everything else
+      var degreeA = degreeRank(a.getAttribute("data-degree-level"));
+      var degreeB = degreeRank(b.getAttribute("data-degree-level"));
+      if (degreeA !== degreeB) {
+        return degreeA - degreeB;
+      }
+
       if (state.sort === "az" || state.sort === "za") {
         var nameA = (a.getAttribute("data-name") || "").toLowerCase();
         var nameB = (b.getAttribute("data-name") || "").toLowerCase();
@@ -252,14 +271,13 @@
         return state.sort === "za" ? -comparison : comparison;
       }
 
+      // newest / oldest — year next, then surname as the final tiebreak
       var yearA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
       var yearB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
       if (yearA !== yearB) {
         return state.sort === "newest" ? yearB - yearA : yearA - yearB;
       }
 
-      // same start year — always break ties by surname, regardless of any A-Z/Z-A sort
-      // that ran previously, rather than relying on whatever order was last left behind
       var surnameA = a.getAttribute("data-surname") || "";
       var surnameB = b.getAttribute("data-surname") || "";
       return surnameA.localeCompare(surnameB);
@@ -269,4 +287,6 @@
       list.appendChild(entry);
     });
   }
+
+  applySort(); // apply the default degree/year/surname order on load, rather than raw YAML file order
 })();
