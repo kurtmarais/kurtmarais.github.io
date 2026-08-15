@@ -7,6 +7,10 @@
   image: "https://files.su.ac.za/public/styles/responsive_3_1_1600w/public/stellenbosch-university/images/2026-08/social-media-2026png.png?itok=J3WQGyBs"
   description: "Study highlights ‘emotional reinforcement’ – when people amplify each other’s emotions online. Effect stronger among people with depression. Researcher developed reliable depression-specific lexicon."
   url: "https://www.su.ac.za/en/news/study-explores-emotional-content-and-depressive-symptoms-social-media"
+  #description: "Shown under the title on the compact card, same as today."
+  #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
+  #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
+  #tags: ["mental health", "media coverage"]               # hidden, search-only
 
 - title: "Mental health as a social system: what online networks can teach us about supporting well-being in education"
   type: "guest_lecture"
@@ -47,6 +51,12 @@
     - lexicon construction
     - depression
     - reddit
+  #abstract: >
+  #  A longer, fuller abstract that renders as a collapsible "Abstract" toggle,
+  #  the same way it does on the Supervision page. This can be several sentences
+  #  or a full paragraph — it doesn't have to be short like the description above.
+  # description: ""
+  # tags: ["mental health nlp", "text mining", "computational psychiatry"]
 
 - title: "An empirical content analysis of posts made to the r/depression subreddit"
   type: "conference"
