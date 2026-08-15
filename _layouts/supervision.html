@@ -74,6 +74,8 @@ layout: default
             <div class="filter-dropdown" hidden>
               <button type="button" class="filter-option" data-value="newest">Newest first</button>
               <button type="button" class="filter-option" data-value="oldest">Oldest first</button>
+              <button type="button" class="filter-option" data-value="az">A-Z</button>
+              <button type="button" class="filter-option" data-value="za">Z-A</button>
             </div>
           </div>
 
@@ -107,6 +109,7 @@ layout: default
           data-degree-sort="{{ student.degree_sort }}"
           data-degree-level="{{ student.degree_level }}"
           data-surname="{{ student.surname | downcase }}"
+          data-name="{{ student.name | downcase }}"
         >
 
           <div class="supervision-student">
@@ -159,6 +162,7 @@ layout: default
           data-degree-sort="{{ student.degree_sort }}"
           data-degree-level="{{ student.degree_level }}"
           data-surname="{{ student.surname | downcase }}"
+          data-name="{{ student.name | downcase }}"
         >
 
           <div class="supervision-student">
