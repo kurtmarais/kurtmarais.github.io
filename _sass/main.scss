@@ -992,6 +992,47 @@ body.dark-mode .social-media-icons a:hover {
   color: #9ab8aa;
 }
 
+/* FOOTER — QUICK LINKS */
+
+.footer-links-heading {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #69706b;
+  margin-bottom: 0.6rem;
+}
+
+.footer-links-list li {
+  margin-bottom: 0.4rem;
+}
+
+.footer-link {
+  color: $linkColor;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: $bodyColor;
+  text-decoration: underline;
+}
+
+.footer-link.is-current {
+  cursor: pointer;
+}
+
+body.dark-mode .footer-links-heading {
+  color: #aeb3ae;
+}
+
+body.dark-mode .footer-link {
+  color: #9ab8aa;
+}
+
+body.dark-mode .footer-link:hover {
+  color: #ffffff;
+}
+
 /* BACK TO TOP */
 
 .back-to-top {
