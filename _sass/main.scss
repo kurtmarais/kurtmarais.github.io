@@ -298,6 +298,99 @@ h4 {
   overflow: hidden;
 }
 
+/* ENGAGEMENTS — INLINE MEDIA CARD (visually similar to the homepage media strip, but
+   shorter — this sits inline in a year-grouped list, not a hero carousel) */
+
+.engagement-media-entry {
+  display: flex;
+  align-items: stretch;
+  gap: 1.25rem;
+}
+
+.engagement-media-thumb {
+  position: relative;
+  flex: 0 0 140px;
+  aspect-ratio: 4 / 3; // shorter than the homepage's 16/9-at-25%-width layout
+  border-radius: 0.25rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+}
+
+.engagement-media-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.engagement-media-play-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(32, 36, 33, 0.75);
+  color: #f7f6f1;
+  font-size: 0.7rem;
+}
+
+.engagement-media-content {
+  flex: 1;
+  padding: 0;
+}
+
+.engagement-media-meta {
+  color: #69706b;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.engagement-media-title {
+  font-size: 1.05rem; // smaller than the homepage card's 1.2rem
+  line-height: 1.25;
+  margin-bottom: 0.3rem;
+}
+
+.engagement-media-content .engagement-description {
+  display: block;
+  color: #69706b;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin-bottom: 0.3rem;
+}
+
+.engagement-media-link {
+  color: $linkColor;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.engagement-media-link:hover {
+  color: $bodyColor;
+  text-decoration: underline;
+}
+
+@media (max-width: 575.98px) {
+  .engagement-media-entry {
+    flex-direction: column;
+  }
+
+  .engagement-media-thumb {
+    flex-basis: auto;
+    width: 100%;
+  }
+}
+
 /* VIDEO PLAY ICON */
 
 .media-play-icon {
@@ -440,9 +533,9 @@ h4 {
   transform: translateX(16px);
 }
 
-/* SUPERVISION TITLE ROW */
+/* PAGE TITLE ROW (shared: supervision, engagements) */
 
-.supervision-title-row {
+.page-title-row {
   display: flex;
   width: 100%;
   min-width: 100%;
@@ -454,13 +547,13 @@ h4 {
   // no margin-bottom here — the parent ".row.g-5.mb-5" wrapper already contributes 3rem below this block
 }
 
-.supervision-title-row h3 {
+.page-title-row h3 {
   margin: 0 !important;
   padding: 0 !important;
   line-height: 1.25; // matches the site-wide h3 rule — no longer overridden to 1.2
 }
 
-.supervision-filters {
+.filters-panel {
   display: flex;
   align-items: baseline;
   gap: 1.5rem;
@@ -468,14 +561,14 @@ h4 {
   line-height: 1.25; // was inheriting body's line-height: 1.65, which made this box taller than the title and dragged both down
 }
 
-/* SUPERVISION FILTERS — TOGGLE (MOBILE) */
+/* FILTERS — TOGGLE (MOBILE, shared) */
 
-.supervision-filters-wrapper {
+.filters-wrapper {
   display: flex;
   align-items: baseline;
 }
 
-.supervision-filters-toggle {
+.filters-toggle {
   display: none; // shown only under the mobile breakpoint below
   align-items: center;
   gap: 0.4rem;
@@ -491,30 +584,30 @@ h4 {
   cursor: pointer;
 }
 
-.supervision-filters-toggle:hover {
+.filters-toggle:hover {
   color: $bodyColor;
 }
 
-.supervision-filters-toggle .fa-chevron-down {
+.filters-toggle .fa-chevron-down {
   font-size: 0.7em;
   transition: transform 0.15s ease;
 }
 
-.supervision-filters-toggle[aria-expanded="true"] .fa-chevron-down {
+.filters-toggle[aria-expanded="true"] .fa-chevron-down {
   transform: rotate(180deg);
 }
 
-/* SUPERVISION FILTERS — INDIVIDUAL CONTROLS */
+/* FILTERS — INDIVIDUAL CONTROLS (shared) */
 
-.supervision-filter-control {
+.filter-control {
   position: relative;
 }
 
-.supervision-filter-mobile-label {
+.filter-mobile-label {
   display: none; // shown only under the mobile breakpoint below
 }
 
-.supervision-filter-toggle {
+.filter-toggle {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -531,20 +624,20 @@ h4 {
   white-space: nowrap;
 }
 
-.supervision-filter-toggle:hover {
+.filter-toggle:hover {
   color: $bodyColor;
 }
 
-.supervision-filter-toggle .fa-chevron-down {
+.filter-toggle .fa-chevron-down {
   font-size: 0.7em;
   transition: transform 0.15s ease;
 }
 
-.supervision-filter-toggle[aria-expanded="true"] .fa-chevron-down {
+.filter-toggle[aria-expanded="true"] .fa-chevron-down {
   transform: rotate(180deg);
 }
 
-.supervision-filter-dropdown {
+.filter-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
   left: 0;
@@ -559,7 +652,7 @@ h4 {
   padding: 0.5rem 0;
 }
 
-.supervision-filter-option {
+.filter-option {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -574,11 +667,11 @@ h4 {
   letter-spacing: normal;
 }
 
-.supervision-filter-option:hover {
+.filter-option:hover {
   background: #f7f6f1;
 }
 
-.supervision-filter-search-input {
+.filter-search-input {
   font-family: inherit;
   font-size: 0.85rem;
   line-height: 1.25; // match the shared control line-height so this doesn't grow the row taller than the title
@@ -589,37 +682,42 @@ h4 {
   min-width: 160px;
 }
 
-.supervision-filter-search-input:focus,
-.supervision-filter-search-input:hover {
+.filter-search-input:focus,
+.filter-search-input:hover {
   border-bottom-color: #dee2e6;
   outline: none;
 }
 
-/* SUPERVISION — EMPTY STATE */
+/* EMPTY STATE (shared) */
 
-.supervision-empty-state {
+.empty-state {
   color: #69706b;
   font-style: italic;
   padding: 1rem 0;
 }
 
-/* SUPERVISION FILTERS — MOBILE BREAKPOINT */
+/* FILTERS — MOBILE BREAKPOINT (shared) */
 
 @media (max-width: 767.98px) {
-  .supervision-filters-toggle {
+  .filters-toggle {
     display: flex;
   }
 
-  .supervision-filters {
+  .filters-wrapper {
+    position: relative;
+  }
+
+  .filters-panel {
     display: none;
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
-    width: 100%;
     position: absolute;
     top: calc(100% + 0.75rem);
-    left: 0;
-    right: 0;
+    right: 0; // anchor to the right edge of the "Filters" toggle, not the viewport edge
+    left: auto; // was left:0/right:0 (full-bleed) — switched to a right-anchored floating panel
+    width: max-content;
+    max-width: calc(100vw - 2rem); // guarantees it never runs off the left edge of the screen either
     background: #fff;
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
@@ -627,23 +725,18 @@ h4 {
     z-index: 15;
   }
 
-  .supervision-filters-wrapper {
-    position: relative;
-    width: 100%;
-  }
-
-  .supervision-filters.is-open {
+  .filters-panel.is-open {
     display: flex;
   }
 
-  .supervision-filter-control {
+  .filter-control {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
   }
 
-  .supervision-filter-mobile-label {
+  .filter-mobile-label {
     display: block;
     font-size: 0.85rem;
     font-weight: 500;
@@ -653,7 +746,7 @@ h4 {
     flex-shrink: 0;
   }
 
-  .supervision-filter-toggle {
+  .filter-toggle {
     flex: 1;
     justify-content: space-between;
     border: 1px solid #dee2e6;
@@ -661,18 +754,20 @@ h4 {
     padding: 0.4rem 0.6rem;
   }
 
-  .supervision-filter-dropdown {
-    position: static;
-    box-shadow: none;
-    margin-top: 0.5rem;
-    width: 100%;
+  .filter-dropdown {
+    // stays position:absolute (inherited from the base rule) rather than static, so it floats
+    // over the panel instead of pushing it taller — but anchored right, opening leftward,
+    // same reasoning as .filters-panel above.
+    right: 0;
+    left: auto;
+    max-width: calc(100vw - 2rem);
   }
 
-  .supervision-filter-search {
+  .filter-search {
     flex-wrap: wrap;
   }
 
-  .supervision-filter-search-input {
+  .filter-search-input {
     flex: 1;
     min-width: 0;
     padding: 0.4rem 0.6rem;
@@ -789,6 +884,22 @@ body.dark-mode .media-link:hover {
   color: #ffffff;
 }
 
+body.dark-mode .engagement-media-meta {
+  color: #aeb3ae;
+}
+
+body.dark-mode .engagement-media-content .engagement-description {
+  color: #aeb3ae;
+}
+
+body.dark-mode .engagement-media-link {
+  color: #9ab8aa;
+}
+
+body.dark-mode .engagement-media-link:hover {
+  color: #ffffff;
+}
+
 body.dark-mode .media-carousel-controls button {
   color: #aeb3ae;
 }
@@ -815,47 +926,47 @@ body.dark-mode .supervision-abstract p {
   color: #aeb3ae;
 }
 
-/* SUPERVISION FILTERS */
+/* FILTERS (shared: supervision, engagements) */
 
-body.dark-mode .supervision-filters-toggle,
-body.dark-mode .supervision-filter-toggle,
-body.dark-mode .supervision-filter-mobile-label {
+body.dark-mode .filters-toggle,
+body.dark-mode .filter-toggle,
+body.dark-mode .filter-mobile-label {
   color: #aeb3ae;
 }
 
-body.dark-mode .supervision-filters-toggle:hover,
-body.dark-mode .supervision-filter-toggle:hover {
+body.dark-mode .filters-toggle:hover,
+body.dark-mode .filter-toggle:hover {
   color: #e8e9e5;
 }
 
-body.dark-mode .supervision-filter-dropdown,
-body.dark-mode .supervision-filters {
+body.dark-mode .filter-dropdown,
+body.dark-mode .filters-panel {
   background: #2b2f2b;
   border-color: #444943;
 }
 
-body.dark-mode .supervision-filter-option {
+body.dark-mode .filter-option {
   color: #e8e9e5;
 }
 
-body.dark-mode .supervision-filter-option:hover {
+body.dark-mode .filter-option:hover {
   background: #363b36;
 }
 
-body.dark-mode .supervision-filter-search-input {
+body.dark-mode .filter-search-input {
   color: #e8e9e5;
 }
 
-body.dark-mode .supervision-filter-search-input:focus,
-body.dark-mode .supervision-filter-search-input:hover {
+body.dark-mode .filter-search-input:focus,
+body.dark-mode .filter-search-input:hover {
   border-bottom-color: #444943;
 }
 
-body.dark-mode .supervision-filter-toggle {
+body.dark-mode .filter-toggle {
   border-color: #444943;
 }
 
-body.dark-mode .supervision-empty-state {
+body.dark-mode .empty-state {
   color: #aeb3ae;
 }
 
@@ -973,7 +1084,7 @@ body.dark-mode .back-to-top:hover {
     background: #f7f6f1;
   }
 
-  body.dark-mode .supervision-filter-search-input {
+  body.dark-mode .filter-search-input {
     background: #2b2f2b;
     border-color: #444943;
   }
