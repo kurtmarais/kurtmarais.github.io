@@ -244,6 +244,103 @@
 
   // Years and/or degree filters active, no search term — degree drops out of the comparator
   // entirely and the whole list (current + completed merged) sorts true to the chosen Sort mode.
+  //
+  // Newest/Oldest add a seniority/duration tiering on top of year, reflecting how far along a
+  // student's candidature is. The two directions are NOT mirror images of each other — see the
+  // two dedicated comparators below.
+  function isOngoing(entry) {
+    var endYearAttr = entry.getAttribute("data-end-year");
+    return !endYearAttr; // no end year recorded = still current/ongoing
+  }
+
+  function isSingleYear(entry) {
+    var startYear = entry.getAttribute("data-start-year");
+    var endYearAttr = entry.getAttribute("data-end-year");
+    return !!endYearAttr && startYear === endYearAttr; // e.g. BDatSci/BComHons, start == end
+  }
+
+  // Newest first: grouped by year (end year if dated, else start year), descending.
+  // Within a year group: dated students (PhD before Masters) -> single-year students ->
+  // ongoing students (Masters before PhD — an ongoing PhD is the least "resolved" entry of the group).
+  function compareForYearDegreeFilterNewest(a, b) {
+    var yearA = isOngoing(a)
+      ? parseInt(a.getAttribute("data-start-year"), 10) || 0
+      : effectiveEndYear(a);
+    var yearB = isOngoing(b)
+      ? parseInt(b.getAttribute("data-start-year"), 10) || 0
+      : effectiveEndYear(b);
+    if (yearA !== yearB) {
+      return yearB - yearA;
+    }
+
+    function tier(entry) {
+      if (isOngoing(entry)) return 2;
+      if (isSingleYear(entry)) return 1;
+      return 0; // dated, multi-year
+    }
+    var tierA = tier(a);
+    var tierB = tier(b);
+    if (tierA !== tierB) {
+      return tierA - tierB;
+    }
+
+    if (tierA === 0) {
+      // dated multi-year: PhD before Masters
+      var degreeA = degreeRank(a.getAttribute("data-degree-level"));
+      var degreeB = degreeRank(b.getAttribute("data-degree-level"));
+      if (degreeA !== degreeB) return degreeA - degreeB;
+    } else if (tierA === 2) {
+      // ongoing: Masters before PhD
+      var oDegreeA = degreeRank(a.getAttribute("data-degree-level"));
+      var oDegreeB = degreeRank(b.getAttribute("data-degree-level"));
+      if (oDegreeA !== oDegreeB) return oDegreeB - oDegreeA;
+    }
+
+    var surnameA = a.getAttribute("data-surname") || "";
+    var surnameB = b.getAttribute("data-surname") || "";
+    return surnameA.localeCompare(surnameB);
+  }
+
+  // Oldest first: NOT a reversal of Newest — a separate structure.
+  // Ongoing students (no end date) are pulled into one block at the very bottom regardless of year.
+  // Everyone else (single-year + dated) sorts together by start year ascending; same-year ties go
+  // single-year first, then dated (PhD before Masters).
+  // The ongoing block sorts by degree first (PhD before Masters), then start year ascending.
+  function compareForYearDegreeFilterOldest(a, b) {
+    var ongoingA = isOngoing(a);
+    var ongoingB = isOngoing(b);
+    if (ongoingA !== ongoingB) {
+      return ongoingA ? 1 : -1; // ongoing sinks to the bottom
+    }
+
+    var startA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
+    var startB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
+
+    if (ongoingA) {
+      // both ongoing: degree first (PhD before Masters), then start year ascending
+      var degreeA = degreeRank(a.getAttribute("data-degree-level"));
+      var degreeB = degreeRank(b.getAttribute("data-degree-level"));
+      if (degreeA !== degreeB) return degreeA - degreeB;
+      if (startA !== startB) return startA - startB;
+    } else {
+      // both resolved (single-year or dated): start year ascending, tie -> single before dated
+      if (startA !== startB) return startA - startB;
+      var singleA = isSingleYear(a);
+      var singleB = isSingleYear(b);
+      if (singleA !== singleB) return singleA ? -1 : 1;
+      if (!singleA) {
+        // both dated multi-year: PhD before Masters
+        var dDegreeA = degreeRank(a.getAttribute("data-degree-level"));
+        var dDegreeB = degreeRank(b.getAttribute("data-degree-level"));
+        if (dDegreeA !== dDegreeB) return dDegreeA - dDegreeB;
+      }
+    }
+
+    var surnameA = a.getAttribute("data-surname") || "";
+    var surnameB = b.getAttribute("data-surname") || "";
+    return surnameA.localeCompare(surnameB);
+  }
+
   function compareForYearDegreeFilter(a, b) {
     if (state.sort === "az" || state.sort === "za") {
       var nameA = (a.getAttribute("data-name") || "").toLowerCase();
@@ -258,15 +355,9 @@
       return yearB - yearA;
     }
 
-    var yearA2 = parseInt(a.getAttribute("data-start-year"), 10) || 0;
-    var yearB2 = parseInt(b.getAttribute("data-start-year"), 10) || 0;
-    if (yearA2 !== yearB2) {
-      return state.sort === "newest" ? yearB2 - yearA2 : yearA2 - yearB2;
-    }
-
-    var surnameA2 = a.getAttribute("data-surname") || "";
-    var surnameB2 = b.getAttribute("data-surname") || "";
-    return surnameA2.localeCompare(surnameB2);
+    return state.sort === "newest"
+      ? compareForYearDegreeFilterNewest(a, b)
+      : compareForYearDegreeFilterOldest(a, b);
   }
 
   // A search term is active — fixed scheme regardless of years/degree filters or the Sort dropdown.
