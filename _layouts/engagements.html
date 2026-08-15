@@ -89,6 +89,8 @@ layout: default
 
           {% for item in group.items %}
 
+            <div class="engagement-entry-wrap">
+
             {% if item.type == "media" %}
 
               <article
@@ -151,6 +153,8 @@ layout: default
 
             {% endif %}
 
+            </div>
+
           {% endfor %}
 
         </section>
@@ -161,6 +165,5 @@ layout: default
     </div>
 
   </div>
-</div>
 
 <script src="{{ '/assets/js/engagements-filters.js' | relative_url }}"></script>
