@@ -171,19 +171,25 @@
 
     var topicMatches = true;
     if (state.topics) {
-      var titleEl = entry.querySelector(".engagement-title, .engagement-media-title");
-      var titleText = titleEl ? titleEl.textContent.toLowerCase() : "";
+      var searchableSelectors = [
+        ".engagement-title",
+        ".engagement-media-title",
+        ".engagement-venue",
+        ".engagement-location",
+        ".engagement-description",
+        ".abstract-block p",
+        ".engagement-keywords",
+        ".engagement-tags"
+      ];
 
-      var keywordsEl = entry.querySelector(".engagement-keywords");
-      var keywordsText = keywordsEl ? keywordsEl.textContent.toLowerCase() : "";
+      var searchableText = searchableSelectors
+        .map(function (selector) {
+          var el = entry.querySelector(selector);
+          return el ? el.textContent.toLowerCase() : "";
+        })
+        .join(" ");
 
-      var descriptionEl = entry.querySelector(".engagement-description");
-      var descriptionText = descriptionEl ? descriptionEl.textContent.toLowerCase() : "";
-
-      topicMatches =
-        titleText.indexOf(state.topics) !== -1 ||
-        keywordsText.indexOf(state.topics) !== -1 ||
-        descriptionText.indexOf(state.topics) !== -1;
+      topicMatches = searchableText.indexOf(state.topics) !== -1;
     }
 
     return typeMatches && yearMatches && topicMatches;

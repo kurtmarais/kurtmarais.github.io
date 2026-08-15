@@ -189,7 +189,7 @@
       var titleEl = entry.querySelector(".supervision-title");
       var titleText = titleEl ? titleEl.textContent.toLowerCase() : "";
 
-      var abstractEl = entry.querySelector(".supervision-abstract p");
+      var abstractEl = entry.querySelector(".abstract-block p");
       var abstractText = abstractEl ? abstractEl.textContent.toLowerCase() : "";
 
       topicMatches =
