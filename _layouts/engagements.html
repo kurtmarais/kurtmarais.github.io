@@ -120,9 +120,24 @@ layout: default
                   <div class="engagement-media-meta">{{ item.publication }} · {{ item.date }}</div>
                   <h4 class="engagement-media-title">{{ item.title }}</h4>
                   <p class="engagement-description">{{ item.description }}</p>
-                  {% if item.keywords %}
-                    <span class="engagement-keywords" hidden>Keywords: {{ item.keywords | join: "; " }}</span>
+
+                  {% if item.abstract %}
+                    <details class="abstract-block">
+                      <br>
+                      <summary>Abstract</summary>
+                      <p>{{ item.abstract }}</p>
+                      <br>
+                    </details>
                   {% endif %}
+
+                  {% if item.keywords %}
+                    <span class="engagement-keywords" hidden>{{ item.keywords | join: ", " }}</span>
+                  {% endif %}
+
+                  {% if item.tags %}
+                    <span class="engagement-tags" hidden>{{ item.tags | join: ", " }}</span>
+                  {% endif %}
+
                   <a
                     href="{{ item.url }}"
                     class="engagement-media-link"
@@ -144,11 +159,27 @@ layout: default
                 data-type="{{ item.type }}"
               >
                 <strong class="engagement-title">{{ item.title }}</strong><br>
-                {{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}<br>
+                <span class="engagement-venue">{{ item.venue }}</span>{% if item.location %} · <span class="engagement-location">{{ item.location }}</span>{% endif %}<br>
+
+                {% if item.description %}
+                  <span class="engagement-description">{{ item.description }}</span><br>
+                {% endif %}
+
+                {% if item.abstract %}
+                  <details class="abstract-block">
+                    <br>
+                    <summary>Abstract</summary>
+                    <p>{{ item.abstract }}</p>
+                    <br>
+                  </details>
+                {% endif %}
+
                 {% if item.keywords %}
                   <span class="engagement-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
-                {% elsif item.description %}
-                  <span class="engagement-description">Description: {{ item.description }}</span><br>
+                {% endif %}
+
+                {% if item.tags %}
+                  <span class="engagement-tags" hidden>{{ item.tags | join: ", " }}</span>
                 {% endif %}
               </article>
 
