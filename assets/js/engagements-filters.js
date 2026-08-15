@@ -197,26 +197,29 @@
 
   function applyFilters() {
     var filtersActive = hasActiveFilters();
+
+    var allWraps = list ? list.querySelectorAll(".engagement-entry-wrap") : [];
     var totalVisible = 0;
 
+    allWraps.forEach(function (wrap) {
+      var entry = wrap.querySelector(".engagement-entry");
+      var matches = entry ? entryMatches(entry) : false;
+      wrap.hidden = !matches; // hide the wrapper (article + its trailing <br><br>) together, so no orphaned gaps remain
+      if (matches) totalVisible += 1;
+    });
+
+    // works whether entries currently sit inside their year-group section (newest/oldest sort)
+    // or have been flattened directly under .engagements-list (A-Z/Z-A sort) — a group's own
+    // visible count naturally comes out to 0 once flattened, which hides it and its heading too.
     yearGroups.forEach(function (group) {
       var heading = group.querySelector(".engagement-year-heading");
-      var wraps = group.querySelectorAll(".engagement-entry-wrap");
-      var visibleCount = 0;
-
-      wraps.forEach(function (wrap) {
-        var entry = wrap.querySelector(".engagement-entry");
-        var matches = entry ? entryMatches(entry) : false;
-        wrap.hidden = !matches; // hide the wrapper (article + its trailing <br><br>) together, so no orphaned gaps remain
-        if (matches) visibleCount += 1;
-      });
+      var visibleInGroup = group.querySelectorAll(".engagement-entry-wrap:not([hidden])").length;
 
       // headings disappear as soon as any filter is active, not only once a group is empty
       if (heading) {
-        heading.hidden = filtersActive || visibleCount === 0;
+        heading.hidden = filtersActive || visibleInGroup === 0;
       }
-      group.hidden = visibleCount === 0;
-      totalVisible += visibleCount;
+      group.hidden = visibleInGroup === 0;
     });
 
     if (emptyState) {
@@ -224,12 +227,55 @@
     }
   }
 
-  /* ---------- Sorting (reorders whole year-group sections) ---------- */
+  /* ---------- Sorting ---------- */
 
   function applySort() {
     if (!list) return;
-    var groups = Array.from(list.querySelectorAll(".engagement-year-group"));
 
+    if (state.sort === "az" || state.sort === "za") {
+      flattenAlphabetically();
+    } else {
+      regroupByYear();
+    }
+
+    applyFilters(); // group membership / heading visibility may have just changed
+  }
+
+  function getEntryTitle(wrap) {
+    var titleEl = wrap.querySelector(".engagement-title, .engagement-media-title");
+    return titleEl ? titleEl.textContent.trim().toLowerCase() : "";
+  }
+
+  // sorts by title regardless of year — pulls every entry out of its year-group section and
+  // into one flat sequence directly under .engagements-list, since a title-based order chopped
+  // into year buckets wouldn't actually read as alphabetical.
+  function flattenAlphabetically() {
+    var wraps = Array.from(list.querySelectorAll(".engagement-entry-wrap"));
+
+    wraps.sort(function (a, b) {
+      var comparison = getEntryTitle(a).localeCompare(getEntryTitle(b));
+      return state.sort === "za" ? -comparison : comparison;
+    });
+
+    wraps.forEach(function (wrap) {
+      list.appendChild(wrap); // moves the wrap out of its section, directly under .engagements-list
+    });
+  }
+
+  // moves every entry back into the section matching its year, then orders the sections themselves
+  function regroupByYear() {
+    var wraps = Array.from(list.querySelectorAll(".engagement-entry-wrap"));
+
+    wraps.forEach(function (wrap) {
+      var entry = wrap.querySelector(".engagement-entry");
+      var year = entry ? entry.getAttribute("data-year") : null;
+      var targetGroup = list.querySelector('.engagement-year-group[data-year="' + year + '"]');
+      if (targetGroup) {
+        targetGroup.appendChild(wrap);
+      }
+    });
+
+    var groups = Array.from(list.querySelectorAll(".engagement-year-group"));
     groups.sort(function (a, b) {
       var yearA = parseInt(a.getAttribute("data-year"), 10) || 0;
       var yearB = parseInt(b.getAttribute("data-year"), 10) || 0;

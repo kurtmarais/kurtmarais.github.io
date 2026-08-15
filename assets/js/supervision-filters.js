@@ -245,6 +245,13 @@
     var entries = Array.from(list.querySelectorAll(".supervision-entry"));
 
     entries.sort(function (a, b) {
+      if (state.sort === "az" || state.sort === "za") {
+        var nameA = (a.getAttribute("data-name") || "").toLowerCase();
+        var nameB = (b.getAttribute("data-name") || "").toLowerCase();
+        var comparison = nameA.localeCompare(nameB);
+        return state.sort === "za" ? -comparison : comparison;
+      }
+
       var yearA = parseInt(a.getAttribute("data-start-year"), 10) || 0;
       var yearB = parseInt(b.getAttribute("data-start-year"), 10) || 0;
       return state.sort === "newest" ? yearB - yearA : yearA - yearB;
