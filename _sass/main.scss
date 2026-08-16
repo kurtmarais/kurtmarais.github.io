@@ -122,7 +122,9 @@ h4 {
   padding: 2.5rem 3rem;
 }
 
-.hero .eyebrow { color: #9ab8aa; }
+.hero .eyebrow {
+  color: #9ab8aa;
+}
 
 .hero-inner {
   display: flex;
@@ -962,10 +964,6 @@ body.dark-mode h4 {
   color: #e8e9e5;
 }
 
-body.dark-mode .hero-heading {
-  color: $bodyColor;
-}
-
 body.dark-mode .media-strip-header h3 {
   color: #e8e9e5 !important;
 }
@@ -974,6 +972,28 @@ body.dark-mode .media-strip-header h3 {
 
 body.dark-mode .eyebrow {
   color: #9ab8aa;
+}
+
+/* HERO CARD — inverted: dark card in light mode, light card in dark mode */
+
+body.dark-mode .hero {
+  background: #fffefb;
+  border-color: #e3e1d8;
+  box-shadow:
+    0 1.5rem 3rem rgba(32, 36, 33, 0.09),
+    0 0.3rem 0.75rem rgba(32, 36, 33, 0.05);
+}
+
+body.dark-mode .hero .eyebrow {
+  color: $linkColor;
+}
+
+body.dark-mode .hero-heading {
+  color: $bodyColor;
+}
+
+body.dark-mode .hero-intro {
+  color: #69706b;
 }
 
 /* RESEARCH STRIP */
