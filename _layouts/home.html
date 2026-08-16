@@ -1,23 +1,43 @@
 ---
 layout: default
 ---
-<div class="row g-5 mb-5 align-items-center home-intro">
-  <div class="col-md-7">
-    <p class="eyebrow">LECTURER · RESEARCHER </p>
-      <h4 class="display-4 fw-bold mb-4">Understanding information, sentiment and human behaviour in social networks.</h4> 
-     <div class="lead text-muted">{{ content }}</div> 
+<section class="hero-masthead mb-5">
+  <div class="hero-photo-card">
+    <div class="hero-photo-placeholder">KM</div>
+    <!-- Placeholder monogram — replace with a real headshot once available, e.g.:
+         <img class="hero-photo" src="{{ '/assets/img/headshot.jpg' | relative_url }}" alt="Kurt Marais"> -->
   </div>
-    <div class="col-md-5"> 
-    <img class="home-image" src="{{ '/assets/img/home.jpg' | relative_url }}" alt="Academic research and teaching"> 
-  </div> 
- </div> 
+  <div class="hero-copy">
+    <p class="eyebrow">Lecturer · Researcher</p>
+    <h1 class="hero-heading">Information, sentiment and human behaviour in social networks.</h1>
+    <div class="hero-intro">{{ content }}</div>
+  </div>
+</section>
 
-<div class="research-strip row g-4 mb-5"> 
-  <div class="col-md-3"><h4>01</h4><h4>NLP & computation</h4><p>Quantifying affective textual information using NLP techniques.</p></div>
-  <!-- <div class="col-md-3"><h4>02</h4><h4>Sentiment diffusion</h4><p>Sentiment and affect across connected populations.</p></div> -->
-  <div class="col-md-3"><h4>02</h4><h4>Social networks</h4><p>Network structure, influence and behavioural dynamics.</p></div>
-  <div class="col-md-3"><h4>03</h4><h4>Agent-based modelling</h4><p>Simulation of network-mediated social processes.</p></div>
-  <div class="col-md-3"><h4>04</h4><h4>Machine learning</h4><p>Detection and prediction approaches.</p></div>
+<div class="research-strip mb-5">
+  <p class="eyebrow research-strip-label">Research focus</p>
+  <div class="research-grid">
+    <div class="research-item">
+      <span class="research-marker"></span>
+      <h4>NLP &amp; computation</h4>
+      <p>Quantifying affective textual information using NLP techniques.</p>
+    </div>
+    <div class="research-item">
+      <span class="research-marker"></span>
+      <h4>Social networks</h4>
+      <p>Network structure, influence and behavioural dynamics.</p>
+    </div>
+    <div class="research-item">
+      <span class="research-marker"></span>
+      <h4>Agent-based modelling</h4>
+      <p>Simulation of network-mediated social processes.</p>
+    </div>
+    <div class="research-item">
+      <span class="research-marker"></span>
+      <h4>Machine learning</h4>
+      <p>Detection and prediction approaches.</p>
+    </div>
+  </div>
 </div>
 
 {% include publications.html %}
