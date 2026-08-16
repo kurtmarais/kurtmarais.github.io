@@ -960,6 +960,10 @@ body.dark-mode h4 {
   color: #e8e9e5;
 }
 
+body.dark-mode .hero-heading {
+  color: $bodyColor;
+}
+
 body.dark-mode .media-strip-header h3 {
   color: #e8e9e5 !important;
 }
