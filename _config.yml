@@ -1,7 +1,7 @@
-url: "https://YOURUSERNAME.github.io"
+url: "https://kurtmarais.github.io"
 baseurl: ""
 title: "Kurt Marais"
-# description: "Lecturer and researcher" 
+description: "Lecturer and researcher in Operations Research and Business Analytics at Stellenbosch University, working on NLP, sentiment diffusion and social network analysis."
 lang: "en"
 markdown: kramdown
 permalink: /:categories/:title/
