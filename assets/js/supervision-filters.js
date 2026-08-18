@@ -180,6 +180,8 @@
 
     var topicMatches = true;
     if (state.topics) {
+      var nameText = entry.getAttribute("data-name") || "";
+
       var keywordsEl = entry.querySelector(".supervision-keywords");
       var keywordsText = keywordsEl ? keywordsEl.textContent.toLowerCase() : "";
 
@@ -190,6 +192,7 @@
       var abstractText = abstractEl ? abstractEl.textContent.toLowerCase() : "";
 
       topicMatches =
+        nameText.indexOf(state.topics) !== -1 ||
         keywordsText.indexOf(state.topics) !== -1 ||
         titleText.indexOf(state.topics) !== -1 ||
         abstractText.indexOf(state.topics) !== -1;
