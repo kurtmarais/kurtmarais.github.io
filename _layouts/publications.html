@@ -37,23 +37,6 @@ layout: default
             </div>
           </div>
 
-          <div class="filter-control" data-filter="years">
-            <span class="filter-mobile-label">Years</span>
-            <button type="button" class="filter-toggle" aria-expanded="false">
-              <span class="filter-value">All years</span>
-              <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </button>
-            <div class="filter-dropdown" hidden>
-              {% assign publication_years = site.publications | map: "year" | uniq | sort | reverse %}
-              {% for year in publication_years %}
-                <label class="filter-option">
-                  <input type="checkbox" value="{{ year }}">
-                  {{ year }}
-                </label>
-              {% endfor %}
-            </div>
-          </div>
-
           <div class="filter-control" data-filter="sort">
             <span class="filter-mobile-label">Sort</span>
             <button type="button" class="filter-toggle" aria-expanded="false">
@@ -83,70 +66,93 @@ layout: default
 
 </div>
 
-    <div class="publications-list">
+<div class="publications-list">
 
-      {% assign grouped_publications = site.publications | group_by: "year" | sort: "name" | reverse %}
-      {% assign publication_order = 0 %}
-      {% for group in grouped_publications %}
-        <section class="publication-year-group" data-year="{{ group.name }}">
+  {% assign grouped_publications = site.publications | group_by: "year" | sort: "name" | reverse %}
+  {% assign publication_order = 0 %}
 
-          <h3 class="publication-year-heading fw-bold pb-3 mb-4">{{ group.name }}</h3>
+  {% for group in grouped_publications %}
+    <section class="publication-year-group" data-year="{{ group.name }}">
 
-          {% for item in group.items %}
+      {% for item in group.items %}
 
-            {% assign publication_order = publication_order | plus: 1 %}
+        {% assign publication_order = publication_order | plus: 1 %}
 
-            <div class="publication-entry-wrap">
+        <div class="publication-entry-wrap">
 
-              <article
-                class="publication-entry"
-                data-type="{{ item.type }}"
-                data-year="{{ item.year }}"
-                data-order="{{ publication_order }}"
-              >
-                <strong class="publication-title"><a href="{{ item.url }}">{{ item.title }}</a></strong>
-                {% if item.featured %}<span class="publication-featured-badge">Featured</span>{% endif %}
+          <article
+            class="publication-entry"
+            data-type="{{ item.type }}"
+            data-year="{{ item.year }}"
+            data-order="{{ publication_order }}"
+          >
+            <strong class="publication-title"><a href="{{ item.url }}">{{ item.title }}</a></strong>
+            <br>
+
+            <span class="publication-byline">
+              {{ item.authors | join: ", " }} ({{ item.year }}).
+              {% if item.type == "journal-article" %}
+                <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% if item.issue %}({{ item.issue }}){% endif %}{% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
+                {% if item.doi %}
+                  DOI:
+                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                    {{ item.doi | remove: "https://doi.org/" }}
+                  </a>.
+                {% endif %}
+              {% elsif item.type == "dataset" %}
+                Dataset.{% if item.doi %} DOI:
+                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                    {{ item.doi | remove: "https://doi.org/" }}
+                  </a>.
+                {% endif %}
+              {% elsif item.type == "thesis" %}
+                Master's thesis, {{ item.institution }}.{% if item.doi %} DOI:
+                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                    {{ item.doi | remove: "https://doi.org/" }}
+                  </a>.
+                {% endif %}
+              {% elsif item.type == "dissertation" %}
+                Doctoral dissertation, {{ item.institution }}.{% if item.doi %} DOI:
+                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                    {{ item.doi | remove: "https://doi.org/" }}
+                  </a>.
+                {% endif %}
+              {% endif %}
+            </span><br>
+
+            {% if item.abstract %}
+              <details class="abstract-block">
                 <br>
+                <summary>Abstract</summary>
+                <p>{{ item.abstract }}</p>
+                <br>
+              </details>
+            {% elsif item.description %}
+              <span class="publication-description">{{ item.description | truncatewords: 32 }}</span><br>
+            {% endif %}
 
-                <span class="publication-byline">
-                  {{ item.authors | join: ", " }} ({{ item.year }}).
-                  {% if item.type == "journal-article" %}
-                    <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% if item.issue %}({{ item.issue }}){% endif %}{% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
-                  {% elsif item.type == "dataset" %}
-                    Dataset.
-                  {% elsif item.type == "thesis" %}
-                    Master's thesis, {{ item.institution }}.
-                  {% elsif item.type == "dissertation" %}
-                    Doctoral dissertation, {{ item.institution }}.
-                  {% endif %}
-                </span><br>
+            {% if item.keywords %}
+              <span class="publication-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
+            {% endif %}
 
-                {% if item.abstract %}
-                  <span class="publication-description">{{ item.abstract | truncatewords: 32 }}</span><br>
-                {% elsif item.description %}
-                  <span class="publication-description">{{ item.description | truncatewords: 32 }}</span><br>
-                {% endif %}
+            {% if item.tags %}
+              <span class="publication-tags" hidden>{{ item.tags | join: ", " }}</span>
+            {% endif %}
 
-                {% if item.keywords %}
-                  <span class="publication-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
-                {% endif %}
+            <a href="{{ item.url }}" class="text-link">View publication →</a>
+          </article>
 
-                {% if item.tags %}
-                  <span class="publication-tags" hidden>{{ item.tags | join: ", " }}</span>
-                {% endif %}
+          <br><br>
 
-                <a href="{{ item.url }}" class="text-link">View publication →</a>
-              </article>
+        </div>
 
-            </div>
-
-          {% endfor %}
-
-        </section>
       {% endfor %}
 
-      <p class="empty-state" hidden>No publications match your filters.</p>
+    </section>
+  {% endfor %}
 
-    </div>
+  <p class="empty-state" hidden>No publications match your filters.</p>
+
+</div>
 
 <script src="{{ '/assets/js/publications-filters.js' | relative_url }}"></script>
