@@ -13,13 +13,12 @@
 
   var state = {
     types: new Set(),      // empty set = "all types"
-    years: new Set(),      // empty set = "all years"
     sort: "newest",        // "newest" | "oldest"
     topics: ""              // lowercase search string
   };
 
   function hasActiveFilters() {
-    return state.types.size > 0 || state.years.size > 0 || state.topics.length > 0;
+    return state.types.size > 0 || state.topics.length > 0;
   }
 
   /* ---------- Mobile "Filters" panel toggle ---------- */
@@ -106,35 +105,6 @@
     }
   }
 
-  /* ---------- Years: multi-select ---------- */
-
-  var yearsControl = document.querySelector('.filter-control[data-filter="years"]');
-  if (yearsControl) {
-    var yearsValueLabel = yearsControl.querySelector(".filter-value");
-    var yearCheckboxes = yearsControl.querySelectorAll('input[type="checkbox"]');
-
-    yearCheckboxes.forEach(function (checkbox) {
-      checkbox.addEventListener("change", function () {
-        if (checkbox.checked) {
-          state.years.add(checkbox.value);
-        } else {
-          state.years.delete(checkbox.value);
-        }
-        updateYearsLabel();
-        applyFilters();
-      });
-    });
-
-    function updateYearsLabel() {
-      if (state.years.size === 0) {
-        yearsValueLabel.textContent = "All years";
-      } else {
-        var selected = Array.from(state.years).sort(function (a, b) { return b - a; });
-        yearsValueLabel.textContent = selected.join(", ");
-      }
-    }
-  }
-
   /* ---------- Sort: single-select ---------- */
 
   var sortControl = document.querySelector('.filter-control[data-filter="sort"]');
@@ -167,8 +137,6 @@
 
   function entryMatches(entry) {
     var typeMatches = state.types.size === 0 || state.types.has(entry.getAttribute("data-type"));
-    var yearMatches = state.years.size === 0 || state.years.has(entry.getAttribute("data-year"));
-
     var topicMatches = true;
     if (state.topics) {
       var searchableSelectors = [
@@ -192,7 +160,7 @@
       topicMatches = searchableText.indexOf(state.topics) !== -1;
     }
 
-    return typeMatches && yearMatches && topicMatches;
+    return typeMatches && topicMatches;
   }
 
   function applyFilters() {
