@@ -5,6 +5,10 @@ description: "Lecturer and researcher in Operations Research and Business Analyt
 lang: "en"
 markdown: kramdown
 permalink: /:categories/:title/
+collections:
+  publications:
+    output: true
+    permalink: /publications/:slug/
 plugins:
   - jekyll-feed
 exclude:
