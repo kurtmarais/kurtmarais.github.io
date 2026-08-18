@@ -1,0 +1,55 @@
+---
+layout: default
+---
+
+<article class="row g-5 mb-5">
+  <div class="col-md-12 publication-page">
+
+    <p class="eyebrow">
+      {{ page.type | replace: "-", " " | capitalize }}{% if page.featured %} · Featured{% endif %}
+    </p>
+
+    <h1 class="fw-bold mb-3">{{ page.title }}</h1>
+
+    <p class="publication-byline text-muted">
+      {{ page.authors | join: ", " }} ({{ page.year }}).
+      {% if page.type == "journal-article" %}
+        <em>{{ page.journal }}</em>{% if page.volume %}, {{ page.volume }}{% if page.issue %}({{ page.issue }}){% endif %}{% endif %}{% if page.pages %}, {{ page.pages }}{% endif %}.
+      {% elsif page.type == "dataset" %}
+        Dataset.
+      {% elsif page.type == "thesis" %}
+        Master's thesis, {{ page.institution }}.
+      {% elsif page.type == "dissertation" %}
+        Doctoral dissertation, {{ page.institution }}.
+      {% endif %}
+    </p>
+
+    {% if page.abstract %}
+      <h3 class="fw-bold mt-4">Abstract</h3>
+      <p>{{ page.abstract }}</p>
+    {% elsif page.description %}
+      <h3 class="fw-bold mt-4">Description</h3>
+      <p>{{ page.description }}</p>
+    {% else %}
+      <p class="publication-no-abstract text-muted mt-4">
+        No abstract available yet —
+        <a class="text-link" href="{{ page.publication_url }}" target="_blank" rel="noopener noreferrer">view at publisher →</a>
+      </p>
+    {% endif %}
+
+    {% if page.keywords %}
+      <p class="publication-keywords mt-3"><strong>Keywords:</strong> {{ page.keywords | join: ", " }}</p>
+    {% endif %}
+
+    {% if page.tags %}
+      <span class="publication-tags" hidden>{{ page.tags | join: ", " }}</span>
+    {% endif %}
+
+    {% if page.publication_url %}
+      <p class="mt-4">
+        <a class="text-link" href="{{ page.publication_url }}" target="_blank" rel="noopener noreferrer">View publication →</a>
+      </p>
+    {% endif %}
+
+  </div>
+</article>

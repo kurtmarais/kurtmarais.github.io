@@ -2,8 +2,151 @@
 layout: default
 ---
 
+<div class="row g-5 mb-5">
+  <div class="col-md-12">
 
-{{ content }}
+    <div class="page-title-row">
 
+      <h3 class="fw-bold">
+        {{ page.title }}
+      </h3>
 
-{% include publications-list.html %}
+      <div class="filters-wrapper">
+
+        <button type="button" class="filters-toggle" aria-expanded="false" aria-controls="publications-filters-panel">
+          <span>Filters</span>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </button>
+
+        <div class="filters-panel" id="publications-filters-panel">
+
+          <div class="filter-control" data-filter="type">
+            <span class="filter-mobile-label">Type</span>
+            <button type="button" class="filter-toggle" aria-expanded="false">
+              <span class="filter-value">All types</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="filter-dropdown" hidden>
+              {% assign publication_types = site.publications | map: "type" | uniq | sort %}
+              {% for type in publication_types %}
+                <label class="filter-option">
+                  <input type="checkbox" value="{{ type }}">
+                  {{ type | replace: "-", " " | capitalize }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="filter-control" data-filter="years">
+            <span class="filter-mobile-label">Years</span>
+            <button type="button" class="filter-toggle" aria-expanded="false">
+              <span class="filter-value">All years</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="filter-dropdown" hidden>
+              {% assign publication_years = site.publications | map: "year" | uniq | sort | reverse %}
+              {% for year in publication_years %}
+                <label class="filter-option">
+                  <input type="checkbox" value="{{ year }}">
+                  {{ year }}
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="filter-control" data-filter="sort">
+            <span class="filter-mobile-label">Sort</span>
+            <button type="button" class="filter-toggle" aria-expanded="false">
+              <span class="filter-value">Newest first</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </button>
+            <div class="filter-dropdown" hidden>
+              <button type="button" class="filter-option" data-value="newest">Newest first</button>
+              <button type="button" class="filter-option" data-value="oldest">Oldest first</button>
+              <button type="button" class="filter-option" data-value="az">Sort A-Z</button>
+              <button type="button" class="filter-option" data-value="za">Sort Z-A</button>
+            </div>
+          </div>
+
+          <div class="filter-control filter-search" data-filter="topics">
+            <span class="filter-mobile-label">Search</span>
+            <input type="search" class="filter-search-input" placeholder="Search publications...">
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+    <div class="publications-list">
+
+      {% assign grouped_publications = site.publications | group_by: "year" | sort: "name" | reverse %}
+      {% assign publication_order = 0 %}
+      {% for group in grouped_publications %}
+        <section class="publication-year-group" data-year="{{ group.name }}">
+
+          <h3 class="publication-year-heading fw-bold pb-3 mb-4">{{ group.name }}</h3>
+
+          {% for item in group.items %}
+
+            {% assign publication_order = publication_order | plus: 1 %}
+
+            <div class="publication-entry-wrap">
+
+              <article
+                class="publication-entry"
+                data-type="{{ item.type }}"
+                data-year="{{ item.year }}"
+                data-order="{{ publication_order }}"
+              >
+                <strong class="publication-title"><a href="{{ item.url }}">{{ item.title }}</a></strong>
+                {% if item.featured %}<span class="publication-featured-badge">Featured</span>{% endif %}
+                <br>
+
+                <span class="publication-byline">
+                  {{ item.authors | join: ", " }} ({{ item.year }}).
+                  {% if item.type == "journal-article" %}
+                    <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% if item.issue %}({{ item.issue }}){% endif %}{% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
+                  {% elsif item.type == "dataset" %}
+                    Dataset.
+                  {% elsif item.type == "thesis" %}
+                    Master's thesis, {{ item.institution }}.
+                  {% elsif item.type == "dissertation" %}
+                    Doctoral dissertation, {{ item.institution }}.
+                  {% endif %}
+                </span><br>
+
+                {% if item.abstract %}
+                  <span class="publication-description">{{ item.abstract | truncatewords: 32 }}</span><br>
+                {% elsif item.description %}
+                  <span class="publication-description">{{ item.description | truncatewords: 32 }}</span><br>
+                {% endif %}
+
+                {% if item.keywords %}
+                  <span class="publication-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
+                {% endif %}
+
+                {% if item.tags %}
+                  <span class="publication-tags" hidden>{{ item.tags | join: ", " }}</span>
+                {% endif %}
+
+                <a href="{{ item.url }}" class="text-link">View publication →</a>
+              </article>
+
+            </div>
+
+          {% endfor %}
+
+        </section>
+      {% endfor %}
+
+      <p class="empty-state" hidden>No publications match your filters.</p>
+
+    </div>
+
+<script src="{{ '/assets/js/publications-filters.js' | relative_url }}"></script>
