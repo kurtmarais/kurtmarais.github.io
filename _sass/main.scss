@@ -256,6 +256,15 @@ h4 {
   padding: 0.35rem 0;
 }
 
+/* The publication list uses the same entry spacing as the supervision and engagements lists. */
+.publications-list {
+  margin-bottom: 3rem;
+}
+
+.publication-entry-wrap {
+  display: block;
+}
+
 .publication-featured-badge {
   display: inline-block;
   margin-left: 0.5rem;
