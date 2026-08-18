@@ -10,8 +10,7 @@ permalink: /teaching/
 <!--<br>
 <br>--> 
 
-### Undergraduate courses
-
+### Undergraduate courses<br>
 <br>
 
 **Business Analytics 214** (2020‒2025)<br>
@@ -42,8 +41,7 @@ Decision theory, decision-making under uncertainty, utility theory, prospect the
 Convex and concave functions, non-linear programming, goal programming
 <br><br>
 
-### Postgraduate courses
-
+### Postgraduate courses<br>
 <br>
 
 **Methods of Operations Research** (2020, 2021, 2023‒)<br>
