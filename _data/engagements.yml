@@ -2,8 +2,10 @@
   type: "media"
   year: 2026
   media_format: "video"
+  featured: true
   publication: "eNCA NewsLink"
-  date: "16 August 2026"
+  start_date: "2026-08-16"
+  end_date: "2026-08-16"
   image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJZXdhDZ8cOkEerp1mdWCWNbZtZpW8pA1GDQCI7iO59Q&s=10"
   description: "Dr. Kurt Marais of Stellenbosch University explains the concept of emotional reinforcement online, describing how negative sentiments can amplify among individuals with depression. The study analysed over twelve thousand posts, identified patterns of activity between 10pm and 5am, and highlighted the importance of anonymity in online mental health communities. He discusses the broader implications for social media research and the need for careful consumption of digital content."
   url: "https://s3.eu-west-1.wasabisys.com/clientclipsr/20260816/20644238-0_1352A52.html"
@@ -16,8 +18,10 @@
   type: "media"
   year: 2026
   media_format: "article"
+  featured: false
   publication: "Stellenbosch University"
-  date: "11 August 2026"
+  start_date: "2026-08-11"
+  end_date: "2026-08-11"
   image: "https://files.su.ac.za/public/styles/responsive_3_1_1600w/public/stellenbosch-university/images/2026-08/social-media-2026png.png?itok=J3WQGyBs"
   description: "Study highlights ‘emotional reinforcement’ – when people amplify each other’s emotions online. Effect stronger among people with depression. Researcher developed reliable depression-specific lexicon."
   url: "https://www.su.ac.za/en/news/study-explores-emotional-content-and-depressive-symptoms-social-media"

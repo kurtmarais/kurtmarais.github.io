@@ -10,8 +10,8 @@ Files here:
   `_data/README.md`'s sibling note below, or the dedicated notes in this
   folder's `supervision.yml` section for the field list.
 - `engagements.yml` — talks, panels, guest lectures, seminars, and media
-  coverage, shown on the Engagements page and (for `type: media` entries)
-  the homepage strip.
+  coverage, shown on the Engagements page. Media entries with `featured: true`
+  are also shown in the homepage "In the Media" strip.
 - `publications.yml` — four categories of publications (featured, published,
   datasets, theses), shown on the Publications page.
 - `settings.yml` — site-wide navigation menu and social media icon links.
@@ -70,14 +70,13 @@ the ones relevant to the entry):
 - title: 'Talk or article title'
   type: conference                # one of: conference, guest_lecture, panel,
                                    # seminar, media
-  year: 2026                      # used for year-grouping and Newest/Oldest sort
-  sort_date: '2026-08-11'         # optional — ISO date (YYYY-MM-DD), only needed
-                                   # if you have multiple entries in the same year
-                                   # and want precise ordering between them
+  year: 2026                      # used for year-grouping
+  start_date: '2026-08-11'         # optional — ISO date (YYYY-MM-DD)
+  end_date: '2026-08-13'           # optional — ISO date; omit for a single-day entry
   venue: 'Conference or event name'   # shown for conference/panel/seminar/etc.
   location: 'City, Country'
   publication: 'Outlet name'      # used for media entries instead of venue
-  date: '11 August 2026'          # human-readable date string, shown for media entries
+  featured: true                   # optional — featured media appears on homepage
   description: 'One paragraph, always visible if present.'
   abstract: 'Longer text — shown as a collapsible section if present.
              Independent of description; both can appear together.'
@@ -92,8 +91,14 @@ the ones relevant to the entry):
 ```
 
 Things worth knowing:
-- `type: media` entries are the ones that also appear in the homepage
-  "In the Media" strip — anything else only shows on the Engagements page.
+- `type: media` identifies media coverage and controls its media-card presentation.
+  It does not automatically place an item on the homepage.
+- `featured: true` is an independent flag for media entries. Featured media
+  appears in the homepage "In the Media" strip and receives a "Featured"
+  badge on the Engagements page.
+- `start_date` and `end_date` use ISO format (`YYYY-MM-DD`) and support both
+  single-day engagements and date ranges. If `end_date` is omitted, the entry
+  is displayed as a single date.
 - `media_format` (not `type`) is what triggers the compact media-card visual
   layout — so a recorded seminar, for example, could have `type: seminar` +
   `media_format: video` to stay correctly categorized for filtering while
