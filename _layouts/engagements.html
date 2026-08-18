@@ -103,7 +103,7 @@ layout: default
                 data-year="{{ item.year }}"
                 data-type="{{ item.type }}"
                 data-order="{{ engagement_order }}"
-                data-sort-date="{{ item.sort_date }}"
+                data-sort-date="{% if item.start_date %}{{ item.start_date }}{% else %}{{ item.sort_date }}{% endif %}"
               >
                 <a
                   href="{{ item.url }}"
@@ -124,7 +124,17 @@ layout: default
                 </a>
 
                 <div class="engagement-media-content">
-                  <div class="engagement-media-meta">{{ item.publication }} · {{ item.date }}</div>
+                  <div class="engagement-media-meta">
+                    {{ item.publication }} ·
+                    {% if item.start_date %}
+                      {% assign start_date = item.start_date | date: "%-d %B %Y" %}
+                      {% assign end_date = item.end_date | default: item.start_date | date: "%-d %B %Y" %}
+                      {% if item.end_date and item.end_date != item.start_date %}{{ start_date }}–{{ end_date }}{% else %}{{ start_date }}{% endif %}
+                    {% else %}
+                      {{ item.date }}
+                    {% endif %}
+                    {% if item.featured %}<span class="engagement-featured-badge">Featured</span>{% endif %}
+                  </div>
                   <h4 class="engagement-media-title">{{ item.title }}</h4>
                   <p class="engagement-description">{{ item.description }}</p>
 
@@ -165,9 +175,9 @@ layout: default
                 data-year="{{ item.year }}"
                 data-type="{{ item.type }}"
                 data-order="{{ engagement_order }}"
-                data-sort-date="{{ item.sort_date }}"
+                data-sort-date="{% if item.start_date %}{{ item.start_date }}{% else %}{{ item.sort_date }}{% endif %}"
               >
-                <strong class="engagement-title">{{ item.title }}</strong><br>
+                <strong class="engagement-title">{{ item.title }}</strong>{% if item.featured %} <span class="engagement-featured-badge">Featured</span>{% endif %}<br>
                 <span class="engagement-venue">{{ item.venue }}</span>{% if item.location %} · <span class="engagement-location">{{ item.location }}</span>{% endif %}<br>
 
                 {% if item.description %}

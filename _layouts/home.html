@@ -42,7 +42,7 @@ layout: default
 
 {% include publications.html %}
 
-{% assign media_items = site.data.engagements | where: "type", "media" %}
+{% assign media_items = site.data.engagements | where: "type", "media" | where: "featured", true %}
 {% if site.show_media and media_items.size > 0 %}
 <section class="media-strip mb-5">
 
@@ -80,7 +80,14 @@ layout: default
           <div class="media-content">
 
             <div class="media-meta">
-              {{ item.publication }} · {{ item.date }}
+              {{ item.publication }} ·
+              {% if item.start_date %}
+                {% assign start_date = item.start_date | date: "%-d %B %Y" %}
+                {% assign end_date = item.end_date | default: item.start_date | date: "%-d %B %Y" %}
+                {% if item.end_date and item.end_date != item.start_date %}{{ start_date }}–{{ end_date }}{% else %}{{ start_date }}{% endif %}
+              {% else %}
+                {{ item.date }}
+              {% endif %}
             </div>
 
             <h4>{{ item.title }}</h4>
