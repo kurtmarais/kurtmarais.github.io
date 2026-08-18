@@ -11,7 +11,7 @@ permalink: /teaching/
 <br>--> 
 
 ### Undergraduate courses
-<br>
+
 
 **Business Analytics 214** (2020‒2025)<br>
 Introduction to decision theory and decision-making under uncertainty, introduction to linear programming and mathematical formulations
@@ -41,8 +41,8 @@ Decision theory, decision-making under uncertainty, utility theory, prospect the
 Convex and concave functions, non-linear programming, goal programming
 <br><br>
 
-### Postgraduate courses
-<br>
+### Postgraduate courses<br>
+
 
 **Methods of Operations Research** (2020, 2021, 2023‒)<br>
 Collaboration with industry, project-based work aimed at solving real-world problems through Operations Research and mathematical optimisation
