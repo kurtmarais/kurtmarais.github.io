@@ -5,6 +5,28 @@
   <meta property="og:title" content="{{ page.title }} | {{ site.title }}">
   <meta property="og:description" content="{{ site.description }}">
   <meta property="og:image" content="{{ '/assets/img/network-github-1.png' | absolute_url }}">
+  {% if page.collection == "publications" %}
+    <!-- Google Scholar Highwire Press meta tags — see https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
+    <meta name="citation_title" content="{{ page.title }}">
+    {% for author in page.authors %}
+    <meta name="citation_author" content="{{ author }}">
+    {% endfor %}
+    <meta name="citation_publication_date" content="{{ page.year }}">
+    {% if page.type == "journal-article" %}
+      {% if page.journal %}<meta name="citation_journal_title" content="{{ page.journal }}">{% endif %}
+      {% if page.volume %}<meta name="citation_volume" content="{{ page.volume }}">{% endif %}
+      {% if page.issue %}<meta name="citation_issue" content="{{ page.issue }}">{% endif %}
+      {% if page.pages %}
+        {% assign publication_pages = page.pages | split: "-" %}
+        <meta name="citation_firstpage" content="{{ publication_pages[0] }}">
+        {% if publication_pages[1] %}<meta name="citation_lastpage" content="{{ publication_pages[1] }}">{% endif %}
+      {% endif %}
+    {% elsif page.type == "thesis" or page.type == "dissertation" %}
+      {% if page.institution %}<meta name="citation_dissertation_institution" content="{{ page.institution }}">{% endif %}
+    {% endif %}
+    {% if page.doi %}<meta name="citation_doi" content="{{ page.doi | remove: 'https://doi.org/' }}">{% endif %}
+    <meta name="citation_abstract_html_url" content="{{ page.url | absolute_url }}">
+  {% endif %}
   <link rel="icon" href="{{ '/assets/img/network-github-1.ico' | relative_url }}">
   <title>{{ page.title }} | {{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/libs/bootstrap/bootstrap.min.css' | relative_url }}">

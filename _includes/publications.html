@@ -2,38 +2,31 @@
   <div>
     <h3 class="fw-bold border-bottom pb-3 mb-4">Selected publications</h3>
 
-    {% for item in site.data.publications.featured %}
+    {% assign featured_publications = site.publications | where: "featured", true %}
+    {% for item in featured_publications %}
       <div class="publication-item mb-4">
 
         <h4 class="mb-2">
-          {{ item.title }}
+          <a href="{{ item.url }}">{{ item.title }}</a>
         </h4>
 
         <p class="mb-1">
-          {{ item.authors }} ({{ item.year }}).
-          <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% endif %}{% if item.issue %}({{ item.issue }}){% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
+          {{ item.authors | join: ", " }} ({{ item.year }}).
+          {% if item.type == "journal-article" %}
+            <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% endif %}{% if item.issue %}({{ item.issue }}){% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
+          {% elsif item.type == "dataset" %}
+            Dataset.
+          {% elsif item.type == "thesis" %}
+            Master's thesis, {{ item.institution }}.
+          {% elsif item.type == "dissertation" %}
+            Doctoral dissertation, {{ item.institution }}.
+          {% endif %}
         </p>
 
         <p class="mb-0">
-
-          {% if item.reference %}
-            <a href="{{ item.reference | relative_url }}" class="text-link" download>
-              Download reference
-            </a>
-          {% endif %}
-
-          {% if item.publication_url %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.publication_url }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View publication
-            </a>
-          {% elsif item.doi %}
-            {% if item.reference %}<span class="mx-2">|</span>{% endif %}
-            <a href="{{ item.doi }}" class="text-link" target="_blank" rel="noopener noreferrer">
-              View publication
-            </a>
-          {% endif %}
-
+          <a href="{{ item.url }}" class="text-link">
+            View publication
+          </a>
         </p>
 
       </div>
