@@ -256,15 +256,6 @@ h4 {
   padding: 0.35rem 0;
 }
 
-/* The publication list uses the same entry spacing as the supervision and engagements lists. */
-.publications-list {
-  margin-bottom: 3rem;
-}
-
-.publication-entry-wrap {
-  display: block;
-}
-
 .publication-featured-badge {
   display: inline-block;
   margin-left: 0.5rem;
@@ -280,6 +271,25 @@ h4 {
 }
 
 body.dark-mode .publication-featured-badge {
+  background: rgba(154, 184, 170, 0.15);
+  color: #9ab8aa;
+}
+
+.engagement-featured-badge {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  background: rgba(54, 91, 82, 0.1);
+  color: $linkColor;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+body.dark-mode .engagement-featured-badge {
   background: rgba(154, 184, 170, 0.15);
   color: #9ab8aa;
 }
