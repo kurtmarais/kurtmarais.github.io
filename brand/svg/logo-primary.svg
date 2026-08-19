@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    Kurt Marais — Orbit + K-Arms mark
+    To recolor for a different occasion/theme, change these four values:
+      .kn-hub   currently #365b52  (forest green — the anchor)
+      .kn-arm   currently #6ea491  (mint — the two K-arm connectors)
+      .kn-node  currently #6ea491  (mint — the three satellite nodes)
+      .kn-arc   currently #6ea491  (mint — the orbit path, kept at 60% opacity)
+    Keep .kn-hub visually darker/heavier than the rest — the hierarchy
+    (one dense anchor, lighter connective tissue) is what makes the
+    mark read correctly at a glance.
+  -->
+  <style>
+    .kn-arc  { fill: none; stroke: #6ea491; stroke-width: 2; stroke-linecap: round; opacity: 0.6; }
+    .kn-arm  { stroke: #6ea491; stroke-width: 2.4; }
+    .kn-hub  { fill: #365b52; }
+    .kn-node { fill: #6ea491; }
+  </style>
+  <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>
+  <line class="kn-arm" x1="32" y1="32" x2="46" y2="46"/>
+  <line class="kn-arm" x1="32" y1="32" x2="46" y2="18"/>
+  <circle class="kn-hub" cx="32" cy="32" r="9"/>
+  <circle class="kn-node" cx="46" cy="46" r="4.5"/>
+  <circle class="kn-node" cx="46" cy="18" r="4.5"/>
+  <circle class="kn-node" cx="18" cy="18" r="3.8"/>
+</svg>

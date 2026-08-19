@@ -1,0 +1,74 @@
+<!--
+  Kurt Marais — Orbit + K-Arms mark, animated version
+  ----------------------------------------------------
+  Not a favicon (animated SVG favicons render inconsistently across
+  browsers — Safari in particular). This is for embedding directly in
+  a page: paste the <style> block into your stylesheet (or a <style>
+  tag) and the markup wherever the mark should appear.
+
+  Behaviour: the small orbiting node travels clockwise from the lower
+  arm, through the west side of the ring, into the upper arm — moving
+  fully into that node's space (not fading) so it disappears purely by
+  overlapping a larger node of the same colour — then reverses and
+  travels back. One full cycle takes 36 seconds. `prefers-reduced-motion`
+  is respected: the node freezes in a resting position on the arc
+  rather than being removed.
+-->
+<style>
+  .kn-logo {
+    width: 64px;
+    height: 64px;
+  }
+  .kn-logo svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .kn-arc {
+    fill: none;
+    stroke: #6ea491;
+    stroke-width: 2;
+    stroke-linecap: round;
+    opacity: 0.6;
+  }
+  .kn-arm {
+    stroke: #6ea491;
+    stroke-width: 2.4;
+  }
+  .kn-hub {
+    fill: #365b52;
+  }
+  .kn-end-node {
+    fill: #6ea491;
+  }
+  .kn-orbit-node {
+    fill: #6ea491;
+    offset-path: path('M 46,46 A 20,20 0 1,1 46,18');
+    animation: knOrbitTravel 36s linear infinite;
+  }
+
+  @keyframes knOrbitTravel {
+    0%   { offset-distance: 0%; }
+    8%   { offset-distance: 0%; }
+    46%  { offset-distance: 100%; }
+    54%  { offset-distance: 100%; }
+    92%  { offset-distance: 0%; }
+    100% { offset-distance: 0%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kn-orbit-node { animation: none; offset-distance: 66%; }
+  }
+</style>
+
+<div class="kn-logo" aria-hidden="true">
+  <svg viewBox="0 0 64 64">
+    <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>
+    <line class="kn-arm" x1="32" y1="32" x2="46" y2="46"/>
+    <line class="kn-arm" x1="32" y1="32" x2="46" y2="18"/>
+    <circle class="kn-hub" cx="32" cy="32" r="9"/>
+    <circle class="kn-end-node" cx="46" cy="46" r="4.5"/>
+    <circle class="kn-end-node" cx="46" cy="18" r="4.5"/>
+    <circle class="kn-orbit-node" r="3.8"/>
+  </svg>
+</div>
