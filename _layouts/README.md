@@ -19,7 +19,13 @@ Files here:
   completed student lists.
 - `engagements.html` — the Engagements page: filter/sort UI, year-grouped
   entries, and the compact media-card variant.
-- `publications.html` — the Publications page.
+- `publications.html` — the Publications page: filter/sort UI, year-grouped
+  entries, sourced from the `_publications/` collection (not a data file —
+  see `_publications/README.md`).
+- `publication.html` — the individual page for a single publication (e.g.
+  `/publications/thematic-analysis-r-depression-subreddit/`), used by every
+  file in `_publications/`. Includes the Google Scholar Highwire meta tags
+  (via `_includes/head.html`) and shows the full abstract/description.
 - `cv.html` — the CV page.
 - `contact.html` — layout wrapper used specifically for the contact section
   (paired with `_includes/contact.html`).
