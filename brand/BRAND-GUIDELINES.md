@@ -26,6 +26,10 @@ svg/
                              this one as the "real" logo; it's
                              deliberately heavier so it survives being
                              shrunk to 16px.
+  logo-greyscale-favicon.svg  Same geometry as logo-solid-favicon.svg,
+                             recolored to neutral greys (#2c2c2c hub,
+                             #9a9a9a arms/nodes) for contexts where
+                             brand color isn't wanted or available.
   logo-animated.html        The animated version (orbiting node travels
                              the ring, 36s per cycle). For embedding on
                              pages later — not a favicon. See the
@@ -36,6 +40,7 @@ favicon/
   favicon.ico                Multi-resolution (16/32/48px in one file).
                               Drop this in your site root or reference
                               it directly from <head>.
+  favicon-greyscale.ico       Same, greyscale version.
 
 png/
   favicon-16.png              PNG exports at each size, cut from the
@@ -44,6 +49,7 @@ png/
   favicon-180.png                 rather than an .ico (180 = Apple
   favicon-192.png                  touch icon size, 192 = Android/PWA).
   favicon-512.png
+  favicon-greyscale-*.png     Same set again, greyscale version.
   logo-primary-512.png        Large PNG renders of each SVG variant,
   logo-mono-dark-512.png       for anywhere a raster file is needed
   logo-mono-light-512.png       instead of vector (social profiles,

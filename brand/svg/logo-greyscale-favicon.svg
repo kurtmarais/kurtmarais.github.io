@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    Solid/greyscale — same geometry as logo-solid-favicon.svg (thick
+    strokes, larger nodes, tuned for legibility at 16-32px), recolored
+    to neutral greys for contexts where brand color isn't wanted/usable.
+  -->
+  <style>
+    .kn-arc  { fill: none; stroke: #9a9a9a; stroke-width: 5; stroke-linecap: round; }
+    .kn-arm  { stroke: #9a9a9a; stroke-width: 5.5; stroke-linecap: round; }
+    .kn-hub  { fill: #2c2c2c; }
+    .kn-node { fill: #9a9a9a; }
+  </style>
+  <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>
+  <line class="kn-arm" x1="32" y1="32" x2="46" y2="46"/>
+  <line class="kn-arm" x1="32" y1="32" x2="46" y2="18"/>
+  <circle class="kn-hub" cx="32" cy="32" r="10"/>
+  <circle class="kn-node" cx="46" cy="46" r="5.5"/>
+  <circle class="kn-node" cx="46" cy="18" r="5.5"/>
+  <circle class="kn-node" cx="18" cy="18" r="4.5"/>
+</svg>
