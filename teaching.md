@@ -8,7 +8,7 @@ permalink: /teaching/
 
 <!-- Replace this section with your teaching philosophy. It can explain your approach to quantitative reasoning, applied problem-solving, computational methods and the connection between theory and practice. -->
 
-<h3 class="fw-bold border-bottom pb-3 mb-4">Undergraduate courses</h3>
+<h3 class="fw-bold mb-4">Undergraduate courses</h3>
 
 <div class="course-item mb-4">
   <h4 class="mb-1">Business Analytics 214 <span class="course-years">(2020&#8210;2025)</span></h4>
@@ -45,7 +45,7 @@ permalink: /teaching/
   <p class="mb-0 course-description">Convex and concave functions, non-linear programming, goal programming</p>
 </div>
 
-<h3 class="fw-bold border-bottom pb-3 mb-4 mt-5">Postgraduate courses</h3>
+<h3 class="fw-bold mb-4 mt-5">Postgraduate courses</h3>
 
 <div class="course-item mb-4">
   <h4 class="mb-1">Methods of Operations Research <span class="course-years">(2020, 2021, 2023&#8210;)</span></h4>
