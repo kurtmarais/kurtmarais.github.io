@@ -3,11 +3,11 @@
 Site images.
 
 Actively used:
-- `home.jpg` — homepage hero image.
+- `headshot.jpg` — homepage hero image (`.hero-photo` in `_layouts/home.html`).
 - `network-github-1.ico` — site favicon.
 
 Present but not currently referenced anywhere in the templates:
-- `contact.jpg`, `graduate-student.jpg`, `lab-technician.jpg`,
+- `home.jpg`, `contact.jpg`, `graduate-student.jpg`, `lab-technician.jpg`,
   `primary-investigator.jpg` — appear to be leftovers from the starting
   Jekyll theme. Safe to delete if you're cleaning up, or repurpose if you
   build out a new section that needs them.
