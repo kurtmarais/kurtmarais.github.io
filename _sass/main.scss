@@ -388,6 +388,30 @@ h4 {
   padding: 0.35rem 0;
 }
 
+
+/* TEACHING — COURSES (spacing rhythm matches .publication-item) */
+
+.course-item {
+  padding: 0.35rem 0;
+}
+
+.course-item h4 {
+  font-size: 1.05rem;
+}
+
+.course-years {
+  color: #69706b;
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 500;
+}
+
+.course-description {
+  color: #69706b;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 .publication-featured-badge {
   display: inline-block;
   margin-left: 0.5rem;
@@ -426,12 +450,19 @@ body.dark-mode .engagement-featured-badge {
   color: #9ab8aa;
 }
 
-/* MEDIA STRIP */
+/* MEDIA STRIP — card treatment, colorway inverted relative to the hero card */
 
 .media-strip {
-  border-top: 1px solid #d9d9d1;
-  border-bottom: 1px solid #d9d9d1;
-  padding: 1.5rem 0;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #f5f1e7;
+  border: 1px solid #d9cfb8;
+  border-radius: 1rem;
+  box-shadow:
+    0 1.5rem 3rem rgba(32, 36, 33, 0.09),
+    0 0.3rem 0.75rem rgba(32, 36, 33, 0.05);
+  padding: 1.75rem 2rem 2rem;
 }
 
 .media-strip-header {
@@ -1181,16 +1212,25 @@ body.dark-mode .publication-item {
   color: #aeb3ae;
 }
 
+body.dark-mode .course-years,
+body.dark-mode .course-description {
+  color: #aeb3ae;
+}
+
 /* LINKS */
 
 body.dark-mode .text-link {
   color: #9ab8aa;
 }
 
-/* MEDIA STRIP - DARK MODE */
+/* MEDIA STRIP - DARK MODE — inverted: green card in dark mode (mirrors the light-mode hero) */
 
 body.dark-mode .media-strip {
-  border-color: #444943;
+  background: darken($linkColor, 12%);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 1.5rem 3rem rgba(32, 36, 33, 0.18),
+    0 0.3rem 0.75rem rgba(32, 36, 33, 0.1);
 }
 
 body.dark-mode .media-strip-header h3 {
@@ -1597,6 +1637,11 @@ body.dark-mode .back-to-top:hover {
 /* MEDIA STRIP - MOBILE */
 
 @media (max-width: 767px) {
+
+  .media-strip {
+    padding: 1.5rem 1.25rem 1.75rem;
+    border-radius: 0.75rem;
+  }
 
   .media-item {
     display: block;
