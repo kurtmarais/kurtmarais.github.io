@@ -1,18 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <!--
-    Monochrome, cream (#f7f6f1) — same thick favicon-weight geometry as
-    logo-solid-favicon.svg / logo-greyscale-favicon.svg, single hue
-    throughout (matching logo-mono-light.svg's treatment: hub, arms and
-    nodes at full opacity, the arc slightly dimmer to keep some depth).
-    For dark backgrounds only — on a light tab this will be close to
-    invisible. Use logo-solid-favicon or logo-greyscale-favicon for
-    general/light-tab use.
+    Favicon-optimized: thicker strokes and larger nodes than the primary
+    mark, so nothing thins out to invisible at 16-32px. Two-tone kept
+    (not flattened to one color) because the dark hub vs. lighter
+    connectors gives real shape recognition at tiny sizes that a flat
+    silhouette loses — tested against both light and dark browser tab
+    chrome, this mint tone reads clearly on both.
   -->
   <style>
-    .kn-arc  { fill: none; stroke: #f7f6f1; stroke-width: 5; stroke-linecap: round; opacity: 0.55; }
-    .kn-arm  { stroke: #f7f6f1; stroke-width: 5.5; stroke-linecap: round; }
-    .kn-hub  { fill: #f7f6f1; }
-    .kn-node { fill: #f7f6f1; }
+    .kn-arc  { fill: none; stroke: #6ea491; stroke-width: 5; stroke-linecap: round; }
+    .kn-arm  { stroke: #6ea491; stroke-width: 5.5; stroke-linecap: round; }
+    .kn-hub  { fill: #365b52; }
+    .kn-node { fill: #6ea491; }
   </style>
   <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>
   <line class="kn-arm" x1="32" y1="32" x2="46" y2="46"/>
