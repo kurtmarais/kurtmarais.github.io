@@ -16,4 +16,5 @@ exclude:
   - Gemfile.lock
   - academic.gemspec
   - vendor
+  - brand
 show_media: true
