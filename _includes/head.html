@@ -4,7 +4,10 @@
   <meta name="description" content="{{ site.description }}">
   <meta property="og:title" content="{{ page.title }} | {{ site.title }}">
   <meta property="og:description" content="{{ site.description }}">
-  <meta property="og:image" content="{{ '/assets/img/network-github-1.png' | absolute_url }}">
+  <!-- og:image intentionally omitted: keeps link previews to a simple title/description
+       card (site favicon "ribbon") instead of a large image card. -->
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  <meta property="og:type" content="website">
   {% if page.collection == "publications" %}
     <!-- Google Scholar Highwire Press meta tags — see https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
     <meta name="citation_title" content="{{ page.title }}">
