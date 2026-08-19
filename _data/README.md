@@ -4,26 +4,27 @@ Structured content that Jekyll reads at build time and injects into the page
 templates in `_layouts/`. Nothing in this folder is a full page on its own —
 each file feeds one or more pages via Liquid (`site.data.xxx`).
 
+Publications are **not** here — they're a Jekyll collection in
+`_publications/` (one `.md` file per publication), not a data file. See
+`_publications/README.md`.
+
 Files here:
 
-- `supervision.yml` — every supervision entry (current and completed). See
-  `_data/README.md`'s sibling note below, or the dedicated notes in this
-  folder's `supervision.yml` section for the field list.
+- `supervision.yml` — every supervision entry (current and completed).
+  Schema below.
 - `engagements.yml` — talks, panels, guest lectures, seminars, and media
   coverage, shown on the Engagements page. Media entries with `featured: true`
-  are also shown in the homepage "In the Media" strip.
-- `publications.yml` — four categories of publications (featured, published,
-  datasets, theses), shown on the Publications page.
+  are also shown in the homepage "In the Media" strip. Schema below.
 - `settings.yml` — site-wide navigation menu and social media icon links.
   Not something you'd update often — only touch this if you're adding/
   removing a page from the top nav or a social link.
 - `cv/` — subfolder, see `_data/cv/README.md`.
 
-**When adding a new entry to `supervision.yml`, `engagements.yml`, or
-`publications.yml`**, copy an existing entry as your template and change the
-values — don't write one from scratch, since it's easy to miss a field the
-template relies on (e.g. `degree_sort` in supervision, which controls sort
-order and isn't visually obvious from the entry itself).
+**When adding a new entry to `supervision.yml` or `engagements.yml`**, copy
+an existing entry as your template and change the values — don't write one
+from scratch, since it's easy to miss a field the template relies on (e.g.
+`degree_sort` in supervision, which controls sort order and isn't visually
+obvious from the entry itself).
 
 # Adding a supervision entry
 
@@ -111,48 +112,3 @@ Things worth knowing:
 - `sort_date` is optional and only matters if you have several entries in the
   same `year` and want to control their relative order precisely — without
   it, same-year entries keep their order-of-appearance in the file.
-
-  # Adding a publications entry
-
-The file has four top-level lists: `featured`, `published`, `datasets`,
-`theses`. Add your entry to the correct list. Note `featured` and `published`
-currently use identical field structures — `featured` is just a curated
-subset for highlighting on the page, not a different format. Copy an
-existing entry within the right list and adjust.
-
-## `featured` / `published` — journal articles etc.
-
-```yaml
-- title: 'Article title'
-  authors: 'Surname, I.'
-  journal: 'Journal name'
-  year: 2026
-  volume: '16'
-  issue: '2'
-  pages: '153-178'
-  doi: 'https://doi.org/...'
-  publication_url: 'https://doi.org/...'
-```
-
-## `datasets`
-
-```yaml
-- title: 'Dataset title'
-  authors: 'Surname, I'
-  type: Dataset
-  year: 2026
-  description: 'What the dataset contains and how it can be used.'
-  doi: 'https://doi.org/...'
-  publication_url: 'https://doi.org/...'
-```
-
-## `theses`
-
-```yaml
-- title: 'Thesis title'
-  authors: 'Surname, I.'
-  degree: Dissertation        # or 'Thesis', etc.
-  institution: 'University name'
-  year: 2026
-  publication_url: 'https://...'
-```
