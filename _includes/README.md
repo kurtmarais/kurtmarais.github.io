@@ -17,6 +17,11 @@ Files here:
   page (above the footer).
 - `head.html` — the HTML `<head>`: page title, meta tags, favicon, font/CSS
   imports.
-- `publications.html` and `publications-list.html` — render the Publications
-  page's four sections (featured/published/datasets/theses) from
-  `_data/publications.yml`.
+- `publications.html` — renders the homepage's "Selected publications"
+  section (items from the `_publications/` collection with `featured: true`).
+  This is **not** the `/publications/` page itself — that page is rendered
+  directly by `_layouts/publications.html`, with no include in between.
+- `publications-list.html` — not currently included anywhere in the site.
+  Leftover from an earlier `_data`-driven approach to publications, before
+  they moved to the `_publications/` collection. Safe to ignore or delete;
+  see `_publications/README.md` for how publications actually work now.
