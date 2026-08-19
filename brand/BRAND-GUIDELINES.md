@@ -30,6 +30,28 @@ svg/
                              recolored to neutral greys (#2c2c2c hub,
                              #9a9a9a arms/nodes) for contexts where
                              brand color isn't wanted or available.
+  logo-mono-favicon.svg       Same favicon-weight geometry again, single
+                             cream color (#f7f6f1, matching
+                             logo-mono-light.svg). Dark backgrounds
+                             only — tested against both light and dark
+                             tab chrome, and on light it's close to
+                             invisible. Don't use this as a general
+                             favicon; use logo-solid-favicon or
+                             logo-greyscale-favicon for that.
+  favicon-adaptive.svg      Switches color scheme automatically based on
+                             the visitor's OS/browser theme (embedded
+                             prefers-color-scheme media query — no
+                             JavaScript). Light state matches
+                             logo-solid-favicon; dark state matches
+                             logo-mono-favicon. Supported in Chrome,
+                             Firefox, Edge; Safari ignores the media
+                             query and always shows the light state,
+                             which is why favicon.ico must still ship
+                             alongside it as a fallback. Also: this
+                             responds to the visitor's SYSTEM theme, not
+                             this site's own manual dark-mode toggle —
+                             the two can disagree, and there's no
+                             CSS-only fix for that.
   logo-animated.html        The animated version (orbiting node travels
                              the ring, 36s per cycle). For embedding on
                              pages later — not a favicon. See the
@@ -41,6 +63,8 @@ favicon/
                               Drop this in your site root or reference
                               it directly from <head>.
   favicon-greyscale.ico       Same, greyscale version.
+  favicon-mono.ico            Same, monochrome cream version — dark
+                              backgrounds only, see note above.
 
 png/
   favicon-16.png              PNG exports at each size, cut from the
@@ -50,6 +74,7 @@ png/
   favicon-192.png                  touch icon size, 192 = Android/PWA).
   favicon-512.png
   favicon-greyscale-*.png     Same set again, greyscale version.
+  favicon-mono-*.png          Same set again, monochrome cream version.
   logo-primary-512.png        Large PNG renders of each SVG variant,
   logo-mono-dark-512.png       for anywhere a raster file is needed
   logo-mono-light-512.png       instead of vector (social profiles,
@@ -98,3 +123,49 @@ mint accent) — nothing new was introduced.
   — animated SVG favicons aren't reliably supported across browsers
   (Safari notably doesn't render them). The static `logo-solid-favicon`
   exports are what should ship as the real favicon.
+
+---
+
+## Implementing the favicon (once you're ready)
+
+This pack (`brand/`) is reference material — `_config.yml` excludes it
+from the build, so nothing here is live on the site yet. To actually
+ship the new favicon, starting from a repo where only `brand/` has
+been added and nothing else has changed:
+
+1. **Copy the files that need to be served into `assets/img/`** —
+   Jekyll only builds what's under `assets/`, not `brand/`:
+   - `brand/svg/favicon-adaptive.svg` → `assets/img/favicon.svg`
+   - `brand/favicon/favicon.ico` → `assets/img/favicon.ico`
+   - `brand/png/favicon-180.png` → `assets/img/favicon-180.png`
+   - `brand/png/logo-primary-512.png` → `assets/img/og-image.png`
+     (for the `og:image` tag — see step 4)
+
+2. **Update `_includes/head.html`** — replace the existing favicon
+   `<link>` line(s) with, in this order (order matters; browsers use
+   the first tag they support):
+   ```html
+   <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
+   <link rel="icon" href="{{ '/assets/img/favicon.ico' | relative_url }}" sizes="32x32 48x48" type="image/x-icon">
+   <link rel="apple-touch-icon" href="{{ '/assets/img/favicon-180.png' | relative_url }}">
+   ```
+
+3. **Remove the old favicon files and their references** — delete
+   `assets/img/network-github-1.ico`, `assets/img/network-github-1.png`,
+   and the separate stale `assets/favicon.ico` at the repo root, and
+   remove the old `rel="shortcut icon"` line in `head.html` that
+   pointed to it.
+
+4. **Repoint `og:image`** — it currently points at
+   `network-github-1.png`, which step 3 just deleted. Update it to the
+   copy made in step 1:
+   ```html
+   <meta property="og:image" content="{{ '/assets/img/og-image.png' | absolute_url }}">
+   ```
+
+5. **Deploy, then hard-refresh to actually see it** — browsers cache
+   favicons aggressively in a separate long-lived cache from normal
+   page assets. If the old icon is still showing after deploying, that's
+   almost always just your own browser's cache, not a failed deploy —
+   a hard refresh, or bumping to `favicon.ico?v=2` if it persists,
+   clears it.

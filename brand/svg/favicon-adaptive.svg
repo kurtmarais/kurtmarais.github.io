@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    Adaptive favicon — switches automatically based on the visitor's
+    OS/browser color scheme (prefers-color-scheme), no JavaScript.
+
+    Supported: Chrome, Firefox, Edge (browser re-evaluates the media
+    query against system theme).
+    NOT supported: Safari — always renders the light/default state
+    below, which is why a static favicon.ico fallback must still ship
+    alongside this file. See BRAND-GUIDELINES.md.
+
+    Important: this responds to the visitor's SYSTEM theme, not this
+    site's own manual dark-mode toggle — the two can be out of sync
+    (e.g. visitor's OS is light but they've flipped the site to dark).
+    There is no CSS-only way to bind this to the site's own toggle;
+    doing so would require JavaScript swapping the <link> tag, which
+    defeats the point of using this technique.
+  -->
+  <style>
+    .kn-arc  { fill: none; stroke: #6ea491; stroke-width: 5; stroke-linecap: round; }
+    .kn-arm  { stroke: #6ea491; stroke-width: 5.5; stroke-linecap: round; }
+    .kn-hub  { fill: #365b52; }
+    .kn-node { fill: #6ea491; }
+
+    @media (prefers-color-scheme: dark) {
+      .kn-arc  { stroke: #f7f6f1; opacity: 0.55; }
+      .kn-arm  { stroke: #f7f6f1; }
+      .kn-hub  { fill: #f7f6f1; }
+      .kn-node { fill: #f7f6f1; }
+    }
+  </style>
+  <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>
+  <line class="kn-arm" x1="32" y1="32" x2="46" y2="46"/>
+  <line class="kn-arm" x1="32" y1="32" x2="46" y2="18"/>
+  <circle class="kn-hub" cx="32" cy="32" r="10"/>
+  <circle class="kn-node" cx="46" cy="46" r="5.5"/>
+  <circle class="kn-node" cx="46" cy="18" r="5.5"/>
+  <circle class="kn-node" cx="18" cy="18" r="4.5"/>
+</svg>
