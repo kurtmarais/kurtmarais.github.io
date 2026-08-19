@@ -412,6 +412,13 @@ h4 {
   line-height: 1.6;
 }
 
+
+/* CV — entries (title + meta as one block, single line break between them) */
+
+.cv-entry-meta {
+  color: #69706b;
+}
+
 .publication-featured-badge {
   display: inline-block;
   margin-left: 0.5rem;
@@ -1214,6 +1221,10 @@ body.dark-mode .publication-item {
 
 body.dark-mode .course-years,
 body.dark-mode .course-description {
+  color: #aeb3ae;
+}
+
+body.dark-mode .cv-entry-meta {
   color: #aeb3ae;
 }
 
