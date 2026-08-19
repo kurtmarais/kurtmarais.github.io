@@ -223,13 +223,145 @@ h4 {
   border-left: none;
 }
 
-.research-marker {
-  display: block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: $linkColor;
+/* Decorative research-focus icons: restrained "Outline" style,
+   forest-green/mint palette, slow loops, standing in for Lottie. */
+
+.research-icon {
+  width: 44px;
+  height: 44px;
   margin-bottom: 0.9rem;
+}
+
+.research-icon svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.research-icon-node {
+  fill: none;
+  stroke: #365b52;
+  stroke-width: 1.6;
+}
+
+/* NLP — tokenization: each line of text is built from two segments
+   that pull apart into a visible gap, then rejoin, staggered top to
+   bottom like a sentence being split into tokens as it's read */
+.token-seg {
+  stroke: #365b52;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  transform-box: fill-box;
+}
+.token-seg.left  { transform-origin: right center; animation: tokenGapLeft 3.6s ease-in-out infinite; }
+.token-seg.right { transform-origin: left center;  animation: tokenGapRight 3.6s ease-in-out infinite; }
+
+.token-line-2 .token-seg { animation-delay: 0.5s; }
+.token-line-3 .token-seg { animation-delay: 1s; }
+
+@keyframes tokenGapLeft {
+  0%, 20%, 100% { transform: translateX(0); }
+  45%, 65%      { transform: translateX(-2.5px); }
+}
+@keyframes tokenGapRight {
+  0%, 20%, 100% { transform: translateX(0); }
+  45%, 65%      { transform: translateX(2.5px); }
+}
+
+/* Social networks — small graph, connections pulsing outward */
+.network-edge {
+  stroke: #6ea491;
+  stroke-width: 1.4;
+  stroke-dasharray: 4;
+  animation: edgeFlow 2.6s linear infinite;
+}
+.network-edge:nth-child(2) { animation-delay: 0.4s; }
+.network-edge:nth-child(3) { animation-delay: 0.8s; }
+
+@keyframes edgeFlow {
+  to { stroke-dashoffset: -16; }
+}
+
+.network-node {
+  fill: #365b52;
+}
+
+/* Agent-based modelling — small agents drifting within a bounded area */
+.agent-dot {
+  fill: #365b52;
+  animation: agentDrift 4s ease-in-out infinite;
+}
+.agent-dot:nth-child(2) { animation-duration: 4.6s; animation-delay: 0.3s; }
+.agent-dot:nth-child(3) { animation-duration: 3.6s; animation-delay: 0.7s; }
+
+@keyframes agentDrift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(4px, -3px); }
+  50% { transform: translate(-2px, 3px); }
+  75% { transform: translate(3px, 2px); }
+}
+
+/* Machine learning — decision tree: a static branching structure,
+   with the flow cascading top-down through each level. Nodes get a
+   small scale-pulse as genuine movement, alongside a flat color shift
+   (no blur/glow — that reads as a whitish halo against dark
+   backgrounds regardless of tuning), and leaves hold their pulse
+   briefly (a decision reached) before it resets. */
+.tree-node {
+  fill: #365b52;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.tree-node.root {
+  animation: nodeRootPulse 3.6s ease-in-out infinite;
+}
+.tree-branch {
+  stroke: #6ea491;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  opacity: 0.35;
+}
+.tree-branch.level1 {
+  animation: branchLevel1 3.6s ease-in-out infinite;
+}
+.tree-node.level1 {
+  animation: nodeLevel1Glow 3.6s ease-in-out infinite;
+}
+.tree-branch.level2 {
+  animation: branchLevel2 3.6s ease-in-out infinite;
+}
+.tree-node.level2 {
+  animation: nodeLevel2Glow 3.6s ease-in-out infinite;
+}
+.tree-node.level2:nth-of-type(2) { animation-delay: 0.08s; }
+.tree-node.level2:nth-of-type(3) { animation-delay: 0.16s; }
+.tree-node.level2:nth-of-type(4) { animation-delay: 0.24s; }
+
+@keyframes nodeRootPulse {
+  0%, 8%, 60%, 100% { transform: scale(1); }
+  4%                 { transform: scale(1.2); }
+}
+@keyframes branchLevel1 {
+  0%, 15%, 60%, 100% { opacity: 0.35; }
+  30%, 45%            { opacity: 1; }
+}
+@keyframes nodeLevel1Glow {
+  0%, 15%, 60%, 100% { fill: #365b52; transform: scale(1); }
+  35%                 { fill: #477165; transform: scale(1.2); }
+}
+@keyframes branchLevel2 {
+  0%, 35%, 88%, 100% { opacity: 0.35; }
+  55%, 75%            { opacity: 1; }
+}
+@keyframes nodeLevel2Glow {
+  0%, 35%, 88%, 100% { fill: #365b52; transform: scale(1); }
+  55%, 75%            { fill: #477165; transform: scale(1.25); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .research-icon * {
+    animation: none !important;
+  }
 }
 
 .research-strip h4 {
