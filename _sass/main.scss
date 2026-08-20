@@ -91,6 +91,35 @@ body.dark-mode .header-logo .kn-node {
   fill: #f7f6f1;
 }
 
+/* Header logo motion — rests at NW (matching the static mark) for 90s,
+   then performs one full-range tour: short way to NE, reverse the long
+   way back through NW to SE, then home to NW. Timed at the same pace
+   as the footer's continuous loop (36s per 200% of arc-path distance),
+   so the two placements share one "speed" even though this one is rare.
+   No opacity/scale trick at the endpoints — same as the footer, it
+   simply moves into the larger same-colour end node and is absorbed
+   by the overlap. Per-page-load timing (no JS): each fresh load starts
+   its own 126s countdown, it does not sync across navigation. */
+.header-logo .kn-node-orbit {
+  offset-path: path('M 46,46 A 20,20 0 1,1 46,18');
+  animation: headerLogoTour 126s linear infinite;
+}
+
+@keyframes headerLogoTour {
+  0%      { offset-distance: 66.67%; }
+  71.43%  { offset-distance: 66.67%; }
+  76.19%  { offset-distance: 100%; }
+  90.48%  { offset-distance: 0%; }
+  100%    { offset-distance: 66.67%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-logo .kn-node-orbit {
+    animation: none;
+    offset-distance: 66.67%;
+  }
+}
+
 .site-description {
   color: #69706b;
   font-size: 0.8rem;
