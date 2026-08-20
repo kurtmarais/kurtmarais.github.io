@@ -50,6 +50,47 @@ a { color:$linkColor; }
   color: $bodyColor;
 }
 
+.brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+}
+
+.header-logo {
+  flex: 0 0 auto;
+  width: 2.7rem;
+  height: 2.7rem;
+}
+.header-logo svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.header-logo .kn-arc {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.5;
+  stroke: $linkColor;
+}
+.header-logo .kn-arm {
+  stroke-width: 2.4;
+  stroke: $linkColor;
+}
+.header-logo .kn-hub,
+.header-logo .kn-node {
+  fill: $linkColor;
+}
+
+body.dark-mode .header-logo .kn-arc,
+body.dark-mode .header-logo .kn-arm {
+  stroke: #f7f6f1;
+}
+body.dark-mode .header-logo .kn-hub,
+body.dark-mode .header-logo .kn-node {
+  fill: #f7f6f1;
+}
+
 .site-description {
   color: #69706b;
   font-size: 0.8rem;
@@ -824,6 +865,15 @@ body.dark-mode .engagement-featured-badge {
     font-size: 1.35rem;
     position: relative;
     top: -4px;
+  }
+
+  .brand-row .site-title {
+    top: 0;
+  }
+
+  .brand-row .header-logo {
+    width: 2.2rem;
+    height: 2.2rem;
   }
 
 
