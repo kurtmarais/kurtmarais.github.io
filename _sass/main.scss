@@ -106,17 +106,17 @@ body.dark-mode .header-logo .kn-node {
 }
 
 @keyframes headerLogoTour {
-  0%      { offset-distance: 66.67%; }
-  71.43%  { offset-distance: 66.67%; }
-  76.19%  { offset-distance: 100%; }
-  90.48%  { offset-distance: 0%; }
-  100%    { offset-distance: 66.67%; }
+  0%      { offset-distance: 33.33%; }
+  71.43%  { offset-distance: 33.33%; }
+  76.19%  { offset-distance: 0%; }
+  90.48%  { offset-distance: 100%; }
+  100%    { offset-distance: 33.33%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .header-logo .kn-node-orbit {
     animation: none;
-    offset-distance: 66.67%;
+    offset-distance: 33.33%;
   }
 }
 
