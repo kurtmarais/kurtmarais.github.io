@@ -874,6 +874,40 @@ body.dark-mode .engagement-featured-badge {
   .brand-row .header-logo {
     width: 2.2rem;
     height: 2.2rem;
+    transform: translateY(-2px);
+  }
+
+  /* Footer, mobile — tighten the spacing around the logo (the empty
+     spacer div and the <br> in the markup exist for the desktop grid's
+     auto-placement and stay untouched there; hiding the <br> here is
+     CSS-only, so desktop is unaffected), and centre the logo, brand
+     text, links, and social icons — including when the links wrap
+     onto more than one line. */
+  .footer-row > br {
+    display: none;
+  }
+
+  .footer-row .footer-logo-wrap {
+    margin-top: -0.5rem;
+  }
+
+  .footer-brand {
+    align-self: center;
+    text-align: center;
+    margin-top: -1rem;
+  }
+
+  .footer-links {
+    align-self: center;
+  }
+
+  .footer-links-list {
+    justify-content: center;
+  }
+
+  .social-media-icons {
+    align-self: center;
+    text-align: center;
   }
 
 
@@ -1622,22 +1656,12 @@ body.dark-mode .back-to-top:hover {
     top: -4px;
   }
 
-  .footer-logo-wrap {
-    width: 100%;
-  }
-
-  .footer-brand {
-    align-self: center;
-    text-align: center;
-  }
-
   .mobile-controls {
     display: flex;
     align-items: center;
     gap: 1rem;
-    position: absolute;
-    top: 5.14px;
-    right: 0;
+    margin-left: auto;
+    margin-top: -2.5rem;
   }
 
   .desktop-navigation {
