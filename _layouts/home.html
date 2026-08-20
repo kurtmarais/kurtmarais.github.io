@@ -88,11 +88,14 @@ layout: default
   </div>
 </div>
 
+{% include publications.html %}
+
 {% assign media_items = site.data.engagements | where: "type", "media" | where: "featured", true %}
 {% if site.show_media and media_items.size > 0 %}
 <section class="media-strip mb-5">
 
   <div class="media-strip-header">
+    <br>
     <h3 class="fw-bold border-bottom pb-3 mb-4">In the Media</h3>
   </div>
 
@@ -187,5 +190,3 @@ layout: default
 
 </section>
 {% endif %}
-
-{% include publications.html %}
