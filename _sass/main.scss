@@ -91,35 +91,6 @@ body.dark-mode .header-logo .kn-node {
   fill: #f7f6f1;
 }
 
-/* Header logo motion — rests at NW (matching the static mark) for 90s,
-   then performs one full-range tour: short way to NE, reverse the long
-   way back through NW to SE, then home to NW. Timed at the same pace
-   as the footer's continuous loop (36s per 200% of arc-path distance),
-   so the two placements share one "speed" even though this one is rare.
-   No opacity/scale trick at the endpoints — same as the footer, it
-   simply moves into the larger same-colour end node and is absorbed
-   by the overlap. Per-page-load timing (no JS): each fresh load starts
-   its own 126s countdown, it does not sync across navigation. */
-.header-logo .kn-node-orbit {
-  offset-path: path('M 46,46 A 20,20 0 1,1 46,18');
-  animation: headerLogoTour 126s linear infinite;
-}
-
-@keyframes headerLogoTour {
-  0%      { offset-distance: 66.67%; }
-  71.43%  { offset-distance: 66.67%; }
-  76.19%  { offset-distance: 100%; }
-  90.48%  { offset-distance: 0%; }
-  100%    { offset-distance: 66.67%; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .header-logo .kn-node-orbit {
-    animation: none;
-    offset-distance: 66.67%;
-  }
-}
-
 .site-description {
   color: #69706b;
   font-size: 0.8rem;
@@ -1493,6 +1464,65 @@ body.dark-mode .social-media-icons a:hover {
 
 .footer-link.is-current {
   cursor: pointer;
+}
+
+/* Footer logo — constantly in motion, full colour spectrum in both
+   light and dark mode (no dark-mode override — tested against both
+   page backgrounds and holds up on both, see verification notes).
+   Continuous back-and-forth: the orbiting node travels from one arm
+   into the other and back, moving fully into the larger same-colour
+   node's space rather than fading (avoids any blur/glow halo issue). */
+.footer-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.footer-logo {
+  width: 2.4rem;
+  height: 2.4rem;
+}
+.footer-logo svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.footer-logo .kn-arc {
+  fill: none;
+  stroke: #6ea491;
+  stroke-width: 2;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+.footer-logo .kn-arm {
+  stroke: #6ea491;
+  stroke-width: 2.4;
+}
+.footer-logo .kn-hub {
+  fill: #365b52;
+}
+.footer-logo .kn-node {
+  fill: #6ea491;
+}
+.footer-logo .footer-orbit-node {
+  offset-path: path('M 46,46 A 20,20 0 1,1 46,18');
+  animation: footerLogoOrbit 36s linear infinite;
+}
+
+@keyframes footerLogoOrbit {
+  0%   { offset-distance: 0%; }
+  8%   { offset-distance: 0%; }
+  46%  { offset-distance: 100%; }
+  54%  { offset-distance: 100%; }
+  92%  { offset-distance: 0%; }
+  100% { offset-distance: 0%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-logo .footer-orbit-node {
+    animation: none;
+    offset-distance: 66.67%;
+  }
 }
 
 @media (min-width: 768px) {
