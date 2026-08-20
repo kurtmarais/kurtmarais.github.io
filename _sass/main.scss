@@ -246,7 +246,12 @@ h4 {
 
 /* NLP — tokenization: each line of text is built from two segments
    that pull apart into a visible gap, then rejoin, staggered top to
-   bottom like a sentence being split into tokens as it's read */
+   bottom like a sentence being split into tokens as it's read. Once
+   the gap opens, the segments flash mint and thicken briefly — a flat
+   color/weight shift (no blur/glow, same reasoning as the tree icon)
+   marking the "tokenized" moment, timed to fire right as separation
+   completes rather than partway through the dwell. Only on
+   separation, not on rejoin, to keep the pacing calm. */
 .token-seg {
   stroke: #365b52;
   stroke-width: 2.4;
@@ -260,12 +265,18 @@ h4 {
 .token-line-3 .token-seg { animation-delay: 1s; }
 
 @keyframes tokenGapLeft {
-  0%, 20%, 100% { transform: translateX(0); }
-  45%, 65%      { transform: translateX(-2.5px); }
+  0%, 20%  { transform: translateX(0);      stroke: #365b52; stroke-width: 2.4; }
+  45%      { transform: translateX(-2.5px); stroke: #6ea491; stroke-width: 3; }
+  58%      { transform: translateX(-2.5px); stroke: #365b52; stroke-width: 2.4; }
+  65%      { transform: translateX(-2.5px); stroke: #365b52; stroke-width: 2.4; }
+  100%     { transform: translateX(0);      stroke: #365b52; stroke-width: 2.4; }
 }
 @keyframes tokenGapRight {
-  0%, 20%, 100% { transform: translateX(0); }
-  45%, 65%      { transform: translateX(2.5px); }
+  0%, 20%  { transform: translateX(0);      stroke: #365b52; stroke-width: 2.4; }
+  45%      { transform: translateX(2.5px);  stroke: #6ea491; stroke-width: 3; }
+  58%      { transform: translateX(2.5px);  stroke: #365b52; stroke-width: 2.4; }
+  65%      { transform: translateX(2.5px);  stroke: #365b52; stroke-width: 2.4; }
+  100%     { transform: translateX(0);      stroke: #365b52; stroke-width: 2.4; }
 }
 
 /* Social networks — small graph, connections pulsing outward */
@@ -286,7 +297,11 @@ h4 {
   fill: #365b52;
 }
 
-/* Agent-based modelling — small agents drifting within a bounded area */
+/* Agent-based modelling — small agents drifting within a bounded area.
+   Each agent briefly shifts to mint mid-drift (color only — a
+   size-pulse was tried and found distracting, so removed). Since the
+   three agents already run different durations/delays, these color
+   shifts land at different moments per agent, not synchronized. */
 .agent-dot {
   fill: #365b52;
   animation: agentDrift 4s ease-in-out infinite;
@@ -295,10 +310,10 @@ h4 {
 .agent-dot:nth-child(3) { animation-duration: 3.6s; animation-delay: 0.7s; }
 
 @keyframes agentDrift {
-  0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(4px, -3px); }
-  50% { transform: translate(-2px, 3px); }
-  75% { transform: translate(3px, 2px); }
+  0%, 100% { transform: translate(0, 0);      fill: #365b52; }
+  25%      { transform: translate(4px, -3px); fill: #365b52; }
+  50%      { transform: translate(-2px, 3px); fill: #6ea491; }
+  75%      { transform: translate(3px, 2px);  fill: #365b52; }
 }
 
 /* Machine learning — decision tree: a static branching structure,
