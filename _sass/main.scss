@@ -1622,12 +1622,22 @@ body.dark-mode .back-to-top:hover {
     top: -4px;
   }
 
+  .footer-logo-wrap {
+    width: 100%;
+  }
+
+  .footer-brand {
+    align-self: center;
+    text-align: center;
+  }
+
   .mobile-controls {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-left: auto;
-    margin-top: -2.5rem;
+    position: absolute;
+    top: 5.14px;
+    right: 0;
   }
 
   .desktop-navigation {
