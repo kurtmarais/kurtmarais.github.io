@@ -26,10 +26,10 @@ layout: default
 
     {% if page.abstract %}
       <h3 class="fw-bold mt-4">Abstract</h3>
-      <p>{{ page.abstract }}</p>
+      <div class="publication-abstract">{{ page.abstract | markdownify }}</div>
     {% elsif page.description %}
       <h3 class="fw-bold mt-4">Description</h3>
-      <p>{{ page.description }}</p>
+      <div class="publication-abstract">{{ page.description | markdownify }}</div>
     {% else %}
       <p class="publication-no-abstract text-muted mt-4">
         No abstract available yet —
