@@ -566,6 +566,35 @@ body.dark-mode .engagement-featured-badge {
   color: #9ab8aa;
 }
 
+.engagement-keywords-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.3rem 0 0.5rem;
+}
+
+.engagement-keyword-badge {
+  display: inline-block;
+  padding: 0.15rem 0.65rem;
+  border-radius: 1rem;
+  background: rgba(54, 91, 82, 0.1);
+  color: $linkColor;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+body.dark-mode .engagement-keyword-badge {
+  background: rgba(154, 184, 170, 0.15);
+  color: #9ab8aa;
+}
+
+/* Same overlap issue as .publication-entry .abstract-block: the shared
+   -1rem margin-top is tuned for supervision's context, not this one. */
+.engagement-entry .abstract-block {
+  margin-top: 0.75rem !important;
+}
+
 /* Keyword bubbles — individual publication page only. Same pill shape
    as the featured badges above, but not uppercase (keywords are often
    technical terms/proper nouns like "BERTopic" where forcing caps
