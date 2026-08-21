@@ -194,7 +194,11 @@ layout: default
                 {% endif %}
 
                 {% if item.keywords %}
-                  <span class="engagement-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
+                  <div class="engagement-keywords-row">
+                    {% for keyword in item.keywords %}
+                      <span class="engagement-keyword-badge">{{ keyword }}</span>
+                    {% endfor %}
+                  </div>
                 {% endif %}
 
                 {% if item.tags %}
