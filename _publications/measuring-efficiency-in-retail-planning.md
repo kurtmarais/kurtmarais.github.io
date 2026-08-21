@@ -7,7 +7,7 @@ authors:
   - "Marais, K."
 year: 2019
 institution: "Stellenbosch University"
-publication_url: "https://scholar.sun.ac.za/items/0e580108-6db8-4b17-9619-e5e963df7be0"
+publication_url: "https://scholar.sun.ac.za/items/50393f84-7115-48c0-aece-6065b9ecc420"
 keywords:
 abstract: "Efficiency is the measure of how well a process performs, and businesses are constantly looking for ways to improve their productivity. Traditional performance measures are commonly used and applied to data, but often do not consider the effect that multiple inputs and outputs have on the performance of a service unit. Thus, it is important to measure efficiency within the current capabilities of service units. One way to measure the capabilities of efficiency is through benchmarking, which identifies best-practice service units and compares all service units to the best practices. The benchmarking tool used in this study that embodies this notion is known as data envelopment analysis. Data envelopment analysis (DEA) is a linear programming tool used to determine relative efficiency for a group of service units and provides a score on the level of efficiency relative to other service units. 
 
