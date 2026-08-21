@@ -54,11 +54,10 @@ the heavy lifting, pulling structured content from `_data/` or the
 - `cv.md` → `/cv/`. No body content — everything comes from `_data/cv/`.
   There is no separate CV PDF; the page is rendered entirely from that data.
 
-For About/Teaching/Research/Home, edit the content directly in the file
-below the `---` front matter block. For Supervision/Engagements/CV, edit the
-corresponding YAML in `_data/` instead. For Publications, add/edit files in
-`_publications/`. Editing `supervision.md`, `engagements.md`, or
-`publications.md` themselves won't change what's displayed.
+For About/Teaching/Research/Home, just edit the Markdown text directly in the
+file below the `---` front matter block. For Supervision/Engagements/
+Publications/CV, edit the corresponding YAML file in `_data/` instead —
+editing these `.md` files won't change what's displayed.
 
 ## Images
 
