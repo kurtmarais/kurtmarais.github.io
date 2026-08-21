@@ -33,5 +33,65 @@ layout: default
         {% endfor %}
       </div>
     </div>
+    {% if site.show_cv_awards %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Awards &amp; Honours</h4>
+      </div>
+      <div class="col-md-10">
+        {% for section in site.data.cv.awards %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ section.title }}</span>
+            <span class="cv-entry-meta">{{ section.description }}</span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% if site.show_cv_grants %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Grants &amp; Funding</h4>
+      </div>
+      <div class="col-md-10">
+        {% for section in site.data.cv.grants %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ section.title }}</span>
+            <span class="cv-entry-meta">{{ section.description }}</span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% if site.show_cv_service %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Roles &amp; Service</h4>
+      </div>
+      <div class="col-md-10">
+        {% for section in site.data.cv.service %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ section.title }}</span>
+            <span class="cv-entry-meta">{{ section.description }}</span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    {% if site.show_cv_professional_development %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Professional Development</h4>
+      </div>
+      <div class="col-md-10">
+        {% for section in site.data.cv.professional-development %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ section.title }}</span>
+            <span class="cv-entry-meta">{{ section.description }}</span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
   </div>
 </div>
