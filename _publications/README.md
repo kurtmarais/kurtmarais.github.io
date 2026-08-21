@@ -36,6 +36,7 @@ keywords:                       # optional — list of strings
 abstract: "Full abstract text." # journal-article / thesis / dissertation
 description: "What this contains and how it's used." # dataset only, in place of abstract
 tags:                           # optional — search-only, never rendered
+permalink: /publications/thematic-analysis-r-depression-subreddit/
 ---
 ```
 
