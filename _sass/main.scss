@@ -1608,12 +1608,12 @@ body.dark-mode .social-media-icons a:hover {
 }
 
 @keyframes footerLogoOrbit {
-  0%   { offset-distance: 0%; }
-  8%   { offset-distance: 0%; }
-  46%  { offset-distance: 100%; }
-  54%  { offset-distance: 100%; }
-  92%  { offset-distance: 0%; }
-  100% { offset-distance: 0%; }
+  0%   { offset-distance: 100%; }
+  8%   { offset-distance: 100%; }
+  46%  { offset-distance: 0%; }
+  54%  { offset-distance: 0%; }
+  92%  { offset-distance: 100%; }
+  100% { offset-distance: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
