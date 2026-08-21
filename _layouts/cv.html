@@ -48,6 +48,21 @@ layout: default
       </div>
     </div>
     {% endif %}
+    {% if site.show_cv_associations %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Professional associations</h4>
+      </div>
+      <div class="col-md-10">
+        {% for section in site.data.cv.associations %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ section.title }}</span>
+            <span class="cv-entry-meta">{{ section.description }}</span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
     {% if site.show_cv_grants %}
     <div class="row g-5 mb-5 cv-section-row">
       <div class="col-md-2">
