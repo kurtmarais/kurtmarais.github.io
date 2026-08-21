@@ -84,6 +84,15 @@ a { color:$linkColor; }
   gap: 1rem;
 }
 
+.site-header.nav-collapsed .header-top-row {
+  width: 100%;
+}
+
+.mobile-controls .theme-switch {
+  transform: translateY(0);
+  margin-left: 0;
+}
+
 .site-title {
   font-family: $bodyFont;
   font-size: 1.65rem;
@@ -954,8 +963,10 @@ body.dark-mode .engagement-featured-badge {
   }
 
   .social-media-icons {
-    align-self: center;
-    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
   }
 
 
@@ -1746,9 +1757,9 @@ body.dark-mode .mobile-menu-toggle span {
   flex-direction: column;
   position: absolute;
   top: 100%;
-  left: 0;
   right: 0;
-  width: 100%;
+  width: max-content;
+  max-width: unquote("min(320px, calc(100vw - 2rem))");
   max-height: 0;
   overflow: hidden;
   opacity: 0;
@@ -1757,6 +1768,7 @@ body.dark-mode .mobile-menu-toggle span {
   margin-top: 0;
   border-top: 1px solid transparent;
   background: $backgroundColor;
+  box-shadow: none;
   z-index: 20;
   transition: max-height 0.35s ease,
               opacity 0.25s ease,
@@ -1782,7 +1794,7 @@ body.dark-mode .mobile-menu-toggle span {
 }
 
 .mobile-nav-link {
-  padding: 0.65rem 0;
+  padding: 0.65rem 1.5rem 0.65rem 1rem;
   color: #69706b;
   font-family: $bodyFont;
   font-size: 1rem;
@@ -1791,6 +1803,7 @@ body.dark-mode .mobile-menu-toggle span {
   letter-spacing: 0.08em;
   text-decoration: none;
   border-bottom: 1px solid #d9d9d1;
+  white-space: nowrap;
 }
 
 .mobile-nav-link:last-child {
