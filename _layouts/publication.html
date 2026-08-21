@@ -38,7 +38,11 @@ layout: default
     {% endif %}
 
     {% if page.keywords %}
-      <p class="publication-keywords mt-3"><strong>Keywords:</strong> {{ page.keywords | join: ", " }}</p>
+      <div class="publication-keywords-row mt-3">
+        {% for keyword in page.keywords %}
+          <span class="publication-keyword-badge">{{ keyword }}</span>
+        {% endfor %}
+      </div>
     {% endif %}
 
     {% if page.tags %}

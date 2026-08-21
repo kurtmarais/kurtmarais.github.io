@@ -131,15 +131,10 @@ layout: default
               <span class="publication-description">{{ item.description | truncatewords: 32 }}</span><br>
             {% endif %}
 
-            {% if item.keywords %}
-              <span class="publication-keywords">Keywords: {{ item.keywords | join: "; " }}</span><br>
-            {% endif %}
-
             {% if item.tags %}
               <span class="publication-tags" hidden>{{ item.tags | join: ", " }}</span>
             {% endif %}
 
-            <a href="{{ item.url }}" class="text-link">View publication →</a>
           </article>
 
           <br><br>
