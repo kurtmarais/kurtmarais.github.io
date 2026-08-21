@@ -846,6 +846,26 @@ body.dark-mode .engagement-featured-badge {
   line-height: 1.6;
 }
 
+/* Publication page abstract — same typography/spacing as .abstract-block
+   on supervision/engagements, applied directly rather than inside a
+   <details> dropdown, since this page's whole point is to show the
+   full abstract already expanded. */
+.publication-abstract {
+  color: #69706b;
+}
+
+.publication-abstract p {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  color: #69706b;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.publication-abstract p:last-child {
+  margin-bottom: 0;
+}
+
 
 .abstract-spacing {
   display: block;
@@ -1470,6 +1490,11 @@ body.dark-mode .abstract-block summary {
 }
 
 body.dark-mode .abstract-block p {
+  color: #aeb3ae;
+}
+
+body.dark-mode .publication-abstract,
+body.dark-mode .publication-abstract p {
   color: #aeb3ae;
 }
 
