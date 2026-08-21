@@ -866,6 +866,15 @@ body.dark-mode .engagement-featured-badge {
   margin-bottom: 0;
 }
 
+/* The shared .abstract-block negative margin-top (above) is tuned for
+   supervision/engagements' context; on the publications list it sits
+   right after a single <br>, so that same negative margin pulls it
+   into the byline text above instead of the details/CV entries it
+   was designed for. Override with a real positive gap here instead. */
+.publication-entry .abstract-block {
+  margin-top: 0.75rem !important;
+}
+
 
 .abstract-spacing {
   display: block;
