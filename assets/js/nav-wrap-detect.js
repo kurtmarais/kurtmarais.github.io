@@ -36,6 +36,7 @@
 
   function evaluate() {
     var narrow = window.innerWidth <= 767;
+    var wasCollapsed = header.classList.contains("nav-collapsed");
 
     // Briefly force the nav visible/unwrapped-checkable: if it's already
     // collapsed from a previous check, offsetTop comparisons would be
@@ -43,9 +44,19 @@
     // guarantees an accurate re-measurement every time.
     header.classList.remove("nav-collapsed");
     var wrapped = navHasWrapped();
+    var shouldCollapse = narrow || wrapped;
 
-    if (narrow || wrapped) {
+    if (shouldCollapse) {
       header.classList.add("nav-collapsed");
+    } else if (wasCollapsed) {
+      // The window has widened enough to switch back to the full desktop
+      // nav. If the hamburger dropdown was left open from before, close
+      // it too — otherwise it stays stuck open, positioned under a
+      // hamburger button that no longer exists on screen.
+      var mobileNav = document.querySelector(".mobile-navigation");
+      var toggle = document.querySelector(".mobile-menu-toggle");
+      if (mobileNav) mobileNav.classList.remove("open");
+      if (toggle) toggle.setAttribute("aria-expanded", "false");
     }
   }
 
