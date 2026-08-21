@@ -566,6 +566,33 @@ body.dark-mode .engagement-featured-badge {
   color: #9ab8aa;
 }
 
+/* Keyword bubbles — individual publication page only. Same pill shape
+   as the featured badges above, but not uppercase (keywords are often
+   technical terms/proper nouns like "BERTopic" where forcing caps
+   would hurt readability), and multiple bubbles sit in a wrapping row
+   rather than inline next to a title. */
+.publication-keywords-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.publication-keyword-badge {
+  display: inline-block;
+  padding: 0.15rem 0.65rem;
+  border-radius: 1rem;
+  background: rgba(54, 91, 82, 0.1);
+  color: $linkColor;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+body.dark-mode .publication-keyword-badge {
+  background: rgba(154, 184, 170, 0.15);
+  color: #9ab8aa;
+}
+
 /* MEDIA STRIP — card treatment, colorway inverted relative to the hero card */
 
 .media-strip {
