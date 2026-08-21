@@ -51,6 +51,8 @@ a { color:$linkColor; }
 
 .site-header {
   gap: 1rem;
+  justify-content: space-between;
+  position: relative;
 }
 
 /* Nav wrap detection: a JS-driven trigger for hamburger mode, layered
@@ -1289,6 +1291,10 @@ body.dark-mode .site-header {
   border-color: #444943 !important;
 }
 
+body.dark-mode .mobile-navigation {
+  background: #202421;
+}
+
 body.dark-mode .site-title {
   color: #e8e9e5;
 }
@@ -1680,9 +1686,123 @@ body.dark-mode .back-to-top:hover {
 
 /* MOBILE NAVIGATION */
 
-.mobile-controls,
-.mobile-navigation {
+.mobile-controls {
   display: none;
+}
+
+/* Hamburger icon and dropdown styling — kept unconditional (not inside
+   the max-width:767px query) because .nav-collapsed can now trigger
+   this content above 767px too, via the wrap-detection script. These
+   elements stay invisible either way until something actually shows
+   them, so defining their look unconditionally is harmless. */
+
+.mobile-menu-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #69706b;
+  transition: 0.4s ease;
+}
+
+body.dark-mode .mobile-menu-toggle span {
+  background: #f7f6f1;
+}
+
+.mobile-menu-toggle[aria-expanded="true"] span:nth-child(1) {
+  transform: translateY(9px) rotate(45deg);
+}
+
+.mobile-menu-toggle[aria-expanded="true"] span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-menu-toggle[aria-expanded="true"] span:nth-child(3) {
+  transform: translateY(-9px) rotate(-45deg);
+}
+
+.mobile-menu-toggle:hover span {
+  background: $bodyColor;
+}
+
+/* Smooth expand/collapse: always display:flex (never display:none, so
+   max-height/opacity can actually transition instead of snapping),
+   visually collapsed by default via max-height:0 + overflow:hidden.
+   visibility flips with a transition-delay so it's only truly
+   focusable/tabbable while genuinely open, not just visually faded. */
+.mobile-navigation {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  padding-top: 0;
+  margin-top: 0;
+  border-top: 1px solid transparent;
+  background: $backgroundColor;
+  z-index: 20;
+  transition: max-height 0.35s ease,
+              opacity 0.25s ease,
+              padding-top 0.35s ease,
+              margin-top 0.35s ease,
+              border-color 0.35s ease,
+              visibility 0s linear 0.35s;
+}
+
+.mobile-navigation.open {
+  max-height: 400px;
+  opacity: 1;
+  visibility: visible;
+  padding-top: 0.5rem;
+  margin-top: 1rem;
+  border-color: #d9d9d1;
+  transition: max-height 0.35s ease,
+              opacity 0.25s ease,
+              padding-top 0.35s ease,
+              margin-top 0.35s ease,
+              border-color 0.35s ease,
+              visibility 0s linear 0s;
+}
+
+.mobile-nav-link {
+  padding: 0.65rem 0;
+  color: #69706b;
+  font-family: $bodyFont;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border-bottom: 1px solid #d9d9d1;
+}
+
+.mobile-nav-link:last-child {
+  border-bottom: none;
+}
+
+.mobile-nav-link:hover {
+  color: $bodyColor;
+}
+
+.mobile-home-link {
+  color: $linkColor;
 }
 
 @media (max-width: 767px) {
@@ -1712,85 +1832,9 @@ body.dark-mode .back-to-top:hover {
     display: none !important;
   }
 
-  .mobile-menu-toggle {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 28px;
-    height: 20px;
-    padding: 0;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
-  }
-
-  .mobile-menu-toggle span {
-    display: block;
-    width: 100%;
-    height: 2px;
-    background: #69706b;
-    transition: 0.4s ease;
-  }
-
-  body.dark-mode .mobile-menu-toggle span {
-    background: #f7f6f1;
-  }
-
   body.dark-mode .filter-search-input {
     background: #2b2f2b;
     border-color: #444943;
-  }
-
-  .mobile-menu-toggle[aria-expanded="true"] span:nth-child(1) {
-    transform: translateY(9px) rotate(45deg);
-  }
-
-  .mobile-menu-toggle[aria-expanded="true"] span:nth-child(2) {
-    opacity: 0;
-  }
-  
-  .mobile-menu-toggle[aria-expanded="true"] span:nth-child(3) {
-    transform: translateY(-9px) rotate(-45deg);
-  }
-
-  .mobile-menu-toggle:hover span {
-    background: $bodyColor;
-  }
-
-  .mobile-navigation {
-    width: 100%;
-    flex-direction: column;
-    margin-top: 1rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #d9d9d1;
-  }
-
-  .mobile-navigation.open {
-    display: flex;
-  }
-
-  .mobile-nav-link {
-    padding: 0.65rem 0;
-    color: #69706b;
-    font-family: $bodyFont;
-    font-size: 1rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-    border-bottom: 1px solid #d9d9d1;
-  }
-
-  .mobile-nav-link:last-child {
-    border-bottom: none;
-  }
-
-  .mobile-nav-link:hover {
-    color: $bodyColor;
-  }
-
-  .mobile-home-link {
-    color: $linkColor;
   }
 
   .theme-switch {
