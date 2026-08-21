@@ -1,3 +1,16 @@
+#- title: "From Social Media to Mental Well-being: Modelling the Spread of Sentiment in Online Networks"
+#  type: "conference"
+#  year: 2026
+#  start_date: "2026-09-15"
+#  end_date: "2026-09-15"
+#  location: "Stellenbosch, South Africa"
+#  abstract: "Social media has become an important environment in which people express, encounter and respond to information about mental health. This research investigated how affective information, particularly information expressing positive and negative sentiment, moves through online social networks and how this process may affect the well-being of people experiencing depression. The research combined natural language processing, thematic analysis, sentiment analysis and agent-based simulation. Analysis of posts from the r/depression subreddit helped to identify behavioural and linguistic markers associated with lived experiences of depression. These findings were used to develop a depression-specific sentiment lexicon that performed competitively against established general-purpose sentiment resources when classifying mental-health-related text by sentiment. These insights were then incorporated into an agent-based simulation of affective information diffusion through a social network of Twitter users. An observed phenomenon from executing the model yielded that emotional reinforcement was more prominent than simple emotional contagion: that is, people were particularly likely to have their existing emotional states reinforced when exposed to affective information of the same polarity expressed by their social connections. Individuals with depression showed greater vulnerability to these reinforcement effects. The research therefore has implications beyond the academic study of social networks and natural language processing. Scenario testing demonstrated that changing the influence of social connections, including through acts of muting and blocking influential users, could improve the overall distribution and duration of positive and negative sentiment in the simulated network. Importantly, the effects differed between users with and without depression, demonstrating that a single intervention may not benefit all users equally. These findings provide practical evidence for improving digital well-being. For social media users, they highlight the potential value of actively curating the communities and content to which they are exposed. For platform developers, they support stronger user-controlled tools for managing social influence and content exposure, rather than relying entirely on algorithmic curation. The research consequently contributes to a broader conception of infodemiology in which information itself can directly influence health outcomes, positioning mental well-being as an important consideration in the design and governance of digital platforms."
+#  keywords: ["mental health", "well-being", "natural language processing", "social media", "agent-based simulation"]
+  #description: "Shown under the title on the compact card, same as today."
+  #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
+  #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
+  #tags: ["mental health", "media coverage"]               # hidden, search-only
+
 - title: "Dr. Kurt Marais Discusses Emotional Reinforcement Online"
   type: "media"
   year: 2026
@@ -180,7 +193,7 @@
     - big data
     - uncertainty
 
-- title: "Poster: Module interest earns returns"
+- title: "Module interest earns returns (Poster)"
   type: "conference"
   year: 2019
   venue: "Stellenbosch University Scholarship of Teaching and Learning Conference"
