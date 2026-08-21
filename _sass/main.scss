@@ -41,6 +41,47 @@ a { color:$linkColor; }
 /* HEADER */
 
 .site-header { border-color:#d9d9d1 !important; }
+
+.header-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.site-header {
+  gap: 1rem;
+}
+
+/* Nav wrap detection: a JS-driven trigger for hamburger mode, layered
+   ALONGSIDE the existing max-width:767px rules further down (not
+   replacing them) — if JS fails to load for any reason, the site still
+   correctly collapses at 767px with zero dependency on script. This
+   class can also apply well ABOVE 767px, whenever the nav has actually
+   wrapped (title/logo sizing is untouched and stays on its own fixed
+   767px breakpoint regardless). No magic-number positioning needed for
+   mobile-controls — .header-top-row's own align-items:center handles
+   vertical alignment automatically, at whatever logo/title size is
+   currently active, so this works correctly whether nav-collapsed
+   triggers above or below 767px. The desktop nav is hidden via
+   visibility (not display:none) specifically so it stays measurable —
+   letting the detection script tell when the window has widened back
+   out enough to safely restore it. */
+.site-header.nav-collapsed .desktop-navigation {
+  visibility: hidden;
+  position: absolute;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.site-header.nav-collapsed .mobile-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .site-title {
   font-family: $bodyFont;
   font-size: 1.65rem;
@@ -877,6 +918,10 @@ body.dark-mode .engagement-featured-badge {
     transform: translateY(-2px);
   }
 
+  .header-top-row {
+    width: 100%;
+  }
+
   /* Footer, mobile — tighten the spacing around the logo (the empty
      spacer div and the <br> in the markup exist for the desktop grid's
      auto-placement and stay untouched there; hiding the <br> here is
@@ -1661,9 +1706,6 @@ body.dark-mode .back-to-top:hover {
     display: flex;
     align-items: center;
     gap: 1rem;
-    position: absolute;
-    top: 5.14px;
-    right: 0;
   }
 
   .desktop-navigation {
