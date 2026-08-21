@@ -23,7 +23,7 @@ show_media: true
 # section from the CV page entirely (the section's data file can stay
 # in place either way; commenting the flag is all that's needed).
 show_cv_awards: false
-show_cv_associations: false
+show_cv_associations: true
 show_cv_grants: false
 show_cv_service: false
 show_cv_professional_development: false
