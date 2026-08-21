@@ -23,7 +23,7 @@ My research focus relates to natural language processing tasks and simulation fr
 - Data mining and information retrieval
 - Social media research
 
-<h3 class="fw-bold mb-4">Collaboration</h3>
+<h3 class="fw-bold mb-4 mt-5">Collaboration</h3>
 
 I am always interested in hearing from researchers working in related areas, particularly within natural language processing, sentiment and affect diffusion in online networks, agent-based simulation of social systems, and machine learning applications. I am open to co-authorship, joint grant applications, and sharing of methods, models or datasets, and happy to discuss opportunities regardless of institution or location. If you think our work overlaps, get in touch with a short note on what you are working on. I am particularly keen to hear from anyone tackling information spread as it relates to mis– and disinformation, as I would like to explore the role of affective information in that research space.
 
