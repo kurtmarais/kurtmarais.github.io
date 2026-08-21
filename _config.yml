@@ -18,3 +18,11 @@ exclude:
   - vendor
   - brand
 show_media: true
+
+# CV sections — comment out any one of these lines to hide that
+# section from the CV page entirely (the section's data file can stay
+# in place either way; commenting the flag is all that's needed).
+show_cv_awards: true
+show_cv_grants: true
+show_cv_service: true
+show_cv_professional_development: true
