@@ -51,6 +51,21 @@ Example entry to copy:
   description: 'Stellenbosch University · 2026'
 ```
 
+## professional-associations.yml
+
+One entry per society, most recent first.
+
+Fields:
+- `title` — the society name
+- `description` — provider and year, using a `·` separator, e.g.
+  `'Coursera · 2026'`
+
+Example entry to copy:
+```yaml
+- title: 'ORSSA'
+  description: 'South Africa · 2026–'
+```
+
 ## grants.yml
 
 One entry per grant or funding award, most recent first.
