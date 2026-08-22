@@ -901,6 +901,11 @@ body.dark-mode .publication-keyword-badge {
   color: #69706b;
   font-size: 0.92rem;
   line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 /* Publication page abstract — same typography/spacing as .abstract-block
@@ -917,6 +922,11 @@ body.dark-mode .publication-keyword-badge {
   color: #69706b;
   font-size: 0.92rem;
   line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 .publication-abstract p:last-child {
