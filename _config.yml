@@ -11,6 +11,7 @@ collections:
     permalink: /publications/:slug/
 plugins:
   - jekyll-feed
+  - jekyll-sitemap
 exclude:
   - Gemfile
   - Gemfile.lock
