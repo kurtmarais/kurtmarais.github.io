@@ -20,6 +20,11 @@ exclude:
   - brand
 show_media: true
 
+# Google Analytics — set to your GA4 Measurement ID to enable tracking,
+# or comment out / delete this line to disable it site-wide without
+# touching head.html.
+google_analytics_id: "G-L8ESWJ4M12"
+
 # CV sections — comment out any one of these lines to hide that
 # section from the CV page entirely (the section's data file can stay
 # in place either way; commenting the flag is all that's needed).
