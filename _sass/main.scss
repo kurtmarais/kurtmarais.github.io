@@ -33,6 +33,62 @@ html {
   font-display: swap;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter-v20-latin-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter-v20-latin-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter-v20-latin-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/assets/fonts/inter-v20-latin-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/assets/fonts/source-serif-4-v14-latin-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/assets/fonts/source-serif-4-v14-latin-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Source Serif 4";
+  src: url("/assets/fonts/source-serif-4-v14-latin-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 
 body { background:$backgroundColor; color:$bodyColor; font-family:$bodyFont; line-height:1.65; }
 a { color:$linkColor; }
@@ -175,7 +231,7 @@ h2,
 h3,
 h4 {
   font-family: $bodyFont;
-  text-transform: uppercase;
+  text-transform: none;
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -505,7 +561,6 @@ h4 {
 
 .course-item h4 {
   font-size: 1.05rem;
-  text-transform: none;
 }
 
 .course-years {
@@ -562,62 +617,6 @@ body.dark-mode .publication-featured-badge {
 }
 
 body.dark-mode .engagement-featured-badge {
-  background: rgba(154, 184, 170, 0.15);
-  color: #9ab8aa;
-}
-
-.engagement-keywords-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.3rem 0 0.5rem;
-}
-
-.engagement-keyword-badge {
-  display: inline-block;
-  padding: 0.15rem 0.65rem;
-  border-radius: 1rem;
-  background: rgba(54, 91, 82, 0.1);
-  color: $linkColor;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-body.dark-mode .engagement-keyword-badge {
-  background: rgba(154, 184, 170, 0.15);
-  color: #9ab8aa;
-}
-
-/* Same overlap issue as .publication-entry .abstract-block: the shared
-   -1rem margin-top is tuned for supervision's context, not this one. */
-.engagement-entry .abstract-block {
-  margin-top: 0.75rem !important;
-}
-
-/* Keyword bubbles — individual publication page only. Same pill shape
-   as the featured badges above, but not uppercase (keywords are often
-   technical terms/proper nouns like "BERTopic" where forcing caps
-   would hurt readability), and multiple bubbles sit in a wrapping row
-   rather than inline next to a title. */
-.publication-keywords-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.publication-keyword-badge {
-  display: inline-block;
-  padding: 0.15rem 0.65rem;
-  border-radius: 1rem;
-  background: rgba(54, 91, 82, 0.1);
-  color: $linkColor;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-body.dark-mode .publication-keyword-badge {
   background: rgba(154, 184, 170, 0.15);
   color: #9ab8aa;
 }
@@ -901,11 +900,6 @@ body.dark-mode .publication-keyword-badge {
   color: #69706b;
   font-size: 0.92rem;
   line-height: 1.6;
-  text-align: justify;
-  hyphens: auto;
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  overflow-wrap: break-word;
 }
 
 /* Publication page abstract — same typography/spacing as .abstract-block
@@ -922,11 +916,6 @@ body.dark-mode .publication-keyword-badge {
   color: #69706b;
   font-size: 0.92rem;
   line-height: 1.6;
-  text-align: justify;
-  hyphens: auto;
-  -webkit-hyphens: auto;
-  -ms-hyphens: auto;
-  overflow-wrap: break-word;
 }
 
 .publication-abstract p:last-child {
