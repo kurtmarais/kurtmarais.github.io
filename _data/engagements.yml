@@ -153,8 +153,8 @@
 - title: "Reflections of my University Staff Doctoral Programme (USDP) visit to Bath"
   media_format: article
   url: "https://blogs.bath.ac.uk/iro/2023/07/17/reflections-of-my-university-staff-doctoral-programme-usdp-visit-to-bath/"        # or wherever the post actually lives
-  image: "/asshttps://blogs.bath.ac.uk/iro/wp-content/uploads/sites/98/2023/07/IMG_2593_a-768x576.jpg"
-  publication: "International Relations Office, University of Bath"                  # shown in the meta line before the date
+  image: "/assets/img/blogpost-usdp.jpg"
+  publication: "University of Bath"                  # shown in the meta line before the date
   start_date: "2023-07-17"
   end_date: "2023-07-17"
   year: 2023
