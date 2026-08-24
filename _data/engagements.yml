@@ -158,7 +158,7 @@
   start_date: "2023-07-17"
   end_date: "2023-07-17"
   year: 2023
-  type: blog-post                               # becomes a filter option automatically
+  type: "blog_post"                               # becomes a filter option automatically
   featured: false
   description: "Ten university staff members at Stellenbosch University and the University of Fort Hare were selected to join the new doctoral training consortium launched with South African partners in 2021. Kurt Marais, a member of staff from Stellenbosch University, is a student on the programme and with support from University of Bath co-supervisors, Kurt is studying towards a PhD degree focusing on research in mathematical optimisation within the field of mental health and social network analysis in a South African context. These are Kurt's reflections after visiting Bath to work closely with his co-supervisor and continue his research. "
   keywords:
