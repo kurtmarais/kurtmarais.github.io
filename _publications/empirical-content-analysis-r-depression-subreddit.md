@@ -12,7 +12,7 @@ issue: "2"
 pages: "1-17"
 doi: "https://doi.org/10.55492/dhasa.v5i02.4578"
 publication_url: "https://doi.org/10.55492/dhasa.v5i02.4578"
-keywords:
+keywords: ["depression", "mental health", "social media", "online mental health communities", "Reddit"]
 abstract: "Online fora are one of the oldest spaces for internet communication. These fora provide internet users the opportunity to connect with others of similar interests and experiences. Online mental health communities are fora for individuals that wish to connect with others based on a shared mental health experience. These digital ecosystems offer an avenue for seeking advice or validation, as well as for freely sharing experiences with similar others within a culture of reduced stigma and social support.
 
 
