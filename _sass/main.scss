@@ -566,6 +566,63 @@ body.dark-mode .engagement-featured-badge {
   color: #9ab8aa;
 }
 
+/* Keyword bubbles — publication individual page + listing dropdown */
+.publication-keywords-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.publication-keyword-badge {
+  display: inline-block;
+  padding: 0.15rem 0.65rem;
+  border-radius: 1rem;
+  background: rgba(54, 91, 82, 0.1);
+  color: $linkColor;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+body.dark-mode .publication-keyword-badge {
+  background: rgba(154, 184, 170, 0.15);
+  color: #9ab8aa;
+}
+
+/* Same overlap issue as .publication-entry .abstract-block: the shared
+   -1rem margin-top is tuned for supervision's context, not this one. */
+.publication-entry .abstract-block {
+  margin-top: 0.75rem !important;
+}
+
+/* Keyword bubbles — engagements page */
+.engagement-keywords-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.3rem 0 0.5rem;
+}
+
+.engagement-keyword-badge {
+  display: inline-block;
+  padding: 0.15rem 0.65rem;
+  border-radius: 1rem;
+  background: rgba(54, 91, 82, 0.1);
+  color: $linkColor;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+body.dark-mode .engagement-keyword-badge {
+  background: rgba(154, 184, 170, 0.15);
+  color: #9ab8aa;
+}
+
+.engagement-entry .abstract-block {
+  margin-top: 0.75rem !important;
+}
+
 /* MEDIA STRIP — card treatment, colorway inverted relative to the hero card */
 
 .media-strip {
@@ -845,6 +902,11 @@ body.dark-mode .engagement-featured-badge {
   color: #69706b;
   font-size: 0.92rem;
   line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 /* Publication page abstract — same typography/spacing as .abstract-block
@@ -861,6 +923,11 @@ body.dark-mode .engagement-featured-badge {
   color: #69706b;
   font-size: 0.92rem;
   line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow-wrap: break-word;
 }
 
 .publication-abstract p:last-child {
