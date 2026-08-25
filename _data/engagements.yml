@@ -59,6 +59,22 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+  - title: "Can doomscrolling on Reddit and X deepen depression?"
+  type: "media"
+  year: 2026
+  media_format: "newspaper"
+  featured: false
+  publication: "bizcommunity"
+  start_date: "2026-08-11"
+  end_date: "2026-08-11"
+  image: "https://biz-file.com/c/2608/819101-700x525.jpg"
+  description: "The addictive nature of social media, particularly platforms like Instagram and TikTok, leads users to spend excessive amounts of time doomscrolling. A lecturer from Stellenbosch University examined depression-related content on social media platforms such as Reddit and Twitter (now known as X) and found that by reinforcing negative emotions, users can exacerbate and deepen each other’s depression."
+  url: "https://www.bizcommunity.com/article/can-doomscrolling-on-reddit-and-x-deepen-depression-523940a"  
+  keywords: ["social media", "twitter", "depression", "Stellenbosch University", "anxiety", "University of Stellenbosch", "Reddit", "digital health", "PTSD", "SU", "mental wellness", "Stellies"]   # hidden, search-only on media cards
+  #description: "Shown under the title on the compact card, same as today."
+  #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
+  #tags: ["mental health", "media coverage"]               # hidden, search-only
+
 - title: "Study explores emotional content and depressive symptoms on social media"
   type: "media"
   year: 2026
