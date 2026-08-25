@@ -11,6 +11,22 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "Social media's role in reinforcing depression: Insights from Stellenbosch University"
+  type: "media"
+  year: 2026
+  media_format: "newspaper"
+  featured: true
+  publication: "IOL News"
+  start_date: "2026-08-24"
+  end_date: "2026-08-24"
+  image: "https://images.pexels.com/photos/2753486/pexels-photo-2753486.jpeg"
+  description: "A Stellenbosch University researcher has found that negative emotions can be reinforced through social media interactions, with people experiencing depression particularly affected."
+  url: "https://iol.co.za/news/south-africa/2026-08-24-social-medias-role-in-reinforcing-depression-insights-from-stellenbosch-university/"  
+  keywords: ["social media", "mental health awareness", "depression"]   # hidden, search-only on media cards
+  #description: "Shown under the title on the compact card, same as today."
+  #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
+  #tags: ["mental health", "media coverage"]               # hidden, search-only
+
 - title: "Dr. Kurt Marais Discusses Emotional Reinforcement Online"
   type: "media"
   year: 2026
