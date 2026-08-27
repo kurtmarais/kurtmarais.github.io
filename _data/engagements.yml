@@ -11,7 +11,7 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
-- title: "Extracting Bluesky data with Python in 2026"
+- title: "Extracting Bluesky posts with Python in 2026"
   media_format: article
   url: "https://medium.com/@kurtmarais/e7d80a001947?source=friends_link&sk=3e4ff1f02cb1b253541664c9ce38182b"        # or wherever the post actually lives
   image: "/assets/img/bluesky_yohan-marion_unsplash.jpg"
