@@ -11,6 +11,23 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "Extracting Reddit post data with Python in 2026"
+  media_format: article
+  url: "https://medium.com/@kurtmarais/extracting-reddit-post-data-with-python-in-2026-52715cea4d78?source=friends_link&sk=adacdda1f3bab642eeb9233d4d484d3f"        # or wherever the post actually lives
+  image: "/assets/img/reddit_appshunter.io_unsplash.jpg"
+  publication: "Medium"                  # shown in the meta line before the date
+  start_date: "2026-08-27"
+  end_date: "2026-08-27"
+  year: 2026
+  type: "blog_post"                               # becomes a filter option automatically
+  featured: false
+  description: "This walkthrough covers extracting subreddit posts from Reddit using Python (without the use of PRAW)."
+  keywords:
+    - Reddit 
+    - Python
+    - Data extraction
+    - API
+
 - title: "Social media's role in reinforcing depression: Insights from Stellenbosch University"
   type: "media"
   year: 2026
