@@ -11,6 +11,23 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "Extracting Bluesky data with Python in 2026"
+  media_format: article
+  url: "https://medium.com/@kurtmarais/e7d80a001947?source=friends_link&sk=3e4ff1f02cb1b253541664c9ce38182b"        # or wherever the post actually lives
+  image: "/assets/img/bluesky_yohan-marion_unsplash.jpg"
+  publication: "Medium"                  # shown in the meta line before the date
+  start_date: "2026-08-28"
+  end_date: "2026-08-28"
+  year: 2026
+  type: "blog_post"                               # becomes a filter option automatically
+  featured: false
+  description: "A step-by-step guide for extracting Bluesky posts using Python"
+  keywords:
+    - Bluesky 
+    - Python
+    - Data extraction
+    - API
+
 - title: "Extracting Reddit post data with Python in 2026"
   media_format: article
   url: "https://medium.com/@kurtmarais/extracting-reddit-post-data-with-python-in-2026-52715cea4d78?source=friends_link&sk=adacdda1f3bab642eeb9233d4d484d3f"        # or wherever the post actually lives
