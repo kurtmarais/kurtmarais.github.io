@@ -22,22 +22,6 @@
     return state.types.size > 0 || state.topics.length > 0 || state.mediaOnly;
   }
 
-  /* ---------- URL syncing (media filter only — the other three filters
-     don't currently sync to the URL at all, so this is scoped narrowly
-     to just the one thing that was actually asked for). ---------- */
-
-  function setUrlParam(key, value) {
-    var url = new URL(window.location.href);
-    if (value) {
-      url.searchParams.set(key, value);
-    } else {
-      url.searchParams.delete(key);
-    }
-    // replaceState, not pushState: toggling a filter shouldn't fill up
-    // the browser's back-button history with one entry per click.
-    window.history.replaceState({}, "", url);
-  }
-
   /* ---------- Mobile "Filters" panel toggle ---------- */
 
   if (mobileToggle) {
@@ -150,25 +134,15 @@
     });
   }
 
-  /* ---------- Media: boolean toggle, the one filter that syncs to the URL ---------- */
+  /* ---------- Media: filterable only via a direct link (?media=true) —
+     no visible control in the filter bar. If a checkbox is ever added
+     back later, this same state.mediaOnly / entryMatches() logic
+     already supports it; only the missing UI piece would need adding. ---------- */
 
-  var mediaControl = document.querySelector('.filter-control[data-filter="media"]');
-  var mediaCheckbox = mediaControl ? mediaControl.querySelector('input[type="checkbox"]') : null;
-
-  if (mediaCheckbox) {
-    mediaCheckbox.addEventListener("change", function () {
-      state.mediaOnly = mediaCheckbox.checked;
-      setUrlParam("media", state.mediaOnly ? "true" : null);
-      applyFilters();
-    });
-
-    // apply on load if the page was reached via a link like ?media=true
-    var initialParams = new URLSearchParams(window.location.search);
-    if (initialParams.get("media") === "true") {
-      mediaCheckbox.checked = true;
-      state.mediaOnly = true;
-      applyFilters(); // the other filters have nothing to apply on load (state starts empty either way), but this one can arrive pre-set from the URL
-    }
+  var initialParams = new URLSearchParams(window.location.search);
+  if (initialParams.get("media") === "true") {
+    state.mediaOnly = true;
+    applyFilters();
   }
 
   /* ---------- Filtering ---------- */
