@@ -14,11 +14,28 @@
   var state = {
     types: new Set(),      // empty set = "all types"
     sort: "newest",        // "newest" | "oldest"
-    topics: ""              // lowercase search string
+    topics: "",             // lowercase search string
+    mediaOnly: false        // true = show only media-format entries
   };
 
   function hasActiveFilters() {
-    return state.types.size > 0 || state.topics.length > 0;
+    return state.types.size > 0 || state.topics.length > 0 || state.mediaOnly;
+  }
+
+  /* ---------- URL syncing (media filter only — the other three filters
+     don't currently sync to the URL at all, so this is scoped narrowly
+     to just the one thing that was actually asked for). ---------- */
+
+  function setUrlParam(key, value) {
+    var url = new URL(window.location.href);
+    if (value) {
+      url.searchParams.set(key, value);
+    } else {
+      url.searchParams.delete(key);
+    }
+    // replaceState, not pushState: toggling a filter shouldn't fill up
+    // the browser's back-button history with one entry per click.
+    window.history.replaceState({}, "", url);
   }
 
   /* ---------- Mobile "Filters" panel toggle ---------- */
@@ -133,10 +150,32 @@
     });
   }
 
+  /* ---------- Media: boolean toggle, the one filter that syncs to the URL ---------- */
+
+  var mediaControl = document.querySelector('.filter-control[data-filter="media"]');
+  var mediaCheckbox = mediaControl ? mediaControl.querySelector('input[type="checkbox"]') : null;
+
+  if (mediaCheckbox) {
+    mediaCheckbox.addEventListener("change", function () {
+      state.mediaOnly = mediaCheckbox.checked;
+      setUrlParam("media", state.mediaOnly ? "true" : null);
+      applyFilters();
+    });
+
+    // apply on load if the page was reached via a link like ?media=true
+    var initialParams = new URLSearchParams(window.location.search);
+    if (initialParams.get("media") === "true") {
+      mediaCheckbox.checked = true;
+      state.mediaOnly = true;
+      applyFilters(); // the other filters have nothing to apply on load (state starts empty either way), but this one can arrive pre-set from the URL
+    }
+  }
+
   /* ---------- Filtering ---------- */
 
   function entryMatches(entry) {
     var typeMatches = state.types.size === 0 || state.types.has(entry.getAttribute("data-type"));
+    var mediaMatches = !state.mediaOnly || entry.classList.contains("engagement-media-entry");
     var topicMatches = true;
     if (state.topics) {
       var searchableSelectors = [
@@ -160,7 +199,7 @@
       topicMatches = searchableText.indexOf(state.topics) !== -1;
     }
 
-    return typeMatches && topicMatches;
+    return typeMatches && mediaMatches && topicMatches;
   }
 
   function applyFilters() {
