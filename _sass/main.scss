@@ -1293,31 +1293,6 @@ body.dark-mode .engagement-keyword-badge {
   outline: none;
 }
 
-.filter-checkbox-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: #69706b;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.filter-checkbox-toggle:hover {
-  color: $bodyColor;
-}
-
-.filter-checkbox-toggle input {
-  cursor: pointer;
-}
-
-.filter-checkbox-toggle:has(input:checked) {
-  color: $linkColor;
-}
-
 /* EMPTY STATE (shared) */
 
 .empty-state {
@@ -1404,12 +1379,6 @@ body.dark-mode .engagement-keyword-badge {
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
     background: #fff;
-  }
-
-  .filter-checkbox-toggle {
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-    padding: 0.4rem 0.6rem;
   }
 }
 
@@ -1610,19 +1579,13 @@ body.dark-mode .publication-abstract p {
 
 body.dark-mode .filters-toggle,
 body.dark-mode .filter-toggle,
-body.dark-mode .filter-mobile-label,
-body.dark-mode .filter-checkbox-toggle {
+body.dark-mode .filter-mobile-label {
   color: #aeb3ae;
 }
 
 body.dark-mode .filters-toggle:hover,
-body.dark-mode .filter-toggle:hover,
-body.dark-mode .filter-checkbox-toggle:hover {
+body.dark-mode .filter-toggle:hover {
   color: #e8e9e5;
-}
-
-body.dark-mode .filter-checkbox-toggle:has(input:checked) {
-  color: #9ab8aa;
 }
 
 body.dark-mode .filter-dropdown,
