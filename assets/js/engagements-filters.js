@@ -14,12 +14,11 @@
   var state = {
     types: new Set(),      // empty set = "all types"
     sort: "newest",        // "newest" | "oldest"
-    topics: "",             // lowercase search string
-    mediaOnly: false        // true = show only media-format entries
+    topics: ""              // lowercase search string
   };
 
   function hasActiveFilters() {
-    return state.types.size > 0 || state.topics.length > 0 || state.mediaOnly;
+    return state.types.size > 0 || state.topics.length > 0;
   }
 
   /* ---------- Mobile "Filters" panel toggle ---------- */
@@ -104,6 +103,21 @@
         typeValueLabel.textContent = labels.join(", ");
       }
     }
+
+    // Support a direct link (?media=true) that applies the Type filter
+    // the same way checking the "Media" box by hand would — the
+    // checkbox appears checked, the label updates, and it's the same
+    // state.types the manual checkbox uses, not a separate mechanism.
+    var params = new URLSearchParams(window.location.search);
+    if (params.get("media") === "true") {
+      var mediaCheckbox = typeControl.querySelector('input[type="checkbox"][value="media"]');
+      if (mediaCheckbox) {
+        mediaCheckbox.checked = true;
+        state.types.add("media");
+        updateTypeLabel();
+        applyFilters();
+      }
+    }
   }
 
   /* ---------- Sort: single-select ---------- */
@@ -134,22 +148,10 @@
     });
   }
 
-  /* ---------- Media: filterable only via a direct link (?media=true) —
-     no visible control in the filter bar. If a checkbox is ever added
-     back later, this same state.mediaOnly / entryMatches() logic
-     already supports it; only the missing UI piece would need adding. ---------- */
-
-  var initialParams = new URLSearchParams(window.location.search);
-  if (initialParams.get("media") === "true") {
-    state.mediaOnly = true;
-    applyFilters();
-  }
-
   /* ---------- Filtering ---------- */
 
   function entryMatches(entry) {
     var typeMatches = state.types.size === 0 || state.types.has(entry.getAttribute("data-type"));
-    var mediaMatches = !state.mediaOnly || entry.getAttribute("data-type") === "media";
     var topicMatches = true;
     if (state.topics) {
       var searchableSelectors = [
@@ -173,7 +175,7 @@
       topicMatches = searchableText.indexOf(state.topics) !== -1;
     }
 
-    return typeMatches && mediaMatches && topicMatches;
+    return typeMatches && topicMatches;
   }
 
   function applyFilters() {
