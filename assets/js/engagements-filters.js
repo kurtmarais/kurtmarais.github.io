@@ -149,7 +149,7 @@
 
   function entryMatches(entry) {
     var typeMatches = state.types.size === 0 || state.types.has(entry.getAttribute("data-type"));
-    var mediaMatches = !state.mediaOnly || entry.classList.contains("engagement-media-entry");
+    var mediaMatches = !state.mediaOnly || entry.getAttribute("data-type") === "media";
     var topicMatches = true;
     if (state.topics) {
       var searchableSelectors = [
