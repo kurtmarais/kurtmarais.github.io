@@ -2070,6 +2070,24 @@ body.dark-mode .mobile-menu-toggle span {
   width: 100%;
 }
 
+.research-network-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.research-network-row > .research-network-diagram {
+  flex: 0 1 55%;
+  min-width: 280px;
+}
+
+.research-network-row > .research-network-legend {
+  flex: 0 1 40%;
+  min-width: 240px;
+}
+
 .research-network-svg .node-pole circle {
   fill: $linkColor;
 }
