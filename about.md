@@ -44,7 +44,8 @@ My research sits at the intersection of Operations Research and Computational So
     <ul class="legend-list legend-app">
       <li>Human behaviour and decision-making</li>
       <li>Information diffusion</li>
-      <li>Sentiment diffusion and emotional contagion</li>
+      <li>Sentiment analysis and diffusion</li>
+      <li>Emotional contagion</li>
       <li>Social media research</li>
       <li>Infodemiology</li>
     </ul>
