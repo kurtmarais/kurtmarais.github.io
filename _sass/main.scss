@@ -2062,3 +2062,61 @@ body.dark-mode .mobile-menu-toggle span {
   }
 
 }
+
+
+/* RESEARCH INTERESTS NETWORK DIAGRAM (About page) */
+
+.research-network-wrap {
+  width: 100%;
+}
+
+.research-network-svg .node-pole circle {
+  fill: $linkColor;
+}
+.research-network-svg .node-pole text {
+  fill: $backgroundColor;
+}
+
+.research-network-svg .node-tech circle {
+  fill: #6ea491;
+}
+.research-network-svg .node-tech text {
+  fill: $bodyColor;
+}
+
+.research-network-svg .node-app circle {
+  fill: #d7e8e1;
+}
+.research-network-svg .node-app text {
+  fill: $bodyColor;
+}
+
+.research-network-svg line {
+  stroke: #d9d9d1;
+}
+
+body.dark-mode .research-network-svg .node-pole circle {
+  fill: #9ab8aa;
+}
+body.dark-mode .research-network-svg .node-pole text {
+  fill: #202421;
+}
+
+body.dark-mode .research-network-svg .node-tech circle {
+  fill: #4a6b5f;
+}
+body.dark-mode .research-network-svg .node-tech text {
+  fill: #e8e9e5;
+}
+
+body.dark-mode .research-network-svg .node-app circle {
+  fill: #3a453f;
+}
+body.dark-mode .research-network-svg .node-app text {
+  fill: #9ab8aa;
+}
+
+body.dark-mode .research-network-svg line {
+  stroke: #444943;
+}
+
