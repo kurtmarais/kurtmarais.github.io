@@ -13,6 +13,7 @@ My research focus relates to natural language processing tasks and simulation fr
 <h3 class="fw-bold mb-4 mt-5">Research interests</h3>
 
 - Operations Research
+- Discrete optimisation
 - Natural language processing
 - Information diffusion
 - Social network analysis
