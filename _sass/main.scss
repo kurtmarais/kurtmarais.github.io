@@ -2072,7 +2072,6 @@ body.dark-mode .mobile-menu-toggle span {
 
 .research-network-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
   flex-wrap: wrap;
@@ -2084,8 +2083,10 @@ body.dark-mode .mobile-menu-toggle span {
 }
 
 .research-network-row > .research-network-legend {
-  flex: 0 1 36%;
+  flex: 0 0 auto;
   min-width: 240px;
+  margin-left: auto; // pushes flush right on its own terms, independent of
+                      // the container's distribution logic or the diagram's size
 }
 
 .research-network-svg .node-pole circle {
