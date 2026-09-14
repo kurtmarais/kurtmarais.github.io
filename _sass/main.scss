@@ -2089,6 +2089,22 @@ body.dark-mode .mobile-menu-toggle span {
                    // than pushing flush against the outer edge
 }
 
+@media (max-width: 767px) {
+  // Once stacked, the diagram's desktop flex-basis (62%) would otherwise
+  // still apply and leave it stuck at a partial width rather than filling
+  // the screen. Also adds back a real gap now that stacking removes any
+  // horizontal gap between the two.
+  .research-network-row > .research-network-diagram {
+    flex-basis: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  .research-network-row > .research-network-legend {
+    flex-basis: 100%;
+    margin: 0;
+  }
+}
+
 .research-network-svg .node-pole circle {
   fill: $linkColor;
 }
