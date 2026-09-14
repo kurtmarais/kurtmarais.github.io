@@ -31,6 +31,7 @@ My research sits at the intersection of Operations Research and Computational So
     <h5 class="legend-heading">Techniques</h5>
     <ul class="legend-list legend-tech">
       <li>Discrete optimisation</li>
+      <li>Mathematical optimisation</li>
       <li>Decision theory</li>
       <li>Machine learning</li>
       <li>Agent-based modelling</li>
