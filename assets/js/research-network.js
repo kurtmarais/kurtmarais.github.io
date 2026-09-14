@@ -31,6 +31,7 @@
 
   // Small random offset so free nodes don't all launch from one exact point.
   nodes.forEach(function (n) {
+    n.vx = 0; n.vy = 0;
     if (!n.fixed) {
       n.x += (Math.random() - 0.5) * 40;
       n.y += (Math.random() - 0.5) * 40;
@@ -133,10 +134,23 @@
         // this node itself, but it still exerted forces on everyone else above.
         n.x = n.fx;
         n.y = n.fy;
+        n.vx = 0; n.vy = 0; // no residual velocity carried once released
         return;
       }
-      n.x += Math.max(-6, Math.min(6, fx[n.id]));
-      n.y += Math.max(-6, Math.min(6, fy[n.id]));
+      // Velocity-based integration with damping, rather than applying raw
+      // force as a position delta directly. Without this, nodes overshoot
+      // their resting point, get pulled back the other way next frame, and
+      // visibly oscillate instead of smoothly decelerating into place.
+      n.vx = (n.vx + fx[n.id] * 0.02) * 0.82;
+      n.vy = (n.vy + fy[n.id] * 0.02) * 0.82;
+      var speed = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
+      var maxSpeed = 6;
+      if (speed > maxSpeed) {
+        n.vx = n.vx / speed * maxSpeed;
+        n.vy = n.vy / speed * maxSpeed;
+      }
+      n.x += n.vx;
+      n.y += n.vy;
       n.x = Math.max(45, Math.min(W - 45, n.x));
       n.y = Math.max(45, Math.min(H - 45, n.y));
     });
