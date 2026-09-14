@@ -190,7 +190,7 @@
     for (var k = 0; k < 700; k++) physicsStep();
     render();
   } else {
-    dragState.settleFrames = 240;
+    dragState.settleFrames = 280;
     runLoop();
   }
 
@@ -235,7 +235,7 @@
       if (dragState.node !== n) return;
       g.style.cursor = "grab";
       dragState.node = null;
-      dragState.settleFrames = 180; // let neighbours resettle after release
+      dragState.settleFrames = 280; // extended with margin past the ~180-frame point measured to still have perceptible residual motion
       runLoop();
     }
     g.addEventListener("pointerup", release);
