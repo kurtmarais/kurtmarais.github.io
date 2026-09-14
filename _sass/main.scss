@@ -2120,3 +2120,58 @@ body.dark-mode .research-network-svg line {
   stroke: #444943;
 }
 
+/* Legend list (About page) — square, colour-coded bullets matching each
+   node tier's colour exactly, using the same values as the diagram itself. */
+
+.legend-heading {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.legend-heading:first-child {
+  margin-top: 0;
+}
+
+.legend-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+.legend-list li {
+  position: relative;
+  padding-left: 1.3rem;
+  margin-bottom: 0.35rem;
+}
+
+.legend-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.legend-pole li::before {
+  background: $linkColor;
+}
+.legend-tech li::before {
+  background: #6ea491;
+}
+.legend-app li::before {
+  background: #d7e8e1;
+}
+
+body.dark-mode .legend-pole li::before {
+  background: #9ab8aa;
+}
+body.dark-mode .legend-tech li::before {
+  background: #4a6b5f;
+}
+body.dark-mode .legend-app li::before {
+  background: #3a453f;
+}
+
