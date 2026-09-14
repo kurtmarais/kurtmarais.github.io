@@ -56,7 +56,7 @@
     { s: "ID", t: "SD", d: 95 }, { s: "ID", t: "SMR", d: 95 }, { s: "SD", t: "SMR", d: 95 }, { s: "HBD", t: "SD", d: 150 }
   ];
 
-  var rad = { pole: 46, tech: 30, app: 34 };
+  var rad = { pole: 60, tech: 30, app: 34 };
   var tierClass = { pole: "node-pole", tech: "node-tech", app: "node-app" };
 
   var svgNS = "http://www.w3.org/2000/svg";
@@ -128,6 +128,13 @@
 
     nodes.forEach(function (n) {
       if (n.fixed) return;
+      if (n === dragState.node) {
+        // pointer-locked while being dragged: ignore computed forces on
+        // this node itself, but it still exerted forces on everyone else above.
+        n.x = n.fx;
+        n.y = n.fy;
+        return;
+      }
       n.x += Math.max(-6, Math.min(6, fx[n.id]));
       n.y += Math.max(-6, Math.min(6, fy[n.id]));
       n.x = Math.max(45, Math.min(W - 45, n.x));
@@ -146,17 +153,79 @@
     });
   }
 
+  // ---------- Animation loop, restartable for dragging ----------
+
+  var dragState = { node: null, running: false, settleFrames: 0 };
+
+  function runLoop() {
+    if (dragState.running) return;
+    dragState.running = true;
+    (function loop() {
+      physicsStep();
+      render();
+      dragState.settleFrames--;
+      if (dragState.node || dragState.settleFrames > 0) {
+        requestAnimationFrame(loop);
+      } else {
+        dragState.running = false;
+      }
+    })();
+  }
+
   if (reduceMotion) {
     for (var k = 0; k < 700; k++) physicsStep();
     render();
   } else {
-    var frame = 0;
-    var maxFrames = 240;
-    (function loop() {
-      physicsStep();
-      render();
-      frame++;
-      if (frame < maxFrames) requestAnimationFrame(loop);
-    })();
+    dragState.settleFrames = 240;
+    runLoop();
   }
+
+  // ---------- Dragging (mouse + touch, via Pointer Events) ----------
+
+  function toSvgPoint(evt) {
+    var pt = svg.createSVGPoint();
+    pt.x = evt.clientX;
+    pt.y = evt.clientY;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return { x: 0, y: 0 };
+    var inverted = pt.matrixTransform(ctm.inverse());
+    return { x: inverted.x, y: inverted.y };
+  }
+
+  nodes.forEach(function (n, i) {
+    if (n.tier === "pole") return; // poles stay fixed, not draggable
+
+    var g = nodeEls[i];
+    g.style.cursor = "grab";
+    g.style.touchAction = "none";
+
+    g.addEventListener("pointerdown", function (evt) {
+      evt.preventDefault();
+      g.setPointerCapture(evt.pointerId);
+      g.style.cursor = "grabbing";
+      var p = toSvgPoint(evt);
+      n.fx = p.x; n.fy = p.y;
+      dragState.node = n;
+      dragState.settleFrames = Math.max(dragState.settleFrames, 1);
+      runLoop();
+    });
+
+    g.addEventListener("pointermove", function (evt) {
+      if (dragState.node !== n) return;
+      var p = toSvgPoint(evt);
+      n.fx = Math.max(45, Math.min(W - 45, p.x));
+      n.fy = Math.max(45, Math.min(H - 45, p.y));
+    });
+
+    function release(evt) {
+      if (dragState.node !== n) return;
+      g.style.cursor = "grab";
+      dragState.node = null;
+      dragState.settleFrames = 180; // let neighbours resettle after release
+      runLoop();
+    }
+    g.addEventListener("pointerup", release);
+    g.addEventListener("pointercancel", release);
+  });
 })();
+
