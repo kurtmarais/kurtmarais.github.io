@@ -14,11 +14,11 @@ My research focus relates to natural language processing tasks and simulation fr
 
 My research sits at the intersection of two traditions: Operations Research and Computational Social Science. Both function as umbrella fields in their own right, and the more specific techniques I work with &mdash; agent-based modelling, machine learning, and decision theory among them &mdash; draw from one, the other, or both. The particular phenomena I study, from information diffusion to sentiment and emotional contagion, emerge from applying these techniques to real social systems rather than sitting in either tradition alone.
 
-<div class="row g-4 align-items-center mt-2">
-  <div class="col-md-5">
+<div class="research-network-row mt-2">
+  <div class="research-network-diagram">
     <div class="research-network-wrap" id="research-network"></div>
   </div>
-  <div class="col-md-6 ms-auto">
+  <div class="research-network-legend">
     <h5 class="legend-heading">Research fields</h5>
     <ul class="legend-list legend-pole">
       <li>Operations Research</li>
