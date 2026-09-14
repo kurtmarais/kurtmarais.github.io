@@ -16,6 +16,7 @@
     { id: "CSS", label: ["Computational", "Social Science"], tier: "pole", x: 790, y: 230, fixed: true },
 
     { id: "DO", label: ["Discrete", "optimisation"], tier: "tech", x: 450, y: 230 },
+    { id: "MO", label: ["Mathematical", "optimisation"], tier: "tech", x: 450, y: 230 },
     { id: "DT", label: ["Decision", "theory"], tier: "tech", x: 450, y: 230 },
     { id: "ML", label: ["Machine", "learning"], tier: "tech", x: 450, y: 230 },
     { id: "ABM", label: ["Agent-based", "modelling"], tier: "tech", x: 450, y: 230 },
@@ -45,6 +46,7 @@
   // d = target distance for this edge; shorter = pulled closer together.
   var links = [
     { s: "DO", t: "OR", d: 95 }, { s: "DT", t: "OR", d: 100 },
+    { s: "MO", t: "OR", d: 95 }, { s: "MO", t: "ML", d: 100 },
     { s: "ML", t: "OR", d: 200 }, { s: "ML", t: "CSS", d: 150 },
     { s: "ABM", t: "OR", d: 200 }, { s: "ABM", t: "CSS", d: 150 },
     { s: "DM", t: "CSS", d: 120 }, { s: "NLP", t: "CSS", d: 100 }, { s: "SNA", t: "CSS", d: 95 },
