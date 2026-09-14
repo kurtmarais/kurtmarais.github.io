@@ -20,7 +20,7 @@
     { id: "ML", label: ["Machine", "learning"], tier: "tech", x: 450, y: 310 },
     { id: "ABM", label: ["Agent-based", "modelling"], tier: "tech", x: 450, y: 310 },
     { id: "DM", label: ["Data mining", "& retrieval"], tier: "tech", x: 450, y: 310 },
-    { id: "NLP", label: ["NLP"], tier: "tech", x: 450, y: 310 },
+    { id: "NLP", label: ["Natural", "language", "processing"], tier: "tech", x: 450, y: 310 },
     { id: "SNA", label: ["Social network", "analysis"], tier: "tech", x: 450, y: 310 },
 
     { id: "HBD", label: ["Human", "behaviour", "& decision-", "making"], tier: "app", x: 450, y: 310 },
@@ -111,7 +111,7 @@
         var a = nodes[i], b = nodes[j];
         var dx = a.x - b.x, dy = a.y - b.y;
         var dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        var minDist = rad[a.tier] + rad[b.tier] + 14; // border-to-border gap, not a flat guessed number
+        var minDist = rad[a.tier] + rad[b.tier] + 3; // border-to-border gap, not a flat guessed number
         if (dist < 260) {
           var force = (4600 / (dist * dist)) * (dist < minDist ? 3.5 : 1);
           fx[a.id] += dx / dist * force; fy[a.id] += dy / dist * force;
@@ -167,7 +167,7 @@
         if (na.fixed && nb.fixed) continue;
         var ddx = nb.x - na.x, ddy = nb.y - na.y;
         var ddist = Math.sqrt(ddx * ddx + ddy * ddy) || 0.01;
-        var minGap = rad[na.tier] + rad[nb.tier] + 14;
+        var minGap = rad[na.tier] + rad[nb.tier] + 3;
         if (ddist < minGap) {
           var overlap = (minGap - ddist) / 2;
           var ux = ddx / ddist, uy = ddy / ddist;
