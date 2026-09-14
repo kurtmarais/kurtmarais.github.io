@@ -23,10 +23,11 @@
     { id: "NLP", label: ["NLP"], tier: "tech", x: 450, y: 310 },
     { id: "SNA", label: ["Social network", "analysis"], tier: "tech", x: 450, y: 310 },
 
-    { id: "HBD", label: ["Human behaviour", "& decision-making"], tier: "app", x: 450, y: 310 },
+    { id: "HBD", label: ["Human", "behaviour", "& decision-", "making"], tier: "app", x: 450, y: 310 },
     { id: "ID", label: ["Information", "diffusion"], tier: "app", x: 450, y: 310 },
-    { id: "SD", label: ["Sentiment diffusion &", "emotional contagion"], tier: "app", x: 450, y: 310 },
-    { id: "SMR", label: ["Social media", "research"], tier: "app", x: 450, y: 310 }
+    { id: "SD", label: ["Sentiment", "diffusion &", "emotional", "contagion"], tier: "app", x: 450, y: 310 },
+    { id: "SMR", label: ["Social media", "research"], tier: "app", x: 450, y: 310 },
+    { id: "INF", label: ["Info-", "demiology"], tier: "app", x: 450, y: 310 }
   ];
 
   // Small random offset so free nodes don't all launch from one exact point.
@@ -54,10 +55,11 @@
     { s: "ABM", t: "ID", d: 135 }, { s: "DM", t: "ID", d: 135 }, { s: "NLP", t: "ID", d: 135 }, { s: "SNA", t: "ID", d: 135 },
     { s: "ML", t: "SD", d: 135 }, { s: "NLP", t: "SD", d: 135 }, { s: "ABM", t: "SD", d: 135 },
     { s: "DM", t: "SMR", d: 135 }, { s: "NLP", t: "SMR", d: 135 }, { s: "SNA", t: "SMR", d: 135 },
-    { s: "ID", t: "SD", d: 95 }, { s: "ID", t: "SMR", d: 95 }, { s: "SD", t: "SMR", d: 95 }, { s: "HBD", t: "SD", d: 150 }
+    { s: "ID", t: "SD", d: 95 }, { s: "ID", t: "SMR", d: 95 }, { s: "SD", t: "SMR", d: 95 }, { s: "HBD", t: "SD", d: 150 },
+    { s: "INF", t: "ID", d: 95 }, { s: "INF", t: "SMR", d: 95 }, { s: "INF", t: "NLP", d: 130 }, { s: "INF", t: "SD", d: 95 }
   ];
 
-  var rad = { pole: 60, tech: 30, app: 34 };
+  var rad = { pole: 60, tech: 40, app: 34 };
   var tierClass = { pole: "node-pole", tech: "node-tech", app: "node-app" };
 
   var svgNS = "http://www.w3.org/2000/svg";
@@ -109,7 +111,7 @@
         var a = nodes[i], b = nodes[j];
         var dx = a.x - b.x, dy = a.y - b.y;
         var dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        var minDist = (a.tier === "pole" || b.tier === "pole") ? 110 : 100;
+        var minDist = rad[a.tier] + rad[b.tier] + 14; // border-to-border gap, not a flat guessed number
         if (dist < 260) {
           var force = (4600 / (dist * dist)) * (dist < minDist ? 3.5 : 1);
           fx[a.id] += dx / dist * force; fy[a.id] += dy / dist * force;
@@ -154,6 +156,26 @@
       n.x = Math.max(45, Math.min(W - 45, n.x));
       n.y = Math.max(45, Math.min(H - 45, n.y));
     });
+
+    // Hard collision resolution pass: the repulsion force above discourages
+    // overlap but isn't an absolute guarantee once many competing spring
+    // forces are in play. This directly separates any pair still actually
+    // touching, so border-overlap can't persist at rest.
+    for (var p = 0; p < nodes.length; p++) {
+      for (var q = p + 1; q < nodes.length; q++) {
+        var na = nodes[p], nb = nodes[q];
+        if (na.fixed && nb.fixed) continue;
+        var ddx = nb.x - na.x, ddy = nb.y - na.y;
+        var ddist = Math.sqrt(ddx * ddx + ddy * ddy) || 0.01;
+        var minGap = rad[na.tier] + rad[nb.tier] + 14;
+        if (ddist < minGap) {
+          var overlap = (minGap - ddist) / 2;
+          var ux = ddx / ddist, uy = ddy / ddist;
+          if (na !== dragState.node && !na.fixed) { na.x -= ux * overlap; na.y -= uy * overlap; }
+          if (nb !== dragState.node && !nb.fixed) { nb.x += ux * overlap; nb.y += uy * overlap; }
+        }
+      }
+    }
   }
 
   function render() {
