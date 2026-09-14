@@ -14,22 +14,35 @@ My research focus relates to natural language processing tasks and simulation fr
 
 My research sits at the intersection of two traditions: Operations Research and Computational Social Science. Both function as umbrella fields in their own right, and the more specific techniques I work with &mdash; agent-based modelling, machine learning, and decision theory among them &mdash; draw from one, the other, or both. The particular phenomena I study, from information diffusion to sentiment and emotional contagion, emerge from applying these techniques to real social systems rather than sitting in either tradition alone.
 
-<div class="row g-4 align-items-center mt-2">
+<div class="row g-4 align-items-start mt-2">
   <div class="col-md-7">
     <div class="research-network-wrap" id="research-network"></div>
   </div>
   <div class="col-md-5">
-    <ul>
+    <h5 class="legend-heading">Research fields</h5>
+    <ul class="legend-list legend-pole">
       <li>Operations Research</li>
-      <li>Natural language processing</li>
-      <li>Information diffusion</li>
-      <li>Social network analysis</li>
+      <li>Computational Social Science</li>
+    </ul>
+
+    <h5 class="legend-heading">Techniques</h5>
+    <ul class="legend-list legend-tech">
+      <li>Discrete optimisation</li>
+      <li>Decision theory</li>
+      <li>Machine learning</li>
       <li>Agent-based modelling</li>
-      <li>Sentiment diffusion and emotional contagion</li>
-      <li>Computational social science</li>
-      <li>Human behaviour and decision-making</li>
       <li>Data mining and information retrieval</li>
+      <li>Natural language processing</li>
+      <li>Social network analysis</li>
+    </ul>
+
+    <h5 class="legend-heading">Applications</h5>
+    <ul class="legend-list legend-app">
+      <li>Human behaviour and decision-making</li>
+      <li>Information diffusion</li>
+      <li>Sentiment diffusion and emotional contagion</li>
       <li>Social media research</li>
+      <li>Infodemiology</li>
     </ul>
   </div>
 </div>
