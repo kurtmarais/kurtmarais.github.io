@@ -12,17 +12,27 @@ My research focus relates to natural language processing tasks and simulation fr
 
 <h3 class="fw-bold mb-4 mt-5">Research interests</h3>
 
-- Operations Research
-- Discrete optimisation
-- Natural language processing
-- Information diffusion
-- Social network analysis
-- Agent-based modelling
-- Sentiment diffusion and emotional contagion
-- Computational social science
-- Human behaviour and decision-making
-- Data mining and information retrieval
-- Social media research
+My research sits at the intersection of two traditions: Operations Research and Computational Social Science. Both function as umbrella fields in their own right, and the more specific techniques I work with &mdash; agent-based modelling, machine learning, and decision theory among them &mdash; draw from one, the other, or both. The particular phenomena I study, from information diffusion to sentiment and emotional contagion, emerge from applying these techniques to real social systems rather than sitting in either tradition alone.
+
+<div class="row g-4 align-items-center mt-2">
+  <div class="col-md-7">
+    <div class="research-network-wrap" id="research-network"></div>
+  </div>
+  <div class="col-md-5">
+    <ul>
+      <li>Operations Research</li>
+      <li>Natural language processing</li>
+      <li>Information diffusion</li>
+      <li>Social network analysis</li>
+      <li>Agent-based modelling</li>
+      <li>Sentiment diffusion and emotional contagion</li>
+      <li>Computational social science</li>
+      <li>Human behaviour and decision-making</li>
+      <li>Data mining and information retrieval</li>
+      <li>Social media research</li>
+    </ul>
+  </div>
+</div>
 
 <h3 class="fw-bold mb-4 mt-5">Collaboration</h3>
 
@@ -34,3 +44,5 @@ I am always interested in hearing from researchers working in related areas, par
   <span class="fw-bold d-block">Lecturer</span>
   <span class="cv-entry-meta">Stellenbosch University · Department of Logistics · South Africa</span>
 </p>
+
+<script src="{{ '/assets/js/research-network.js' | relative_url }}"></script>
