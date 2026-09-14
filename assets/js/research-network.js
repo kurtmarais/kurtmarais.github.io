@@ -26,7 +26,8 @@
 
     { id: "HBD", label: ["Human", "behaviour", "& decision-", "making"], tier: "app", x: 450, y: 230 },
     { id: "ID", label: ["Information", "diffusion"], tier: "app", x: 450, y: 230 },
-    { id: "SD", label: ["Sentiment", "diffusion &", "emotional", "contagion"], tier: "app", x: 450, y: 230 },
+    { id: "SAD", label: ["Sentiment", "analysis and", "diffusion"], tier: "app", x: 450, y: 230 },
+    { id: "EC", label: ["Emotional", "contagion"], tier: "app", x: 450, y: 230 },
     { id: "SMR", label: ["Social media", "research"], tier: "app", x: 450, y: 230 },
     { id: "INF", label: ["Info-", "demiology"], tier: "app", x: 450, y: 230 }
   ];
@@ -46,7 +47,7 @@
   // d = target distance for this edge; shorter = pulled closer together.
   var links = [
     { s: "DO", t: "OR", d: 95 }, { s: "DT", t: "OR", d: 100 },
-    { s: "MO", t: "OR", d: 95 }, { s: "MO", t: "ML", d: 100 }, { s: "MO", t: "DO", d: 90 },
+    { s: "MO", t: "OR", d: 95 }, { s: "MO", t: "ML", d: 100 }, { s: "MO", t: "DO", d: 85 },
     { s: "ML", t: "OR", d: 200 }, { s: "ML", t: "CSS", d: 150 },
     { s: "ABM", t: "OR", d: 200 }, { s: "ABM", t: "CSS", d: 150 },
     { s: "DM", t: "CSS", d: 120 }, { s: "NLP", t: "CSS", d: 100 }, { s: "SNA", t: "CSS", d: 95 },
@@ -55,10 +56,11 @@
     { s: "ABM", t: "SNA", d: 110 }, { s: "DM", t: "SNA", d: 95 }, { s: "DM", t: "NLP", d: 95 },
     { s: "DT", t: "HBD", d: 135 }, { s: "ML", t: "HBD", d: 135 }, { s: "ABM", t: "HBD", d: 135 },
     { s: "ABM", t: "ID", d: 135 }, { s: "DM", t: "ID", d: 135 }, { s: "NLP", t: "ID", d: 135 }, { s: "SNA", t: "ID", d: 135 },
-    { s: "ML", t: "SD", d: 135 }, { s: "NLP", t: "SD", d: 135 }, { s: "ABM", t: "SD", d: 135 },
+    { s: "ML", t: "SAD", d: 135 }, { s: "NLP", t: "SAD", d: 135 }, { s: "ABM", t: "EC", d: 135 },
     { s: "DM", t: "SMR", d: 135 }, { s: "NLP", t: "SMR", d: 135 }, { s: "SNA", t: "SMR", d: 135 },
-    { s: "ID", t: "SD", d: 95 }, { s: "ID", t: "SMR", d: 95 }, { s: "SD", t: "SMR", d: 95 }, { s: "HBD", t: "SD", d: 150 },
-    { s: "INF", t: "ID", d: 95 }, { s: "INF", t: "SMR", d: 95 }, { s: "INF", t: "NLP", d: 130 }, { s: "INF", t: "SD", d: 95 }
+    { s: "ID", t: "SAD", d: 95 }, { s: "ID", t: "SMR", d: 95 }, { s: "SAD", t: "SMR", d: 95 }, { s: "HBD", t: "EC", d: 150 },
+    { s: "INF", t: "ID", d: 95 }, { s: "INF", t: "SMR", d: 95 }, { s: "INF", t: "NLP", d: 130 }, { s: "INF", t: "SAD", d: 95 },
+    { s: "SAD", t: "EC", d: 90 }
   ];
 
   var rad = { pole: 60, tech: 40, app: 34 };
