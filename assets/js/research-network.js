@@ -4,7 +4,7 @@
   var container = document.getElementById("research-network");
   if (!container) return; // only runs on pages that actually have this element
 
-  var W = 900, H = 620;
+  var W = 900, H = 460;
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Node structure: two fixed poles (Operations Research, Computational
@@ -12,22 +12,22 @@
   // application/phenomena nodes. Positions below are just starting points —
   // everything except the two poles is free to move under the physics loop.
   var nodes = [
-    { id: "OR", label: ["Operations", "Research"], tier: "pole", x: 110, y: 310, fixed: true },
-    { id: "CSS", label: ["Computational", "Social Science"], tier: "pole", x: 790, y: 310, fixed: true },
+    { id: "OR", label: ["Operations", "Research"], tier: "pole", x: 110, y: 230, fixed: true },
+    { id: "CSS", label: ["Computational", "Social Science"], tier: "pole", x: 790, y: 230, fixed: true },
 
-    { id: "DO", label: ["Discrete", "optimisation"], tier: "tech", x: 450, y: 310 },
-    { id: "DT", label: ["Decision", "theory"], tier: "tech", x: 450, y: 310 },
-    { id: "ML", label: ["Machine", "learning"], tier: "tech", x: 450, y: 310 },
-    { id: "ABM", label: ["Agent-based", "modelling"], tier: "tech", x: 450, y: 310 },
-    { id: "DM", label: ["Data mining", "& retrieval"], tier: "tech", x: 450, y: 310 },
-    { id: "NLP", label: ["Natural", "language", "processing"], tier: "tech", x: 450, y: 310 },
-    { id: "SNA", label: ["Social network", "analysis"], tier: "tech", x: 450, y: 310 },
+    { id: "DO", label: ["Discrete", "optimisation"], tier: "tech", x: 450, y: 230 },
+    { id: "DT", label: ["Decision", "theory"], tier: "tech", x: 450, y: 230 },
+    { id: "ML", label: ["Machine", "learning"], tier: "tech", x: 450, y: 230 },
+    { id: "ABM", label: ["Agent-based", "modelling"], tier: "tech", x: 450, y: 230 },
+    { id: "DM", label: ["Data mining", "& retrieval"], tier: "tech", x: 450, y: 230 },
+    { id: "NLP", label: ["Natural", "language", "processing"], tier: "tech", x: 450, y: 230 },
+    { id: "SNA", label: ["Social network", "analysis"], tier: "tech", x: 450, y: 230 },
 
-    { id: "HBD", label: ["Human", "behaviour", "& decision-", "making"], tier: "app", x: 450, y: 310 },
-    { id: "ID", label: ["Information", "diffusion"], tier: "app", x: 450, y: 310 },
-    { id: "SD", label: ["Sentiment", "diffusion &", "emotional", "contagion"], tier: "app", x: 450, y: 310 },
-    { id: "SMR", label: ["Social media", "research"], tier: "app", x: 450, y: 310 },
-    { id: "INF", label: ["Info-", "demiology"], tier: "app", x: 450, y: 310 }
+    { id: "HBD", label: ["Human", "behaviour", "& decision-", "making"], tier: "app", x: 450, y: 230 },
+    { id: "ID", label: ["Information", "diffusion"], tier: "app", x: 450, y: 230 },
+    { id: "SD", label: ["Sentiment", "diffusion &", "emotional", "contagion"], tier: "app", x: 450, y: 230 },
+    { id: "SMR", label: ["Social media", "research"], tier: "app", x: 450, y: 230 },
+    { id: "INF", label: ["Info-", "demiology"], tier: "app", x: 450, y: 230 }
   ];
 
   // Small random offset so free nodes don't all launch from one exact point.
@@ -87,7 +87,7 @@
     var text = document.createElementNS(svgNS, "text");
     text.setAttribute("text-anchor", "middle");
     text.setAttribute("dominant-baseline", "central");
-    text.setAttribute("font-size", n.tier === "pole" ? "13" : "11");
+    text.setAttribute("font-size", n.tier === "pole" ? "13" : "9.5");
     text.setAttribute("font-weight", n.tier === "pole" ? "600" : "500");
     var count = n.label.length;
     n.label.forEach(function (line, i) {
