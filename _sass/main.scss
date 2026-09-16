@@ -7,6 +7,11 @@ $serifFont: "Source Serif 4", Georgia, serif;
 html {
   font-size: 85%;
   overflow-y: scroll;
+  overscroll-behavior-x: none; // stops the page from being draggable sideways past its own edges (the "peek at hidden margins" rubber-band effect)
+}
+
+body {
+  overscroll-behavior-x: none;
 }
 
 @font-face {
@@ -1934,8 +1939,14 @@ body.dark-mode .mobile-menu-toggle span {
 
   .site-header {
     font-size: 1.35rem;
-    position: relative;
-    top: -4px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: $backgroundColor;
+  }
+
+  body.dark-mode .site-header {
+    background: #202421;
   }
 
   .mobile-controls {
@@ -2332,7 +2343,7 @@ body.dark-mode .social-card {
 
   .social-carousel-viewport {
     overflow: hidden;
-    touch-action: pan-y; // lets vertical page scroll pass through natively, while horizontal movement is reserved for the swipe handler in JS
+    touch-action: none; // must be none, not pan-y — with pan-y, any vertical drift during a swipe lets the browser claim the gesture as a native vertical pan before the pointerup handler ever fires, silently breaking the swipe
     -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
