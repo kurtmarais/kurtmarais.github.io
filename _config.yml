@@ -29,6 +29,7 @@ google_analytics_id: "G-L8ESWJ4M12"
 # section from the CV page entirely (the section's data file can stay
 # in place either way; commenting the flag is all that's needed).
 show_cv_awards: false
+show_cv_graduated_students: true
 show_cv_associations: true
 show_cv_grants: false
 show_cv_service: false
