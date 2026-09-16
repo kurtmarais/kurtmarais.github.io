@@ -35,8 +35,8 @@ layout: default
     </div>
     {% assign completed_students = site.data.supervision | where_exp: "s", "s.status == 'completed'" %}
     {% assign completed_data_science = completed_students | where_exp: "s", "s.degree_level == 'BDatSci'" %}
-    {% assign completed_honours_or = completed_students | where_exp: "s", "s.programme == 'BComHons (Operations Research)'" %}
-    {% assign completed_honours_qm = completed_students | where_exp: "s", "s.programme == 'BComHons (Quantitative Management)'" %}
+    {% assign completed_honours_or = completed_students | where_exp: "s", "s.course == 'or'" %}
+    {% assign completed_honours_qm = completed_students | where_exp: "s", "s.course == 'qm'" %}
     {% assign completed_masters = completed_students | where_exp: "s", "s.degree_level == 'Masters'" %}
     {% assign completed_phd = completed_students | where_exp: "s", "s.degree_level == 'PhD'" %}
     {% if site.show_cv_graduated_students and completed_students.size > 0 %}
