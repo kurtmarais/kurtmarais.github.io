@@ -196,6 +196,7 @@ layout: default
   <div class="social-carousel">
     <div class="social-carousel-viewport">
       <div class="social-links-track">
+        <span class="social-card-spacer" aria-hidden="true"></span>
         {% for item in site.data.settings.social %}
           <a href="{{ item.link }}"
              class="social-card"
@@ -205,6 +206,7 @@ layout: default
             <span>{{ item.name }}</span>
           </a>
         {% endfor %}
+        <span class="social-card-spacer" aria-hidden="true"></span>
       </div>
     </div>
 
