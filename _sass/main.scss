@@ -2229,7 +2229,7 @@ body.dark-mode .legend-app li::before {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  height: 110px;
+  height: 64px;
   border-radius: 8px;
   text-decoration: none !important;
   font-size: 0.75rem;
@@ -2241,9 +2241,8 @@ body.dark-mode .legend-app li::before {
   padding: 0 1rem;
 }
 
-.social-card i,
-.social-card svg {
-  font-size: 1.3rem !important;
+.social-card i {
+  font-size: 2rem;
 }
 
 body.dark-mode .social-card {
@@ -2333,6 +2332,7 @@ body.dark-mode .social-card {
 
   .social-carousel-viewport {
     overflow: hidden;
+    touch-action: pan-y; // lets vertical page scroll pass through natively, while horizontal movement is reserved for the swipe handler in JS
     -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
