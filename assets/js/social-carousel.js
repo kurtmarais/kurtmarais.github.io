@@ -93,10 +93,47 @@ document.addEventListener("DOMContentLoaded", function () {
     if (nextButton) nextButton.addEventListener("click", goNext);
     if (prevButton) prevButton.addEventListener("click", goPrev);
 
+    // Swipe support via Pointer Events. Relies on the viewport having
+    // touch-action: pan-y in CSS — without it, the browser's own native
+    // touch scrolling can intercept the gesture before these handlers
+    // ever see a clean sequence, which is why this didn't work last time.
+    let dragStartX = null;
+    let wasSwipe = false;
+    const SWIPE_THRESHOLD = 40;
+
+    viewport.addEventListener("pointerdown", function (evt) {
+      dragStartX = evt.clientX;
+      viewport.setPointerCapture(evt.pointerId);
+    });
+
+    viewport.addEventListener("pointerup", function (evt) {
+      if (dragStartX === null) return;
+      const deltaX = evt.clientX - dragStartX;
+      if (deltaX > SWIPE_THRESHOLD) {
+        wasSwipe = true;
+        goPrev();
+      } else if (deltaX < -SWIPE_THRESHOLD) {
+        wasSwipe = true;
+        goNext();
+      }
+      dragStartX = null;
+    });
+
+    viewport.addEventListener("pointercancel", function () {
+      dragStartX = null;
+    });
+
     // Clicking anywhere in the peeking area should act like the chevrons —
     // the chevron buttons alone are a narrow target. Excludes the active
-    // (centred) card so its real link still behaves normally.
+    // (centred) card so its real link still behaves normally. Also skips
+    // entirely right after a genuine swipe — a pointerdown+pointerup pair
+    // is exactly what the browser turns into a native click afterward,
+    // which would otherwise double-advance the carousel on every swipe.
     viewport.addEventListener("click", function (evt) {
+      if (wasSwipe) {
+        wasSwipe = false;
+        return;
+      }
       if (evt.target.closest(".social-card.is-active")) return;
 
       const rect = viewport.getBoundingClientRect();
