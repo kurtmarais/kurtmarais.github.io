@@ -88,31 +88,19 @@ document.addEventListener("DOMContentLoaded", function () {
     if (nextButton) nextButton.addEventListener("click", goNext);
     if (prevButton) prevButton.addEventListener("click", goPrev);
 
-    // Swipe support, via Pointer Events (covers touch and mouse alike).
-    // Pointer capture ensures pointerup still fires on this element even
-    // if the drag moves outside the viewport's narrow bounds — without
-    // it, a longer swipe can silently miss the release event entirely.
-    let dragStartX = null;
+    // Clicking anywhere in the peeking area should act like the chevrons —
+    // the chevron buttons alone are a narrow target. Excludes the active
+    // (centred) card so its real link still behaves normally.
+    viewport.addEventListener("click", function (evt) {
+      if (evt.target.closest(".social-card.is-active")) return;
 
-    viewport.addEventListener("pointerdown", function (evt) {
-      dragStartX = evt.clientX;
-      viewport.setPointerCapture(evt.pointerId);
-    });
-
-    viewport.addEventListener("pointerup", function (evt) {
-      if (dragStartX === null) return;
-      const deltaX = evt.clientX - dragStartX;
-      const SWIPE_THRESHOLD = 40;
-      if (deltaX > SWIPE_THRESHOLD) {
+      const rect = viewport.getBoundingClientRect();
+      const clickX = evt.clientX - rect.left;
+      if (clickX < rect.width / 2) {
         goPrev();
-      } else if (deltaX < -SWIPE_THRESHOLD) {
+      } else {
         goNext();
       }
-      dragStartX = null;
-    });
-
-    viewport.addEventListener("pointercancel", function () {
-      dragStartX = null;
     });
 
     window.addEventListener("resize", function () { positionTrack(false); });
