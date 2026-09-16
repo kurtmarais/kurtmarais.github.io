@@ -49,6 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // not passive content to browse, unlike the media carousel.
 
     window.addEventListener("resize", update);
+    window.addEventListener("load", update); // re-measure after fonts/images finish, in case initial DOMContentLoaded measurement was too early
     update();
 
   });
