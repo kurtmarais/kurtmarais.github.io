@@ -18,15 +18,20 @@ document.addEventListener("DOMContentLoaded", function () {
     // append them. This is what makes wrapping feel like a continuous
     // loop rather than a jump back to a fixed start/end: when the user
     // pages past the "last" real card, a clone of the first card is
-    // already sitting right there to slide into view.
+    // already sitting right there to slide into view. Marked with an
+    // extra class so desktop CSS can hide them — this cloning exists
+    // purely for the mobile loop illusion and has no purpose at desktop,
+    // where all real cards are already shown at once in a static row.
     const leadingClones = realCards.slice(-CLONE_COUNT).map(function (c) {
       const clone = c.cloneNode(true);
+      clone.classList.add("social-card-clone");
       clone.setAttribute("aria-hidden", "true");
       clone.setAttribute("tabindex", "-1");
       return clone;
     });
     const trailingClones = realCards.slice(0, CLONE_COUNT).map(function (c) {
       const clone = c.cloneNode(true);
+      clone.classList.add("social-card-clone");
       clone.setAttribute("aria-hidden", "true");
       clone.setAttribute("tabindex", "-1");
       return clone;
