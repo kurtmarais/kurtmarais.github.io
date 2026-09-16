@@ -2268,6 +2268,13 @@ body.dark-mode .social-card {
     transform: none !important;
   }
 
+  // Clones exist only to support the mobile infinite-loop illusion —
+  // at desktop, every real card is already shown at once, so a clone
+  // has no purpose and would just appear as a stray duplicate entry.
+  .social-card-clone {
+    display: none;
+  }
+
   .social-card,
   .social-card-spacer {
     flex: 1;
