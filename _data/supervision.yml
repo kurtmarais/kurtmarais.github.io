@@ -42,7 +42,6 @@
   surname: "Roche"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "current"
   start_year: 2026
@@ -55,7 +54,6 @@
   surname: "Maswanganye"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2025
@@ -69,7 +67,6 @@
   surname: "Pillay"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2025
@@ -96,7 +93,6 @@
   surname: "Mochai"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2024
@@ -110,7 +106,6 @@
   surname: "Ntambi"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2024
@@ -137,7 +132,6 @@
   surname: "D'Aguiar"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2023
@@ -151,7 +145,6 @@
   surname: "Davis"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2023
@@ -165,7 +158,6 @@
   surname: "Oberholzer"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2022
@@ -179,7 +171,6 @@
   surname: "Probst"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2022
@@ -193,7 +184,6 @@
   surname: "Gebenga"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2021
@@ -207,7 +197,6 @@
   surname: "Gebenga"
   programme: "BComHons (Quantitative Management)"
   degree_level: "BComHons"
-  course: "qm"
   degree_sort: 3
   status: "completed"
   start_year: 2021
@@ -221,7 +210,6 @@
   surname: "Roboji"
   programme: "BComHons (Operations Research)"
   degree_level: "BComHons"
-  course: "or"
   degree_sort: 3
   status: "completed"
   start_year: 2020
@@ -235,7 +223,6 @@
   surname: "Viljoen"
   programme: "BComHons (Quantitative Management)"
   degree_level: "BComHons"
-  course: "qm"
   degree_sort: 3
   status: "completed"
   start_year: 2020
@@ -250,7 +237,6 @@
   surname: "Sharp"
   programme: "BComHons (Quantitative Management)"
   degree_level: "BComHons"
-  course: "qm"
   degree_sort: 3
   status: "completed"
   start_year: 2019
@@ -265,7 +251,6 @@
   surname: "Whitehead"
   programme: "BComHons (Quantitative Management)"
   degree_level: "BComHons"
-  course: "qm"
   degree_sort: 3
   status: "completed"
   start_year: 2019
