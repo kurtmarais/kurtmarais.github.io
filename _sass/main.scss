@@ -2220,7 +2220,7 @@ body.dark-mode .legend-app li::before {
 .social-links-track {
   display: flex;
   gap: 12px;
-  transition: transform 0.3s ease;
+  transition: transform 0.18s ease;
 }
 
 .social-card {
@@ -2250,7 +2250,8 @@ body.dark-mode .social-card {
   color: #202421 !important;
 }
 
-.social-carousel-controls {
+.social-carousel-prev,
+.social-carousel-next {
   display: none;
 }
 
@@ -2293,8 +2294,19 @@ body.dark-mode .social-card {
 
 /* Mobile: carousel behaviour — JS centres the active card, CSS handles
    the visual chrome (fixed card width so neighbours can peek, edge fade,
-   and the prev/next controls that are irrelevant at desktop width). */
+   and the prev/next buttons that flank the viewport on either side). */
 @media (max-width: 767px) {
+  .social-carousel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .social-carousel-viewport {
+    flex: 1;
+    min-width: 0; // lets the viewport actually shrink inside the flex row, rather than overflowing past the buttons
+  }
+
   .social-card-spacer {
     display: none;
   }
@@ -2309,16 +2321,10 @@ body.dark-mode .social-card {
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
 
-  .social-carousel-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    margin-top: 1rem;
-  }
-
   .social-carousel-prev,
   .social-carousel-next {
+    display: block;
+    flex-shrink: 0;
     background: none;
     border: none;
     padding: 0;
