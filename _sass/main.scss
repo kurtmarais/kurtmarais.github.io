@@ -2220,7 +2220,7 @@ body.dark-mode .legend-app li::before {
 .social-links-track {
   display: flex;
   gap: 12px;
-  transition: transform 0.18s ease;
+  transition: transform 0.12s ease;
 }
 
 .social-card {
@@ -2313,6 +2313,14 @@ body.dark-mode .social-card {
 
   .social-card {
     width: 200px;
+  }
+
+  // Peeking (non-active) cards are only partially visible, but their
+  // full clickable area still exists underneath — without this, an
+  // imprecise tap near a chevron can land on a peeking card's link
+  // instead. Only the centred, fully-visible card should be reachable.
+  .social-card:not(.is-active) {
+    pointer-events: none;
   }
 
   .social-carousel-viewport {
