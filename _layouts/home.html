@@ -188,6 +188,36 @@ layout: default
 
 </section>
 
+{% endif %}
+
+<section class="social-links-strip mb-5">
+  <h3 class="fw-bold border-bottom pb-3 mb-4">Find me online</h3>
+
+  <div class="social-carousel">
+    <div class="social-carousel-viewport">
+      <div class="social-links-track">
+        {% for item in site.data.settings.social %}
+          <a href="{{ item.link }}"
+             class="social-card"
+             target="_blank"
+             rel="noopener noreferrer">
+            <i class="{{ item.icon }}" aria-hidden="true"></i>
+            <span>{{ item.name }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="social-carousel-controls">
+      <button type="button" class="social-carousel-prev" aria-label="Previous link">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button type="button" class="social-carousel-next" aria-label="Next link">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
 {% include publications.html %}
 
-{% endif %}

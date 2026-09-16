@@ -108,5 +108,22 @@ layout: default
       </div>
     </div>
     {% endif %}
+    {% if site.show_cv_links %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Online Profiles</h4>
+      </div>
+      <div class="col-md-10">
+        {% for item in site.data.settings.social %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ item.name }}</span>
+            <span class="cv-entry-meta">
+              <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">{{ item.link }}</a>
+            </span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
   </div>
 </div>
