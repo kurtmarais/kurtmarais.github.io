@@ -33,3 +33,4 @@ show_cv_associations: true
 show_cv_grants: false
 show_cv_service: false
 show_cv_professional_development: true
+show_cv_links: true
