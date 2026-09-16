@@ -35,7 +35,8 @@ layout: default
     </div>
     {% assign completed_students = site.data.supervision | where_exp: "s", "s.status == 'completed'" %}
     {% assign completed_data_science = completed_students | where_exp: "s", "s.degree_level == 'BDatSci'" %}
-    {% assign completed_honours = completed_students | where_exp: "s", "s.degree_level == 'BComHons'" %}
+    {% assign completed_honours_or = completed_students | where_exp: "s", "s.programme == 'BComHons (Operations Research)'" %}
+    {% assign completed_honours_qm = completed_students | where_exp: "s", "s.programme == 'BComHons (Quantitative Management)'" %}
     {% assign completed_masters = completed_students | where_exp: "s", "s.degree_level == 'Masters'" %}
     {% assign completed_phd = completed_students | where_exp: "s", "s.degree_level == 'PhD'" %}
     {% if site.show_cv_graduated_students and completed_students.size > 0 %}
@@ -53,7 +54,13 @@ layout: default
         {% if completed_honours.size > 0 %}
           <p class="cv-entry mb-3">
             <span class="fw-bold d-block">Bachelor of Honours (Operations Research)</span>
-            <span class="cv-entry-meta">{{ completed_honours.size }} graduated</span>
+            <span class="cv-entry-meta">{{ completed_honours_or.size }} graduated</span>
+          </p>
+        {% endif %}
+        {% if completed_honours.size > 0 %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">Bachelor of Honours (Quantitative Management)</span>
+            <span class="cv-entry-meta">{{ completed_honours_qm.size }} graduated</span>
           </p>
         {% endif %}
         {% if completed_masters.size > 0 %}
