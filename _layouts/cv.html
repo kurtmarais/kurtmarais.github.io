@@ -116,10 +116,7 @@ layout: default
       <div class="col-md-10">
         {% for item in site.data.settings.social %}
           <p class="cv-entry mb-3">
-            <span class="fw-bold d-block">{{ item.name }}</span>
-            <span class="cv-entry-meta">
-              <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer">{{ item.link }}</a>
-            </span>
+            <a href="{{ item.link }}" target="_blank" rel="noopener noreferrer" class="fw-bold d-block">{{ item.name }}</a>
           </p>
         {% endfor %}
       </div>
