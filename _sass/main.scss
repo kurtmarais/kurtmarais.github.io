@@ -2214,7 +2214,6 @@ body.dark-mode .legend-app li::before {
 /* SOCIAL LINKS CARDS (homepage carousel + CV list) */
 
 .social-carousel-viewport {
-  overflow: hidden;
   width: 100%;
 }
 
@@ -2238,12 +2237,12 @@ body.dark-mode .legend-app li::before {
   background: #1f352f;
   color: #f7f6f1 !important;
   flex-shrink: 0;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
   padding: 0 1rem;
 }
 
 .social-card i {
-  font-size: 1.1rem;
+  font-size: 1.6rem;
 }
 
 body.dark-mode .social-card {
@@ -2255,19 +2254,40 @@ body.dark-mode .social-card {
   display: none;
 }
 
-/* Desktop: static full-width row, evenly spaced, no sliding */
+/* Desktop: static full-width row, evenly spaced, no sliding.
+   overflow stays visible here specifically so the hover-scale isn't
+   clipped by the viewport that mobile needs for its peek/fade effect. */
 @media (min-width: 768px) {
+  .social-carousel-viewport {
+    overflow: visible;
+  }
+
   .social-links-track {
     justify-content: space-between;
     transform: none !important;
   }
 
-  .social-card {
+  .social-card,
+  .social-card-spacer {
     flex: 1;
+  }
+
+  // Invisible spacers at each end so the visible cards don't stretch
+  // all the way to the page margins — they take up the same proportional
+  // width as a real card, without being visible or counted by the JS
+  // (which only queries .social-card, not this class).
+  .social-card-spacer {
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .social-card:hover {
     transform: scale(1.06);
+    background: #365b52;
+  }
+
+  body.dark-mode .social-card:hover {
+    background: #9ab8aa;
   }
 }
 
@@ -2275,11 +2295,16 @@ body.dark-mode .social-card {
    the visual chrome (fixed card width so neighbours can peek, edge fade,
    and the prev/next controls that are irrelevant at desktop width). */
 @media (max-width: 767px) {
+  .social-card-spacer {
+    display: none;
+  }
+
   .social-card {
     width: 200px;
   }
 
   .social-carousel-viewport {
+    overflow: hidden;
     -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
     mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
   }
