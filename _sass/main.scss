@@ -785,7 +785,7 @@ body.dark-mode .engagement-keyword-badge {
 // on the Engagements list — object-fit: cover (above) handles cropping
 // each individual source image to fit this same shape.
 .engagement-media-thumb.poster-media-thumb {
-  aspect-ratio: 4 / 1;
+  aspect-ratio: 2.5 / 1;
   flex-basis: 260px;
 }
 
