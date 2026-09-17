@@ -304,15 +304,35 @@
     - big data
     - uncertainty
 
-- title: "Module interest earns returns (Poster)"
-  type: "conference"
-  year: 2019
+- title: "Module Interest Earns Returns"
+  media_format: poster
+  url: "/posters/module-interest-earns-returns/"
+  image: "/assets/img/engagements/predac-thumb.jpg"
+  publication: "Professional Educational Development of Academics (PREDAC) 2019"
   venue: "Stellenbosch University Scholarship of Teaching and Learning Conference"
   location: "Somerset West, South Africa"
+  start_date: "2019-10-30"        # exact date within 2019 unknown — replace if you have the specific PREDAC 2019 date
+  end_date: "2019-10-30"
+  year: 2019
+  type: "poster"
+  featured: false
+  description: "A teaching-focused qualitative project for a quantitative module for students to gauge and motivate interest and retention in an Operations Research module from their second to third year."
   keywords:
     - operations research
     - enrolment
     - interactive learning technologies
+    - student engagement
+    - higher education
+  authors:
+    - "Kurt Marais"
+  poster_pdf: "/assets/posters/PREDAC_Poster.pdf"
+  pdf_width: 1190.25
+  pdf_height: 1683.75
+  abstract: |
+    This poster reports on a teaching intervention in a large, growing Operations Research module, prompted by declining student retention into third-year Operations Research modules. Students were given an open-ended research proposal assignment, allowing them to apply optimisation concepts to a real-world area of their own choosing rather than a prescribed topic.
+
+    The resulting proposals were of a high standard, with every student identifying a topic that genuinely interested them, and in-class polling (via Mentimeter) showed the assignment successfully surfaced both engagement and areas of confusion. The work reports that this kind of open, inquiry-based assignment for a quantitatively-inclined cohort (who are often unfamiliar with the field of OR upon enrolling for the module) can support an enquiring mind, engaged citizenship and problem-solving skills. These represent graduate attributes with relevance well beyond a single module or field.
+
 
 - title: "Measuring efficiency in retail planning"
   type: "conference"
@@ -324,31 +344,3 @@
     - efficiency
     - retail optimisation
     - sales
-
-
-- title: "Module Interest Earns Returns"
-  media_format: poster
-  url: "/posters/module-interest-earns-returns/"
-  image: "/assets/img/engagements/predac-thumb.jpg"
-  publication: "Professional Educational Development of Academics (PREDAC) 2019"
-  location: "Stellenbosch University"
-  start_date: "2019-10-30"        # exact date within 2019 unknown — replace if you have the specific PREDAC 2019 date
-  end_date: "2019-10-30"
-  year: 2019
-  type: "poster"
-  featured: false
-  description: "A teaching-focused qualitative project for a quantitative module for students to gauge and motivate interest and retention in an Operations Research module from their second to third year."
-  keywords:
-    - teaching
-    - student engagement
-    - operations research
-    - higher education
-  authors:
-    - "Kurt Marais"
-  poster_pdf: "/assets/posters/PREDAC_Poster.pdf"
-  pdf_width: 1190.25
-  pdf_height: 1683.75
-  abstract: |
-    This poster reports on a teaching intervention in a large, growing Operations Research module, prompted by declining student retention into third-year Operations Research modules. Students were given an open-ended research proposal assignment, allowing them to apply optimisation concepts to a real-world area of their own choosing rather than a prescribed topic.
-
-    The resulting proposals were of a high standard, with every student identifying a topic that genuinely interested them, and in-class polling (via Mentimeter) showed the assignment successfully surfaced both engagement and areas of confusion. The work reports that this kind of open, inquiry-based assignment for a quantitatively-inclined cohort (who are often unfamiliar with the field of OR upon enrolling for the module) can support an enquiring mind, engaged citizenship and problem-solving skills. These represent graduate attributes with relevance well beyond a single module or field.
