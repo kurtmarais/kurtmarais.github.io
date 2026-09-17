@@ -161,7 +161,7 @@ layout: default
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {% if item.media_format == "video" %}Watch video →{% else %}Read article →{% endif %}
+                    {% if item.media_format == "video" %}Watch video →{% elsif item.media_format == "poster" %}View poster →{% else %}Read article →{% endif %}
                   </a>
                 </div>
               </article>
