@@ -325,3 +325,30 @@
     - retail optimisation
     - sales
 
+
+- title: "Module Interest Earns Returns"
+  media_format: poster
+  url: "/posters/module-interest-earns-returns/"
+  image: "/assets/img/engagements/predac-thumb.jpg"
+  publication: "Professional Educational Development of Academics (PREDAC) 2019"
+  location: "Stellenbosch University"
+  start_date: "2019-01-01"        # exact date within 2019 unknown — replace if you have the specific PREDAC 2019 date
+  end_date: "2019-01-01"
+  year: 2019
+  type: "poster"
+  featured: false
+  description: "A teaching-focused study on using personalised research assignments to improve student engagement and interest in an Operations Research module."
+  keywords:
+    - teaching
+    - student engagement
+    - operations research
+    - higher education
+  authors:
+    - "Kurt Marais"
+  poster_pdf: "/assets/posters/PREDAC_Poster.pdf"
+  pdf_width: 1190.25
+  pdf_height: 1683.75
+  abstract: |
+    This poster reports on a teaching intervention in a large, growing Operations Research module, prompted by declining student retention into third-year OR modules. Students were given an open-ended research proposal assignment, allowing them to apply optimisation concepts to a real-world area of their own choosing rather than a prescribed topic.
+
+    The resulting proposals were of a high standard, with every student identifying a topic that genuinely interested them, and in-class polling (via Mentimeter) showed the assignment successfully surfaced both engagement and areas of confusion. The work argues that this kind of open, inquiry-based assignment can support an enquiring mind, engaged citizenship, and problem-solving skills — attributes with relevance well beyond a single module or field.
