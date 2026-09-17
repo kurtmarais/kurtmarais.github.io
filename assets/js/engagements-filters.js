@@ -299,4 +299,10 @@
       list.appendChild(group);
     });
   }
+
+  // Apply the default sort once on load — without this, the dropdown's
+  // "Newest first" label was cosmetic only, and entries just rendered in
+  // whatever order they happened to sit in the underlying YAML file until
+  // a user manually touched the Sort control.
+  applySort();
 })();
