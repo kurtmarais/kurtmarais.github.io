@@ -52,6 +52,18 @@ permalink: /teaching/
   <p class="mb-0 course-description">Collaboration with industry, project-based work aimed at solving real-world problems through Operations Research and mathematical optimisation</p>
 </div>
 
+<h3 class="fw-bold mb-4 mt-5">Guest lectures</h3>
+
+<div class="course-item mb-4">
+  <h4 class="mb-1">Global Service Learning (Faculty of Education, Stellenbosch University)<span class="course-years">(2026)</span></h4>
+  <p class="mb-0 course-description">A conversation with international undergraduate students about mental health and teaching, framed by Education for Sustainable Development; the lectures were related to how mental health shapes learning and teaching, common stressors for young people, protective factors and support, and how students can support learner well-being and their won mental health within appropriate role boundaries</p>
+</div>
+
+<div class="course-item mb-4">
+  <h4 class="mb-1">Knowledge Skills 172 (Faculty of Arts and Social Sciences, Stellenbosch University)<span class="course-years">(2023&#8210;2024)</span></h4>
+  <p class="mb-0 course-description">Equips first-year students with computer skills, particularly the component related to Microsoft Excel (interface, editing, basic formulations, charts)</p>
+</div>
+
 <!-- ### Teaching resources
 
 Add links to public lecture material, tutorials, demonstrations, datasets or other resources here. -->
