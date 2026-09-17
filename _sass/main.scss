@@ -780,10 +780,12 @@ body.dark-mode .engagement-keyword-badge {
 
 // Poster thumbnails are a full-width crop of a document's title band —
 // a much wider, shorter shape than the 4:3 video/article thumbnails.
-// Forcing them into that same box would crop the sides off; this gives
-// them their own matching ratio so the full width actually shows.
+// This ratio is fixed and shared by every poster (not set per-entry),
+// specifically so different posters have visual parity with each other
+// on the Engagements list — object-fit: cover (above) handles cropping
+// each individual source image to fit this same shape.
 .engagement-media-thumb.poster-media-thumb {
-  aspect-ratio: 4.68 / 1;
+  aspect-ratio: 4 / 1;
   flex-basis: 260px;
 }
 
@@ -2284,7 +2286,7 @@ body.dark-mode .legend-app li::before {
 
 .social-card i,
 .social-card svg {
-  font-size: 1.2rem !important;
+  font-size: 3rem !important;
 }
 
 body.dark-mode .social-card {
