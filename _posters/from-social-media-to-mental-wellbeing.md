@@ -14,6 +14,7 @@ featured: false
 keywords:
   - research impact
   - social media
+  - mental health
   - depression
 abstract: |
   This research explores how affective information (particularly sentiment related to depression) spreads through online social networks and what that means beyond the academic context. The work is framed by infodemiology and emotional contagion theories, and identifies *emotional reinforcement* as a phenomenon where socially connected individuals experience intensified, longer-lasting shared emotion when they hold the same diagnosis and emotional state, with particular relevance for people experiencing depression.
