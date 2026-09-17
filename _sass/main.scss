@@ -939,6 +939,27 @@ body.dark-mode .engagement-keyword-badge {
   margin-bottom: 0;
 }
 
+/* POSTER EMBED (individual poster pages) */
+
+.poster-embed-wrap {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  /* aspect-ratio itself is set inline per-page from front matter, since
+     it varies per poster — this just handles what's common to all of them */
+}
+
+.poster-embed {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #d9d9d1;
+  border-radius: 4px;
+}
+
+body.dark-mode .poster-embed {
+  border-color: #444943;
+}
+
 /* The shared .abstract-block negative margin-top (above) is tuned for
    supervision/engagements' context; on the publications list it sits
    right after a single <br>, so that same negative margin pulls it
