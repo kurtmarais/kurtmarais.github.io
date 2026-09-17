@@ -2,44 +2,47 @@
 layout: default
 ---
 
+{% assign poster_data = site.data.engagements | where: "url", page.url | first %}
+
 <article class="row g-5 mb-5">
   <div class="col-md-12 publication-page">
 
     <p class="eyebrow">
-      Poster Presentation{% if page.featured %} · Featured{% endif %}
+      Poster Presentation{% if poster_data.featured %} · Featured{% endif %}
     </p>
 
-    <h1 class="fw-bold mb-3">{{ page.title }}</h1>
+    <h1 class="fw-bold mb-3">{{ poster_data.title }}</h1>
 
     <p class="publication-byline text-muted">
-      {{ page.authors | join: ", " }} ({{ page.year }}). {{ page.venue }}.
+      {{ poster_data.authors | join: ", " }} ({{ poster_data.year }}). {{ poster_data.publication }}.
     </p>
 
-    {% if page.abstract %}
+    {% if poster_data.abstract %}
       <h3 class="fw-bold mt-4">Overview</h3>
-      <div class="publication-abstract">{{ page.abstract | markdownify }}</div>
+      <div class="publication-abstract">{{ poster_data.abstract | markdownify }}</div>
     {% endif %}
 
-    {% if page.keywords %}
+    {% if poster_data.keywords %}
       <div class="publication-keywords-row mt-3">
-        {% for keyword in page.keywords %}
+        {% for keyword in poster_data.keywords %}
           <span class="publication-keyword-badge">{{ keyword }}</span>
         {% endfor %}
       </div>
     {% endif %}
 
-    <!-- aspect-ratio set per-poster from front matter, so this layout works
-         correctly for any future poster regardless of its own page size/orientation -->
-    <div class="poster-embed-wrap mt-4" style="aspect-ratio: {{ page.pdf_width }} / {{ page.pdf_height }};">
+    <!-- aspect-ratio set per-poster from the matched engagements.yml entry,
+         so this layout works correctly for any future poster regardless
+         of its own page size/orientation -->
+    <div class="poster-embed-wrap mt-4" style="aspect-ratio: {{ poster_data.pdf_width }} / {{ poster_data.pdf_height }};">
       <embed
-        src="{{ page.poster_pdf | relative_url }}#navpanes=0"
+        src="{{ poster_data.poster_pdf | relative_url }}#navpanes=0"
         type="application/pdf"
         class="poster-embed"
       >
     </div>
 
     <p class="mt-3">
-      <a class="text-link" href="{{ page.poster_pdf | relative_url }}" target="_blank" rel="noopener noreferrer">Open PDF in a new tab →</a>
+      <a class="text-link" href="{{ poster_data.poster_pdf | relative_url }}" target="_blank" rel="noopener noreferrer">Open PDF in a new tab →</a>
     </p>
 
   </div>
