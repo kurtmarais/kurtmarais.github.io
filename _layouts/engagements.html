@@ -107,7 +107,7 @@ layout: default
               >
                 <a
                   href="{{ item.url }}"
-                  class="engagement-media-thumb"
+                  class="engagement-media-thumb{% if item.media_format == "poster" %} poster-media-thumb{% endif %}"
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="{{ item.title }}"

@@ -32,7 +32,7 @@ layout: default
          correctly for any future poster regardless of its own page size/orientation -->
     <div class="poster-embed-wrap mt-4" style="aspect-ratio: {{ page.pdf_width }} / {{ page.pdf_height }};">
       <embed
-        src="{{ page.poster_pdf | relative_url }}"
+        src="{{ page.poster_pdf | relative_url }}#navpanes=0"
         type="application/pdf"
         class="poster-embed"
       >
