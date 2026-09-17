@@ -778,6 +778,15 @@ body.dark-mode .engagement-keyword-badge {
   display: block;
 }
 
+// Poster thumbnails are a full-width crop of a document's title band —
+// a much wider, shorter shape than the 4:3 video/article thumbnails.
+// Forcing them into that same box would crop the sides off; this gives
+// them their own matching ratio so the full width actually shows.
+.engagement-media-thumb.poster-media-thumb {
+  aspect-ratio: 4.68 / 1;
+  flex-basis: 260px;
+}
+
 .engagement-media-play-icon {
   position: absolute;
   left: 50%;
