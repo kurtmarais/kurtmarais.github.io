@@ -302,7 +302,7 @@
   media_format: poster
   url: "/posters/from-social-media-to-mental-wellbeing/"
   image: "/assets/img/engagements/poster-thumb.jpg"
-  publication: "Faculty of Economic and Management Sciences, Stellenbosch University"        # inferred from filename — confirm/replace with the real venue if this was a specific conference
+  publication: "EMS Research Impact Day, Stellenbosch University"        # inferred from filename — confirm/replace with the real venue if this was a specific conference
   start_date: "2026-09-15"
   end_date: "2026-09-15"
   year: 2026
@@ -310,7 +310,6 @@
   featured: false
   description: "A summary of research on emotional contagion and sentiment diffusion in online mental health communities, and its implications beyond academia."
   keywords:
-    - Emotional contagion
-    - Sentiment diffusion
-    - Social media
-    - Depression
+    - research impact
+    - social media
+    - depression
