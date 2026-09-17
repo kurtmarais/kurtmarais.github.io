@@ -303,7 +303,8 @@
   url: "/posters/from-social-media-to-mental-wellbeing/"
   image: "/assets/img/engagements/poster-thumb.jpg"
   publication: "Faculty of Economic and Management Sciences, Stellenbosch University"        # inferred from filename — confirm/replace with the real venue if this was a specific conference
-  date: "2026"        # exact presentation date unknown — replace with start_date/end_date if you have one, matching the format used elsewhere in this file
+  start_date: "2026-09-15"
+  end_date: "2026-09-15"
   year: 2026
   type: "poster"
   featured: false
