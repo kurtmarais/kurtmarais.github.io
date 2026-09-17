@@ -297,3 +297,19 @@
     - efficiency
     - retail optimisation
     - sales
+
+- title: "From Social Media to Mental Well-being: Modelling the Spread of Emotion in Online Networks"
+  media_format: poster
+  url: "/posters/from-social-media-to-mental-wellbeing/"
+  image: "/assets/img/engagements/poster-thumb.jpg"
+  publication: "Faculty of Economic and Management Sciences, Stellenbosch University"        # inferred from filename — confirm/replace with the real venue if this was a specific conference
+  date: "2026"        # exact presentation date unknown — replace with start_date/end_date if you have one, matching the format used elsewhere in this file
+  year: 2026
+  type: "poster"
+  featured: false
+  description: "A summary of research on emotional contagion and sentiment diffusion in online mental health communities, and its implications beyond academia."
+  keywords:
+    - Emotional contagion
+    - Sentiment diffusion
+    - Social media
+    - Depression
