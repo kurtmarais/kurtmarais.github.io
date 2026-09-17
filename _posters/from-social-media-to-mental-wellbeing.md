@@ -4,7 +4,7 @@ title: "From Social Media to Mental Well-being: Modelling the Spread of Emotion 
 authors:
   - "Kurt Marais"
 year: 2026
-venue: "Faculty of Economic and Management Sciences, Stellenbosch University"
+venue: "EMS Research Impact Day 2026, Stellenbosch University"
 start_date: "2026-09-15"
 end_date: "2026-09-15"
 poster_pdf: "/assets/posters/EMS_Research_Impact_Poster_2026.pdf"
