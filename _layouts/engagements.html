@@ -138,7 +138,7 @@ layout: default
                   <h4 class="engagement-media-title">{{ item.title }}</h4>
                   <p class="engagement-description">{{ item.description }}</p>
 
-                  {% if item.abstract %}
+                  {% if item.abstract and item.media_format != "poster" %}
                     <details class="abstract-block">
                       <br>
                       <summary>Abstract</summary>
