@@ -1,3 +1,21 @@
+- title: "From Social Media to Mental Well-being: Modelling the Spread of Emotion in Online Networks"
+  media_format: poster
+  url: "/posters/from-social-media-to-mental-wellbeing/"
+  image: "/assets/img/engagements/poster-thumb.jpg"
+  publication: "EMS Research Impact Day, Stellenbosch University"        # inferred from filename — confirm/replace with the real venue if this was a specific conference
+  location: "Faculty of Economic and Management Sciences, Stellenbosch University"
+  start_date: "2026-09-15"
+  end_date: "2026-09-15"
+  year: 2026
+  type: "poster"
+  featured: false
+  description: "A summary of research on emotional contagion and sentiment diffusion in online mental health communities, and its implications beyond academia."
+  keywords:
+    - research impact
+    - social media
+    - mental health
+    - depression
+
 #- title: "From Social Media to Mental Well-being: Modelling the Spread of Sentiment in Online Networks"
 #  type: "conference"
 #  year: 2026
@@ -298,19 +316,3 @@
     - retail optimisation
     - sales
 
-- title: "From Social Media to Mental Well-being: Modelling the Spread of Emotion in Online Networks"
-  media_format: poster
-  url: "/posters/from-social-media-to-mental-wellbeing/"
-  image: "/assets/img/engagements/poster-thumb.jpg"
-  publication: "EMS Research Impact Day, Stellenbosch University"        # inferred from filename — confirm/replace with the real venue if this was a specific conference
-  start_date: "2026-09-15"
-  end_date: "2026-09-15"
-  year: 2026
-  type: "poster"
-  featured: false
-  description: "A summary of research on emotional contagion and sentiment diffusion in online mental health communities, and its implications beyond academia."
-  keywords:
-    - research impact
-    - social media
-    - mental health
-    - depression
