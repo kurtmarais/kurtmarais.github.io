@@ -156,12 +156,10 @@
     if (state.topics) {
       var searchableSelectors = [
         ".engagement-title",
-        ".engagement-media-title",
-        ".engagement-venue",
-        ".engagement-location",
+        ".engagement-meta",
         ".engagement-description",
         ".abstract-block p",
-        ".engagement-keywords",
+        ".engagement-keywords-row",
         ".engagement-tags"
       ];
 
@@ -225,7 +223,7 @@
   }
 
   function getEntryTitle(wrap) {
-    var titleEl = wrap.querySelector(".engagement-title, .engagement-media-title");
+    var titleEl = wrap.querySelector(".engagement-title");
     return titleEl ? titleEl.textContent.trim().toLowerCase() : "";
   }
 
