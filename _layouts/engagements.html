@@ -106,6 +106,19 @@ layout: default
               {% when "panel" %}{% assign type_icon = "fa-users-rectangle" %}
               {% when "seminar" %}{% assign type_icon = "fa-walkie-talkie" %}
             {% endcase %}
+            {% comment %}
+              Media entries often use a generic type (e.g. "media") with the
+              real distinction living in media_format instead — fall back to
+              that only when the type itself didn't already match above.
+            {% endcomment %}
+            {% if type_icon == "" and item.media_format %}
+              {% case item.media_format %}
+                {% when "video" %}{% assign type_icon = "fa-film" %}
+                {% when "poster" %}{% assign type_icon = "fa-panorama" %}
+                {% when "newspaper" %}{% assign type_icon = "fa-newspaper" %}
+                {% when "article" %}{% assign type_icon = "fa-newspaper" %}
+              {% endcase %}
+            {% endif %}
 
             <div class="engagement-entry-wrap">
 
