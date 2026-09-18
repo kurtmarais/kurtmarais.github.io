@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const SWIPE_THRESHOLD = 40;
 
     viewport.addEventListener("pointerdown", function (evt) {
+      if (!window.matchMedia("(max-width: 767px)").matches) return; // desktop never swipes — capturing the pointer here breaks nested links' native click behaviour
       dragStartX = evt.clientX;
       viewport.setPointerCapture(evt.pointerId);
     });
@@ -130,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // is exactly what the browser turns into a native click afterward,
     // which would otherwise double-advance the carousel on every swipe.
     viewport.addEventListener("click", function (evt) {
+      if (!window.matchMedia("(max-width: 767px)").matches) return; // desktop shows every card at once — there's no "peek zone" concept to click-navigate through there
       if (wasSwipe) {
         wasSwipe = false;
         return;
