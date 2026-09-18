@@ -152,16 +152,16 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
-- title: "Mental health as a social system: what online networks can teach us about supporting well-being in education"
-  type: "guest_lecture"
-  year: 2026
-  venue: "Global Service Learning"
-  location: "Stellenbosch, South Africa"
-  keywords:
-    - mental health
-    - learning behaviours
-    - reflection
-    - topic modelling
+#- title: "Mental health as a social system: what online networks can teach us about supporting well-being in education"
+#  type: "guest_lecture"
+#  year: 2026
+#  venue: "Global Service Learning"
+#  location: "Stellenbosch, South Africa"
+#  keywords:
+#    - mental health
+#    - learning behaviours
+#    - reflection
+#    - topic modelling
 
 - title: "How do we share the future? A panel discussion"
   type: "panel"
