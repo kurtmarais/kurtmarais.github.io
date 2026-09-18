@@ -93,39 +93,53 @@ layout: default
           {% for item in group.items %}
 
             {% assign engagement_order = engagement_order | plus: 1 %}
+            {% assign type_icon = "" %}
+            {% case item.type %}
+              {% when "blog_post" %}{% assign type_icon = "fa-pen-nib" %}
+              {% when "conference" %}{% assign type_icon = "fa-chalkboard-user" %}
+              {% when "newspaper" %}{% assign type_icon = "fa-newspaper" %}
+              {% when "interview" %}{% assign type_icon = "fa-microphone-lines" %}
+              {% when "video" %}{% assign type_icon = "fa-film" %}
+              {% when "radio" %}{% assign type_icon = "fa-radio" %}
+              {% when "podcast" %}{% assign type_icon = "fa-podcast" %}
+              {% when "poster" %}{% assign type_icon = "fa-panorama" %}
+              {% when "panel" %}{% assign type_icon = "fa-users-rectangle" %}
+              {% when "seminar" %}{% assign type_icon = "fa-walkie-talkie" %}
+            {% endcase %}
 
             <div class="engagement-entry-wrap">
 
-            {% if item.media_format %}
-
               <article
-                class="engagement-entry engagement-media-entry"
+                class="engagement-entry{% if item.media_format %} engagement-media-entry{% endif %}"
                 data-year="{{ item.year }}"
                 data-type="{{ item.type }}"
                 data-order="{{ engagement_order }}"
                 data-sort-date="{% if item.start_date %}{{ item.start_date }}{% else %}{{ item.sort_date }}{% endif %}"
               >
-                <a
-                  href="{{ item.url }}"
-                  class="engagement-media-thumb{% if item.media_format == "poster" %} poster-media-thumb{% endif %}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="{{ item.title }}"
-                >
-                  <img
-                    src="{% if item.image contains '://' %}{{ item.image }}{% else %}{{ item.image | relative_url }}{% endif %}"
-                    alt="{{ item.title }}"
+                {% if item.media_format %}
+                  <a
+                    href="{{ item.url }}"
+                    class="engagement-media-thumb{% if item.media_format == "poster" %} poster-media-thumb{% endif %}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="{{ item.title }}"
                   >
-                  {% if item.media_format == "video" %}
-                    <span class="engagement-media-play-icon">
-                      <i class="fas fa-play"></i>
-                    </span>
-                  {% endif %}
-                </a>
+                    <img
+                      src="{% if item.image contains '://' %}{{ item.image }}{% else %}{{ item.image | relative_url }}{% endif %}"
+                      alt="{{ item.title }}"
+                    >
+                    {% if item.media_format == "video" %}
+                      <span class="engagement-media-play-icon">
+                        <i class="fas fa-play"></i>
+                      </span>
+                    {% endif %}
+                  </a>
+                {% endif %}
 
-                <div class="engagement-media-content">
-                  <div class="engagement-media-meta">
-                    {{ item.publication }} ·
+                <div class="engagement-content">
+                  <div class="engagement-meta">
+                    {% if type_icon != "" %}<i class="fas {{ type_icon }}" aria-hidden="true"></i>{% endif %}
+                    {% if item.publication %}{{ item.publication }}{% else %}{{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}{% endif %} ·
                     {% if item.start_date %}
                       {% assign start_date = item.start_date | date: "%-d %B %Y" %}
                       {% assign end_date = item.end_date | default: item.start_date | date: "%-d %B %Y" %}
@@ -135,8 +149,12 @@ layout: default
                     {% endif %}
                     {% if item.featured %}<span class="engagement-featured-badge">Featured</span>{% endif %}
                   </div>
-                  <h4 class="engagement-media-title">{{ item.title }}</h4>
-                  <p class="engagement-description">{{ item.description }}</p>
+
+                  <h4 class="engagement-title">{{ item.title }}</h4>
+
+                  {% if item.description %}
+                    <p class="engagement-description">{{ item.description }}</p>
+                  {% endif %}
 
                   {% if item.abstract and item.media_format != "poster" %}
                     <details class="abstract-block">
@@ -148,67 +166,31 @@ layout: default
                   {% endif %}
 
                   {% if item.keywords %}
-                    <span class="engagement-keywords" hidden>{{ item.keywords | join: ", " }}</span>
+                    <div class="engagement-keywords-row">
+                      {% for keyword in item.keywords %}
+                        <span class="engagement-keyword-badge">{{ keyword }}</span>
+                      {% endfor %}
+                    </div>
                   {% endif %}
 
                   {% if item.tags %}
                     <span class="engagement-tags" hidden>{{ item.tags | join: ", " }}</span>
                   {% endif %}
 
-                  <a
-                    href="{{ item.url }}"
-                    class="engagement-media-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {% if item.media_format == "video" %}Watch video →{% elsif item.media_format == "poster" %}View poster →{% else %}Read article →{% endif %}
-                  </a>
+                  {% if item.media_format %}
+                    <a
+                      href="{{ item.url }}"
+                      class="engagement-media-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {% if item.media_format == "video" %}Watch video →{% elsif item.media_format == "poster" %}View poster →{% else %}Read article →{% endif %}
+                    </a>
+                  {% endif %}
                 </div>
               </article>
 
               <br><br>
-
-            {% else %}
-
-              <article
-                class="engagement-entry"
-                data-year="{{ item.year }}"
-                data-type="{{ item.type }}"
-                data-order="{{ engagement_order }}"
-                data-sort-date="{% if item.start_date %}{{ item.start_date }}{% else %}{{ item.sort_date }}{% endif %}"
-              >
-                <strong class="engagement-title">{{ item.title }}</strong>{% if item.featured %} <span class="engagement-featured-badge">Featured</span>{% endif %}<br>
-                <span class="engagement-venue">{{ item.venue }}</span>{% if item.location %} · <span class="engagement-location">{{ item.location }}</span>{% endif %}<br>
-
-                {% if item.description %}
-                  <span class="engagement-description">{{ item.description }}</span><br>
-                {% endif %}
-
-                {% if item.abstract %}
-                  <details class="abstract-block">
-                    <br>
-                    <summary>Abstract</summary>
-                    <p>{{ item.abstract }}</p>
-                    <br>
-                  </details>
-                {% endif %}
-
-                {% if item.keywords %}
-                  <div class="engagement-keywords-row">
-                    {% for keyword in item.keywords %}
-                      <span class="engagement-keyword-badge">{{ keyword }}</span>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-
-                {% if item.tags %}
-                  <span class="engagement-tags" hidden>{{ item.tags | join: ", " }}</span>
-                {% endif %}
-              </article>
-
-              <br><br>
-
-            {% endif %}
 
             </div>
 
