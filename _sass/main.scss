@@ -755,7 +755,7 @@ body.dark-mode .engagement-keyword-badge {
 /* ENGAGEMENTS — INLINE MEDIA CARD (visually similar to the homepage media strip, but
    shorter — this sits inline in a year-grouped list, not a hero carousel) */
 
-.engagement-media-entry {
+.engagement-entry {
   display: flex;
   align-items: stretch;
   gap: 1.25rem;
@@ -805,12 +805,15 @@ body.dark-mode .engagement-keyword-badge {
   font-size: 0.7rem;
 }
 
-.engagement-media-content {
+.engagement-content {
   flex: 1;
   padding: 0;
 }
 
-.engagement-media-meta {
+// Shared meta line (icon, venue/publication, date, featured badge) —
+// used identically whether or not the entry has a thumbnail, so a talk
+// and an article read the same way at a glance.
+.engagement-meta {
   color: #69706b;
   font-size: 0.7rem;
   font-weight: 600;
@@ -819,13 +822,18 @@ body.dark-mode .engagement-keyword-badge {
   margin-bottom: 0.35rem;
 }
 
-.engagement-media-title {
+.engagement-meta i {
+  margin-right: 0.3rem;
+  font-size: 0.75rem;
+}
+
+.engagement-title {
   font-size: 1.05rem; // smaller than the homepage card's 1.2rem
   line-height: 1.25;
   margin-bottom: 0.3rem;
 }
 
-.engagement-media-content .engagement-description {
+.engagement-description {
   display: block;
   color: #69706b;
   font-size: 0.85rem;
@@ -846,7 +854,7 @@ body.dark-mode .engagement-keyword-badge {
 }
 
 @media (max-width: 767px) {
-  .engagement-media-entry {
+  .engagement-entry {
     display: block; // matches the homepage media strip's own mobile breakpoint exactly
   }
 
@@ -857,12 +865,12 @@ body.dark-mode .engagement-keyword-badge {
     overflow: hidden;
   }
 
-  .engagement-media-content {
+  .engagement-content {
     display: block;
     padding: 0.75rem 0 0; // slightly tighter than the homepage's 1rem, keeping this card shorter overall as intended
   }
 
-  .engagement-media-title {
+  .engagement-title {
     font-size: 1rem;
     margin-bottom: 0.3rem;
   }
@@ -1565,11 +1573,11 @@ body.dark-mode .media-link:hover {
   color: #ffffff;
 }
 
-body.dark-mode .engagement-media-meta {
+body.dark-mode .engagement-meta {
   color: #aeb3ae;
 }
 
-body.dark-mode .engagement-media-content .engagement-description {
+body.dark-mode .engagement-description {
   color: #aeb3ae;
 }
 
