@@ -822,10 +822,35 @@ body.dark-mode .engagement-keyword-badge {
   margin-bottom: 0.35rem;
 }
 
-.engagement-meta i,
-.engagement-meta svg {
+// Icon-only pill for engagement type — deliberately icon-only (no text
+// inside) so it doesn't visually duplicate the keyword/featured badges,
+// which always carry text. The type name itself sits as plain text
+// right after the pill, not inside it.
+.engagement-type-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 1rem;
+  background: rgba(54, 91, 82, 0.15);
   margin-right: 0.6rem;
-  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.engagement-type-pill i,
+.engagement-type-pill svg {
+  color: $linkColor;
+  font-size: 0.7rem;
+}
+
+body.dark-mode .engagement-type-pill {
+  background: rgba(154, 184, 170, 0.15);
+}
+
+body.dark-mode .engagement-type-pill i,
+body.dark-mode .engagement-type-pill svg {
+  color: #9ab8aa;
 }
 
 .engagement-title {
