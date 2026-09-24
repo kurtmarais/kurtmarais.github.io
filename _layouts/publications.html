@@ -86,7 +86,7 @@ layout: default
             data-year="{{ item.year }}"
             data-order="{{ publication_order }}"
           >
-            <strong class="publication-title"><a href="{{ item.url }}">{{ item.title }}</a></strong>
+            <strong class="publication-title"><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></strong>
             <br>
 
             <span class="publication-byline">
@@ -95,25 +95,25 @@ layout: default
                 <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% if item.issue %}({{ item.issue }}){% endif %}{% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
                 {% if item.doi %}
                   DOI:
-                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                  <a href="{{ item.doi }}">
                     {{ item.doi | remove: "https://doi.org/" }}
                   </a>.
                 {% endif %}
               {% elsif item.type == "dataset" %}
                 Dataset.{% if item.doi %} DOI:
-                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                  <a href="{{ item.doi }}">
                     {{ item.doi | remove: "https://doi.org/" }}
                   </a>.
                 {% endif %}
               {% elsif item.type == "thesis" %}
                 Master's thesis, {{ item.institution }}.{% if item.doi %} DOI:
-                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                  <a href="{{ item.doi }}">
                     {{ item.doi | remove: "https://doi.org/" }}
                   </a>.
                 {% endif %}
               {% elsif item.type == "dissertation" %}
                 Doctoral dissertation, {{ item.institution }}.{% if item.doi %} DOI:
-                  <a href="{{ item.doi }}" target="_blank" rel="noopener noreferrer">
+                  <a href="{{ item.doi }}">
                     {{ item.doi | remove: "https://doi.org/" }}
                   </a>.
                 {% endif %}
