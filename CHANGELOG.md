@@ -4,6 +4,30 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-24 (5)
+
+### Added
+- Supervision page: "Research collaboration" section (co-authored research)
+  above "Prospective students", which now invites self-funded PhD and
+  Masters candidates and lists current areas of interest.
+
+## 2026-09-24 (4)
+
+### Added
+- schema.org JSON-LD on every publication page (`ScholarlyArticle`,
+  `Dataset`, `Thesis`), generated from the same front matter as the Google
+  Scholar tags.
+- `llms.txt`: current and future research directions, collaboration
+  interests, self-funded PhD/Master's supervision, professional
+  memberships, and a preferred citation for the DPR lexicon.
+
+## 2026-09-24 (3)
+
+### Added
+- `/llms.txt` and `/llms-full.txt`: plain-text research summary for language
+  models and AI search tools, generated from site data via
+  `_includes/llms.txt`. Not in the nav or sitemap.
+
 ## 2026-09-24 (2)
 
 ### Fixed

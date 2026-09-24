@@ -9,7 +9,10 @@ Each file feeds three places:
   year, with filter/sort/search.
 - `_layouts/publication.html` — the individual page for that item
   (`permalink: /publications/:slug/`, from `_config.yml`), including the
-  Google Scholar Highwire meta tags (`citation_*`) in `_includes/head.html`.
+  Google Scholar Highwire meta tags (`citation_*`) and schema.org JSON-LD
+  (`ScholarlyArticle` for journal articles, `Dataset`, `Thesis` for
+  theses/dissertations) in `_includes/head.html`.
+- `/llms.txt` and `/llms-full.txt` (via `_includes/llms.txt`).
 - `_includes/publications.html` — the homepage's "Selected publications"
   section, filtered to items with `featured: true`.
 
