@@ -34,9 +34,11 @@ value seems visually smaller than expected.
 
 ## Engagement type → icon/label system
 
-Used in **both** `engagements.html` and `home.html`'s "In the Media" strip —
-these are two separate templates pulling the same `site.data.engagements`,
-and both need this logic (a fix in one does not propagate to the other).
+Lives in **one place**: `_includes/engagement-type.html` (sets `type_icon`
+and `type_label`), with the date part of the meta line in
+`_includes/engagement-date.html`. Both `engagements.html` and `home.html`'s
+"In the Media" strip call them with `{% include ... item=item %}` — edit the
+include, not the layouts.
 
 Icon and label are assigned **together in one `case` statement**, never two
 separate lookups — keeps them from drifting out of sync:
@@ -63,10 +65,9 @@ the type name as **plain text beside it, not inside the pill** — deliberate,
 so it doesn't visually collide with keyword badges, which do have text
 inside their pill.
 
-Meta line format: `[pill+icon] Type · Venue/Publication · Date`. Only emit
-the `·` before the date if a date actually exists (`item.start_date` or
-`item.date`) — a bare `{{ date }}` field with nothing there leaves a
-dangling separator.
+Meta line format: `[pill+icon] Type · Venue/Publication · Date`.
+`engagement-date.html` emits the `·` only if a date exists
+(`item.start_date` or `item.date`), so there's no dangling separator.
 
 ## Posters: single source of truth is `engagements.yml`, not the `.md` stub
 

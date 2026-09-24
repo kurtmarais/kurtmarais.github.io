@@ -1,9 +1,18 @@
 # _data/cv/
 
-Feeds the CV page (`/cv/`, via `_layouts/cv.html`). Six files, each a simple
-flat list — no nested fields, no optional fields. Rendered in this fixed
-order: Qualifications, Academic Experience, Awards & Honours, Grants &
-Funding, Roles & Service, Professional Development.
+Feeds the CV page (`/cv/`, via `_layouts/cv.html`). Seven files, each a
+flat list of `title` + `description` entries. The page renders in this fixed
+order:
+
+1. Qualifications — `education.yml`
+2. Academic Experience — `academic-experience.yml`
+3. Students Graduated — counted live from `_data/supervision.yml` (no file here)
+4. Awards & Honours — `awards.yml`
+5. Professional Associations — `professional-associations.yml`
+6. Grants & Funding — `grants.yml`
+7. Roles & Service — `service.yml`
+8. Professional Development — `professional-development.yml`
+9. Online Profiles — the `social` list in `_data/settings.yml` (no file here)
 
 ## education.yml
 
@@ -57,8 +66,8 @@ One entry per society, most recent first.
 
 Fields:
 - `title` — the society name
-- `description` — provider and year, using a `·` separator, e.g.
-  `'Coursera · 2026'`
+- `description` — country/region and membership years, using a `·`
+  separator, e.g. `'South Africa · 2026–'`
 
 Example entry to copy:
 ```yaml
@@ -111,23 +120,29 @@ Example entry to copy:
   description: 'Coursera · 2026'
 ```
 
-All six files just get looped and printed in order — there is no automatic
+All seven files just get looped and printed in order — there is no automatic
 sorting, so put new entries wherever they belong chronologically in the file.
 
 ## Hiding a section entirely
 
-The last four sections (Awards, Grants, Service, Professional Development)
-can each be switched off without touching this folder or `cv.html` at all —
-just comment out the matching line in `_config.yml`:
+Every section except Qualifications and Academic Experience has an on/off
+flag in `_config.yml`. Current settings:
 
 ```yaml
-show_cv_awards: true
-show_cv_grants: true
-show_cv_service: true
-show_cv_professional_development: true
+show_cv_awards: false
+show_cv_associations: true
+show_cv_grants: false
+show_cv_service: false
+show_cv_professional_development: false
+show_cv_graduated_students: true
+show_cv_links: true
 ```
 
-Comment out (or delete) any one of those lines and that section stops
-rendering on the CV page. The data file can stay exactly as it is either
-way — commenting the flag is the only thing that matters. Qualifications
-and Academic Experience have no such flag and always render.
+Set a flag to `false` (or comment the line out) to hide that section; the
+data file can stay as it is. A new CV section should get its own
+`show_cv_*` flag in the same way.
+
+"Students Graduated" also hides itself when `supervision.yml` has no
+current or completed students. Its rows (BDatSci, BComHons OR, BComHons QM,
+MCom, PhD) are matched by `degree_level` or exact `programme` string — see
+`_data/README.md`.

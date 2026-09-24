@@ -1,28 +1,31 @@
 # assets/js/
 
-Site JavaScript. No build step — plain files, loaded directly via `<script>`
-tags in `_layouts/default.html`.
+Plain JavaScript, no build step.
 
-- `back-to-top.js` — powers the floating "Back to top" button.
-- `dark-mode.js` — light/dark mode toggle. Also handles the mobile
-  hamburger menu's open/close click behaviour (the `/* MOBILE MENU */`
-  block near the bottom of the file) — a slightly non-obvious pairing,
-  since nothing about the filename suggests it also owns the menu.
-- `nav-wrap-detect.js` — watches the header nav and switches it into
-  hamburger mode whenever the links would actually wrap onto a second
-  line, rather than at a fixed screen width. Works alongside (not
-  instead of) the `max-width: 767px` rule in `main.scss`, which still
-  applies as a zero-JS fallback if this script fails to load. Toggles
-  a `.nav-collapsed` class on `.site-header`; all the actual show/hide
-  styling for that lives in `main.scss`, not here.
-- `supervision-filters.js` — all filter/sort/search logic for the
-  Supervision page.
-- `engagements-filters.js` — all filter/sort/search logic for the
-  Engagements page.
-- `footer-links.js` — makes footer quick-links smooth-scroll to top when
-  you're already on that page, instead of reloading.
-- `media-carousel.js` — the homepage "In the Media" carousel.
+Loaded on every page (`_includes/head.html` / `_layouts/default.html`):
 
-If you're editing filter/sort behaviour, `supervision-filters.js` and
-`engagements-filters.js` are the two files that matter — everything else is
-independent of the content data.
+- `dark-mode.js` — light/dark toggle. **Also** owns the mobile hamburger
+  menu open/close (the `/* MOBILE MENU */` block near the bottom).
+- `nav-wrap-detect.js` — switches the header into hamburger mode when the
+  nav links would wrap, rather than at a fixed width. Toggles
+  `.nav-collapsed` on `.site-header`; the `max-width: 767px` CSS rule
+  remains a no-JS fallback.
+- `back-to-top.js` — floating "Back to top" button.
+- `footer-links.js` — footer links smooth-scroll to top when already on
+  that page.
+- `media-carousel.js` — homepage "In the Media" carousel (no-op on other
+  pages).
+
+Loaded only by the page that needs it:
+
+- `social-carousel.js` — homepage "Find me online". Desktop: static row.
+  Mobile: infinite loop using 2 cloned cards at each end with a silent
+  snap-back. Any `setPointerCapture()` must stay mobile-only — on desktop
+  it breaks the links' click-through while hover still looks fine.
+- `engagements-filters.js` — Engagements filters/sort/search. Topic search
+  reads the visible `.engagement-keywords-row` badges plus hidden `tags`.
+  Sorts "Newest first" on page load.
+- `publications-filters.js` — Publications filters/sort/search.
+- `supervision-filters.js` — Supervision filters/sort/search.
+- `research-network.js` — the animated OR ↔ Computational Social Science
+  network on the About page (loaded from `about.md`).

@@ -1,0 +1,13 @@
+{% comment %}
+  Prints " · <date>" for one engagements.yml entry, or nothing if the
+  entry has no date (so the meta line never ends in a dangling "·").
+  Shared by _layouts/engagements.html and _layouts/home.html. Usage:
+    {% include engagement-date.html item=item %}
+{% endcomment %}
+{% if include.item.start_date %}
+  {% assign start_date = include.item.start_date | date: "%-d %B %Y" %}
+  {% assign end_date = include.item.end_date | default: include.item.start_date | date: "%-d %B %Y" %}
+  · {% if include.item.end_date and include.item.end_date != include.item.start_date %}{{ start_date }}–{{ end_date }}{% else %}{{ start_date }}{% endif %}
+{% elsif include.item.date %}
+  · {{ include.item.date }}
+{% endif %}
