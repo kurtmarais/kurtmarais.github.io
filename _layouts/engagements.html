@@ -93,37 +93,7 @@ layout: default
           {% for item in group.items %}
 
             {% assign engagement_order = engagement_order | plus: 1 %}
-            {% assign type_icon = "" %}
-            {% assign type_label = "" %}
-            {% case item.type %}
-              {% when "blog_post" %}{% assign type_icon = "fa-pen-nib" %}{% assign type_label = "Blog post" %}
-              {% when "conference" %}{% assign type_icon = "fa-chalkboard-user" %}{% assign type_label = "Conference" %}
-              {% when "newspaper" %}{% assign type_icon = "fa-newspaper" %}{% assign type_label = "Newspaper article" %}
-              {% when "interview" %}{% assign type_icon = "fa-microphone-lines" %}{% assign type_label = "Interview" %}
-              {% when "video" %}{% assign type_icon = "fa-film" %}{% assign type_label = "Video" %}
-              {% when "radio" %}{% assign type_icon = "fa-radio" %}{% assign type_label = "Radio" %}
-              {% when "podcast" %}{% assign type_icon = "fa-podcast" %}{% assign type_label = "Podcast" %}
-              {% when "poster" %}{% assign type_icon = "fa-panorama" %}{% assign type_label = "Poster" %}
-              {% when "panel" %}{% assign type_icon = "fa-users-rectangle" %}{% assign type_label = "Panel discussion" %}
-              {% when "seminar" %}{% assign type_icon = "fa-walkie-talkie" %}{% assign type_label = "Seminar" %}
-            {% endcase %}
-            {% comment %}
-              Media entries often use a generic type (e.g. "media") with the
-              real distinction living in media_format instead — fall back to
-              that only when the type itself didn't already match above.
-              Icon and label are set together here (not in two separate
-              lookups) specifically so they can never drift out of sync.
-            {% endcomment %}
-            {% if type_icon == "" and item.media_format %}
-              {% case item.media_format %}
-                {% when "video" %}{% assign type_icon = "fa-film" %}{% assign type_label = "Video" %}
-                {% when "poster" %}{% assign type_icon = "fa-panorama" %}{% assign type_label = "Poster" %}
-                {% when "newspaper" %}{% assign type_icon = "fa-newspaper" %}{% assign type_label = "Newspaper article" %}
-                {% when "article" %}{% assign type_icon = "fa-newspaper" %}{% assign type_label = "Article" %}
-              {% endcase %}
-            {% endif %}
-            {% assign has_date = false %}
-            {% if item.start_date or item.date %}{% assign has_date = true %}{% endif %}
+            {% include engagement-type.html item=item %}
 
             <div class="engagement-entry-wrap">
 
@@ -157,14 +127,8 @@ layout: default
                 <div class="engagement-content">
                   <div class="engagement-meta">
                     {% if type_icon != "" %}<span class="engagement-type-pill"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{{ type_label }} · {% endif %}
-                    {% if item.publication %}{{ item.publication }}{% else %}{{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}{% endif %}{% if has_date %} · {% endif %}
-                    {% if item.start_date %}
-                      {% assign start_date = item.start_date | date: "%-d %B %Y" %}
-                      {% assign end_date = item.end_date | default: item.start_date | date: "%-d %B %Y" %}
-                      {% if item.end_date and item.end_date != item.start_date %}{{ start_date }}–{{ end_date }}{% else %}{{ start_date }}{% endif %}
-                    {% elsif item.date %}
-                      {{ item.date }}
-                    {% endif %}
+                    {% if item.publication %}{{ item.publication }}{% else %}{{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}{% endif %}
+                    {% include engagement-date.html item=item %}
                     {% if item.featured %}<span class="engagement-featured-badge">Featured</span>{% endif %}
                   </div>
 

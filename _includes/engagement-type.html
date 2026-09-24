@@ -1,0 +1,33 @@
+{% comment %}
+  Sets `type_icon` and `type_label` for one engagements.yml entry.
+  Shared by _layouts/engagements.html and _layouts/home.html ("In the
+  Media" strip), so both pages always agree. Usage:
+    {% include engagement-type.html item=item %}
+
+  Icon and label are set together in one case statement (never two
+  separate lookups) so they can't drift out of sync. Media entries often
+  use a generic `type: media` with the real distinction in
+  `media_format`, so that's the fallback when `type` doesn't match.
+{% endcomment %}
+{% assign type_icon = "" %}
+{% assign type_label = "" %}
+{% case include.item.type %}
+  {% when "blog_post" %}{% assign type_icon = "fa-pen-nib" %}{% assign type_label = "Blog post" %}
+  {% when "conference" %}{% assign type_icon = "fa-chalkboard-user" %}{% assign type_label = "Conference" %}
+  {% when "newspaper" %}{% assign type_icon = "fa-newspaper" %}{% assign type_label = "Newspaper article" %}
+  {% when "interview" %}{% assign type_icon = "fa-microphone-lines" %}{% assign type_label = "Interview" %}
+  {% when "video" %}{% assign type_icon = "fa-film" %}{% assign type_label = "Video" %}
+  {% when "radio" %}{% assign type_icon = "fa-radio" %}{% assign type_label = "Radio" %}
+  {% when "podcast" %}{% assign type_icon = "fa-podcast" %}{% assign type_label = "Podcast" %}
+  {% when "poster" %}{% assign type_icon = "fa-panorama" %}{% assign type_label = "Poster" %}
+  {% when "panel" %}{% assign type_icon = "fa-users-rectangle" %}{% assign type_label = "Panel discussion" %}
+  {% when "seminar" %}{% assign type_icon = "fa-walkie-talkie" %}{% assign type_label = "Seminar" %}
+{% endcase %}
+{% if type_icon == "" and include.item.media_format %}
+  {% case include.item.media_format %}
+    {% when "video" %}{% assign type_icon = "fa-film" %}{% assign type_label = "Video" %}
+    {% when "poster" %}{% assign type_icon = "fa-panorama" %}{% assign type_label = "Poster" %}
+    {% when "newspaper" %}{% assign type_icon = "fa-newspaper" %}{% assign type_label = "Newspaper article" %}
+    {% when "article" %}{% assign type_icon = "fa-newspaper" %}{% assign type_label = "Article" %}
+  {% endcase %}
+{% endif %}

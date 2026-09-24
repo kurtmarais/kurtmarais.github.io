@@ -1,65 +1,75 @@
-# Kurt Marais — Academic GitHub Pages site
+# Kurt Marais — Academic site
 
-Jekyll site for kurtmarais.github.io, adapted from the Academic Jekyll template.
+Source for [kurtmarais.github.io](https://kurtmarais.github.io): a Jekyll site
+built by GitHub Pages' standard build (Jekyll 3.10, safe-mode plugins only —
+no custom plugins). Originally based on the LeNPaul "academic" theme, now
+heavily customised.
 
-## Publish
+## How changes go live
 
-1. Push to a repository named `YOURUSERNAME.github.io`.
-2. In **Settings → Pages**, choose **Deploy from a branch**.
-3. Select `main` and `/ (root)`.
-4. Save and wait for GitHub Pages to build.
-5. `_config.yml`'s `url` should match the real Pages address
-   (currently `https://kurtmarais.github.io`).
+GitHub Pages builds from **`main`**, `/ (root)`. Any commit that lands on
+`main` is live about 1–2 minutes later (progress shows under the repo's
+**Actions** tab).
 
-## Main sections
+Preferred workflow: make changes on a branch → open a pull request → review
+the diff → merge. Uploading files through the GitHub web UI straight to
+`main` works, but leaves no reviewable diff and makes it easy to overwrite a
+newer file with an older copy.
 
-Nav order is set in `_data/settings.yml`'s `menu` list:
+Local preview (optional):
 
-- About
-- Teaching
-- Supervision
-- Engagements
-- Publications
-- CV
+```bash
+bundle install
+bundle exec jekyll serve   # http://localhost:4000
+```
 
-`Research` (`research.md`) exists and builds but is commented out of the
-nav — only reachable by direct URL.
+If Sass fails with `Invalid US-ASCII character`, run with a UTF-8 locale
+(`LANG=C.UTF-8 LC_ALL=C.UTF-8 bundle exec jekyll serve`).
 
-## Root-level page files
+## Where content lives
 
-These `.md` files are the actual pages of the site. Each one is mostly just
-Jekyll front matter (`layout`, `title`, `permalink`) — the layout named does
-the heavy lifting, pulling structured content from `_data/` or the
-`_publications/` collection where relevant.
+| Page | URL | Edit this |
+|---|---|---|
+| Home | `/` | `index.md` (intro text); hero/research strip in `_layouts/home.html` |
+| About | `/about/` | `about.md` |
+| Teaching | `/teaching/` | `teaching.md` (structured `.course-item` HTML blocks — copy an existing one) |
+| Supervision | `/supervision/` | `_data/supervision.yml` |
+| Engagements | `/engagements/` | `_data/engagements.yml` |
+| Posters | `/posters/<slug>/` | `_data/engagements.yml` + a stub in `_posters/` |
+| Publications | `/publications/` | one file per item in `_publications/` |
+| CV | `/cv/` | `_data/cv/*.yml`, section toggles in `_config.yml` |
+| Research | `/research/` | `research.md`, `research/*.md` (not linked in the nav) |
 
-- `index.md` → homepage (`/`). Free-text intro content directly in the file,
-  plus the "In the Media" strip pulled automatically from
-  `_data/engagements.yml` (entries with `type: media` and `featured: true`).
-- `about.md` → `/about/`. Free-text content directly in the file.
-- `teaching.md` → `/teaching/`. Content lives directly in the file, but as
-  structured HTML blocks (`.course-item`), not markdown prose — copy an
-  existing course block when adding one, same as you would with a YAML
-  entry elsewhere. See the comments in the file.
-- `research.md` → `/research/`. Free-text content directly in the file.
-  **Not currently linked in the site navigation** (commented out in
-  `_data/settings.yml`) — the page still exists and builds, it's just not
-  reachable from the nav bar.
-- `supervision.md` → `/supervision/`. No body content — everything comes
-  from `_data/supervision.yml`.
-- `engagements.md` → `/engagements/`. No body content — everything comes
-  from `_data/engagements.yml`.
-- `publications.md` → `/publications/`. No body content — everything comes
-  from the `_publications/` collection (one `.md` file per publication; see
-  `_publications/README.md`).
-- `cv.md` → `/cv/`. No body content — everything comes from `_data/cv/`.
-  There is no separate CV PDF; the page is rendered entirely from that data.
+Pages driven by data (Supervision, Engagements, Publications, CV) have no
+body content in their root `.md` file — editing that file won't change what
+is displayed. Edit the data instead.
 
-For About/Teaching/Research/Home, just edit the Markdown text directly in the
-file below the `---` front matter block. For Supervision/Engagements/
-Publications/CV, edit the corresponding YAML file in `_data/` instead —
-editing these `.md` files won't change what's displayed.
+The homepage pulls three things automatically:
+- **In the Media** — `engagements.yml` entries with `type: media` **and**
+  `featured: true` (hidden entirely if `show_media` is false in `_config.yml`).
+- **Find me online** — the `social` list in `_data/settings.yml`.
+- **Selected publications** — `_publications/` items with `featured: true`.
 
-## Images
+## Site-wide settings
 
-The homepage hero photo is `assets/img/headshot.jpg`. See
-`assets/img/README.md` for what else is (and isn't) in use.
+- `_config.yml` — site URL/title/description, collections (`publications`,
+  `posters`), Google Analytics ID, `show_media`, and the `show_cv_*` flags.
+- `_data/settings.yml` — nav menu order and social links.
+
+## Folder guide
+
+Each folder has its own README with field-by-field details:
+
+- `_data/` — Supervision, Engagements, settings; `_data/cv/` for the CV.
+- `_publications/`, `_posters/` — Jekyll collections.
+- `_layouts/`, `_includes/` — page templates and shared fragments.
+- `_sass/` — all styling (`main.scss`).
+- `assets/` — images, fonts, JS, vendored libraries, poster PDFs.
+- `research/` — research-project detail pages.
+- `brand/` — logo/favicon source files and `BRAND-GUIDELINES.md`. Not
+  published (excluded in `_config.yml`); the live favicons are copies in
+  `assets/img/`.
+
+`CLAUDE.md` holds implementation notes and gotchas (icon rendering, Liquid
+quirks, carousel behaviour). It is excluded from the build, as are all
+README files and `CHANGELOG.md`.

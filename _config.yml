@@ -22,6 +22,9 @@ exclude:
   - vendor
   - brand
   - CLAUDE.md
+  - CHANGELOG.md
+  - README.md
+  - "**/README.md"
 show_media: true
 
 # Google Analytics — set to your GA4 Measurement ID to enable tracking,

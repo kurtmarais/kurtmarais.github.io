@@ -1,27 +1,41 @@
 # _includes/
 
-Reusable HTML/Liquid snippets included by one or more files in `_layouts/`.
-These aren't full pages — they're fragments (nav bar, footer, etc.) shared
-across multiple layouts so the same markup doesn't need to be duplicated.
-You generally won't touch these unless you're changing sitewide structure
-(e.g. adding a new footer link, changing the nav bar) — not for adding
-content.
+Reusable HTML/Liquid fragments pulled into layouts with
+`{% include name.html %}`. Edit these when changing sitewide structure or
+shared rendering logic — not for adding content.
 
-Files here:
+Sitewide (every page, via `_layouts/default.html`):
 
-- `header.html` — top navigation bar, pulls its links from
-  `_data/settings.yml`'s `menu` list.
-- `footer.html` — site footer: brand/description, the "Pages" quick-links
-  row, and social icons (pulled from `_data/settings.yml`'s `social` list).
-- `contact.html` — the "Contact" section that appears at the bottom of every
-  page (above the footer).
-- `head.html` — the HTML `<head>`: page title, meta tags, favicon, font/CSS
-  imports.
-- `publications.html` — renders the homepage's "Selected publications"
-  section (items from the `_publications/` collection with `featured: true`).
-  This is **not** the `/publications/` page itself — that page is rendered
-  directly by `_layouts/publications.html`, with no include in between.
-- `publications-list.html` — not currently included anywhere in the site.
-  Leftover from an earlier `_data`-driven approach to publications, before
-  they moved to the `_publications/` collection. Safe to ignore or delete;
-  see `_publications/README.md` for how publications actually work now.
+- `head.html` — the `<head>`: title, meta/Open Graph tags, favicons,
+  Bootstrap, Font Awesome, `main.css`, `dark-mode.js`, Google Fonts,
+  JSON-LD, Google Scholar `citation_*` tags on publication pages, and
+  Google Analytics (only if `google_analytics_id` is set in `_config.yml`).
+- `header.html` — top nav, links from `_data/settings.yml`'s `menu`.
+- `contact.html` — the "Contact" section above the footer.
+- `footer.html` — brand/description, quick links, social icons (from
+  `_data/settings.yml`'s `social`).
+
+Shared engagement logic (used by `_layouts/engagements.html` **and** the
+homepage "In the Media" strip in `_layouts/home.html` — change it here once
+and both pages follow):
+
+- `engagement-type.html` — sets `type_icon` and `type_label` for an entry
+  from its `type`, falling back to `media_format`. Call with
+  `{% include engagement-type.html item=item %}`, then use the two
+  variables. To add a new type, add one `when` line here (icon and label
+  together) and document it in `_data/README.md`.
+- `engagement-date.html` — prints ` · 11 August 2026` (or a date range) for
+  an entry, or nothing if it has no date. Call with
+  `{% include engagement-date.html item=item %}`.
+
+Homepage:
+
+- `publications.html` — the homepage "Selected publications" section
+  (`_publications/` items with `featured: true`). Not the `/publications/`
+  page itself — that's `_layouts/publications.html`.
+
+Unused:
+
+- `publications-list.html` — not included anywhere. Leftover from an
+  earlier `_data/publications.yml` approach, before publications moved to
+  the `_publications/` collection. Safe to delete.

@@ -36,7 +36,6 @@ keywords:                       # optional — list of strings
 abstract: "Full abstract text." # journal-article / thesis / dissertation
 description: "What this contains and how it's used." # dataset only, in place of abstract
 tags:                           # optional — search-only, never rendered
-permalink: /publications/thematic-analysis-r-depression-subreddit/
 ---
 ```
 
@@ -53,8 +52,8 @@ Things worth knowing:
   Scholar's crawler — it reads the visible abstract text on that page (via
   the `citation_abstract_html_url` tag), not the collapsed version on the
   list page. Several files here still have a `# TODO` comment marking a
-  missing abstract — fill those in with the paper's real text (plain text,
-  not reformatted) when available.
+  missing abstract — none currently do, but use the same marker if you
+  add an item before its abstract is available.
 - On the list page, the abstract renders as a collapsible `<details>`
   dropdown (same pattern/CSS as the Supervision and Engagements pages) —
   this is just a display convenience and doesn't affect indexing, since
@@ -62,7 +61,9 @@ Things worth knowing:
 - `keywords` are always visible on the page ("Keywords: ..."); `tags` are
   never rendered and exist purely for the search box on the Publications
   page.
-- The file's slug (its filename, minus `.md`) becomes the URL —
+- No `permalink` is needed in the file: the collection's
+  `permalink: /publications/:slug/` in `_config.yml` sets it, and the
+  file's slug (its filename, minus `.md`) becomes the URL —
   `_publications/thematic-analysis-r-depression-subreddit.md` →
   `/publications/thematic-analysis-r-depression-subreddit/`. Keep slugs
   short and stable once published, since Scholar and any external links
