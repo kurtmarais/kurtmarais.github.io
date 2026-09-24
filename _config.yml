@@ -21,6 +21,7 @@ exclude:
   - academic.gemspec
   - vendor
   - brand
+  - CLAUDE.md
 show_media: true
 
 # Google Analytics — set to your GA4 Measurement ID to enable tracking,
