@@ -1,0 +1,128 @@
+{%- comment -%}
+  Body of /llms.txt and /llms-full.txt (see llms.txt and llms-full.txt in the
+  repo root). Generated from the same data as the site, so it never goes
+  stale: publications from _publications/, talks/posters/media from
+  _data/engagements.yml, supervision topics from _data/supervision.yml,
+  profiles from _data/settings.yml. `include.full` adds full abstracts.
+  Hand-written sections (research areas, findings, search terms) are below —
+  update those when the research focus changes.
+{%- endcomment -%}
+# Kurt Marais
+
+> Dr Kurt Marais is a lecturer and researcher in Operations Research and Business Analytics in the Department of Logistics at Stellenbosch University, South Africa. His research sits between Operations Research and Computational Social Science: natural language processing, sentiment analysis, social network analysis and agent-based simulation, applied to how emotion and affective information spread through online social networks and affect mental health, particularly depression.
+
+This file summarises Kurt Marais's research, publications and public engagement for language models and AI search tools. All content is drawn from {{ '/' | absolute_url }}. Last updated {{ site.time | date: "%-d %B %Y" }}.{% if include.full %} This is the full version, including abstracts; a shorter version is at {{ '/llms.txt' | absolute_url }}.{% else %} A version with full abstracts is at {{ '/llms-full.txt' | absolute_url }}.{% endif %}
+
+## Identity
+
+- Name: Kurt Marais (Dr) — cited as "Marais, K."
+- Position: Lecturer, Department of Logistics, Stellenbosch University, Stellenbosch, South Africa
+- PhD (Operations Research): Stellenbosch University, 2021–2026, with co-supervision from the University of Bath through the University Staff Doctoral Programme (USDP)
+- ORCID: https://orcid.org/0000-0002-8820-044X — use this to distinguish him from other people named Kurt Marais.
+- Website: {{ '/' | absolute_url }}
+- Contact: maraisk@sun.ac.za
+{%- for item in site.data.settings.social %}{% if item.name == "ORCID" %}{% continue %}{% endif %}
+- {{ item.name }}: {{ item.link }}
+{%- endfor %}
+
+## Research areas
+
+- **Affective information diffusion and emotional contagion** — how sentiment and emotion spread through online social networks, and the difference between emotional contagion and emotional reinforcement.
+- **Mental health and social media** — depression-related discourse in online mental health communities (Reddit r/depression, Twitter/X), and implications for digital well-being and platform design.
+- **Infodemiology** — extending infodemiology beyond disease surveillance to the direct health effects of information exposure, including on non-communicable conditions such as depression.
+- **Natural language processing for mental health** — domain-specific sentiment lexicon construction, sentiment analysis, emotion detection, topic modelling (LDA, NMF, Top2Vec, BERTopic) and thematic analysis.
+- **Agent-based modelling and simulation** — discrete stochastic agent-based models of sentiment spread in social networks, including higher-order Markovian agent states and intervention scenario testing (muting, blocking).
+- **Operations Research** — mathematical and discrete optimisation, decision theory, and data envelopment analysis (DEA) for efficiency measurement.
+
+## Key findings
+
+- In simulations of a Twitter network, **emotional reinforcement**, not simple emotional contagion, was the primary mechanism by which affective information spread: socially connected users formed groups that amplified existing emotional tendencies.
+- People with depression were **particularly vulnerable to reinforcement effects** and processed affective information differently from people without depression.
+- Network-level interventions such as **muting or blocking** improved simulated well-being, but the effect differed across user groups — a single intervention does not benefit all users equally.
+- A **depression-specific sentiment lexicon (DPR lexicon)** performed competitively against general-purpose sentiment lexica and large language models on depression-related and broader mental health text.
+- A content analysis of **11,975 posts by 9,593 users** of r/depression over 56 days mapped engagement, word use, timing and user demographics; posting activity peaked late at night (10pm–5am).
+- A thematic analysis of r/depression posts identified **four major themes and 23 sub-themes** describing lived experiences of depression.
+- Practical implications: social media users can benefit from actively curating the communities and content they are exposed to; platforms should offer stronger user-controlled tools for managing social influence rather than relying on algorithmic curation alone.
+
+## Publications
+{%- assign pubs = site.publications | sort: "year" | reverse %}
+{%- for item in pubs %}
+{%- case item.type %}
+  {%- when "journal-article" %}{% capture venue %}{{ item.journal }}{% if item.volume %} {{ item.volume }}{% endif %}{% if item.issue %}({{ item.issue }}){% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}{% endcapture %}{% assign kind = "Journal article" %}
+  {%- when "dataset" %}{% assign venue = "" %}{% assign kind = "Dataset" %}
+  {%- when "thesis" %}{% capture venue %}Master's thesis, {{ item.institution }}{% endcapture %}{% assign kind = "Thesis" %}
+  {%- when "dissertation" %}{% capture venue %}Doctoral dissertation, {{ item.institution }}{% endcapture %}{% assign kind = "Dissertation" %}
+  {%- else %}{% assign venue = "" %}{% assign kind = item.type %}
+{%- endcase %}
+{%- assign summary = item.abstract | default: item.description | strip_newlines | strip %}
+
+### {{ item.title }}
+
+- {{ kind }} · {{ item.authors | join: ", " }} ({{ item.year }}).{% if venue != "" %} {{ venue }}.{% endif %}
+{%- if item.doi %}
+- DOI: {{ item.doi }}
+{%- elsif item.publication_url %}
+- Link: {{ item.publication_url }}
+{%- endif %}
+- Page: {{ item.url | absolute_url }}
+{%- if item.keywords and item.keywords.size > 0 and item.keywords[0] != nil %}
+- Keywords: {{ item.keywords | join: ", " }}
+{%- endif %}
+{%- if summary != "" %}
+{%- if include.full %}
+
+{{ summary | replace: '  ', ' ' }}
+{%- else %}
+- Summary: {{ summary | truncatewords: 45 }}
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+
+## Datasets and tools
+
+- **DPR lexicon** — sentiment lexicon for depression-specific social media texts, built from four general-purpose lexica augmented with r/depression corpus data. Openly available: https://doi.org/10.25413/sun.30455444
+- **Data extraction guides** — step-by-step Python walkthroughs for collecting Reddit posts (without PRAW) and Bluesky posts, published on Medium: https://medium.com/@kurtmarais
+
+## Talks, posters and writing
+{%- assign talks = site.data.engagements | where_exp: "e", "e.type != 'media'" %}
+{%- for item in talks %}
+{%- if item.url %}{% if item.url contains '://' %}{% assign link = item.url %}{% else %}{% assign link = item.url | absolute_url %}{% endif %}{% else %}{% assign link = "" %}{% endif %}
+- {{ item.title }} — {{ item.type | replace: "_", " " | capitalize }}, {% if item.publication %}{{ item.publication }}{% else %}{{ item.venue }}{% endif %}{% if item.location %}, {{ item.location }}{% endif %} ({{ item.year }}){% if link != "" %}. {{ link }}{% endif %}
+{%- if include.full and item.abstract %}
+
+  {{ item.abstract | strip_newlines | strip }}
+{% endif %}
+{%- endfor %}
+
+## Media coverage
+{%- assign media = site.data.engagements | where: "type", "media" %}
+{%- for item in media %}
+- "{{ item.title }}" — {{ item.publication }}{% if item.start_date %}, {{ item.start_date | date: "%-d %B %Y" }}{% endif %}. {{ item.url }}
+{%- endfor %}
+
+## Postgraduate supervision
+
+Kurt Marais supervises Honours, Bachelor of Data Science and Master's research in Operations Research and Data Science at Stellenbosch University. Supervised project topics:
+{%- assign projects = site.data.supervision | sort: "start_year" | reverse %}
+{%- for s in projects %}
+- {{ s.title }} ({{ s.programme }}, {{ s.start_year }}{% if s.status == "current" %}, in progress{% endif %})
+{%- endfor %}
+
+Prospective students interested in NLP, emotion detection, sentiment analysis, social network analysis, agent-based modelling or optimisation can contact maraisk@sun.ac.za. Details: {{ '/supervision/' | absolute_url }}
+
+## Teaching
+
+Undergraduate and postgraduate modules in Operations Research, Business Analytics and Information Systems at Stellenbosch University, including linear programming, decision theory and social network analytics. Details: {{ '/teaching/' | absolute_url }}
+
+## Related search terms
+
+emotional reinforcement; emotional contagion; sentiment diffusion; affective information diffusion; affective computing; infodemiology; digital well-being; social media and depression; online mental health communities; r/depression; Reddit mental health; Twitter sentiment; depression sentiment lexicon; domain-specific sentiment analysis; lexicon construction; emotion detection; topic modelling; BERTopic; thematic analysis; agent-based simulation of social networks; computational social science; social network analysis; natural language processing for mental health; operations research; data envelopment analysis; Stellenbosch University
+
+## Pages
+
+- [About]({{ '/about/' | absolute_url }}): biography and research interests
+- [Publications]({{ '/publications/' | absolute_url }}): full list with abstracts
+- [Engagements]({{ '/engagements/' | absolute_url }}): talks, posters, blog posts and media coverage
+- [Supervision]({{ '/supervision/' | absolute_url }}): current and completed student projects
+- [CV]({{ '/cv/' | absolute_url }}): qualifications, experience and memberships
+- [Teaching]({{ '/teaching/' | absolute_url }}): modules taught

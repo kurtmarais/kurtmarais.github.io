@@ -34,3 +34,10 @@ Homepage:
   (`_publications/` items with `featured: true`). Not the `/publications/`
   page itself — that's `_layouts/publications.html`.
 
+AI summary:
+
+- `llms.txt` — the body of `/llms.txt` and `/llms-full.txt` (root files of
+  the same names just include it; `full=true` adds abstracts). Loops over
+  `_publications/`, `_data/engagements.yml`, `_data/supervision.yml` and
+  `_data/settings.yml`; the research areas, key findings and search terms
+  are hand-written in this file.

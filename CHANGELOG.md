@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-24 (3)
+
+### Added
+- `/llms.txt` and `/llms-full.txt`: plain-text research summary for language
+  models and AI search tools, generated from site data via
+  `_includes/llms.txt`. Not in the nav or sitemap.
+
 ## 2026-09-24 (2)
 
 ### Fixed

@@ -50,6 +50,19 @@ The homepage pulls three things automatically:
 - **Find me online** — the `social` list in `_data/settings.yml`.
 - **Selected publications** — `_publications/` items with `featured: true`.
 
+## llms.txt (for AI tools)
+
+`/llms.txt` and `/llms-full.txt` give language models and AI search tools a
+plain-text summary of the research, publications, talks, media coverage and
+supervision topics. They're published (crawlers need to reach them) but not
+linked in the nav and excluded from `sitemap.xml`.
+
+Both are generated at build time from `_includes/llms.txt`, so publications,
+engagements, supervision topics and profile links update automatically. The
+hand-written parts — summary, research areas, key findings, search terms —
+live in that include; update them when the research focus changes.
+`llms-full.txt` is the same plus full abstracts.
+
 ## Site-wide settings
 
 - `_config.yml` — site URL/title/description, collections (`publications`,
