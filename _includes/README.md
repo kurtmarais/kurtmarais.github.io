@@ -8,7 +8,8 @@ Sitewide (every page, via `_layouts/default.html`):
 
 - `head.html` — the `<head>`: title, meta/Open Graph tags, favicons,
   Bootstrap, Font Awesome, `main.css`, `dark-mode.js`, Google Fonts,
-  JSON-LD, Google Scholar `citation_*` tags on publication pages, and
+  JSON-LD, Google Scholar `citation_*` tags and schema.org structured data
+  (`ScholarlyArticle` / `Dataset` / `Thesis`) on publication pages, and
   Google Analytics (only if `google_analytics_id` is set in `_config.yml`).
 - `header.html` — top nav, links from `_data/settings.yml`'s `menu`.
 - `contact.html` — the "Contact" section above the footer.
@@ -40,4 +41,5 @@ AI summary:
   the same names just include it; `full=true` adds abstracts). Loops over
   `_publications/`, `_data/engagements.yml`, `_data/supervision.yml` and
   `_data/settings.yml`; the research areas, key findings and search terms
-  are hand-written in this file.
+  are hand-written in this file, as are the future research directions,
+  collaboration and prospective-student text.

@@ -29,6 +29,62 @@
     {% endif %}
     {% if page.doi %}<meta name="citation_doi" content="{{ page.doi | remove: 'https://doi.org/' }}">{% endif %}
     <meta name="citation_abstract_html_url" content="{{ page.url | absolute_url }}">
+
+    <!-- schema.org structured data for this item (ScholarlyArticle / Dataset /
+         Thesis), read by Google, Google Dataset Search and AI search tools.
+         Built from the same front matter as the Scholar tags above. -->
+    {% case page.type %}
+      {% when "journal-article" %}{% assign ld_type = "ScholarlyArticle" %}
+      {% when "dataset" %}{% assign ld_type = "Dataset" %}
+      {% when "thesis" %}{% assign ld_type = "Thesis" %}{% assign ld_degree = "Master of Commerce (Operations Research)" %}
+      {% when "dissertation" %}{% assign ld_type = "Thesis" %}{% assign ld_degree = "Doctor of Philosophy (Operations Research)" %}
+      {% else %}{% assign ld_type = "CreativeWork" %}
+    {% endcase %}
+    {% assign ld_abstract = page.abstract | default: page.description | strip_newlines | strip %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "{{ ld_type }}",
+      "{% if ld_type == "ScholarlyArticle" %}headline{% else %}name{% endif %}": {{ page.title | jsonify }},
+      "author": [
+        {% for author in page.authors %}
+          {% if author contains "Marais" %}
+          {
+            "@type": "Person",
+            "name": "Kurt Marais",
+            "url": "{{ '/' | absolute_url }}",
+            "sameAs": "https://orcid.org/0000-0002-8820-044X",
+            "affiliation": { "@type": "CollegeOrUniversity", "name": "Stellenbosch University" }
+          }{% else %}
+          { "@type": "Person", "name": {{ author | jsonify }} }{% endif %}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ],
+      {% if ld_type == "Dataset" %}"creator": { "@type": "Person", "name": "Kurt Marais", "sameAs": "https://orcid.org/0000-0002-8820-044X" },
+      "datePublished": "{{ page.year }}",
+      {% else %}"datePublished": "{{ page.year }}",
+      {% endif %}{% if ld_abstract != "" %}"{% if ld_type == "Dataset" %}description{% else %}abstract{% endif %}": {{ ld_abstract | jsonify }},
+      {% endif %}{% if page.keywords and page.keywords[0] %}"keywords": {{ page.keywords | jsonify }},
+      {% endif %}{% if page.doi %}"identifier": {{ page.doi | jsonify }},
+      "sameAs": {{ page.doi | jsonify }},
+      {% elsif page.publication_url %}"sameAs": {{ page.publication_url | jsonify }},
+      {% endif %}{% if ld_type == "ScholarlyArticle" and page.journal %}"isPartOf": {
+        "@type": "PublicationIssue",
+        "issueNumber": {{ page.issue | jsonify }},
+        "isPartOf": {
+          "@type": "PublicationVolume",
+          "volumeNumber": {{ page.volume | jsonify }},
+          "isPartOf": { "@type": "Periodical", "name": {{ page.journal | jsonify }} }
+        }
+      },
+      {% if page.pages %}"pagination": {{ page.pages | jsonify }},
+      {% endif %}{% endif %}{% if ld_type == "Thesis" %}"inSupportOf": {{ ld_degree | jsonify }},
+      "sourceOrganization": { "@type": "CollegeOrUniversity", "name": {{ page.institution | jsonify }} },
+      {% endif %}{% if ld_type == "Dataset" %}"publisher": { "@type": "CollegeOrUniversity", "name": "Stellenbosch University" },
+      "isAccessibleForFree": true,
+      {% endif %}"url": "{{ page.url | absolute_url }}",
+      "inLanguage": "en"
+    }
+    </script>
   {% endif %}
   <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
   <link rel="icon" href="{{ '/assets/img/favicon.ico' | relative_url }}" sizes="32x32 48x48" type="image/x-icon">

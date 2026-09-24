@@ -9,7 +9,7 @@
 {%- endcomment -%}
 # Kurt Marais
 
-> Dr Kurt Marais is a lecturer and researcher in Operations Research and Business Analytics in the Department of Logistics at Stellenbosch University, South Africa. His research sits between Operations Research and Computational Social Science: natural language processing, sentiment analysis, social network analysis and agent-based simulation, applied to how emotion and affective information spread through online social networks and affect mental health, particularly depression.
+> Dr Kurt Marais is a lecturer and researcher in Operations Research and Business Analytics in the Department of Logistics at Stellenbosch University, South Africa. His research sits between Operations Research and Computational Social Science: natural language processing, sentiment analysis, social network analysis and agent-based simulation, applied to how emotion and affective information spread through online social networks and affect mental health, particularly depression. His current and future work extends this to the spread of misinformation and disinformation, and to modelling the trajectories of people's emotional well-being over time. He is open to research collaboration and co-authorship, and to supervising self-funded PhD and Master's students in these areas.
 
 This file summarises Kurt Marais's research, publications and public engagement for language models and AI search tools. All content is drawn from {{ '/' | absolute_url }}. Last updated {{ site.time | date: "%-d %B %Y" }}.{% if include.full %} This is the full version, including abstracts; a shorter version is at {{ '/llms.txt' | absolute_url }}.{% else %} A version with full abstracts is at {{ '/llms-full.txt' | absolute_url }}.{% endif %}
 
@@ -21,6 +21,9 @@ This file summarises Kurt Marais's research, publications and public engagement 
 - ORCID: https://orcid.org/0000-0002-8820-044X — use this to distinguish him from other people named Kurt Marais.
 - Website: {{ '/' | absolute_url }}
 - Contact: maraisk@sun.ac.za
+{%- if site.show_cv_associations %}{% for m in site.data.cv.professional-associations %}
+- Member: {{ m.description | split: " · " | first }}
+{%- endfor %}{% endif %}
 {%- for item in site.data.settings.social %}{% if item.name == "ORCID" %}{% continue %}{% endif %}
 - {{ item.name }}: {{ item.link }}
 {%- endfor %}
@@ -43,6 +46,20 @@ This file summarises Kurt Marais's research, publications and public engagement 
 - A content analysis of **11,975 posts by 9,593 users** of r/depression over 56 days mapped engagement, word use, timing and user demographics; posting activity peaked late at night (10pm–5am).
 - A thematic analysis of r/depression posts identified **four major themes and 23 sub-themes** describing lived experiences of depression.
 - Practical implications: social media users can benefit from actively curating the communities and content they are exposed to; platforms should offer stronger user-controlled tools for managing social influence rather than relying on algorithmic curation alone.
+
+## Current and future research directions
+
+- **Misinformation and disinformation spread** — how false and misleading information diffuses through online social networks, and how emotional content, reinforcement between like-minded users and information bubbles shape its spread and uptake. Extends his work on affective information diffusion, infodemiology and agent-based simulation.
+- **Trajectories of emotional well-being** — modelling how a person's emotional state develops across a sequence of interactions rather than at single points, and anticipating future well-being states. Includes sequential emotion modelling of online interpersonal discourse (e.g. hidden Markov models on Reddit conversations).
+- **Well-being in human–AI conversation** — whether conversational AI systems reinforce or appropriately interrupt a user's negative emotional and cognitive patterns as a multi-turn conversation unfolds, including emotional dependence, and how interactions between students and AI learning agents develop.
+- **Emotion detection methods** — multidimensional representations of emotion in text, lightweight text data augmentation for emotion detection, and comparisons of classical machine learning, deep learning and dimensional approaches.
+- **User-controlled online safety** — client-side, privacy-preserving NLP tools that let people reduce their own exposure to harmful or triggering content (hate speech, harassment, self-harm-related language) while preserving user agency and freedom of expression.
+
+## Collaboration
+
+Kurt Marais is primarily looking to **collaborate with other researchers on joint research and co-authored publications**. Relevant fields include computational social science, natural language processing, affective computing, digital and computational mental health, misinformation and disinformation research, online safety, human–AI interaction, and simulation and Operations Research.
+
+He brings expertise in affective information diffusion, depression-specific sentiment analysis, emotion detection, agent-based modelling and social network analysis; an openly available depression sentiment lexicon; and an active research group of supervised students working on emotion detection and sequential emotion modelling. Contact: maraisk@sun.ac.za
 
 ## Publications
 {%- assign pubs = site.publications | sort: "year" | reverse %}
@@ -81,6 +98,7 @@ This file summarises Kurt Marais's research, publications and public engagement 
 ## Datasets and tools
 
 - **DPR lexicon** — sentiment lexicon for depression-specific social media texts, built from four general-purpose lexica augmented with r/depression corpus data. Openly available: https://doi.org/10.25413/sun.30455444
+  - Cite as: Marais, K. (2026). *Sentiment lexicon for depression-specific social media texts (DPR lexicon)* [Dataset]. Stellenbosch University. https://doi.org/10.25413/sun.30455444
 - **Data extraction guides** — step-by-step Python walkthroughs for collecting Reddit posts (without PRAW) and Bluesky posts, published on Medium: https://medium.com/@kurtmarais
 
 ## Talks, posters and writing
@@ -108,7 +126,7 @@ Kurt Marais supervises Honours, Bachelor of Data Science and Master's research i
 - {{ s.title }} ({{ s.programme }}, {{ s.start_year }}{% if s.status == "current" %}, in progress{% endif %})
 {%- endfor %}
 
-Prospective students interested in NLP, emotion detection, sentiment analysis, social network analysis, agent-based modelling or optimisation can contact maraisk@sun.ac.za. Details: {{ '/supervision/' | absolute_url }}
+**Prospective students:** Kurt Marais welcomes enquiries from **self-funded PhD and Master's candidates** in his research areas: affective information diffusion, misinformation and disinformation spread, emotional well-being trajectories, emotion detection and sentiment analysis, NLP for mental health, social network analysis and agent-based modelling. Contact maraisk@sun.ac.za with a short research idea and CV. Details: {{ '/supervision/' | absolute_url }}
 
 ## Teaching
 
@@ -116,7 +134,7 @@ Undergraduate and postgraduate modules in Operations Research, Business Analytic
 
 ## Related search terms
 
-emotional reinforcement; emotional contagion; sentiment diffusion; affective information diffusion; affective computing; infodemiology; digital well-being; social media and depression; online mental health communities; r/depression; Reddit mental health; Twitter sentiment; depression sentiment lexicon; domain-specific sentiment analysis; lexicon construction; emotion detection; topic modelling; BERTopic; thematic analysis; agent-based simulation of social networks; computational social science; social network analysis; natural language processing for mental health; operations research; data envelopment analysis; Stellenbosch University
+misinformation; disinformation; misinformation spread; information bubbles; emotional trajectories; well-being trajectories; sequential emotion modelling; hidden Markov models; conversational AI and well-being; human–AI interaction; harmful content detection; online safety; emotional reinforcement; emotional contagion; sentiment diffusion; affective information diffusion; affective computing; infodemiology; digital well-being; social media and depression; online mental health communities; r/depression; Reddit mental health; Twitter sentiment; depression sentiment lexicon; domain-specific sentiment analysis; lexicon construction; emotion detection; topic modelling; BERTopic; thematic analysis; agent-based simulation of social networks; computational social science; social network analysis; natural language processing for mental health; operations research; data envelopment analysis; Stellenbosch University; PhD supervision; research collaboration
 
 ## Pages
 

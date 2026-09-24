@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-24 (4)
+
+### Added
+- schema.org JSON-LD on every publication page (`ScholarlyArticle`,
+  `Dataset`, `Thesis`), generated from the same front matter as the Google
+  Scholar tags.
+- `llms.txt`: current and future research directions, collaboration
+  interests, self-funded PhD/Master's supervision, professional
+  memberships, and a preferred citation for the DPR lexicon.
+
 ## 2026-09-24 (3)
 
 ### Added
