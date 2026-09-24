@@ -4,8 +4,6 @@ Page templates. Each page declares one in its front matter
 (`layout: xxx`). Work here to change how a page *looks or is structured*;
 content lives in `_data/`, the collections, or the root `.md` files.
 
-In use:
-
 - `default.html` — base template for everything: header, contact section,
   footer, back-to-top button, and the sitewide scripts (`back-to-top.js`,
   `footer-links.js`, `media-carousel.js`, `nav-wrap-detect.js`).
@@ -36,5 +34,3 @@ In use:
   `_data/cv/README.md`).
 - `contact.html` — wrapper around `_includes/contact.html`.
 
-Unused (leftovers from the original theme; safe to delete or ignore):
-`courses.html`, `people.html`, `post.html`.

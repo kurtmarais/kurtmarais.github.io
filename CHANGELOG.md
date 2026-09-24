@@ -4,6 +4,17 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-24 (2)
+
+### Fixed
+- Gotham `@font-face` URLs now match the actual filenames in
+  `assets/fonts/` (they pointed to `Gotham-Book.woff2` etc., which 404'd).
+
+### Removed
+- Unused templates `_layouts/courses.html`, `_layouts/people.html`,
+  `_layouts/post.html` and `_includes/publications-list.html`. No page
+  used them; the built site is unchanged.
+
 ## 2026-09-24
 
 ### Changed

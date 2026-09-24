@@ -34,8 +34,3 @@ Homepage:
   (`_publications/` items with `featured: true`). Not the `/publications/`
   page itself — that's `_layouts/publications.html`.
 
-Unused:
-
-- `publications-list.html` — not included anywhere. Leftover from an
-  earlier `_data/publications.yml` approach, before publications moved to
-  the `_publications/` collection. Safe to delete.
