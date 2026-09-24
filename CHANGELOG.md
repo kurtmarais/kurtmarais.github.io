@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-24 (6)
+
+### Changed
+- "Research collaboration" moved from the Supervision page to the bottom of
+  the Publications page.
+- Collaboration and prospective-student paragraphs point to the contact
+  details below them instead of repeating the email address.
+
 ## 2026-09-24 (5)
 
 ### Added
