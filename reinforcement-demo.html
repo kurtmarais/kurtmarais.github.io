@@ -93,7 +93,7 @@ permalink: /reinforcement-demo/
   .rfd-panel h3{font-size:.95rem; font-weight:600;}
   .rfd-panel .rfd-sub{color:var(--rfd-ink-soft); font-size:.85rem; margin-bottom:14px;}
 
-  svg.rfd-network{width:100%; height:auto; display:block; max-width:645px; margin:0 auto;}
+  svg.rfd-network{width:100%; height:auto; display:block; max-width:700px; margin:0 auto;}
   .rfd-node{cursor:pointer;}
   .rfd-node .rfd-halo{fill:none; stroke-width:3; opacity:0;}
   .rfd-node.rfd-selected .rfd-halo{opacity:1;}
@@ -265,7 +265,7 @@ permalink: /reinforcement-demo/
     <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
     <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
     <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its sentiment with at least one agent it's tied to, probability shifts towards staying in its current state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
-    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, no agent can hold the same state for more than four ticks, whether or not it's being reinforced. On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. This rule isn't part of the dissertation's model.</p>
+    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent that isn't being reinforced can hold the same state for at most four ticks. On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. An agent that shares its state with an agent it's tied to can stay in that state for longer, so isolated and unreinforced agents change state more often than reinforced ones. This rule isn't part of the dissertation's model.</p>
     <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
@@ -309,7 +309,7 @@ permalink: /reinforcement-demo/
   var nodes = [
     {id:1, label:'User 01', x:150, y:130, type:'dpr',    state:'positive'},
     {id:2, label:'User 02', x:270, y:100, type:'hollow', state:'positive'},
-    {id:3, label:'User 03', x:390, y:140, type:'dpr',    state:'positive'},
+    {id:3, label:'User 03', x:390, y:140, type:'dpr',    state:'neutral'},
     {id:4, label:'User 04', x:310, y:230, type:'hollow', state:'neutral'},
     {id:5, label:'User 05', x:190, y:250, type:'dpr',    state:'neutral'},
     {id:6, label:'User 06', x:230, y:340, type:'hollow', state:'negative'},
@@ -330,6 +330,11 @@ permalink: /reinforcement-demo/
     [3,5,false], [5,6,false], [6,7,true], [7,8,false], [8,9,false],
     [6,9,false], [9,10,true], [8,10,false], [10,11,false], [11,12,true], [9,12,false]
   ];
+
+  // Network agent sizes, in the network's 760 x 460 drawing units.
+  var NODE_R = 13.5;      // connected agents
+  var ISOLATE_R = 11.5;   // isolated agents (User 13-15)
+  function nodeRadius(n){ return n.id > 12 ? ISOLATE_R : NODE_R; }
 
   var byId = {};
   nodes.forEach(function(n){ byId[n.id] = n; });
@@ -409,10 +414,12 @@ permalink: /reinforcement-demo/
   }
 
   // Demo rule (not part of the dissertation model): a run is only 24 ticks (24 days),
-  // so no agent may hold the same state for more than MAX_STATE_TICKS ticks, reinforced
-  // or not. On the next tick it posts and moves to one of its other two states,
-  // weighted by its own transition odds for those states.
-  var MAX_STATE_TICKS = 4;
+  // so an agent that is NOT being reinforced may hold the same state for at most
+  // MAX_UNREINFORCED_TICKS ticks; on the next tick it posts and moves to one of its other
+  // two states, weighted by its own transition odds for those states. A reinforced agent
+  // can stay in its state for longer, which is what makes reinforcement visible:
+  // isolated and unreinforced agents change state more often than reinforced ones.
+  var MAX_UNREINFORCED_TICKS = 4;
 
   function sampleState(probs, r){
     var keys = ['positive','neutral','negative'].filter(function(k){ return k in probs; }), total = 0, acc = 0;
@@ -436,8 +443,8 @@ permalink: /reinforcement-demo/
           // Model rule: an agent inactive for more than 20 ticks reverts to neutral.
           sinceLastPost[n.id] = 0;
           next = 'neutral';
-        } else if(streak[n.id] >= MAX_STATE_TICKS){
-          // Demo rule: in this state for MAX_STATE_TICKS ticks already, so the agent posts and moves to another state.
+        } else if(streak[n.id] >= MAX_UNREINFORCED_TICKS && !reinforced){
+          // Demo rule: unreinforced and in this state for MAX_UNREINFORCED_TICKS ticks already, so the agent posts and moves to another state.
           sinceLastPost[n.id] = 0;
           var others = {};
           Object.keys(TRANS[n.type][cur]).forEach(function(k){ if(k !== cur) others[k] = TRANS[n.type][cur][k]; });
@@ -525,7 +532,7 @@ permalink: /reinforcement-demo/
     // Stop each edge at the node's visible boundary (circle radius for filled nodes,
     // the square's corner distance for outlined ones) so arrowheads rest on the outline.
     function nodeBoundaryRadius(n){
-      var r = 12;
+      var r = nodeRadius(n);
       if(n.type === 'dpr') return r;
       var side = r * 1.7;
       return (side / 2) * Math.SQRT2;
@@ -546,11 +553,11 @@ permalink: /reinforcement-demo/
     });
 
     nodes.forEach(function(n){
-      var g = nodeGlyph(n, n.id > 12 ? 10 : 12, selected.indexOf(n.id) > -1);
+      var g = nodeGlyph(n, nodeRadius(n), selected.indexOf(n.id) > -1);
       g.addEventListener('click', function(){ selectNode(n.id); });
       netSvg.appendChild(g);
       var label = document.createElementNS(svgNS,'text');
-      label.setAttribute('x', n.x); label.setAttribute('y', n.y - (n.id > 12 ? 19 : 22));
+      label.setAttribute('x', n.x); label.setAttribute('y', n.y - nodeRadius(n) - 11);
       label.textContent = n.label;
       netSvg.appendChild(label);
     });
@@ -872,7 +879,8 @@ permalink: /reinforcement-demo/
   }
 
   document.getElementById('rfd-liveNote').textContent = TEXT.liveNote;
-  // Colourblind-friendly toggle (remembered per browser where storage is available).
+  // Colourblind-friendly toggle: off for first-time visitors, then remembers the
+  // visitor's last choice in this browser (where storage is available).
   var cbToggle = document.getElementById('rfd-cbToggle');
   document.getElementById('rfd-cbLabel').textContent = TEXT.cbLabel;
   function redrawAll(){

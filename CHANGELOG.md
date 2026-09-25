@@ -18,8 +18,9 @@ is the baseline. Add new entries at the top.
   pauses/resumes; slower ticks (900ms); selecting agents no longer resets
   colours; state pills solid (diagnosed) vs outlined (not diagnosed);
   larger labels and network; colourblind-friendly toggle; full dissertation
-  title; no em dashes. Demo rule: no agent holds one state for more than
-  4 ticks; reinforcement includes shared neutral states. Highlights only appear once a run starts. Page text grouped in marked EDITABLE TEXT blocks.
+  title; no em dashes. Demo rule: an unreinforced agent can't hold one
+  state for more than 4 ticks (reinforced agents can); reinforcement
+  includes shared neutral states. Highlights only appear once a run starts. Page text grouped in marked EDITABLE TEXT blocks.
 
 ## 2026-09-24 (7)
 

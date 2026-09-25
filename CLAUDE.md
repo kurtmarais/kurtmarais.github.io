@@ -184,15 +184,24 @@ leaks into other pages. Consequences worth remembering:
   larger values (tried 0.15) leave tied agents stuck in one state for too
   long given the real posting odds (`POSTING` = dissertation Table 6.5, one
   tick = 24 hours).
-- Demo-only rule `MAX_STATE_TICKS = 4`: no agent holds one state for more
-  than 4 ticks, reinforced or not; on the 5th it moves to one of its other
-  two states, weighted by its own transition odds. Reinforcement (boost,
-  highlights, shared-tick counts) includes shared *neutral* states. The
-  page's "How this works" section describes this rule; keep them in sync.
-- User 08 starts positive so every reinforcement combination this network
-  allows (attribute pair x shared state x tie direction, 12 in total)
-  occurs in ticks 1-24 of the deployed run. Re-check coverage if the
-  network, starting states or seeds change.
+- Demo-only rule `MAX_UNREINFORCED_TICKS = 4`: an agent that is NOT
+  reinforced can't hold one state for more than 4 ticks; on the 5th it moves
+  to one of its other two states, weighted by its own transition odds.
+  Reinforced agents (a tied agent held the same state last tick, neutral
+  included) can stay longer. That contrast is the point of the demo:
+  isolated agents are more volatile than reinforced ones (500 seeds:
+  33.9% vs 22.5% state changes per tick). "How this works" describes the
+  rule; keep them in sync.
+- Starting states: User 03 neutral and User 08 positive, so every
+  reinforcement combination this network allows (attribute pair x shared
+  state x tie direction, 12 in total) occurs in ticks 1-24 of the deployed
+  run. Re-check coverage if the network, starting states, seeds or rules
+  change.
+- Sizes: network `max-width: 700px`; agents `NODE_R = 13.5`, isolates
+  `ISOLATE_R = 11.5` (drawing units in a 760-wide viewBox). Keep network
+  agents smaller than the Relationship panel's (34px).
+- Colourblind mode is off for first-time visitors and remembers the last
+  choice (`localStorage` key `rfdColourblind`).
 - Highlights (network ties, Relationship capsule) only appear once a run
   has started (`runStarted`).
 - Reinforcement is shown on the network only as a recoloured tie (same
