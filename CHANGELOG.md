@@ -4,6 +4,17 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (4)
+
+### Fixed
+- Engagements map: hovering dots in the enlarged map no longer makes the
+  map jump or the card flicker (overlay anchored to the top; the card
+  stays on the last dot instead of hiding on mouse-out).
+- Map dots are now a fixed 10px on screen at every size (they were about
+  3px on the small map), with no white ring, and the nearest dot within
+  22px of the pointer responds, so small and close-together dots are
+  easier to hit.
+
 ## 2026-09-25 (3)
 
 ### Added

@@ -268,11 +268,17 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   JS, so it flips without a rebuild) → dashed ring (`.is-upcoming`), card
   says "Upcoming, <date>". Legend items for online/upcoming only show when
   a dot uses them.
-- Tap targets are capped at half the distance to the nearest other dot, so
-  close dots (Trondheim/Malmö are ~18 map units apart) can't block each
-  other. Radii are divided by the zoom level, so dots keep the same screen
-  size and spread apart when zoomed (Europe cluster: ~6px targets at full
-  view on phones, ~15px at 4x).
+- Dot sizes are screen pixels (`CORE_PX` 5, `HALO_PX` 10), converted to map
+  units from the SVG's rendered width and the view (`unitsPerPx()`), resized
+  by a `ResizeObserver`. Sizing in map units made dots ~1.4px on the 380px
+  column. No white ring on the core (it made dots look smaller); the halo
+  only shows on the active dot (halos merged into a blob over Europe).
+- Pointer picking: `nearestDot()` picks the closest dot within `PICK_PX`
+  (22px) of the pointer, for mouse hover and taps, so close dots
+  (Trondheim/Malmö are ~18 map units apart) split the space instead of one
+  blocking the other. The card stays on the last dot picked; there's no
+  hide on mouse-out (that caused flicker). Keyboard focus still works per
+  dot.
 - Zoom animates (`animateTo`, ~260ms ease-out, size changes geometrically
   around the fixed point so the zoom anchor stays put). Rapid clicks/wheel
   steps build on `goal()` (the target view), so they accumulate; dragging
@@ -284,7 +290,10 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   hover uses `transform: scale()`.
 - Enlarge (768px and up): the panel and backdrop move to `<body>` while
   enlarged (the sticky column is its own stacking context) and move back on
-  close; Escape/backdrop click closes.
+  close; Escape/backdrop click closes. The overlay is anchored to the top
+  (`top: 4vh`), never vertically centred: centred, a card height change
+  re-centred the panel, slid the dot out from under the cursor and made the
+  card flicker.
 - `.ecm-stage > svg` targets the map only: a plain `.ecm-stage svg` rule
   also hit the Font Awesome zoom icons and blew them up to full width.
 - Card: "Earlier in this region" is a newest-first list, one per line.
