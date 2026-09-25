@@ -296,7 +296,8 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   card flicker.
 - `.ecm-stage > svg` targets the map only: a plain `.ecm-stage svg` rule
   also hit the Font Awesome zoom icons and blew them up to full width.
-- Card: "Earlier in this region" is a newest-first list, one per line.
+- Card: "Earlier in this region" is a newest-first list, one per line,
+  capped at `MAX_EARLIER` (3) entries.
 - Any engagement type can be mapped (Bath 2023 is a seminar); cards show the
   type via `TYPE_LABELS` in the JS. Heading: "Where I've presented".
 

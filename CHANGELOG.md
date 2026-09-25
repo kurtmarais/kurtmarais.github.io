@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (5)
+
+### Changed
+- Engagements map: all presented talks with a known location are mapped.
+  The 2026 EMS Research Impact Day poster and the Stellenbosch talks
+  (2021 to 2025, plus the online 2022 SoTL conference hosted by
+  Stellenbosch University) now sit on a Stellenbosch dot for the Western
+  Cape. A card's "Earlier in this region" list shows at most three
+  entries, newest first.
+
 ## 2026-09-25 (4)
 
 ### Fixed

@@ -170,6 +170,11 @@
 
 - title: "How do we share the future? A panel discussion"
   type: "panel"
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
   year: 2025
   venue: "Toyota Stellenbosch Woordfees Student Discourse"
   location: "Stellenbosch, South Africa"
@@ -232,6 +237,11 @@
 
 - title: "Infodemiology and its potential impact on digital wellness"
   type: "seminar"
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
   year: 2024
   venue: "South Africa-Japan University Forum"
   location: "Stellenbosch, South Africa"
@@ -243,6 +253,11 @@
 
 - title: "A social network analysis approach to mental health disorders on social media"
   type: "seminar"
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
   year: 2024
   venue: "Faculty of EMS Research Day"
   location: "Stellenbosch, South Africa"
@@ -255,6 +270,11 @@
 
 - title: "Thinking Beyond the Box"
   type: "seminar"
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
   year: 2024
   venue: "Maties NextGen for new students"
   location: "Stellenbosch, South Africa"
@@ -302,6 +322,12 @@
 
 - title: "Scaffolding computer literacy with SAM Cengage: A reflection"
   type: "conference"
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
+    online: true                  # hosted online by Stellenbosch University
   year: 2022
   venue: "Stellenbosch University Scholarship of Teaching and Learning Conference"
   location: "Online"
@@ -328,6 +354,11 @@
 
 - title: "Decision theory & decision-making processes"
   type: "seminar"
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
   year: 2021
   venue: "Maties 101 for new students"
   location: "Stellenbosch, South Africa"
