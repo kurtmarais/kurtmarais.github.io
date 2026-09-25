@@ -224,7 +224,15 @@ leaks into other pages. Consequences worth remembering:
   object at the top of the page's `<script>`. No em dashes in page copy.
 - Selecting agents must never reset the network: colours stay at the
   current tick. The run button toggles run / pause / resume. `TICK_MS`
-  sets playback speed.
+  is the x1 speed; the speed button cycles `SPEEDS` (x0.5, x1, x1.5, x2)
+  and divides `TICK_MS` by it, restarting the timer if playing.
+- Tick inspector: every timeline cell in `#rfd-resultsBody` is clickable at
+  any time (playing, paused, finished). A click pauses, jumps to that tick
+  and opens `#rfd-snapshot` ("All agents at tick N") below the timelines.
+  It then follows `currentTick` until minimised with its chevron (header
+  click also toggles). `revealedTo` (furthest tick reached this run) sets
+  how much of each timeline is drawn, so stepping back doesn't hide later
+  ticks; stat cards still use `currentTick`. New run / Clear reset it.
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the

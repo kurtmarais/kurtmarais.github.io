@@ -162,6 +162,32 @@ permalink: /reinforcement-demo/
   .rfd-playback-row input[type=range]{flex:1; min-width:140px; accent-color:var(--rfd-accent);}
   .rfd-playback-row .rfd-mono{font-size:.8rem; color:var(--rfd-ink-soft); min-width:88px;}
 
+  .rfd-speed-btn{min-width:6.5em;}
+
+  /* Tick inspector: every timeline block can be clicked to see all agents at that tick */
+  #rfd-resultsBody .rfd-cell{cursor:pointer; transition:transform .12s ease;}
+  #rfd-resultsBody .rfd-cell:hover{transform:scaleY(1.35); outline:1px solid var(--rfd-ink-soft); outline-offset:1px;}
+  #rfd-resultsBody .rfd-cell.rfd-current:hover{outline:2px solid var(--rfd-accent);}
+  .rfd-inspect-hint{font-size:.8rem; color:var(--rfd-ink-soft); margin:-8px 0 16px;}
+  .rfd-snapshot{border:1px solid var(--rfd-line); border-radius:12px; background:var(--rfd-surface-2); padding:12px 16px; margin-top:24px;}
+  .rfd-snapshot-head{display:flex; align-items:center; gap:12px; cursor:pointer;}
+  .rfd-snapshot-heading{flex:1; min-width:0; display:flex; align-items:baseline; gap:4px 12px; flex-wrap:wrap;}
+  .rfd-snapshot-head h3{font-size:.95rem; margin:0;}
+  .rfd-snapshot-summary{font-size:.8rem; color:var(--rfd-ink-soft); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+  .rfd-snapshot-toggle{flex:none; width:2rem; height:2rem; border-radius:50%; border:1px solid var(--rfd-line); background:var(--rfd-surface); color:var(--rfd-ink-soft); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; padding:0;}
+  .rfd-snapshot-toggle:hover{border-color:var(--rfd-accent); color:var(--rfd-accent);}
+  .rfd-snapshot-toggle i, .rfd-snapshot-toggle svg{width:.8rem; height:.8rem; transition:transform .2s ease;}
+  .rfd-snapshot.is-min .rfd-snapshot-toggle i, .rfd-snapshot.is-min .rfd-snapshot-toggle svg{transform:rotate(180deg);}
+  .rfd-snapshot-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:8px; margin-top:12px;}
+  .rfd-snapshot.is-min .rfd-snapshot-grid{display:none;}
+  .rfd-snap-agent{background:var(--rfd-surface); border:1px solid var(--rfd-line); border-radius:8px; padding:7px 9px; font-size:.78rem; line-height:1.35;}
+  .rfd-snap-agent.is-reinforced{border-left:3px solid var(--rfd-reinforce);}
+  .rfd-snap-agent.is-selected{box-shadow:0 0 0 2px var(--rfd-accent);}
+  .rfd-snap-name{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-weight:600; margin-right:6px;}
+  .rfd-snap-by{display:block; color:var(--rfd-ink-soft); font-size:.72rem; margin-top:3px;}
+  @media (max-width:560px){ .rfd-snapshot{padding:12px;} .rfd-snapshot-grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px;} .rfd-snap-agent{padding:6px 7px;} .rfd-snap-name{display:block; margin:0 0 3px;} }
+  @media (prefers-reduced-motion: reduce){ #rfd-resultsBody .rfd-cell, .rfd-snapshot-toggle svg{transition:none;} }
+
   .rfd-result-block{margin-bottom:24px; padding-bottom:22px; border-bottom:1px solid var(--rfd-line);}
   .rfd-result-block:last-child{margin-bottom:0; padding-bottom:0; border-bottom:none;}
   .rfd-result-block-head{display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap;}
@@ -240,6 +266,7 @@ permalink: /reinforcement-demo/
       <div class="rfd-legend-mini" id="rfd-netHint"></div>
       <div class="rfd-actions" id="rfd-actionsRow" style="display:none;">
         <button class="rfd-run-btn" id="rfd-runBtn">Run simulation</button>
+        <button class="rfd-clear-btn rfd-speed-btn" id="rfd-speedBtn" type="button" aria-label="Playback speed">Speed x1</button>
         <button class="rfd-clear-btn" id="rfd-clearBtn">Clear selection</button>
         <span class="rfd-live-note" id="rfd-liveNote"></span>
       </div>
@@ -267,7 +294,15 @@ permalink: /reinforcement-demo/
       <input type="range" id="rfd-tickSlider" min="0" max="24" value="0" step="1" aria-label="Tick">
       <span class="rfd-mono" id="rfd-tickReadout">Tick 0 / 24</span>
     </div>
+    <p class="rfd-inspect-hint" id="rfd-inspectHint"></p>
     <div id="rfd-resultsBody"></div>
+    <div class="rfd-snapshot" id="rfd-snapshot" hidden>
+      <div class="rfd-snapshot-head" id="rfd-snapshotHead">
+        <div class="rfd-snapshot-heading"><h3 id="rfd-snapshotTitle">All agents at tick 0</h3><span class="rfd-snapshot-summary" id="rfd-snapshotSummary"></span></div>
+        <button type="button" class="rfd-snapshot-toggle" id="rfd-snapshotToggle" aria-expanded="true" aria-controls="rfd-snapshotGrid" aria-label="Hide all agents"><i class="fas fa-chevron-down" aria-hidden="true"></i></button>
+      </div>
+      <div class="rfd-snapshot-grid" id="rfd-snapshotGrid"></div>
+    </div>
   </div>
 
   <!-- ===== EDITABLE TEXT: methodology notes ===== -->
@@ -311,6 +346,14 @@ permalink: /reinforcement-demo/
     reinforcedBy:  'Reinforced by, this tick',
     nobody:        'no one',
     noInfluencers: 'no one (nothing influences this agent)',
+    inspectHint:  'Click any tick in the timelines to see every agent’s state at that moment.',
+    snapshotTitle:'All agents at tick {a}',
+    cellTitle:    'Tick {a}: show every agent',
+    speedLabel:   'Speed x{a}',
+    hideAll:      'Hide all agents',
+    showAll:      'Show all agents',
+    notReinforced:'Not reinforced',
+    isolated:     'Isolated, no influencers',
     cbLabel:    'Colourblind-friendly',
     cbOn:       'ON',
     cbOff:      'OFF',
@@ -321,7 +364,8 @@ permalink: /reinforcement-demo/
   function fill(tpl, a, b){ return tpl.replace(/\{a\}/g, a || '').replace(/\{b\}/g, b || ''); }
 
   var TICKS = 24;
-  var TICK_MS = 900; // playback speed: milliseconds per tick
+  var TICK_MS = 900; // playback speed at x1: milliseconds per tick
+  var SPEEDS = [0.5, 1, 1.5, 2]; // the speed button cycles through these
 
   var nodes = [
     {id:1, label:'User 01', x:150, y:130, type:'dpr',    state:'positive'},
@@ -612,6 +656,9 @@ permalink: /reinforcement-demo/
 
   var selected = [];
   var currentTick = 0, playing = false, playTimer = null, runStarted = false;
+  // revealedTo: furthest tick reached this run, so stepping back to inspect an
+  // earlier tick keeps the rest of the timeline visible.
+  var revealedTo = 0, speed = 1, snapshotShown = false, snapshotMin = false;
 
   // Selecting agents never resets the network: it stays at the current tick, and if a
   // run is under way the results panel switches to the new selection at that tick.
@@ -710,7 +757,7 @@ permalink: /reinforcement-demo/
 
   function stripHtml(id){
     var cells = '';
-    for(var i=0;i<=TICKS;i++){ cells += '<span class="rfd-cell" data-i="' + i + '"></span>'; }
+    for(var i=0;i<=TICKS;i++){ cells += '<span class="rfd-cell" data-i="' + i + '" title="' + fill(TEXT.cellTitle, String(i)) + '"></span>'; }
     return '<div class="rfd-strip" id="' + id + '">' + cells + '</div>';
   }
   function updateStrip(stripId, nodeId, tick){
@@ -719,7 +766,7 @@ permalink: /reinforcement-demo/
     Array.prototype.forEach.call(strip.children, function(cell){
       var i = Number(cell.getAttribute('data-i'));
       cell.className = 'rfd-cell';
-      if(i <= tick){ cell.classList.add('rfd-revealed', stateAt(nodeId, i)); }
+      if(i <= revealedTo){ cell.classList.add('rfd-revealed', stateAt(nodeId, i)); }
       if(i === tick) cell.classList.add('rfd-current');
     });
   }
@@ -729,7 +776,7 @@ permalink: /reinforcement-demo/
     Array.prototype.forEach.call(strip.children, function(cell){
       var i = Number(cell.getAttribute('data-i'));
       cell.className = 'rfd-cell';
-      if(i <= tick && pairSharing(aId, bId, rel, i)){ cell.classList.add('rfd-revealed','rfd-shared'); }
+      if(i <= revealedTo && pairSharing(aId, bId, rel, i)){ cell.classList.add('rfd-revealed','rfd-shared'); }
       if(i === tick) cell.classList.add('rfd-current');
     });
   }
@@ -784,7 +831,7 @@ permalink: /reinforcement-demo/
     if(rf) Array.prototype.forEach.call(rf.children, function(cell){
       var i = Number(cell.getAttribute('data-i'));
       cell.className = 'rfd-cell';
-      if(i <= tick && reinforcersAt(n.id, i).length) cell.classList.add('rfd-revealed','rfd-shared');
+      if(i <= revealedTo && reinforcersAt(n.id, i).length) cell.classList.add('rfd-revealed','rfd-shared');
       if(i === tick) cell.classList.add('rfd-current');
     });
     var by = document.getElementById(stripId + '-by');
@@ -828,7 +875,7 @@ permalink: /reinforcement-demo/
     Array.prototype.forEach.call(strip.children, function(cell){
       var i = Number(cell.getAttribute('data-i'));
       cell.className = 'rfd-cell';
-      if(i <= tick && reinforcersAt(id, i).some(function(x){ return x !== partnerId; })) cell.classList.add('rfd-revealed','rfd-others');
+      if(i <= revealedTo && reinforcersAt(id, i).some(function(x){ return x !== partnerId; })) cell.classList.add('rfd-revealed','rfd-others');
       if(i === tick) cell.classList.add('rfd-current');
     });
   }
@@ -878,10 +925,11 @@ permalink: /reinforcement-demo/
       currentTick++;
       applyTick();
       if(currentTick >= TICKS) stopPlayback();
-    }, TICK_MS);
+    }, TICK_MS / speed);
     updateButtons();
   }
   function applyTick(){
+    revealedTo = Math.max(revealedTo, currentTick);
     updateNetworkColors(currentTick);
     document.getElementById('rfd-tickSlider').value = currentTick;
     document.getElementById('rfd-tickReadout').textContent = 'Tick ' + currentTick + ' / ' + TICKS;
@@ -896,8 +944,47 @@ permalink: /reinforcement-demo/
       updateAgentBlock(b, 'rfd-strip-b', currentTick);
       updateReinforcementBlock(a, b, rel, currentTick);
     }
+    updateSnapshot();
     updateButtons();
   }
+
+  // Tick inspector: click any timeline block (while playing, paused or after the
+  // run) to jump to that tick and list every agent's state at it. The panel then
+  // follows the current tick until it's hidden with the chevron.
+  function updateSnapshot(){
+    var snap = document.getElementById('rfd-snapshot');
+    document.getElementById('rfd-inspectHint').hidden = snapshotShown;
+    snap.hidden = !snapshotShown;
+    if(!snapshotShown) return;
+    snap.classList.toggle('is-min', snapshotMin);
+    var toggle = document.getElementById('rfd-snapshotToggle');
+    toggle.setAttribute('aria-expanded', snapshotMin ? 'false' : 'true');
+    toggle.setAttribute('aria-label', snapshotMin ? TEXT.showAll : TEXT.hideAll);
+    var t = currentTick, counts = {positive:0, neutral:0, negative:0}, reinforcedCount = 0;
+    document.getElementById('rfd-snapshotTitle').textContent = fill(TEXT.snapshotTitle, String(t));
+    var grid = document.getElementById('rfd-snapshotGrid'); grid.textContent = '';
+    nodes.forEach(function(n){
+      var st = stateAt(n.id, t), by = reinforcersAt(n.id, t);
+      counts[st]++; if(by.length) reinforcedCount++;
+      var d = document.createElement('div');
+      d.className = 'rfd-snap-agent' + (by.length ? ' is-reinforced' : '') + (selected.indexOf(n.id) > -1 ? ' is-selected' : '');
+      d.innerHTML = '<span class="rfd-snap-name">' + n.label + '</span><span class="' + pillClass(n.type, st) + '">' + st + '</span>' +
+        '<span class="rfd-snap-by">' + (by.length ? TEXT.reinforcedRow + ' by ' + by.map(function(x){ return byId[x].label; }).join(', ') : (influencersOf(n.id).length ? TEXT.notReinforced : TEXT.isolated)) + '</span>';
+      grid.appendChild(d);
+    });
+    document.getElementById('rfd-snapshotSummary').textContent = 'Positive ' + counts.positive + ' · Neutral ' + counts.neutral + ' · Negative ' + counts.negative + ' · ' + reinforcedCount + ' reinforced';
+  }
+  function inspectTick(i){
+    stopPlayback();
+    currentTick = i; snapshotShown = true; snapshotMin = false;
+    applyTick();
+    var snap = document.getElementById('rfd-snapshot');
+    if(snap.getBoundingClientRect().top > window.innerHeight - 80){
+      var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      snap.scrollIntoView({block:'nearest', behavior: still ? 'auto' : 'smooth'});
+    }
+  }
+  function updateSpeedBtn(){ document.getElementById('rfd-speedBtn').textContent = fill(TEXT.speedLabel, String(speed)); }
 
   function buildResults(){
     document.getElementById('rfd-resultsPanel').style.display = '';
@@ -914,7 +1001,7 @@ permalink: /reinforcement-demo/
   }
 
   function runSimulation(){
-    currentTick = 0;
+    currentTick = 0; revealedTo = 0; snapshotShown = false; snapshotMin = false;
     runStarted = true;
     buildResults();
     applyTick();
@@ -976,9 +1063,24 @@ permalink: /reinforcement-demo/
     redrawAll();
   });
   document.getElementById('rfd-runBtn').addEventListener('click', onRunClick);
+  document.getElementById('rfd-speedBtn').addEventListener('click', function(){
+    speed = SPEEDS[(SPEEDS.indexOf(speed) + 1) % SPEEDS.length];
+    updateSpeedBtn();
+    if(playing) startPlayback();
+  });
+  updateSpeedBtn();
+  document.getElementById('rfd-inspectHint').textContent = TEXT.inspectHint;
+  document.getElementById('rfd-resultsBody').addEventListener('click', function(ev){
+    var cell = ev.target.closest('.rfd-cell');
+    if(cell) inspectTick(Number(cell.getAttribute('data-i')));
+  });
+  document.getElementById('rfd-snapshotHead').addEventListener('click', function(){
+    snapshotMin = !snapshotMin;
+    updateSnapshot();
+  });
   document.getElementById('rfd-clearBtn').addEventListener('click', function(){
     stopPlayback();
-    selected = []; currentTick = 0; runStarted = false;
+    selected = []; currentTick = 0; runStarted = false; revealedTo = 0; snapshotShown = false; snapshotMin = false;
     updateNetworkColors(0);
     document.getElementById('rfd-resultsPanel').style.display = 'none';
     render();
