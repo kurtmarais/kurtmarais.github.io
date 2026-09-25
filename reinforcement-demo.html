@@ -159,9 +159,13 @@ permalink: /reinforcement-demo/
   .rfd-rel-layout{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center;}
   @media (max-width:640px){ .rfd-rel-layout{grid-template-columns:1fr;} }
   svg.rfd-rel{width:100%; height:auto; display:block; max-width:340px; margin:0 auto;}
-  .rfd-rel-summary{font-size:.9rem; line-height:2.1;}
-  .rfd-rel-summary .rfd-mono{display:inline-block; min-width:5.2em; margin-right:.9em;} /* space between agent name and its pill */
-  .rfd-rel-verdict{margin-top:10px; padding:10px 12px; border-radius:10px; font-size:.85rem; background:var(--rfd-surface-2); color:var(--rfd-ink-soft);}
+  /* One row per agent (name + pill), then the tie verdict. Rows are separate
+     boxes with real gaps, so pills never touch, even when a pill wraps under
+     its name on narrow screens. */
+  .rfd-rel-summary{display:flex; flex-direction:column; gap:12px; font-size:.9rem;}
+  .rfd-rel-row{display:flex; align-items:center; flex-wrap:wrap; gap:6px 12px; line-height:1.4;}
+  .rfd-rel-row .rfd-mono{min-width:5.2em;}
+  .rfd-rel-verdict{margin-top:16px; padding:10px 12px; border-radius:10px; font-size:.85rem; background:var(--rfd-surface-2); color:var(--rfd-ink-soft);}
   .rfd-rel-verdict b{color:var(--rfd-ink);}
 
   /* State pills mirror the node shapes: agents diagnosed with depression (filled
@@ -810,8 +814,8 @@ permalink: /reinforcement-demo/
     if(dyad) dyad.classList.toggle('rfd-on', runStarted && pairSharing(a.id, b.id, rel, tick));
     var stA = stateAt(a.id, tick), stB = stateAt(b.id, tick);
     document.getElementById('rfd-relSummary').innerHTML =
-      '<span class="rfd-mono">' + a.label + '</span> <span class="' + pillClass(a.type, stA) + '">' + typeLabel(a.type) + ' &middot; ' + stA + '</span>' +
-      '<br><span class="rfd-mono">' + b.label + '</span> <span class="' + pillClass(b.type, stB) + '">' + typeLabel(b.type) + ' &middot; ' + stB + '</span>';
+      '<div class="rfd-rel-row"><span class="rfd-mono">' + a.label + '</span><span class="' + pillClass(a.type, stA) + '">' + typeLabel(a.type) + ' &middot; ' + stA + '</span></div>' +
+      '<div class="rfd-rel-row"><span class="rfd-mono">' + b.label + '</span><span class="' + pillClass(b.type, stB) + '">' + typeLabel(b.type) + ' &middot; ' + stB + '</span></div>';
   }
 
   function stripHtml(id){

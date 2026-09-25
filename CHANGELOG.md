@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (10)
+
+### Fixed
+- Reinforcement demo, Relationship panel: more space between the two agent
+  rows and the tie description. Each agent is now its own row with a fixed
+  gap, so the pills can't touch, even when they wrap on small screens.
+
 ## 2026-09-25 (9)
 
 ### Changed
