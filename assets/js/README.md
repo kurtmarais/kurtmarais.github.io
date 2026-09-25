@@ -23,7 +23,7 @@ Loaded only by the page that needs it:
   snap-back. Any `setPointerCapture()` must stay mobile-only — on desktop
   it breaks the links' click-through while hover still looks fine.
 - `demo-teaser-trace.js` — homepage demo card: a line traces the card's
-  border (bottom-left, anticlockwise, draw then erase) every 30s once the
+  border (bottom-left, anticlockwise, then a quick fade) every 60s once the
   card has been in view. Skipped for reduced motion.
 - `engagements-filters.js` — Engagements filters/sort/search. Topic search
   reads the visible `.engagement-keywords-row` badges plus hidden `tags`.

@@ -1,7 +1,7 @@
-/* Homepage demo teaser: every 30 seconds a line traces the card's border,
+/* Homepage demo teaser: every 60 seconds a line traces the card's border,
    starting at the bottom-left corner and running anticlockwise (bottom,
-   right, top, left). It draws in, then erases in the same direction, so it
-   disappears as it arrives back at the bottom-left corner.
+   right, top, left). Once it's back at the bottom-left corner the outline
+   fades out quickly.
    The outline is an SVG path rebuilt whenever the card resizes, so its
    rounded corners always match the card. Skipped for reduced motion. */
 (function () {
@@ -11,7 +11,7 @@
   if (!card) return;
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  var EVERY_MS = 30000;   // time between traces
+  var EVERY_MS = 60000;   // time between traces
   var FIRST_MS = 1500;    // first trace, after the card first scrolls into view
   var RADIUS = 10;        // matches .demo-teaser border-radius
   var INSET = 1;          // half the trace's stroke width, so it sits on the border
