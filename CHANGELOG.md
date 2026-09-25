@@ -8,9 +8,9 @@ is the baseline. Add new entries at the top.
 
 ### Changed
 - Reinforcement demo key: moved into the "A network of agents" panel as a
-  narrow column beside the network (below it on smaller screens), grouped
-  into Agents, Sentiment and Ties; the colourblind toggle sits next to the
-  panel heading. Turning colourblind mode on only changes the swatches
+  box floating beside the network, level with its middle (below it on
+  smaller screens), grouped into Agents, Sentiment and Ties; the
+  colourblind toggle sits just above the panel on the right. Turning colourblind mode on only changes the swatches
   (symbols and patterns appear inside them), so nothing shifts.
 
 ## 2026-09-25 (8)

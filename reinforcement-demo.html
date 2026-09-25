@@ -69,17 +69,21 @@ permalink: /reinforcement-demo/
      the Run/Clear row with its three groups side by side where they fit.
      Colourblind mode only changes what's inside the sentiment chips (symbols,
      patterns), never adds text, so toggling it can't change the key's size. */
-  .rfd-panel-head{display:flex; align-items:center; gap:10px 14px; flex-wrap:wrap; margin-bottom:4px;}
-  .rfd-panel-head h2{margin-bottom:0;}
+  .rfd-toolbar{display:flex; justify-content:flex-end; margin:-6px 0 10px;}
   .rfd-key{background:var(--rfd-surface-2); border-radius:10px; padding:12px 14px; margin-top:18px; font-size:.78rem; color:var(--rfd-ink-soft);}
   .rfd-key-head{margin-bottom:8px;}
   .rfd-key-title{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--rfd-ink-soft);}
   .rfd-key-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px 22px;}
   @media (min-width:900px){
-    .rfd-net-panel{display:grid; grid-template-columns:minmax(0,1fr) 210px; column-gap:22px; align-items:start;}
+    /* Column 2 is wider than the key, and the key is centred in it both ways:
+       it floats between the network and the panel's right edge, level with
+       the middle of the network. It sits in the network's row only, so the
+       rows below (hint, Run/Clear) never stretch to fit it. */
+    .rfd-net-panel{display:grid; grid-template-columns:minmax(0,1fr) minmax(230px, 280px); column-gap:12px; align-items:start;}
     .rfd-net-panel > *{grid-column:1;}
-    .rfd-net-panel > .rfd-panel-head, .rfd-net-panel > .rfd-sub{grid-column:1 / -1;}
-    .rfd-net-panel > .rfd-key{grid-column:2; grid-row:3 / span 3; margin-top:0;}
+    .rfd-net-panel > h2, .rfd-net-panel > .rfd-sub{grid-column:1 / -1;}
+    .rfd-net-panel > .rfd-key{grid-column:2; grid-row:3; width:210px; justify-self:center; align-self:center; margin-top:0;}
+    .rfd-net-panel > svg.rfd-network{align-self:center;} /* if the key is taller (narrow desktops), centre the network instead */
     .rfd-net-panel .rfd-key-grid{grid-template-columns:1fr; gap:12px;}
   }
   .rfd-key-group{display:flex; flex-direction:column; gap:6px; min-width:0;}
@@ -282,14 +286,11 @@ permalink: /reinforcement-demo/
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
 
+    <div class="rfd-toolbar"><button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button></div>
+
     <div class="rfd-panel rfd-net-panel">
-      <div class="rfd-panel-head">
       <!-- ===== EDITABLE TEXT ===== -->
       <h2>A network of agents</h2>
-      <!-- ===== END EDITABLE TEXT ===== -->
-      <button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button>
-      </div>
-      <!-- ===== EDITABLE TEXT ===== -->
       <p class="rfd-sub">Twelve agents form one connected component (Users 01–12). Three additional agents (Users 13–15, in the corners) are depicted as isolates with no ties: these isolates represent the baseline case, depicting how an agent behaves without any connections. Click one agent to follow its behaviour, or select a second agent to compare a pair of users, then run the simulation to watch every agent's state play out tick by tick. Arrows show who influences whom; an agent can only be reinforced by agents whose arrows point towards it.</p>
       <!-- ===== END EDITABLE TEXT ===== -->
       <svg class="rfd-network" viewBox="0 0 760 460" id="rfd-netSvg"></svg>
