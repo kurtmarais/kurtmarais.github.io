@@ -2812,6 +2812,20 @@ body.dark-mode .legend-app li::before {
 }
 
 
+/* PHONES AND TABLETS: no sideways scrolling.
+   Page content sits in `.col-lg-10 p-3` (13.6px side padding; full width
+   below 992px), but Bootstrap's `.row.g-5` pulls rows out by half its 3rem
+   gutter (20.4px) on each side, so every row stuck out 6.8px past the screen
+   and the page could slide sideways. Below 992px, a 2rem gutter makes the
+   pull-out equal the padding: rows sit flush with the screen edge and text
+   stays exactly 13.6px in, as before. From 992px the wrapper is narrower
+   than the screen, so the 3rem gutter fits and is left alone. */
+@media (max-width: 991.98px) {
+  .row.g-5 {
+    --bs-gutter-x: 2rem;
+  }
+}
+
 /* SOCIAL LINKS CARDS (homepage carousel + CV list) */
 
 .social-carousel-viewport {
