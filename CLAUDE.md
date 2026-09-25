@@ -224,13 +224,16 @@ leaks into other pages. Consequences worth remembering:
   object at the top of the page's `<script>`. No em dashes in page copy.
 - Selecting agents must never reset the network: colours stay at the
   current tick. The run button toggles run / pause / resume. `TICK_MS`
-  is the x1 speed; the speed button cycles `SPEEDS` (x0.5, x1, x1.5, x2)
+  is the x1 speed; the speed button cycles `SPEEDS` (x0.5, x1, x1.5, x2, x2.5)
   and divides `TICK_MS` by it, restarting the timer if playing.
-- Tick inspector: every timeline cell in `#rfd-resultsBody` is clickable at
-  any time (playing, paused, finished). A click pauses, jumps to that tick
-  and opens `#rfd-snapshot` ("All agents at tick N") below the timelines.
-  It then follows `currentTick` until minimised with its chevron (header
-  click also toggles). `revealedTo` (furthest tick reached this run) sets
+- Tick inspector: `#rfd-snapshot` ("All agents at tick N", below the
+  timelines) shows from the start of every run and follows `currentTick`.
+  Agents whose state differs from the previous tick get `.is-changed` and a
+  "Changed from X" line (the line's space is always reserved so cards don't
+  jump), plus a one-off `.is-flash` only when playback steps onto the tick.
+  Every timeline cell in `#rfd-resultsBody` is clickable at any time
+  (playing, paused, finished): a click pauses and jumps to that tick. The
+  chevron (or a header click) minimises the panel. `revealedTo` (furthest tick reached this run) sets
   how much of each timeline is drawn, so stepping back doesn't hide later
   ticks; stat cards still use `currentTick`. New run / Clear reset it.
 

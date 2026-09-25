@@ -185,8 +185,13 @@ permalink: /reinforcement-demo/
   .rfd-snap-agent.is-selected{box-shadow:0 0 0 2px var(--rfd-accent);}
   .rfd-snap-name{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-weight:600; margin-right:6px;}
   .rfd-snap-by{display:block; color:var(--rfd-ink-soft); font-size:.72rem; margin-top:3px;}
+  .rfd-snap-agent.is-changed{background:var(--rfd-accent-soft);}
+  .rfd-snap-agent.is-flash{animation:rfd-snap-flash .7s ease-out;}
+  @keyframes rfd-snap-flash{from{transform:scale(1.05); box-shadow:0 0 0 3px var(--rfd-accent);}}
+  .rfd-snap-was{display:block; color:var(--rfd-accent); font-size:.72rem; font-weight:600; margin-top:3px;}
+  .rfd-snap-was.is-empty{visibility:hidden;}
   @media (max-width:560px){ .rfd-snapshot{padding:12px;} .rfd-snapshot-grid{grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px;} .rfd-snap-agent{padding:6px 7px;} .rfd-snap-name{display:block; margin:0 0 3px;} }
-  @media (prefers-reduced-motion: reduce){ #rfd-resultsBody .rfd-cell, .rfd-snapshot-toggle svg{transition:none;} }
+  @media (prefers-reduced-motion: reduce){ #rfd-resultsBody .rfd-cell, .rfd-snapshot-toggle svg{transition:none;} .rfd-snap-agent.is-flash{animation:none;} }
 
   .rfd-result-block{margin-bottom:24px; padding-bottom:22px; border-bottom:1px solid var(--rfd-line);}
   .rfd-result-block:last-child{margin-bottom:0; padding-bottom:0; border-bottom:none;}
@@ -346,13 +351,14 @@ permalink: /reinforcement-demo/
     reinforcedBy:  'Reinforced by, this tick',
     nobody:        'no one',
     noInfluencers: 'no one (nothing influences this agent)',
-    inspectHint:  'Click any tick in the timelines to see every agent’s state at that moment.',
+    inspectHint:  'Click any tick in the timelines to jump to it. The panel below lists every agent at the current tick and marks who changed state.',
     snapshotTitle:'All agents at tick {a}',
     cellTitle:    'Tick {a}: show every agent',
     speedLabel:   'Speed x{a}',
     hideAll:      'Hide all agents',
     showAll:      'Show all agents',
     notReinforced:'Not reinforced',
+    changedFrom:  'Changed from {a}',
     isolated:     'Isolated, no influencers',
     cbLabel:    'Colourblind-friendly',
     cbOn:       'ON',
@@ -365,7 +371,7 @@ permalink: /reinforcement-demo/
 
   var TICKS = 24;
   var TICK_MS = 900; // playback speed at x1: milliseconds per tick
-  var SPEEDS = [0.5, 1, 1.5, 2]; // the speed button cycles through these
+  var SPEEDS = [0.5, 1, 1.5, 2, 2.5]; // the speed button cycles through these
 
   var nodes = [
     {id:1, label:'User 01', x:150, y:130, type:'dpr',    state:'positive'},
@@ -948,31 +954,37 @@ permalink: /reinforcement-demo/
     updateButtons();
   }
 
-  // Tick inspector: click any timeline block (while playing, paused or after the
-  // run) to jump to that tick and list every agent's state at it. The panel then
-  // follows the current tick until it's hidden with the chevron.
+  // Tick inspector: every agent's state at the current tick, shown from the start
+  // of a run and updated as it plays. Agents that changed state since the previous
+  // tick are marked (and flash once when playback moves onto that tick). Clicking
+  // a timeline block jumps to that tick; the chevron minimises the panel.
+  var lastSnapTick = -1;
   function updateSnapshot(){
     var snap = document.getElementById('rfd-snapshot');
-    document.getElementById('rfd-inspectHint').hidden = snapshotShown;
     snap.hidden = !snapshotShown;
     if(!snapshotShown) return;
     snap.classList.toggle('is-min', snapshotMin);
     var toggle = document.getElementById('rfd-snapshotToggle');
     toggle.setAttribute('aria-expanded', snapshotMin ? 'false' : 'true');
     toggle.setAttribute('aria-label', snapshotMin ? TEXT.showAll : TEXT.hideAll);
-    var t = currentTick, counts = {positive:0, neutral:0, negative:0}, reinforcedCount = 0;
+    var t = currentTick, counts = {positive:0, neutral:0, negative:0}, reinforcedCount = 0, changedCount = 0;
+    var flash = playing && t === lastSnapTick + 1;
+    lastSnapTick = t;
     document.getElementById('rfd-snapshotTitle').textContent = fill(TEXT.snapshotTitle, String(t));
     var grid = document.getElementById('rfd-snapshotGrid'); grid.textContent = '';
     nodes.forEach(function(n){
       var st = stateAt(n.id, t), by = reinforcersAt(n.id, t);
-      counts[st]++; if(by.length) reinforcedCount++;
+      var was = t > 0 ? stateAt(n.id, t - 1) : st, changed = was !== st;
+      counts[st]++; if(by.length) reinforcedCount++; if(changed) changedCount++;
       var d = document.createElement('div');
-      d.className = 'rfd-snap-agent' + (by.length ? ' is-reinforced' : '') + (selected.indexOf(n.id) > -1 ? ' is-selected' : '');
+      d.className = 'rfd-snap-agent' + (by.length ? ' is-reinforced' : '') + (selected.indexOf(n.id) > -1 ? ' is-selected' : '') +
+        (changed ? ' is-changed' + (flash ? ' is-flash' : '') : '');
       d.innerHTML = '<span class="rfd-snap-name">' + n.label + '</span><span class="' + pillClass(n.type, st) + '">' + st + '</span>' +
-        '<span class="rfd-snap-by">' + (by.length ? TEXT.reinforcedRow + ' by ' + by.map(function(x){ return byId[x].label; }).join(', ') : (influencersOf(n.id).length ? TEXT.notReinforced : TEXT.isolated)) + '</span>';
+        '<span class="rfd-snap-by">' + (by.length ? TEXT.reinforcedRow + ' by ' + by.map(function(x){ return byId[x].label; }).join(', ') : (influencersOf(n.id).length ? TEXT.notReinforced : TEXT.isolated)) + '</span>' +
+        '<span class="rfd-snap-was' + (changed ? '' : ' is-empty') + '">' + (changed ? fill(TEXT.changedFrom, was) : '&nbsp;') + '</span>';
       grid.appendChild(d);
     });
-    document.getElementById('rfd-snapshotSummary').textContent = 'Positive ' + counts.positive + ' · Neutral ' + counts.neutral + ' · Negative ' + counts.negative + ' · ' + reinforcedCount + ' reinforced';
+    document.getElementById('rfd-snapshotSummary').textContent = 'Positive ' + counts.positive + ' · Neutral ' + counts.neutral + ' · Negative ' + counts.negative + ' · ' + reinforcedCount + ' reinforced · ' + changedCount + ' changed';
   }
   function inspectTick(i){
     stopPlayback();
@@ -1001,7 +1013,7 @@ permalink: /reinforcement-demo/
   }
 
   function runSimulation(){
-    currentTick = 0; revealedTo = 0; snapshotShown = false; snapshotMin = false;
+    currentTick = 0; revealedTo = 0; snapshotShown = true; snapshotMin = false; lastSnapTick = -1;
     runStarted = true;
     buildResults();
     applyTick();

@@ -20,10 +20,11 @@ is the baseline. Add new entries at the top.
   Any engagement type can be mapped (Bath 2023 seminar added); cards show
   the engagement type; heading renamed "Where I've presented".
 - Reinforcement demo: speed button next to Run (x0.5, x1 default, x1.5,
-  x2). Click any tick in the timelines, at any point in a run, to jump to
-  it and open "All agents at tick N" below the timelines: every agent's
-  state and who reinforces it, with totals. It follows the current tick
-  and minimises with a chevron. Stepping back keeps the rest of the
+  x2, x2.5). "All agents at tick N" below the timelines shows every
+  agent's state and who reinforces it, with totals, throughout the run;
+  agents that just changed state are highlighted with what they changed
+  from. Click any tick in the timelines, at any point, to jump to it. The
+  panel minimises with a chevron. Stepping back keeps the rest of the
   timeline visible.
 
 ## 2026-09-25 (2)
