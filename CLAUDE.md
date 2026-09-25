@@ -222,6 +222,10 @@ leaks into other pages. Consequences worth remembering:
   localStorage (`rfdColourblind`).
 - Editable wording: HTML between `EDITABLE TEXT` comments, plus the `TEXT`
   object at the top of the page's `<script>`. No em dashes in page copy.
+  `TEXT` messages are single-quoted JS strings: apostrophes inside them must
+  be the curly `’`. A straight `'` (e.g. `agent's`) is a syntax error that
+  kills the whole script, so the network never renders. Check with
+  `node --check` on the extracted script after editing.
 - Selecting agents must never reset the network: colours stay at the
   current tick. The run button toggles run / pause / resume. `TICK_MS`
   is the x1 speed; the speed button cycles `SPEEDS` (x0.5, x1, x1.5, x2, x2.5)
