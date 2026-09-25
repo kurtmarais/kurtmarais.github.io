@@ -2,7 +2,9 @@
    Markup: _includes/conference-map.html (panel + static Equal Earth coastlines
    + JSON dot data from _data/engagements.yml `map:` blocks).
    Toggle: the MAP control in the filter row. Desktop (>= 992px): map opens in a
-   sticky right-hand column. Narrower: map opens above the list. */
+   sticky right-hand column. Narrower: map opens above the list.
+   Inside the map: zoom in/out/reset buttons, drag to pan when zoomed, and (from
+   768px) an enlarge button that opens the map in a large overlay. */
 (function () {
   "use strict";
 
@@ -13,6 +15,8 @@
 
   var entries;
   try { entries = JSON.parse(dataEl.textContent); } catch (e) { return; }
+
+  var MAP_W = 900, MAP_H = 460, MAX_ZOOM = 8;
 
   // Equal Earth forward projection, identical to
   // d3.geoEqualEarth().scale(155).translate([450, 230]) used to pre-render the
@@ -30,7 +34,7 @@
   function when(e) { return e.date ? String(e.date) : String(e.year) + "-12-31"; }
 
   // One dot per region, placed on the city of its most recent engagement;
-  // older engagements in the same region are listed in the card.
+  // older engagements in the same region are listed in the card, newest first.
   function groupByRegion(list) {
     var byRegion = {};
     list.forEach(function (e) { (byRegion[e.region] = byRegion[e.region] || []).push(e); });
@@ -43,7 +47,9 @@
 
   var regions = groupByRegion(entries);
   var svgNS = "http://www.w3.org/2000/svg";
+  var svg = document.getElementById("ecm-svg");
   var dots = document.getElementById("ecm-dots");
+  var panel = document.getElementById("ecm-map-panel");
   var card = document.getElementById("ecm-card");
   var hint = document.getElementById("ecm-hint");
   var place = document.getElementById("ecm-card-place");
@@ -63,7 +69,7 @@
   function prettyDate(d) {
     return new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   }
-  function status(e) { return isUpcoming(e) ? " (upcoming)" : (e.online ? " (online)" : ""); }
+  function status(e) { return isUpcoming(e) ? "upcoming" : (e.online ? "online" : ""); }
 
   function show(g, r) {
     if (active && active !== g) active.classList.remove("is-active");
@@ -73,10 +79,22 @@
     var when_ = isUpcoming(r.latest) ? "Upcoming, " + prettyDate(r.latest.date) : String(r.latest.year);
     meta.textContent = (r.latest.online ? "Online · " : "") + (r.latest.venue ? r.latest.venue + " · " : "") + when_;
     talk.textContent = label(r.latest);
+
+    // Earlier engagements in the region: one per line, newest first.
+    earlier.textContent = "";
     if (r.earlier.length) {
-      earlier.textContent = "Also presented in this region: " + r.earlier.map(function (e) {
-        return e.city + ", " + e.year + status(e) + " (" + label(e) + ")";
-      }).join("; ");
+      var head = document.createElement("p");
+      head.className = "ecm-earlier-head";
+      head.textContent = "Earlier in this region";
+      earlier.appendChild(head);
+      var ul = document.createElement("ul");
+      r.earlier.forEach(function (e) {
+        var li = document.createElement("li");
+        var st = status(e);
+        li.textContent = e.year + " · " + e.city + (st ? " (" + st + ")" : "") + " · " + label(e);
+        ul.appendChild(li);
+      });
+      earlier.appendChild(ul);
       earlier.style.display = "";
     } else {
       earlier.style.display = "none";
@@ -92,28 +110,31 @@
     hint.style.display = "";
   }
 
+  // ---------- dots ----------
+  // Sizes are in screen-like units at zoom 1 and divided by the zoom level, so
+  // dots stay the same size on screen while the map magnifies around them.
+  var CORE_R = 3.4, HALO_R = 7, HIT_MAX = 20;
+  var dotEls = [];
+
   regions.forEach(function (r) {
+    var nearest = Infinity;
+    regions.forEach(function (o) { if (o !== r) nearest = Math.min(nearest, Math.hypot(o.x - r.x, o.y - r.y)); });
+
     var g = document.createElementNS(svgNS, "g");
     g.setAttribute("class", "ecm-dot" + (r.latest.online ? " is-online" : "") + (isUpcoming(r.latest) ? " is-upcoming" : ""));
     g.setAttribute("tabindex", "0");
     g.setAttribute("role", "button");
     g.setAttribute("aria-label", r.latest.city + ", " + r.region);
 
-    // Larger invisible target for taps, capped at half the distance to the
-    // nearest other dot so neighbouring targets never overlap and block each other.
-    var nearest = Infinity;
-    regions.forEach(function (o) { if (o !== r) nearest = Math.min(nearest, Math.hypot(o.x - r.x, o.y - r.y)); });
     var hit = document.createElementNS(svgNS, "circle");
     hit.setAttribute("class", "ecm-dot-hit");
-    hit.setAttribute("cx", r.x); hit.setAttribute("cy", r.y); hit.setAttribute("r", Math.max(4, Math.min(20, nearest / 2 - 0.5)));
     var halo = document.createElementNS(svgNS, "circle");
     halo.setAttribute("class", "ecm-dot-halo");
-    halo.setAttribute("cx", r.x); halo.setAttribute("cy", r.y); halo.setAttribute("r", 7);
     var core = document.createElementNS(svgNS, "circle");
     core.setAttribute("class", "ecm-dot-core");
-    core.setAttribute("cx", r.x); core.setAttribute("cy", r.y); core.setAttribute("r", 3.4);
-    g.appendChild(hit); g.appendChild(halo); g.appendChild(core);
+    [hit, halo, core].forEach(function (c) { c.setAttribute("cx", r.x); c.setAttribute("cy", r.y); g.appendChild(c); });
     dots.appendChild(g);
+    dotEls.push({ hit: hit, halo: halo, core: core, nearest: nearest });
 
     if (isTouch) {
       g.addEventListener("click", function (ev) {
@@ -137,6 +158,121 @@
     });
   });
 
+  // ---------- zoom and pan ----------
+  var view = { x: 0, y: 0, w: MAP_W, h: MAP_H };
+  var zoomIn = document.getElementById("ecm-zoom-in");
+  var zoomOut = document.getElementById("ecm-zoom-out");
+  var zoomReset = document.getElementById("ecm-zoom-reset");
+
+  function zoomLevel() { return MAP_W / view.w; }
+
+  function sizeDots() {
+    var z = zoomLevel();
+    dotEls.forEach(function (d) {
+      d.core.setAttribute("r", CORE_R / z);
+      d.halo.setAttribute("r", HALO_R / z);
+      // Tap target: up to HIT_MAX on screen, but never past halfway to the
+      // nearest other dot (in map units), so close dots can't block each other.
+      d.hit.setAttribute("r", Math.max(4 / z, Math.min(HIT_MAX / z, d.nearest / 2 - 0.5 / z)));
+    });
+  }
+
+  function applyView() {
+    svg.setAttribute("viewBox", [view.x, view.y, view.w, view.h].join(" "));
+    sizeDots();
+    var z = zoomLevel();
+    if (zoomOut) zoomOut.disabled = z <= 1.001;
+    if (zoomReset) zoomReset.disabled = z <= 1.001;
+    if (zoomIn) zoomIn.disabled = z >= MAX_ZOOM - 0.001;
+    svg.classList.toggle("is-zoomed", z > 1.001);
+  }
+
+  function clampView() {
+    view.x = Math.min(Math.max(view.x, 0), MAP_W - view.w);
+    view.y = Math.min(Math.max(view.y, 0), MAP_H - view.h);
+  }
+
+  // Zoom to level z, keeping map point (cx, cy) at the same place on screen.
+  function zoomTo(z, cx, cy) {
+    z = Math.min(Math.max(z, 1), MAX_ZOOM);
+    if (cx === undefined) { cx = view.x + view.w / 2; cy = view.y + view.h / 2; }
+    var fx = (cx - view.x) / view.w, fy = (cy - view.y) / view.h;
+    view.w = MAP_W / z; view.h = MAP_H / z;
+    view.x = cx - fx * view.w; view.y = cy - fy * view.h;
+    clampView();
+    applyView();
+  }
+
+  if (zoomIn) zoomIn.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(zoomLevel() * 2); });
+  if (zoomOut) zoomOut.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(zoomLevel() / 2); });
+  if (zoomReset) zoomReset.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(1); });
+
+  function toMap(clientX, clientY) {
+    var rect = svg.getBoundingClientRect();
+    return [view.x + (clientX - rect.left) / rect.width * view.w, view.y + (clientY - rect.top) / rect.height * view.h];
+  }
+
+  // Drag to pan (mouse or finger) once zoomed in. A press that starts on a dot
+  // never starts a pan, so dots keep their own hover/tap behaviour.
+  var drag = null;
+  svg.addEventListener("pointerdown", function (ev) {
+    if (zoomLevel() <= 1.001 || ev.target.closest(".ecm-dot")) return;
+    drag = { x: ev.clientX, y: ev.clientY, vx: view.x, vy: view.y, id: ev.pointerId };
+    svg.classList.add("is-dragging");
+  });
+  window.addEventListener("pointermove", function (ev) {
+    if (!drag || ev.pointerId !== drag.id) return;
+    var rect = svg.getBoundingClientRect();
+    view.x = drag.vx - (ev.clientX - drag.x) / rect.width * view.w;
+    view.y = drag.vy - (ev.clientY - drag.y) / rect.height * view.h;
+    clampView();
+    applyView();
+  });
+  function endDrag() { drag = null; svg.classList.remove("is-dragging"); }
+  window.addEventListener("pointerup", endDrag);
+  window.addEventListener("pointercancel", endDrag);
+
+  // Mouse wheel zooms only in the enlarged view, so scrolling the page past the
+  // small map never gets hijacked.
+  svg.addEventListener("wheel", function (ev) {
+    if (!panel.classList.contains("is-expanded")) return;
+    ev.preventDefault();
+    var p = toMap(ev.clientX, ev.clientY);
+    zoomTo(zoomLevel() * (ev.deltaY < 0 ? 1.25 : 0.8), p[0], p[1]);
+  }, { passive: false });
+
+  // ---------- enlarge (overlay, 768px and up) ----------
+  var expandBtn = document.getElementById("ecm-expand");
+  var backdrop = document.getElementById("ecm-backdrop");
+
+  // While enlarged, the panel (and its backdrop) move to the end of <body> so no
+  // ancestor's stacking context (the sticky column creates one) can sit above
+  // it; they go back to their original place when shrunk.
+  var home = panel.parentNode, homeNext = panel.nextSibling;
+  function setExpanded(on) {
+    if (panel.classList.contains("is-expanded") === on) return;
+    if (on) {
+      if (backdrop) document.body.appendChild(backdrop);
+      document.body.appendChild(panel);
+    } else {
+      home.insertBefore(panel, homeNext);
+      if (backdrop) home.insertBefore(backdrop, panel);
+    }
+    panel.classList.toggle("is-expanded", on);
+    if (backdrop) backdrop.hidden = !on;
+    document.body.classList.toggle("ecm-noscroll", on);
+    if (expandBtn) {
+      expandBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      expandBtn.setAttribute("aria-label", on ? "Shrink map" : "Enlarge map");
+      expandBtn.setAttribute("title", on ? "Shrink map" : "Enlarge map");
+    }
+  }
+  if (expandBtn) expandBtn.addEventListener("click", function (ev) { ev.stopPropagation(); setExpanded(!panel.classList.contains("is-expanded")); });
+  if (backdrop) backdrop.addEventListener("click", function () { setExpanded(false); });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && panel.classList.contains("is-expanded")) setExpanded(false);
+  });
+
   // Legend: only list the online / upcoming styles when a dot uses them.
   var anyOnline = regions.some(function (r) { return r.latest.online; });
   var anyUpcoming = regions.some(function (r) { return isUpcoming(r.latest); });
@@ -154,6 +290,8 @@
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.setAttribute("aria-label", open ? "Hide conference map" : "Show conference map");
     if (labelEl) labelEl.textContent = open ? "Hide map" : "Map";
-    if (!open) hide();
+    if (!open) { hide(); setExpanded(false); }
   });
+
+  applyView();
 })();

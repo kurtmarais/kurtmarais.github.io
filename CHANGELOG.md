@@ -13,7 +13,9 @@ is the baseline. Add new entries at the top.
   column on desktop, above the list on smaller screens. Dots come from new
   `map:` blocks in `_data/engagements.yml`. Online events (Malmö 2024)
   show as an outlined gold dot; events with a future `start_date` show as
-  "Upcoming" until their date.
+  "Upcoming" until their date. Zoom buttons and drag-to-pan in the map, an
+  enlarge button (tablet and desktop) that opens a large overlay with
+  mouse-wheel zoom, and earlier events listed newest first.
 
 ## 2026-09-25 (2)
 

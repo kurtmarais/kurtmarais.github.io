@@ -1692,10 +1692,16 @@ body.dark-mode .poster-embed {
 }
 .ecm-panel-head {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.6rem;
+}
+.ecm-projection { margin-left: auto; white-space: nowrap; }
+.ecm-panel-head h4 { white-space: nowrap; }
+// The 380px desktop column is too narrow for the projection note; it still
+// shows on phones/tablets and in the enlarged view (which lives outside .ecm-col).
+@media (min-width: 992px) {
+  .ecm-col .ecm-projection { visibility: hidden; }
 }
 .ecm-panel-head h4 {
   font-size: 0.95rem;
@@ -1707,36 +1713,108 @@ body.dark-mode .poster-embed {
   color: #69706b;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
-.ecm-stage svg {
+.ecm-stage { position: relative; }
+// `> svg` targets the map only: the zoom icons are Font Awesome SVGs inside the
+// same stage and must not pick up the map's width/height.
+.ecm-stage > svg {
   width: 100%;
   height: auto;
   display: block;
+  user-select: none;
 }
-.ecm-land { fill: #dbe3dc; stroke: #c3cdc4; stroke-width: 0.6; }
-.ecm-graticule { fill: none; stroke: #c3cdc4; stroke-width: 0.5; opacity: 0.5; }
-.ecm-sphere { fill: none; stroke: #d9d9d1; stroke-width: 1; }
+.ecm-stage > svg.is-zoomed { cursor: grab; touch-action: none; }
+.ecm-stage > svg.is-dragging { cursor: grabbing; }
+// Line widths stay constant on screen at any zoom level.
+.ecm-land { fill: #dbe3dc; stroke: #c3cdc4; stroke-width: 0.6; vector-effect: non-scaling-stroke; }
+.ecm-graticule { fill: none; stroke: #c3cdc4; stroke-width: 0.5; opacity: 0.5; vector-effect: non-scaling-stroke; }
+.ecm-sphere { fill: none; stroke: #d9d9d1; stroke-width: 1; vector-effect: non-scaling-stroke; }
+
+// Zoom buttons: a small row in the bottom-left corner of the map (open ocean
+// at full view), so they cover as little of the map as possible.
+.ecm-zoom {
+  position: absolute;
+  left: 0.4rem;
+  bottom: 0.4rem;
+  display: flex;
+  gap: 0.3rem;
+}
+.ecm-zoom button,
+.ecm-expand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid #d9d9d1;
+  background: #fff;
+  color: $linkColor;
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.ecm-zoom button:hover:not(:disabled),
+.ecm-expand:hover { border-color: $linkColor; }
+.ecm-zoom button:disabled { opacity: 0.35; cursor: default; }
+.ecm-zoom button i, .ecm-zoom button svg,
+.ecm-expand i, .ecm-expand svg { font-size: 0.72rem; color: $linkColor; }
+.ecm-expand .ecm-icon-collapse,
+.ecm-panel.is-expanded .ecm-expand .ecm-icon-expand { display: none; }
+.ecm-panel.is-expanded .ecm-expand .ecm-icon-collapse { display: inline-block; }
+@media (max-width: 767.98px) {
+  .ecm-expand { display: none; } // enlarge is for tablets and desktops
+}
+
+// Enlarged view: the same panel lifted into a centred overlay.
+.ecm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(32, 36, 33, 0.45);
+  z-index: 1040;
+}
+.ecm-panel.is-expanded {
+  position: fixed;
+  z-index: 1050;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94vw, 1100px);
+  max-height: 92vh;
+  overflow: auto;
+  box-shadow: 0 1.5rem 3rem rgba(32, 36, 33, 0.25);
+}
+.ecm-panel.is-expanded .ecm-zoom { left: 0.8rem; bottom: 0.8rem; }
+.ecm-panel.is-expanded .ecm-zoom button { width: 2.3rem; height: 2.3rem; }
+body.ecm-noscroll { overflow: hidden; }
 
 .ecm-dot { cursor: pointer; outline: none; }
 .ecm-dot-hit { fill: transparent; }
-.ecm-dot-halo { fill: #6ea491; opacity: 0.22; transition: r .15s ease, opacity .15s ease; }
+.ecm-dot-halo {
+  fill: #6ea491;
+  opacity: 0.22;
+  transition: transform .15s ease, opacity .15s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
 .ecm-dot-core {
   fill: $linkColor;
   stroke: #fff;
   stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
   transition: transform .15s ease;
   transform-box: fill-box;
   transform-origin: center;
 }
 .ecm-dot:hover .ecm-dot-halo,
-.ecm-dot.is-active .ecm-dot-halo { r: 9; opacity: 0.32; }
+.ecm-dot.is-active .ecm-dot-halo { transform: scale(1.3); opacity: 0.32; }
 .ecm-dot:hover .ecm-dot-core,
 .ecm-dot.is-active .ecm-dot-core { transform: scale(1.25); }
-.ecm-dot:focus-visible .ecm-dot-halo { stroke: $linkColor; stroke-width: 1.2; opacity: 0.5; }
+.ecm-dot:focus-visible .ecm-dot-halo { stroke: $linkColor; stroke-width: 1.2; opacity: 0.5; vector-effect: non-scaling-stroke; }
 // Presented online: outlined gold ring (different colour and shape).
 .ecm-dot.is-online .ecm-dot-core { fill: #fff; stroke: #b08d1e; stroke-width: 1.8; }
 .ecm-dot.is-online .ecm-dot-halo { fill: #c9a227; }
 // Upcoming: dashed ring around the dot.
-.ecm-dot.is-upcoming .ecm-dot-halo { fill: none; stroke: $linkColor; stroke-width: 1.2; stroke-dasharray: 2 2; opacity: 0.9; }
+.ecm-dot.is-upcoming .ecm-dot-halo { fill: none; stroke: $linkColor; stroke-width: 1.2; stroke-dasharray: 2 2; opacity: 0.9; vector-effect: non-scaling-stroke; }
 
 // Details card docked below the map (never floats over it, so it can't cover a dot).
 .ecm-hint {
@@ -1764,11 +1842,20 @@ body.dark-mode .poster-embed {
 .ecm-card-earlier {
   font-size: 0.72rem;
   color: #69706b;
-  margin-top: 0.5rem !important;
-  padding-top: 0.4rem;
+  margin-top: 0.55rem;
+  padding-top: 0.45rem;
   border-top: 1px solid #d9d9d1;
   line-height: 1.4;
 }
+.ecm-earlier-head {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.66rem;
+  margin-bottom: 0.25rem !important;
+}
+.ecm-card-earlier ul { margin: 0; padding-left: 1rem; }
+.ecm-card-earlier li { margin: 0 0 0.2rem; }
 .ecm-legend {
   display: flex;
   flex-wrap: wrap;
@@ -1931,6 +2018,13 @@ body.dark-mode .ecm-sphere { stroke: #444943; }
 body.dark-mode .ecm-dot-core { fill: #9ab8aa; stroke: #262a26; }
 body.dark-mode .ecm-swatch { background: #9ab8aa; }
 body.dark-mode .ecm-dot.is-online .ecm-dot-core { fill: #262a26; stroke: #d9b95e; }
+body.dark-mode .ecm-zoom button,
+body.dark-mode .ecm-expand { background: #262a26; border-color: #444943; color: #9ab8aa; }
+body.dark-mode .ecm-zoom button:hover:not(:disabled),
+body.dark-mode .ecm-expand:hover { border-color: #9ab8aa; }
+body.dark-mode .ecm-zoom button i, body.dark-mode .ecm-zoom button svg,
+body.dark-mode .ecm-expand i, body.dark-mode .ecm-expand svg { color: #9ab8aa; }
+body.dark-mode .ecm-backdrop { background: rgba(0, 0, 0, 0.6); }
 body.dark-mode .ecm-dot.is-online .ecm-dot-halo { fill: #d9b95e; }
 body.dark-mode .ecm-dot.is-upcoming .ecm-dot-halo { stroke: #9ab8aa; }
 body.dark-mode .ecm-swatch-online { background: #262a26; border-color: #d9b95e; }

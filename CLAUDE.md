@@ -259,6 +259,18 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   a dot uses them.
 - Tap targets are capped at half the distance to the nearest other dot, so
   close dots (Trondheim/Malmö are ~18 map units apart) can't block each
-  other. On phones the Europe cluster's targets are small (~6px); a zoom or
-  list view is the fix if more European dots are added.
+  other. Radii are divided by the zoom level, so dots keep the same screen
+  size and spread apart when zoomed (Europe cluster: ~6px targets at full
+  view on phones, ~15px at 4x).
+- Zoom: +/−/reset buttons (bottom-left row), drag to pan when zoomed,
+  mouse wheel only in the enlarged view (never hijacks page scroll). Zoom
+  changes the SVG viewBox; strokes use `vector-effect: non-scaling-stroke`.
+  Never set a halo/core size in CSS (`r:` in CSS overrides the JS radius);
+  hover uses `transform: scale()`.
+- Enlarge (768px and up): the panel and backdrop move to `<body>` while
+  enlarged (the sticky column is its own stacking context) and move back on
+  close; Escape/backdrop click closes.
+- `.ecm-stage > svg` targets the map only: a plain `.ecm-stage svg` rule
+  also hit the Font Awesome zoom icons and blew them up to full width.
+- Card: "Earlier in this region" is a newest-first list, one per line.
 
