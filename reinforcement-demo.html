@@ -265,7 +265,7 @@ permalink: /reinforcement-demo/
     <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
     <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
     <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its sentiment with at least one agent it's tied to, probability shifts towards staying in its current state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
-    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent can hold the same state for at most four ticks unless it is being reinforced by an agent it's tied to. On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. This rule isn't part of the dissertation's model.</p>
+    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, no agent can hold the same state for more than four ticks, whether or not it's being reinforced. On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. This rule isn't part of the dissertation's model.</p>
     <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
@@ -314,7 +314,7 @@ permalink: /reinforcement-demo/
     {id:5, label:'User 05', x:190, y:250, type:'dpr',    state:'neutral'},
     {id:6, label:'User 06', x:230, y:340, type:'hollow', state:'negative'},
     {id:7, label:'User 07', x:350, y:360, type:'dpr',    state:'negative'},
-    {id:8, label:'User 08', x:460, y:325, type:'hollow', state:'negative'},
+    {id:8, label:'User 08', x:460, y:325, type:'hollow', state:'positive'},
     {id:9, label:'User 09', x:555, y:250, type:'dpr',    state:'neutral'},
     {id:10,label:'User 10', x:500, y:170, type:'hollow', state:'positive'},
     {id:11,label:'User 11', x:610, y:150, type:'dpr',    state:'negative'},
@@ -409,10 +409,10 @@ permalink: /reinforcement-demo/
   }
 
   // Demo rule (not part of the dissertation model): a run is only 24 ticks (24 days),
-  // so an agent may hold the same state for at most MAX_UNREINFORCED_TICKS ticks unless
-  // it is being reinforced. On the next tick it is made to post and move to one of the
-  // other two states, weighted by its own transition odds for those states.
-  var MAX_UNREINFORCED_TICKS = 4;
+  // so no agent may hold the same state for more than MAX_STATE_TICKS ticks, reinforced
+  // or not. On the next tick it posts and moves to one of its other two states,
+  // weighted by its own transition odds for those states.
+  var MAX_STATE_TICKS = 4;
 
   function sampleState(probs, r){
     var keys = ['positive','neutral','negative'].filter(function(k){ return k in probs; }), total = 0, acc = 0;
@@ -429,15 +429,15 @@ permalink: /reinforcement-demo/
       nodes.forEach(function(n){ prev[n.id] = table[n.id][t-1]; });
       nodes.forEach(function(n){
         var cur = prev[n.id], next;
-        // Reinforced: holding a positive or negative sentiment that a tied agent also held last tick.
-        var reinforced = cur !== 'neutral' && neighborsOf(n.id).some(function(nb){ return prev[nb.id] === cur; });
+        // Reinforced: holding the same state (positive, neutral or negative) that a tied agent held last tick.
+        var reinforced = neighborsOf(n.id).some(function(nb){ return prev[nb.id] === cur; });
 
         if(sinceLastPost[n.id] > INACTIVITY_RESET_TICKS){
           // Model rule: an agent inactive for more than 20 ticks reverts to neutral.
           sinceLastPost[n.id] = 0;
           next = 'neutral';
-        } else if(streak[n.id] >= MAX_UNREINFORCED_TICKS && !reinforced){
-          // Demo rule: unreinforced for too long, so the agent posts and moves to another state.
+        } else if(streak[n.id] >= MAX_STATE_TICKS){
+          // Demo rule: in this state for MAX_STATE_TICKS ticks already, so the agent posts and moves to another state.
           sinceLastPost[n.id] = 0;
           var others = {};
           Object.keys(TRANS[n.type][cur]).forEach(function(k){ if(k !== cur) others[k] = TRANS[n.type][cur][k]; });
@@ -462,10 +462,9 @@ permalink: /reinforcement-demo/
   function stateAt(id, tick){ return stateTable[id][Math.max(0, Math.min(tick, TICKS))]; }
 
   // A tie (or a selected pair) is "reinforcing" at a tick when both agents hold the
-  // same positive or negative sentiment.
+  // same state (positive, neutral or negative).
   function pairSharing(aId, bId, rel, tick){
-    var st = stateAt(aId, tick);
-    return rel !== 'none' && st !== 'neutral' && st === stateAt(bId, tick);
+    return rel !== 'none' && stateAt(aId, tick) === stateAt(bId, tick);
   }
 
   function nodeGlyph(n, r, selected){
