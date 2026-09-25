@@ -220,9 +220,12 @@ leaks into other pages. Consequences worth remembering:
 - Colourblind-friendly toggle (`.rfd-cb` on `.rfd-wrap`): Okabe-Ito colours,
   + / − / 0 symbols on nodes, striped/dotted timeline cells. Saved in
   localStorage (`rfdColourblind`).
-- Key (`.rfd-key`, above the network panel): a card with a header row (title
-  + colourblind toggle) and a grid of three groups, Agents / Sentiment / Ties
-  (`auto-fit, minmax(200px, 1fr)`, so it reflows by width only). Colourblind
+- Key (`aside.rfd-key`, inside the network panel, `.rfd-net-panel`): three
+  groups, Agents / Sentiment / Ties. From 900px the panel is a grid and the
+  key is a 210px column right of the network (rows 3-5, beside the SVG, hint
+  and actions); narrower, it sits below the Run/Clear row and its groups
+  use `auto-fit, minmax(180px, 1fr)`. The colourblind toggle is in the
+  panel header next to the h2 (`.rfd-panel-head`). Colourblind
   mode must never add or remove key text: the symbols and patterns show
   inside the sentiment chips (`.rfd-chip-sym` is `visibility:hidden` when
   off, so the chip size doesn't change). The old flex row wrapped and pushed

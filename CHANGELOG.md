@@ -7,10 +7,11 @@ is the baseline. Add new entries at the top.
 ## 2026-09-25 (9)
 
 ### Changed
-- Reinforcement demo key: now a card with the colourblind toggle in its
-  header and three groups (Agents, Sentiment, Ties). Turning colourblind
-  mode on only changes the swatches (symbols and patterns appear inside
-  them), so the key no longer grows or pushes the network down.
+- Reinforcement demo key: moved into the "A network of agents" panel as a
+  narrow column beside the network (below it on smaller screens), grouped
+  into Agents, Sentiment and Ties; the colourblind toggle sits next to the
+  panel heading. Turning colourblind mode on only changes the swatches
+  (symbols and patterns appear inside them), so nothing shifts.
 
 ## 2026-09-25 (8)
 
