@@ -1732,6 +1732,11 @@ body.dark-mode .poster-embed {
 .ecm-dot:hover .ecm-dot-core,
 .ecm-dot.is-active .ecm-dot-core { transform: scale(1.25); }
 .ecm-dot:focus-visible .ecm-dot-halo { stroke: $linkColor; stroke-width: 1.2; opacity: 0.5; }
+// Presented online: outlined gold ring (different colour and shape).
+.ecm-dot.is-online .ecm-dot-core { fill: #fff; stroke: #b08d1e; stroke-width: 1.8; }
+.ecm-dot.is-online .ecm-dot-halo { fill: #c9a227; }
+// Upcoming: dashed ring around the dot.
+.ecm-dot.is-upcoming .ecm-dot-halo { fill: none; stroke: $linkColor; stroke-width: 1.2; stroke-dasharray: 2 2; opacity: 0.9; }
 
 // Details card docked below the map (never floats over it, so it can't cover a dot).
 .ecm-hint {
@@ -1766,8 +1771,9 @@ body.dark-mode .poster-embed {
 }
 .ecm-legend {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem 1rem;
   margin-top: 0.9rem;
   font-size: 0.72rem;
   color: #69706b;
@@ -1779,6 +1785,9 @@ body.dark-mode .poster-embed {
   background: $linkColor;
   display: inline-block;
 }
+.ecm-legend-item { display: inline-flex; align-items: center; gap: 0.4rem; }
+.ecm-swatch-online { background: #fff; border: 1.8px solid #b08d1e; width: 9px; height: 9px; }
+.ecm-swatch-upcoming { background: $linkColor; box-shadow: 0 0 0 2px #fff, 0 0 0 3px $linkColor; }
 
 
 /* DARK MODE */
@@ -1921,6 +1930,11 @@ body.dark-mode .ecm-graticule { stroke: #414b3f; }
 body.dark-mode .ecm-sphere { stroke: #444943; }
 body.dark-mode .ecm-dot-core { fill: #9ab8aa; stroke: #262a26; }
 body.dark-mode .ecm-swatch { background: #9ab8aa; }
+body.dark-mode .ecm-dot.is-online .ecm-dot-core { fill: #262a26; stroke: #d9b95e; }
+body.dark-mode .ecm-dot.is-online .ecm-dot-halo { fill: #d9b95e; }
+body.dark-mode .ecm-dot.is-upcoming .ecm-dot-halo { stroke: #9ab8aa; }
+body.dark-mode .ecm-swatch-online { background: #262a26; border-color: #d9b95e; }
+body.dark-mode .ecm-swatch-upcoming { background: #9ab8aa; box-shadow: 0 0 0 2px #262a26, 0 0 0 3px #9ab8aa; }
 body.dark-mode .ecm-hint,
 body.dark-mode .ecm-card,
 body.dark-mode .ecm-card-earlier { border-color: #444943; }

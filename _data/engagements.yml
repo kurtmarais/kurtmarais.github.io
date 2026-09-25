@@ -213,6 +213,12 @@
   year: 2024
   venue: "Fourteenth International Conference on Health, Wellness, and Society"
   location: "Malmö, Sweden (Online)"
+  map:
+    city: "Malmö"
+    region: "Skåne, Sweden"
+    lat: 55.6050
+    lon: 13.0038
+    online: true                  # presented online: shown as an outlined gold dot
   keywords:
     - topic modelling
     - exploratory data analysis

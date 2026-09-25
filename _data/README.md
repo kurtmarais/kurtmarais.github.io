@@ -154,14 +154,25 @@ conference map (the MAP control in the filter row):
     region: "Western Cape, South Africa"  # one dot per region
     lat: -33.9249                         # decimal degrees (south is negative)
     lon: 18.4241                          # decimal degrees (west is negative)
+    online: true                          # optional: presented online (outlined gold dot at the host city)
 ```
 
 - One dot per `region`, placed on the city of the most recent engagement
   there (by `start_date`, else `year`); earlier ones in the same region are
   listed in the card under "Also presented in this region".
-- Leave `map:` off online events, and anything that shouldn't be on the map.
-- Currently mapped: Milan and Trondheim (2025), Cape Town (2022, 2019) and
-  Somerset West (2019 poster). The EMS Research Impact Day poster (2026)
+- Online events: add `online: true` inside `map:` to show them at the host
+  city as an outlined gold dot. Leave `map:` off anything that shouldn't be
+  on the map.
+- Upcoming events: give the entry a `start_date` (YYYY-MM-DD). Until that
+  date the dot gets a dashed "Upcoming" ring and the card says "Upcoming";
+  the day after, it shows as presented. This is checked in the visitor's
+  browser, so no rebuild is needed when the date passes. With only a `year`
+  the map can't tell it's upcoming.
+- A new entry becomes its region's dot automatically if it's the most
+  recent there; the previous one moves into that card's "Also presented"
+  list.
+- Currently mapped: Milan and Trondheim (2025), Malmö (2024, online),
+  Cape Town (2022, 2019) and Somerset West (2019 poster). The EMS Research Impact Day poster (2026)
   isn't mapped; add a `map:` block to include it.
 
 ## Posters

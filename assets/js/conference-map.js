@@ -55,16 +55,27 @@
 
   function label(e) { return e.title + (e.type === "poster" ? " (poster)" : ""); }
 
+  // Upcoming: dated after today, checked in the visitor's browser, so an event
+  // switches from "Upcoming" to presented on its date without a site rebuild.
+  // Needs `start_date` in engagements.yml (a year alone can't be compared).
+  var today = new Date(); today.setHours(0, 0, 0, 0);
+  function isUpcoming(e) { return !!e.date && new Date(e.date + "T00:00:00") > today; }
+  function prettyDate(d) {
+    return new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  }
+  function status(e) { return isUpcoming(e) ? " (upcoming)" : (e.online ? " (online)" : ""); }
+
   function show(g, r) {
     if (active && active !== g) active.classList.remove("is-active");
     g.classList.add("is-active");
     active = g;
     place.textContent = r.latest.city + ", " + r.region;
-    meta.textContent = (r.latest.venue ? r.latest.venue + " · " : "") + r.latest.year;
+    var when_ = isUpcoming(r.latest) ? "Upcoming, " + prettyDate(r.latest.date) : String(r.latest.year);
+    meta.textContent = (r.latest.online ? "Online · " : "") + (r.latest.venue ? r.latest.venue + " · " : "") + when_;
     talk.textContent = label(r.latest);
     if (r.earlier.length) {
       earlier.textContent = "Also presented in this region: " + r.earlier.map(function (e) {
-        return e.city + ", " + e.year + " (" + label(e) + ")";
+        return e.city + ", " + e.year + status(e) + " (" + label(e) + ")";
       }).join("; ");
       earlier.style.display = "";
     } else {
@@ -83,14 +94,18 @@
 
   regions.forEach(function (r) {
     var g = document.createElementNS(svgNS, "g");
-    g.setAttribute("class", "ecm-dot");
+    g.setAttribute("class", "ecm-dot" + (r.latest.online ? " is-online" : "") + (isUpcoming(r.latest) ? " is-upcoming" : ""));
     g.setAttribute("tabindex", "0");
     g.setAttribute("role", "button");
     g.setAttribute("aria-label", r.latest.city + ", " + r.region);
 
-    var hit = document.createElementNS(svgNS, "circle");   // larger invisible target for taps
+    // Larger invisible target for taps, capped at half the distance to the
+    // nearest other dot so neighbouring targets never overlap and block each other.
+    var nearest = Infinity;
+    regions.forEach(function (o) { if (o !== r) nearest = Math.min(nearest, Math.hypot(o.x - r.x, o.y - r.y)); });
+    var hit = document.createElementNS(svgNS, "circle");
     hit.setAttribute("class", "ecm-dot-hit");
-    hit.setAttribute("cx", r.x); hit.setAttribute("cy", r.y); hit.setAttribute("r", 20);
+    hit.setAttribute("cx", r.x); hit.setAttribute("cy", r.y); hit.setAttribute("r", Math.max(4, Math.min(20, nearest / 2 - 0.5)));
     var halo = document.createElementNS(svgNS, "circle");
     halo.setAttribute("class", "ecm-dot-halo");
     halo.setAttribute("cx", r.x); halo.setAttribute("cy", r.y); halo.setAttribute("r", 7);
@@ -121,6 +136,13 @@
       if (ev.key === "Escape") { hide(); }
     });
   });
+
+  // Legend: only list the online / upcoming styles when a dot uses them.
+  var anyOnline = regions.some(function (r) { return r.latest.online; });
+  var anyUpcoming = regions.some(function (r) { return isUpcoming(r.latest); });
+  var lo = document.getElementById("ecm-legend-online"), lu = document.getElementById("ecm-legend-upcoming");
+  if (lo) lo.style.display = anyOnline ? "" : "none";
+  if (lu) lu.style.display = anyUpcoming ? "" : "none";
 
   // Tap anywhere else to dismiss (touch screens).
   document.addEventListener("click", function () { if (isTouch && active) hide(); });

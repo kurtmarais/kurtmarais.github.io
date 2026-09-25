@@ -11,7 +11,9 @@ is the baseline. Add new entries at the top.
   Equal Earth world map with one dot per region where a conference talk or
   poster was presented in person, with a details card. Sticky right-hand
   column on desktop, above the list on smaller screens. Dots come from new
-  `map:` blocks in `_data/engagements.yml`.
+  `map:` blocks in `_data/engagements.yml`. Online events (Malmö 2024)
+  show as an outlined gold dot; events with a future `start_date` show as
+  "Upcoming" until their date.
 
 ## 2026-09-25 (2)
 

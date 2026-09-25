@@ -252,4 +252,13 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
 - Touch: a tap focuses a dot *before* its click fires, so focus from a
   pointer is ignored (otherwise tap shows then immediately hides the card).
   Blur/mouseleave only hide the card if that dot owns it.
+- `map.online: true` → outlined gold dot (`.is-online`), "Online" in the
+  card. Upcoming = `start_date` after the visitor's today (runtime check in
+  JS, so it flips without a rebuild) → dashed ring (`.is-upcoming`), card
+  says "Upcoming, <date>". Legend items for online/upcoming only show when
+  a dot uses them.
+- Tap targets are capped at half the distance to the nearest other dot, so
+  close dots (Trondheim/Malmö are ~18 map units apart) can't block each
+  other. On phones the Europe cluster's targets are small (~6px); a zoom or
+  list view is the fix if more European dots are added.
 

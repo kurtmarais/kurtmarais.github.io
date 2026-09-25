@@ -33,12 +33,16 @@
     <p class="ecm-card-talk" id="ecm-card-talk"></p>
     <p class="ecm-card-earlier" id="ecm-card-earlier"></p>
   </div>
-  <div class="ecm-legend"><span class="ecm-swatch"></span> Conference talks and posters presented in person</div>
+  <div class="ecm-legend">
+    <span class="ecm-legend-item"><span class="ecm-swatch"></span> Presented in person</span>
+    <span class="ecm-legend-item" id="ecm-legend-online"><span class="ecm-swatch ecm-swatch-online"></span> Presented online (host city)</span>
+    <span class="ecm-legend-item" id="ecm-legend-upcoming"><span class="ecm-swatch ecm-swatch-upcoming"></span> Upcoming</span>
+  </div>
 </div>
 <script type="application/json" id="ecm-data">[
 {%- for e in ecm_entries -%}
   {"city": {{ e.map.city | jsonify }}, "region": {{ e.map.region | jsonify }}, "lat": {{ e.map.lat | jsonify }}, "lon": {{ e.map.lon | jsonify }},
    "title": {{ e.title | jsonify }}, "venue": {{ e.venue | default: e.publication | jsonify }}, "year": {{ e.year | jsonify }},
-   "date": {{ e.start_date | default: "" | jsonify }}, "type": {{ e.type | jsonify }}}{% unless forloop.last %},{% endunless %}
+   "date": {{ e.start_date | default: "" | jsonify }}, "type": {{ e.type | jsonify }}, "online": {{ e.map.online | default: false | jsonify }}}{% unless forloop.last %},{% endunless %}
 {%- endfor -%}
 ]</script>
