@@ -57,6 +57,7 @@
   var talk = document.getElementById("ecm-card-talk");
   var earlier = document.getElementById("ecm-card-earlier");
   var active = null;
+  var MAX_EARLIER = 3;
   var isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
   // Engagement type shown in the card, so mixed dots (conferences, seminars,
@@ -85,7 +86,8 @@
     meta.textContent = [typeLabel(r.latest), r.latest.online ? "Online" : "", r.latest.venue, when_].filter(Boolean).join(" · ");
     talk.textContent = label(r.latest);
 
-    // Earlier engagements in the region: one per line, newest first.
+    // Earlier engagements in the region: one per line, newest first, at most
+    // MAX_EARLIER of them.
     earlier.textContent = "";
     if (r.earlier.length) {
       var head = document.createElement("p");
@@ -93,7 +95,7 @@
       head.textContent = "Earlier in this region";
       earlier.appendChild(head);
       var ul = document.createElement("ul");
-      r.earlier.forEach(function (e) {
+      r.earlier.slice(0, MAX_EARLIER).forEach(function (e) {
         var li = document.createElement("li");
         var st = status(e);
         li.textContent = e.year + " · " + e.city + (st ? " (" + st + ")" : "") + " · " + typeLabel(e) + ": " + label(e);
