@@ -246,8 +246,9 @@ starts mid bottom-left corner and runs anticlockwise; `.is-tracing` animates
 animation fades opacity 0.8 -> 0 from 60% onward, so it dissolves before it
 closes the loop. Never retraces or erases along the path. Stroke is
 `$linkColor` (the card's left-border green) in both themes, 1.5px, faint
-2px halo only. Every
-60s (`EVERY_MS`) once the card has been in view.
+2px halo only. First trace 30s after the page opens
+(`FIRST_MS`; if the card is off screen then, it waits until the card is in
+view), then every 60s (`EVERY_MS`).
 Skipped for reduced motion and while the tab is hidden. The SVG is offset
 `left: -3px` because the card's left border is 3px (others 1px);
 `pointer-events: none` keeps the stretched link clickable.

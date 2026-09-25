@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (7)
+
+### Changed
+- Homepage demo card trace: the first trace now runs 30 seconds after the
+  homepage opens (or as soon as the card is in view after that), then
+  every minute.
+
 ## 2026-09-25 (6)
 
 ### Added

@@ -11,7 +11,7 @@
   if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   var EVERY_MS = 60000;   // time between traces
-  var FIRST_MS = 1500;    // first trace, after the card first scrolls into view
+  var FIRST_MS = 30000;   // first trace, after the homepage is opened
   var RADIUS = 10;        // matches .demo-teaser border-radius
   var INSET = 1;          // half the trace's stroke width, so it sits on the border
 
@@ -55,19 +55,21 @@
   }
   svg.addEventListener("animationend", function () { svg.classList.remove("is-tracing"); });
 
-  var started = false;
+  // First trace FIRST_MS after the page opens. If the card is off screen at
+  // that point, the first trace waits until it scrolls into view, so it isn't
+  // wasted; after that it repeats every EVERY_MS.
+  var visible = !window.IntersectionObserver, due = false, started = false;
   function start() {
     if (started) return;
     started = true;
-    setTimeout(trace, FIRST_MS);
+    trace();
     setInterval(trace, EVERY_MS);
   }
   if (window.IntersectionObserver) {
-    var io = new IntersectionObserver(function (entries) {
-      if (entries.some(function (e) { return e.isIntersecting; })) { io.disconnect(); start(); }
-    }, { threshold: 0.5 });
-    io.observe(card);
-  } else {
-    start();
+    new IntersectionObserver(function (entries) {
+      visible = entries[entries.length - 1].isIntersecting;
+      if (visible && due) start();
+    }, { threshold: 0.5 }).observe(card);
   }
+  setTimeout(function () { due = true; if (visible) start(); }, FIRST_MS);
 })();
