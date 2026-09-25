@@ -13,12 +13,12 @@ is the baseline. Add new entries at the top.
 - Homepage "Try it yourself" teaser card linking to the demo (styles in
   `_sass/main.scss` under DEMO TEASER); same width as the hero and "In the
   Media" cards, opens in a new tab.
-- Demo: network and relationship panels side by side on desktop; gold
-  reinforcement highlight under agents sharing a sentiment with a tied
-  agent; run button pauses/resumes; slower ticks (900ms); selecting agents
-  no longer resets colours; state pills solid (diagnosed) vs outlined (not
-  diagnosed); larger labels; full dissertation title; no em dashes;
-  `CONNECTION_BOOST` 0.15. Page text grouped in marked EDITABLE TEXT blocks.
+- Demo: reinforcement shown as a highlighted tie in the network and a
+  highlight around the pair in the Relationship panel; run button
+  pauses/resumes; slower ticks (900ms); selecting agents no longer resets
+  colours; state pills solid (diagnosed) vs outlined (not diagnosed);
+  larger labels and network; colourblind-friendly toggle; full dissertation
+  title; no em dashes. Page text grouped in marked EDITABLE TEXT blocks.
 
 ## 2026-09-24 (7)
 

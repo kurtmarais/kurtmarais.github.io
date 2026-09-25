@@ -178,10 +178,18 @@ leaks into other pages. Consequences worth remembering:
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
   `pointer-events:all` or only the 2.5px outline is clickable.
 - Site-wide `h1`–`h4` are uppercase, and that applies here too.
-- `CONNECTION_BOOST = 0.15` represents emotional reinforcement, an observed
+- `CONNECTION_BOOST = 0.08` represents emotional reinforcement, an observed
   outcome of the dissertation's full simulation (not a parameter estimated
-  from the transition table). It is not a placeholder. Across 500 seeds,
-  0.15 gives connected agents a ~15% per-tick switch rate vs ~22% isolated.
+  from the transition table), and is not a placeholder. Keep it at 0.08:
+  larger values (tried 0.15) leave tied agents stuck in one state for too
+  long given the real posting odds (`POSTING` = dissertation Table 6.5, one
+  tick = 24 hours).
+- Reinforcement is shown on the network only as a recoloured tie (same
+  stroke width, so arrowheads don't grow), and in the Relationship panel as
+  a capsule behind the pair. No highlights on individual network nodes.
+- Colourblind-friendly toggle (`.rfd-cb` on `.rfd-wrap`): Okabe-Ito colours,
+  + / − / 0 symbols on nodes, striped/dotted timeline cells. Saved in
+  localStorage (`rfdColourblind`).
 - Editable wording: HTML between `EDITABLE TEXT` comments, plus the `TEXT`
   object at the top of the page's `<script>`. No em dashes in page copy.
 - Selecting agents must never reset the network: colours stay at the
