@@ -220,6 +220,13 @@ leaks into other pages. Consequences worth remembering:
 - Colourblind-friendly toggle (`.rfd-cb` on `.rfd-wrap`): Okabe-Ito colours,
   + / − / 0 symbols on nodes, striped/dotted timeline cells. Saved in
   localStorage (`rfdColourblind`).
+- Key (`.rfd-key`, above the network panel): a card with a header row (title
+  + colourblind toggle) and a grid of three groups, Agents / Sentiment / Ties
+  (`auto-fit, minmax(200px, 1fr)`, so it reflows by width only). Colourblind
+  mode must never add or remove key text: the symbols and patterns show
+  inside the sentiment chips (`.rfd-chip-sym` is `visibility:hidden` when
+  off, so the chip size doesn't change). The old flex row wrapped and pushed
+  the panels down when an extra colourblind line appeared.
 - Editable wording: HTML between `EDITABLE TEXT` comments, plus the `TEXT`
   object at the top of the page's `<script>`. No em dashes in page copy.
   `TEXT` messages are single-quoted JS strings: apostrophes inside them must

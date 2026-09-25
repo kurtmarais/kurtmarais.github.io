@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (9)
+
+### Changed
+- Reinforcement demo key: now a card with the colourblind toggle in its
+  header and three groups (Agents, Sentiment, Ties). Turning colourblind
+  mode on only changes the swatches (symbols and patterns appear inside
+  them), so the key no longer grows or pushes the network down.
+
 ## 2026-09-25 (8)
 
 ### Fixed
