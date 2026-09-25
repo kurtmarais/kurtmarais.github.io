@@ -17,6 +17,8 @@ is the baseline. Add new entries at the top.
   enlarge button (tablet and desktop) that opens a large overlay with
   mouse-wheel zoom, and earlier events listed newest first. Zoom animates
   smoothly (instant for visitors who prefer reduced motion).
+  Any engagement type can be mapped (Bath 2023 seminar added); cards show
+  the engagement type; heading renamed "Where I've presented".
 
 ## 2026-09-25 (2)
 

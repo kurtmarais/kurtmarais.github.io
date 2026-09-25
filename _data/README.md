@@ -145,8 +145,10 @@ filters as a seminar but gets the video card.
 
 ## Conference map
 
-Any entry with a `map:` block gets a dot on the Engagements page's
-conference map (the MAP control in the filter row):
+Any entry with a `map:` block gets a dot on the Engagements page's map
+(the MAP control in the filter row). The type doesn't matter: conferences,
+seminars, posters, panels and guest lectures all work, and the card shows
+the type (e.g. "Seminar · Departmental Colloquium Series · 2023"):
 
 ```yaml
   map:
@@ -172,7 +174,8 @@ conference map (the MAP control in the filter row):
   recent there; the previous one moves into that card's "Also presented"
   list.
 - Currently mapped: Milan and Trondheim (2025), Malmö (2024, online),
-  Cape Town (2022, 2019) and Somerset West (2019 poster). The EMS Research Impact Day poster (2026)
+  Bath (2023 seminar), Cape Town (2022, 2019) and Somerset West (2019
+  poster). The EMS Research Impact Day poster (2026)
   isn't mapped; add a `map:` block to include it.
 
 ## Posters

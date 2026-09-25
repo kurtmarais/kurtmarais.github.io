@@ -59,7 +59,12 @@
   var active = null;
   var isTouch = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
-  function label(e) { return e.title + (e.type === "poster" ? " (poster)" : ""); }
+  // Engagement type shown in the card, so mixed dots (conferences, seminars,
+  // posters, panels...) read clearly. Same labels as the Engagements list.
+  var TYPE_LABELS = { conference: "Conference", seminar: "Seminar", poster: "Poster", panel: "Panel discussion",
+    guest_lecture: "Guest lecture", interview: "Interview", podcast: "Podcast", radio: "Radio", video: "Video" };
+  function typeLabel(e) { return TYPE_LABELS[e.type] || (e.type ? e.type.charAt(0).toUpperCase() + e.type.slice(1).replace(/_/g, " ") : ""); }
+  function label(e) { return e.title; }
 
   // Upcoming: dated after today, checked in the visitor's browser, so an event
   // switches from "Upcoming" to presented on its date without a site rebuild.
@@ -77,7 +82,7 @@
     active = g;
     place.textContent = r.latest.city + ", " + r.region;
     var when_ = isUpcoming(r.latest) ? "Upcoming, " + prettyDate(r.latest.date) : String(r.latest.year);
-    meta.textContent = (r.latest.online ? "Online · " : "") + (r.latest.venue ? r.latest.venue + " · " : "") + when_;
+    meta.textContent = [typeLabel(r.latest), r.latest.online ? "Online" : "", r.latest.venue, when_].filter(Boolean).join(" · ");
     talk.textContent = label(r.latest);
 
     // Earlier engagements in the region: one per line, newest first.
@@ -91,7 +96,7 @@
       r.earlier.forEach(function (e) {
         var li = document.createElement("li");
         var st = status(e);
-        li.textContent = e.year + " · " + e.city + (st ? " (" + st + ")" : "") + " · " + label(e);
+        li.textContent = e.year + " · " + e.city + (st ? " (" + st + ")" : "") + " · " + typeLabel(e) + ": " + label(e);
         ul.appendChild(li);
       });
       earlier.appendChild(ul);
@@ -329,7 +334,7 @@
     var open = !shell.classList.contains("is-open");
     shell.classList.toggle("is-open", open);
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
-    toggle.setAttribute("aria-label", open ? "Hide conference map" : "Show conference map");
+    toggle.setAttribute("aria-label", open ? "Hide map of places presented" : "Show map of places presented");
     if (labelEl) labelEl.textContent = open ? "Hide map" : "Map";
     if (!open) { hide(); setExpanded(false); }
   });

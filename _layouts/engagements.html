@@ -15,7 +15,7 @@ layout: default
 
         {% assign ecm_count = site.data.engagements | where_exp: "e", "e.map" | size %}
         {% if ecm_count > 0 %}
-        <button type="button" class="ecm-toggle" id="ecm-toggle" aria-expanded="false" aria-controls="ecm-panel" aria-label="Show conference map">
+        <button type="button" class="ecm-toggle" id="ecm-toggle" aria-expanded="false" aria-controls="ecm-panel" aria-label="Show map of places presented">
           <span class="ecm-toggle-icon"><i class="fas fa-earth-africa" aria-hidden="true"></i></span>
           <span class="ecm-toggle-label" id="ecm-toggle-label">Map</span>
         </button>

@@ -283,6 +283,11 @@
   year: 2023
   venue: "Departmental Colloquium Series"
   location: "University of Bath, United Kingdom"
+  map:
+    city: "Bath"
+    region: "Somerset, England"
+    lat: 51.3781
+    lon: -2.3597
   keywords:
     - infodemiology
     - topic modelling
