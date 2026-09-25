@@ -1,3 +1,23 @@
+- title: "An agent-based approach to simulating states of sentiment spread within a depression-centric online social network"
+  type: "conference"
+  year: 2026
+  venue: "Operations Research Society of South Africa Conference"
+  map:                            
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
+  start_date: "2026-09-29"        
+  end_date: "2026-09-29"
+  location: "Online"
+  keywords:
+    - agent-based simulation
+    - sentiment analysis
+    - social contagion
+    - twitter
+
+
+
 - title: "From Social Media to Mental Well-being: Modelling the Spread of Emotion in Online Networks"
   media_format: poster
   url: "/posters/from-social-media-to-mental-wellbeing/"
