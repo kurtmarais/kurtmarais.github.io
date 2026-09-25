@@ -239,7 +239,14 @@ leaks into other pages. Consequences worth remembering:
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
-link's stretched `::after`.
+link's stretched `::after`. Border trace: `assets/js/demo-teaser-trace.js`
+appends an SVG path (rebuilt on resize, corners match the 10px radius) that
+starts mid bottom-left corner and runs anticlockwise; `.is-tracing` animates
+`stroke-dashoffset` 100 -> 0 -> -100 on `pathLength="100"` (draw, then erase
+in the same direction), 3.2s, every 30s once the card has been in view.
+Skipped for reduced motion and while the tab is hidden. The SVG is offset
+`left: -3px` because the card's left border is 3px (others 1px);
+`pointer-events: none` keeps the stretched link clickable.
 
 ## Conference map (Engagements page)
 

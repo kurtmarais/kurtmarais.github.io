@@ -561,6 +561,38 @@ h4 {
   flex: 1;
   min-width: 0;
 }
+
+/* Border trace (assets/js/demo-teaser-trace.js): every 30s a line draws itself
+   around the card from the bottom-left corner, anticlockwise, then erases in
+   the same direction. dasharray 100/100 on a pathLength of 100: offset 100 is
+   nothing drawn, 0 is the full outline, -100 is erased again. */
+.demo-teaser-trace {
+  position: absolute;
+  top: -1px;
+  left: -3px;   // the card's left border is 3px, the others 1px
+  width: calc(100% + 4px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+  overflow: visible;
+}
+.demo-teaser-trace path {
+  fill: none;
+  stroke: #6ea491;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+  opacity: 0;
+  filter: drop-shadow(0 0 3px rgba(110, 164, 145, 0.9)) drop-shadow(0 0 8px rgba(110, 164, 145, 0.45));
+}
+.demo-teaser-trace.is-tracing path {
+  animation: teaserTrace 3.2s cubic-bezier(.45, 0, .35, 1) forwards;
+}
+@keyframes teaserTrace {
+  0%   { stroke-dashoffset: 100;  opacity: 1; }
+  50%  { stroke-dashoffset: 0;    opacity: 1; }
+  100% { stroke-dashoffset: -100; opacity: 1; }
+}
 .demo-teaser .eyebrow {
   margin-bottom: 0.35rem;
 }
@@ -1976,6 +2008,10 @@ body.dark-mode .publication-item {
 
 /* DEMO TEASER */
 
+body.dark-mode .demo-teaser-trace path {
+  stroke: #9ab8aa;
+  filter: drop-shadow(0 0 3px rgba(154, 184, 170, 0.9)) drop-shadow(0 0 8px rgba(154, 184, 170, 0.4));
+}
 body.dark-mode .demo-teaser {
   border-color: #444943;
   border-left-color: $linkColor;
