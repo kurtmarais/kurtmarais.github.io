@@ -561,6 +561,44 @@ h4 {
   flex: 1;
   min-width: 0;
 }
+
+/* Border trace (assets/js/demo-teaser-trace.js): every 60s a line draws itself
+   around the card from the bottom-left corner, anticlockwise, and once it's
+   back at the start the whole outline fades out quickly. dasharray 100/100 on
+   a pathLength of 100: offset 100 is nothing drawn, 0 is the full outline. */
+.demo-teaser-trace {
+  position: absolute;
+  top: -1px;
+  left: -3px;   // the card's left border is 3px, the others 1px
+  width: calc(100% + 4px);
+  height: calc(100% + 2px);
+  pointer-events: none;
+  overflow: visible;
+}
+.demo-teaser-trace path {
+  fill: none;
+  stroke: $linkColor;   // same green as the card's left border
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-dasharray: 100 100;
+  stroke-dashoffset: 100;
+  opacity: 0;
+  filter: drop-shadow(0 0 2px rgba(54, 91, 82, 0.3));   // a faint halo only
+}
+.demo-teaser-trace.is-tracing path {
+  animation: teaserTrace 2.6s forwards, teaserTraceFade 2.6s forwards;
+}
+// The draw eases around the loop over the whole 2.6s; the fade starts at 60%
+// (about two-thirds of the way round), so the line is already dissolving as
+// it approaches the bottom-left corner and is gone when it arrives.
+@keyframes teaserTrace {
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes teaserTraceFade {
+  0%, 60% { opacity: 0.8; }
+  100%    { opacity: 0; }
+}
 .demo-teaser .eyebrow {
   margin-bottom: 0.35rem;
 }

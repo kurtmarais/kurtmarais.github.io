@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (6)
+
+### Added
+- Homepage demo card: every minute a thin line in the card's left-border
+  green traces the border from the bottom-left corner, anticlockwise,
+  fading out as it nears the start again. Off for visitors who prefer reduced motion.
+
 ## 2026-09-25 (5)
 
 ### Changed
