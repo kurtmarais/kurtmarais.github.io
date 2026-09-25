@@ -116,9 +116,10 @@
   }
 
   // ---------- dots ----------
-  // Sizes are in screen-like units at zoom 1 and divided by the zoom level, so
-  // dots stay the same size on screen while the map magnifies around them.
-  var CORE_R = 3.4, HALO_R = 7, HIT_MAX = 20;
+  // Sizes are in screen pixels, converted to map units from the map's rendered
+  // width and the zoom level, so dots look the same on the small map, the
+  // enlarged map and at every zoom.
+  var CORE_PX = 5, HALO_PX = 10, PICK_PX = 22;
   var dotEls = [];
 
   regions.forEach(function (r) {
@@ -139,24 +140,14 @@
     core.setAttribute("class", "ecm-dot-core");
     [hit, halo, core].forEach(function (c) { c.setAttribute("cx", r.x); c.setAttribute("cy", r.y); g.appendChild(c); });
     dots.appendChild(g);
-    dotEls.push({ hit: hit, halo: halo, core: core, nearest: nearest });
+    dotEls.push({ g: g, r: r, hit: hit, halo: halo, core: core, nearest: nearest });
 
-    if (isTouch) {
-      g.addEventListener("click", function (ev) {
-        ev.stopPropagation();
-        if (active === g) hide(); else show(g, r);
-      });
-    } else {
-      g.addEventListener("mouseenter", function () { show(g, r); });
-      g.addEventListener("mouseleave", function () { if (active === g) hide(); });
-    }
-    // Keyboard focus shows the card too. A tap or click also focuses the dot
-    // before its click fires, so ignore focus that comes from a pointer;
-    // otherwise the click would immediately toggle the card closed again.
+    // Keyboard focus shows the card too. A tap or click also focuses the dot,
+    // so ignore focus that comes from a pointer (pointer input is handled by
+    // the nearest-dot logic below).
     var fromPointer = false;
     g.addEventListener("pointerdown", function () { fromPointer = true; });
     g.addEventListener("focus", function () { if (!fromPointer) show(g, r); fromPointer = false; });
-    g.addEventListener("blur", function () { if (!isTouch && active === g) hide(); });
     g.addEventListener("keydown", function (ev) {
       if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); if (active === g) hide(); else show(g, r); }
       if (ev.key === "Escape") { hide(); }
@@ -171,16 +162,50 @@
 
   function zoomLevel() { return MAP_W / view.w; }
 
+  // Map units per screen pixel (falls back to the 380px column while hidden).
+  function unitsPerPx() {
+    var w = svg.getBoundingClientRect().width || 380;
+    return view.w / w;
+  }
   function sizeDots() {
-    var z = zoomLevel();
+    var u = unitsPerPx();
     dotEls.forEach(function (d) {
-      d.core.setAttribute("r", CORE_R / z);
-      d.halo.setAttribute("r", HALO_R / z);
-      // Tap target: up to HIT_MAX on screen, but never past halfway to the
-      // nearest other dot (in map units), so close dots can't block each other.
-      d.hit.setAttribute("r", Math.max(4 / z, Math.min(HIT_MAX / z, d.nearest / 2 - 0.5 / z)));
+      d.core.setAttribute("r", CORE_PX * u);
+      d.halo.setAttribute("r", HALO_PX * u);
+      d.hit.setAttribute("r", Math.min(PICK_PX * u, d.nearest / 2));
     });
   }
+
+  // Pointer input picks the nearest dot within PICK_PX of the pointer, so close
+  // dots split the space between them instead of one covering the other, and
+  // the target is much larger than the dot itself. The card stays on the last
+  // dot picked (no hide on mouse-out), so it doesn't flicker.
+  function nearestDot(clientX, clientY) {
+    var rect = svg.getBoundingClientRect();
+    if (!rect.width) return null;
+    var px = rect.width / view.w, best = null, bestD = PICK_PX;
+    dotEls.forEach(function (d) {
+      var sx = rect.left + (d.r.x - view.x) * px, sy = rect.top + (d.r.y - view.y) * px;
+      var dist = Math.hypot(clientX - sx, clientY - sy);
+      if (dist <= bestD) { bestD = dist; best = d; }
+    });
+    return best;
+  }
+  svg.addEventListener("pointermove", function (ev) {
+    if (ev.pointerType !== "mouse" || drag) return;
+    var d = nearestDot(ev.clientX, ev.clientY);
+    svg.classList.toggle("is-over-dot", !!d);
+    if (d && active !== d.g) show(d.g, d.r);
+  });
+  svg.addEventListener("pointerleave", function () { svg.classList.remove("is-over-dot"); });
+  svg.addEventListener("click", function (ev) {
+    if (moved) return;   // the end of a drag, not a tap
+    var d = nearestDot(ev.clientX, ev.clientY);
+    ev.stopPropagation();
+    if (d) { if (active === d.g && isTouch) hide(); else show(d.g, d.r); }
+    else if (isTouch) hide();
+  });
+  if (window.ResizeObserver) new ResizeObserver(function () { sizeDots(); }).observe(svg);
 
   // Where the view is heading (during a zoom animation), else the view itself.
   var target = null, anim = null;
@@ -259,15 +284,17 @@
 
   // Drag to pan (mouse or finger) once zoomed in. A press that starts on a dot
   // never starts a pan, so dots keep their own hover/tap behaviour.
-  var drag = null;
+  var drag = null, moved = false;
   svg.addEventListener("pointerdown", function (ev) {
-    if (zoomLevel() <= 1.001 || ev.target.closest(".ecm-dot")) return;
+    moved = false;
+    if (zoomLevel() <= 1.001 || nearestDot(ev.clientX, ev.clientY)) return;
     stopAnim();   // dragging takes over immediately from any zoom in progress
     drag = { x: ev.clientX, y: ev.clientY, vx: view.x, vy: view.y, id: ev.pointerId };
     svg.classList.add("is-dragging");
   });
   window.addEventListener("pointermove", function (ev) {
     if (!drag || ev.pointerId !== drag.id) return;
+    if (Math.abs(ev.clientX - drag.x) + Math.abs(ev.clientY - drag.y) > 3) moved = true;
     var rect = svg.getBoundingClientRect();
     view.x = drag.vx - (ev.clientX - drag.x) / rect.width * view.w;
     view.y = drag.vy - (ev.clientY - drag.y) / rect.height * view.h;

@@ -1723,6 +1723,7 @@ body.dark-mode .poster-embed {
   user-select: none;
 }
 .ecm-stage > svg.is-zoomed { cursor: grab; touch-action: none; }
+.ecm-stage > svg.is-over-dot { cursor: pointer; }
 .ecm-stage > svg.is-dragging { cursor: grabbing; }
 // Line widths stay constant on screen at any zoom level.
 .ecm-land { fill: #dbe3dc; stroke: #c3cdc4; stroke-width: 0.6; vector-effect: non-scaling-stroke; }
@@ -1775,9 +1776,11 @@ body.dark-mode .poster-embed {
 .ecm-panel.is-expanded {
   position: fixed;
   z-index: 1050;
-  top: 50%;
+  // Anchored to the top, not centred: when the card below the map changes
+  // height, the panel grows downwards and the map never moves under the cursor.
+  top: 4vh;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateX(-50%);
   width: min(94vw, 1100px);
   max-height: 92vh;
   overflow: auto;
@@ -1791,23 +1794,21 @@ body.ecm-noscroll { overflow: hidden; }
 .ecm-dot-hit { fill: transparent; }
 .ecm-dot-halo {
   fill: #6ea491;
-  opacity: 0.22;
+  opacity: 0;   // only the active dot shows its halo (halos merged in the Europe cluster)
   transition: transform .15s ease, opacity .15s ease;
   transform-box: fill-box;
   transform-origin: center;
 }
 .ecm-dot-core {
   fill: $linkColor;
-  stroke: #fff;
-  stroke-width: 1.2;
+  stroke: #1f352f;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
   transition: transform .15s ease;
   transform-box: fill-box;
   transform-origin: center;
 }
-.ecm-dot:hover .ecm-dot-halo,
-.ecm-dot.is-active .ecm-dot-halo { transform: scale(1.3); opacity: 0.32; }
-.ecm-dot:hover .ecm-dot-core,
+.ecm-dot.is-active .ecm-dot-halo { transform: scale(1.3); opacity: 0.35; }
 .ecm-dot.is-active .ecm-dot-core { transform: scale(1.25); }
 .ecm-dot:focus-visible .ecm-dot-halo { stroke: $linkColor; stroke-width: 1.2; opacity: 0.5; vector-effect: non-scaling-stroke; }
 // Presented online: outlined gold ring (different colour and shape).
@@ -2015,7 +2016,7 @@ body.dark-mode .ecm-legend { color: #aeb3ae; }
 body.dark-mode .ecm-land { fill: #31382f; stroke: #414b3f; }
 body.dark-mode .ecm-graticule { stroke: #414b3f; }
 body.dark-mode .ecm-sphere { stroke: #444943; }
-body.dark-mode .ecm-dot-core { fill: #9ab8aa; stroke: #262a26; }
+body.dark-mode .ecm-dot-core { fill: #9ab8aa; stroke: #9ab8aa; }
 body.dark-mode .ecm-swatch { background: #9ab8aa; }
 body.dark-mode .ecm-dot.is-online .ecm-dot-core { fill: #262a26; stroke: #d9b95e; }
 body.dark-mode .ecm-zoom button,
