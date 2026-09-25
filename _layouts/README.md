@@ -8,7 +8,9 @@ content lives in `_data/`, the collections, or the root `.md` files.
   footer, back-to-top button, and the sitewide scripts (`back-to-top.js`,
   `footer-links.js`, `media-carousel.js`, `nav-wrap-detect.js`).
 - `home.html` — homepage (`/`): hero with headshot and `index.md` intro,
-  animated "Research focus" strip (inline SVG icons), "In the Media"
+  animated "Research focus" strip (inline SVG icons), the "Try it yourself"
+  teaser card linking to `/reinforcement-demo/` (styles under DEMO TEASER in
+  `_sass/main.scss`), "In the Media"
   carousel (`type: media` + `featured: true` engagements), "Find me online"
   social carousel (`social-carousel.js`), then "Selected publications"
   (`_includes/publications.html`).

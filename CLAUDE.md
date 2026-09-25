@@ -161,3 +161,72 @@ that class, not the old hidden `.engagement-keywords` span (removed). Sort
 now runs once automatically on page load (`applySort()` called at the end of
 the IIFE), so "Newest first" is genuinely true on first render, not only
 after the dropdown is touched.
+
+## Reinforcement demo (`reinforcement-demo.html`, `/reinforcement-demo/`)
+
+Self-contained page: all CSS/JS inline, every class and CSS variable
+prefixed `rfd-`, variables declared on `.rfd-wrap` (not `:root`) so nothing
+leaks into other pages. Consequences worth remembering:
+
+- JS reads colours with `getComputedStyle(.rfd-wrap)` — reading off `<html>`
+  returns empty strings. Dark mode overrides the variables under
+  `body.dark-mode .rfd-wrap`; a `MutationObserver` on `body`'s class redraws
+  the SVGs, because `dark-mode.js` applies the saved preference *after* the
+  inline script has drawn.
+- SVG node labels are appended to the `<svg>`, not inside `.rfd-node`, so
+  label styles target `svg.rfd-network text` / `svg.rfd-rel text`.
+- Outlined (not-diagnosed) nodes are `fill:none`; they need
+  `pointer-events:all` or only the 2.5px outline is clickable.
+- Site-wide `h1`–`h4` are uppercase, and that applies here too.
+- `CONNECTION_BOOST = 0.08` represents emotional reinforcement, an observed
+  outcome of the dissertation's full simulation (not a parameter estimated
+  from the transition table), and is not a placeholder. Keep it at 0.08:
+  larger values (tried 0.15) leave tied agents stuck in one state for too
+  long given the real posting odds (`POSTING` = dissertation Table 6.5, one
+  tick = 24 hours).
+- Demo-only rule `MAX_UNREINFORCED_TICKS = 4`: an agent that is NOT
+  reinforced can't hold one state for more than 4 ticks; on the 5th it moves
+  to one of its other two states, weighted by its own transition odds.
+  Reinforced agents (an agent that *influences* it held the same state
+  last tick, neutral included) can stay longer. Ties are directional:
+  `[a, b, false]` means a influences b only; use `influencersOf()`, never
+  an undirected neighbour list (that bug let Users 3/4 look reinforced by
+  agents they only influence). That contrast is the point of the demo:
+  isolated agents are more volatile than reinforced ones (500 seeds:
+  33.9% vs 22.5% state changes per tick). "How this works" describes the
+  rule; keep them in sync.
+- Every stay past 4 ticks must be visibly explained on screen. Single-agent
+  view: a "Reinforced" row. Two-agent view: the pair's "Shared" row plus
+  one lighter "from others" row per agent (reinforced by influencers other
+  than the selected partner). Both views have a "Reinforced by" card.
+- Starting states: User 03 neutral and User 08 positive, so every directed
+  reinforcement combination this network allows (influencer attribute ->
+  influenced attribute x shared state x tie type, 18 in total) occurs in ticks 1-24 of the deployed
+  run. Re-check coverage if the network, starting states, seeds or rules
+  change.
+- Sizes: network `max-width: 700px`; agents `NODE_R = 13.5`, isolates
+  `ISOLATE_R = 11.5` (drawing units in a 760-wide viewBox). Keep network
+  agents smaller than the Relationship panel's (34px).
+- Network agents are keyboard-accessible (`tabindex`, `role="button"`,
+  Enter/Space) and have an invisible `.rfd-hit` circle (r=30) so the small
+  phone-size agents are still easy to tap (about 25px target at 390px).
+- Colourblind mode is off for first-time visitors and remembers the last
+  choice (`localStorage` key `rfdColourblind`).
+- Highlights (network ties, Relationship capsule) only appear once a run
+  has started (`runStarted`).
+- Reinforcement is shown on the network only as a recoloured tie (same
+  stroke width, so arrowheads don't grow), and in the Relationship panel as
+  a capsule behind the pair. No highlights on individual network nodes.
+- Colourblind-friendly toggle (`.rfd-cb` on `.rfd-wrap`): Okabe-Ito colours,
+  + / − / 0 symbols on nodes, striped/dotted timeline cells. Saved in
+  localStorage (`rfdColourblind`).
+- Editable wording: HTML between `EDITABLE TEXT` comments, plus the `TEXT`
+  object at the top of the page's `<script>`. No em dashes in page copy.
+- Selecting agents must never reset the network: colours stay at the
+  current tick. The run button toggles run / pause / resume. `TICK_MS`
+  sets playback speed.
+
+Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
+under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
+link's stretched `::after`.
+

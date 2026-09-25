@@ -39,6 +39,7 @@ If Sass fails with `Invalid US-ASCII character`, run with a UTF-8 locale
 | Publications | `/publications/` | one file per item in `_publications/` |
 | CV | `/cv/` | `_data/cv/*.yml`, section toggles in `_config.yml` |
 | Research | `/research/` | `research.md`, `research/*.md` (not linked in the nav) |
+| Reinforcement demo | `/reinforcement-demo/` | `reinforcement-demo.html` (self-contained; linked from the homepage teaser) |
 
 Pages driven by data (Supervision, Engagements, Publications, CV) have no
 body content in their root `.md` file — editing that file won't change what

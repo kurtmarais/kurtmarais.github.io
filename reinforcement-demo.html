@@ -1,0 +1,1002 @@
+---
+layout: default
+title: "Shared Sentiment, Reinforced"
+permalink: /reinforcement-demo/
+---
+
+{% comment %}
+  EDITING THE TEXT ON THIS PAGE
+  - Paragraphs, headings and the "How this works" notes: the HTML between the
+    "EDITABLE TEXT" comments below (intro, disclaimer, key, panel descriptions,
+    methodology). Plain HTML, edit in place.
+  - Messages that change as you click (hints, tie descriptions, result notes):
+    the TEXT block at the top of the <script> near the bottom of this file.
+  - The homepage teaser card's wording lives in _layouts/home.html.
+{% endcomment %}
+
+<style>
+  .rfd-wrap{ --rfd-bg:#F5F6F3; --rfd-surface:#FFFFFF; --rfd-surface-2:#EDEFEA;
+    --rfd-ink:#191C19; --rfd-ink-soft:#5B6259; --rfd-line:#DCE0D8;
+    --rfd-accent:#2F5D9C; --rfd-accent-soft:#E4EBF6;
+    --rfd-positive:#28855F; --rfd-positive-bg:#E3F3EA;
+    --rfd-neutral:#7C8177; --rfd-neutral-bg:#ECEDE8;
+    --rfd-negative:#B85536; --rfd-negative-bg:#F7E8E0;
+    --rfd-reinforce:#C9A227; --rfd-reinforce-bg:#F6EFDC; --rfd-reinforce-soft:#E6D38F;
+    --rfd-note:#9A7A21; --rfd-note-bg:#F6EFDC; /* disclaimer box; not changed by colourblind mode */
+    --rfd-on-accent:#FFFFFF;
+    font-family: inherit; color:var(--rfd-ink);
+    margin-bottom:4rem; /* same gap above Contact as the other pages */
+  }
+  /* Dark mode: the site toggles body.dark-mode (dark-mode.js); the JS below
+     re-reads these variables and redraws the SVGs when that class changes. */
+  body.dark-mode .rfd-wrap{ --rfd-bg:#202421; --rfd-surface:#272c28; --rfd-surface-2:#30362f;
+    --rfd-ink:#e8e9e5; --rfd-ink-soft:#aeb3ae; --rfd-line:#444943;
+    --rfd-accent:#8FB0E0; --rfd-accent-soft:#26344A;
+    --rfd-positive:#5BBF90; --rfd-positive-bg:#1E3A2D;
+    --rfd-neutral:#A3A89E; --rfd-neutral-bg:#353A33;
+    --rfd-negative:#E08A67; --rfd-negative-bg:#46291F;
+    --rfd-reinforce:#D9B95E; --rfd-reinforce-bg:#3D3522; --rfd-reinforce-soft:#8A7640;
+    --rfd-note:#D9B95E; --rfd-note-bg:#3D3522;
+    --rfd-on-accent:#101820;
+  }
+  /* Colourblind-friendly mode (toggle in the key row): Okabe-Ito blue/vermillion
+     for positive/negative, reddish purple for reinforcement, ink for selection. */
+  .rfd-wrap.rfd-cb{ --rfd-positive:#0072B2; --rfd-positive-bg:#DDEBF5; --rfd-negative:#D55E00; --rfd-negative-bg:#F9E3D3;
+    --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#F5E4EE; --rfd-reinforce-soft:#E8BDD5; --rfd-accent:#191C19; --rfd-accent-soft:#EDEFEA; --rfd-on-accent:#FFFFFF; }
+  body.dark-mode .rfd-wrap.rfd-cb{ --rfd-positive:#56B4E9; --rfd-positive-bg:#1B3445; --rfd-negative:#E69F00; --rfd-negative-bg:#3F2F12;
+    --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#3A2733; --rfd-reinforce-soft:#7A4A65; --rfd-accent:#e8e9e5; --rfd-accent-soft:#30362f; --rfd-on-accent:#101820; }
+  .rfd-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+  .rfd-wrap h1,.rfd-wrap h2,.rfd-wrap h3,.rfd-wrap h4{margin:0;} /* inherits the site's own heading font */
+
+  .rfd-intro{padding-block:8px 18px; margin-bottom:18px; border-bottom:1px solid var(--rfd-line);}
+  .rfd-intro h1{font-size:clamp(1.4rem,3vw,2rem); font-weight:600;}
+  .rfd-intro p{margin:.5em 0 0; color:var(--rfd-ink-soft); font-size:.98rem; line-height:1.6;}
+  .rfd-badge{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.7rem; letter-spacing:.06em; text-transform:uppercase;
+    background:var(--rfd-surface-2); border:1px solid var(--rfd-line); color:var(--rfd-ink-soft);
+    padding:5px 10px; border-radius:100px; display:inline-block; margin-top:10px;
+  }
+  .rfd-disclaimer{
+    background:var(--rfd-note-bg); border-left:3px solid var(--rfd-note);
+    border-radius:8px; padding:12px 16px; margin-bottom:22px; font-size:.88rem; line-height:1.55;
+  }
+
+  .rfd-key-row{display:flex; flex-wrap:wrap; gap:12px 22px; margin-bottom:22px; font-size:.82rem; color:var(--rfd-ink-soft);}
+  .rfd-key-item{display:flex; align-items:center; gap:7px;}
+  .rfd-swatch-dpr{width:12px; height:12px; border-radius:50%; display:inline-block; flex:none;}
+  .rfd-swatch-hollow{width:12px; height:12px; border-radius:2px; display:inline-block; flex:none; border:2px solid; background:transparent;}
+  .rfd-swatch-tie{width:22px; height:3px; border-radius:2px; display:inline-block; flex:none; background:var(--rfd-reinforce);}
+  .rfd-cb-key{display:none;}
+  .rfd-cb .rfd-cb-key{display:flex;}
+  /* Colourblind-friendly toggle: same pill shape and type as the Run/Clear buttons, with a switch. */
+  .rfd-cb-toggle{
+    margin-left:auto; display:inline-flex; align-items:center; gap:9px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.78rem; font-weight:500;
+    background:var(--rfd-surface); color:var(--rfd-ink-soft); border:1px solid var(--rfd-line);
+    padding:7px 14px 7px 9px; border-radius:100px; cursor:pointer; transition:border-color .15s, color .15s, background .15s;
+  }
+  .rfd-cb-toggle:hover{border-color:var(--rfd-accent); color:var(--rfd-ink);}
+  .rfd-cb-toggle:focus-visible{outline:2px solid var(--rfd-accent); outline-offset:2px;}
+  .rfd-switch{position:relative; width:30px; height:17px; border-radius:100px; background:var(--rfd-surface-2); border:1px solid var(--rfd-line); flex:none; transition:background .2s, border-color .2s;}
+  .rfd-switch-knob{position:absolute; top:2px; left:2px; width:11px; height:11px; border-radius:50%; background:var(--rfd-ink-soft); transition:transform .2s, background .2s;}
+  .rfd-cb-state{font-weight:700; letter-spacing:.06em; min-width:2.2em; text-align:left;}
+  .rfd-cb .rfd-cb-toggle{color:var(--rfd-ink); border-color:var(--rfd-ink);}
+  .rfd-cb .rfd-switch{background:var(--rfd-ink); border-color:var(--rfd-ink);}
+  .rfd-cb .rfd-switch-knob{transform:translateX(13px); background:var(--rfd-surface);}
+  .rfd-tag-note{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.68rem; letter-spacing:.03em; padding:2px 7px; border-radius:5px; font-weight:500;
+    background:var(--rfd-surface); color:var(--rfd-ink-soft); border:1px solid var(--rfd-line); text-transform:none;
+  }
+
+  .rfd-panel{background:var(--rfd-surface); border:1px solid var(--rfd-line); border-radius:14px; padding:20px; margin-bottom:22px;}
+  .rfd-panel h2{font-size:1.05rem; font-weight:600; margin-bottom:4px;}
+  .rfd-panel h3{font-size:.95rem; font-weight:600;}
+  .rfd-panel .rfd-sub{color:var(--rfd-ink-soft); font-size:.85rem; margin-bottom:14px;}
+
+  svg.rfd-network{width:100%; height:auto; display:block; max-width:700px; margin:0 auto;}
+  .rfd-node{cursor:pointer; outline:none;}
+  .rfd-node .rfd-hit{fill:transparent; pointer-events:all;}
+  .rfd-node:focus-visible .rfd-halo{opacity:1; stroke-dasharray:4 3;}
+  .rfd-node .rfd-halo{fill:none; stroke-width:3; opacity:0;}
+  .rfd-node.rfd-selected .rfd-halo{opacity:1;}
+  .rfd-node .rfd-core-dpr{stroke-width:1.5; transition:fill .3s;}
+  .rfd-node .rfd-core-hollow{stroke-width:2.5; fill:none; transition:stroke .3s; pointer-events:all;} /* transparent inside, but the whole square is clickable, not just its outline */
+  /* Reinforcement: in the network, a tie is recoloured (same width, so arrowheads
+     don't change size) while both agents share a positive or negative sentiment.
+     In the Relationship panel, a soft capsule sits behind the pair while they do. */
+  .rfd-link{transition:stroke .3s, opacity .3s;}
+  .rfd-link.rfd-reinforcing{stroke:var(--rfd-reinforce); opacity:1;}
+  .rfd-dyad{fill:var(--rfd-reinforce); opacity:0; transition:opacity .3s; pointer-events:none;}
+  .rfd-dyad.rfd-on{opacity:.28;}
+  /* Colourblind mode: + / − / 0 symbols on nodes, patterns on timeline cells. */
+  svg text.rfd-node-sym{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-weight:700; text-anchor:middle; dominant-baseline:central; pointer-events:none;}
+  .rfd-wrap:not(.rfd-cb) svg text.rfd-node-sym{display:none;}
+  /* Labels are appended to the <svg> itself (not inside .rfd-node), so target svg text directly. */
+  svg.rfd-network text, svg.rfd-rel text{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:14px; font-weight:600; fill:var(--rfd-ink-soft); text-anchor:middle; pointer-events:none;}
+  svg.rfd-rel text{font-size:13px;}
+  @media (max-width:640px){ svg.rfd-network text{font-size:19px;} } /* the 760-wide viewBox scales down ~50% on phones */
+  .rfd-link{stroke:var(--rfd-ink-soft); stroke-width:1.4; opacity:.45; marker-end:url(#rfd-arrow);}
+  .rfd-link.rfd-bi{marker-start:url(#rfd-arrow-start);}
+
+  .rfd-legend-mini{display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:14px; font-size:.78rem; color:var(--rfd-ink-soft); justify-content:center;}
+
+  .rfd-rel-layout{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center;}
+  @media (max-width:640px){ .rfd-rel-layout{grid-template-columns:1fr;} }
+  svg.rfd-rel{width:100%; height:auto; display:block; max-width:340px; margin:0 auto;}
+  .rfd-rel-summary{font-size:.9rem; line-height:2.1;}
+  .rfd-rel-summary .rfd-mono{display:inline-block; min-width:5.2em; margin-right:.9em;} /* space between agent name and its pill */
+  .rfd-rel-verdict{margin-top:10px; padding:10px 12px; border-radius:10px; font-size:.85rem; background:var(--rfd-surface-2); color:var(--rfd-ink-soft);}
+  .rfd-rel-verdict b{color:var(--rfd-ink);}
+
+  /* State pills mirror the node shapes: agents diagnosed with depression (filled
+     circles) get a solid pill; agents not diagnosed (outlined squares) get an
+     outlined pill with text in their sentiment colour. */
+  .rfd-state-pill{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.72rem; padding:2px 9px; border-radius:100px; font-weight:600; display:inline-block; border:1.5px solid transparent;}
+  .rfd-state-pill.rfd-pill-solid.positive{background:var(--rfd-positive); color:var(--rfd-surface);}
+  .rfd-state-pill.rfd-pill-solid.neutral{background:var(--rfd-neutral); color:var(--rfd-surface);}
+  .rfd-state-pill.rfd-pill-solid.negative{background:var(--rfd-negative); color:var(--rfd-surface);}
+  .rfd-state-pill.rfd-pill-outline{background:transparent; border-radius:5px;}
+  .rfd-state-pill.rfd-pill-outline.positive{border-color:var(--rfd-positive); color:var(--rfd-positive);}
+  .rfd-state-pill.rfd-pill-outline.neutral{border-color:var(--rfd-neutral); color:var(--rfd-neutral);}
+  .rfd-state-pill.rfd-pill-outline.negative{border-color:var(--rfd-negative); color:var(--rfd-negative);}
+  .rfd-state-pill.live-on{background:var(--rfd-reinforce-bg); color:var(--rfd-reinforce); border-color:var(--rfd-reinforce);}
+  .rfd-state-pill.live-off{background:var(--rfd-surface-2); color:var(--rfd-ink-soft);}
+
+  .rfd-actions{display:flex; align-items:center; gap:14px; margin-top:14px; flex-wrap:wrap;}
+  .rfd-run-btn{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.82rem; background:var(--rfd-accent); color:var(--rfd-on-accent);
+    border:none; padding:9px 18px; border-radius:100px; cursor:pointer; font-weight:500; min-width:11.5em;
+  }
+  .rfd-run-btn:hover{opacity:.9;}
+  .rfd-clear-btn{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.72rem; background:none; border:1px solid var(--rfd-line);
+    color:var(--rfd-ink-soft); padding:6px 12px; border-radius:100px; cursor:pointer;
+  }
+  .rfd-clear-btn:hover{border-color:var(--rfd-accent); color:var(--rfd-accent);}
+  .rfd-live-note{font-size:.76rem; color:var(--rfd-ink-soft); font-style:italic;}
+
+  .rfd-playback-row{display:flex; align-items:center; gap:12px; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--rfd-line); flex-wrap:wrap;}
+  .rfd-playback-row input[type=range]{flex:1; min-width:140px; accent-color:var(--rfd-accent);}
+  .rfd-playback-row .rfd-mono{font-size:.8rem; color:var(--rfd-ink-soft); min-width:88px;}
+
+  .rfd-result-block{margin-bottom:24px; padding-bottom:22px; border-bottom:1px solid var(--rfd-line);}
+  .rfd-result-block:last-child{margin-bottom:0; padding-bottom:0; border-bottom:none;}
+  .rfd-result-block-head{display:flex; align-items:baseline; gap:10px; margin-bottom:4px; flex-wrap:wrap;}
+  .rfd-result-note{font-size:.85rem; color:var(--rfd-ink-soft); margin-bottom:10px; line-height:1.55;}
+
+  .rfd-strip-row{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+  .rfd-strip-who{font-size:.78rem; color:var(--rfd-ink-soft); width:84px; flex:none; line-height:1.15;}
+  .rfd-strip-who small{display:block; font-size:.68rem; opacity:.85;}
+  .rfd-strip{display:flex; gap:1.5px; flex:1;}
+  .rfd-cell{flex:1; height:16px; border-radius:2px; background:var(--rfd-surface-2); border:1px solid var(--rfd-line);}
+  .rfd-cell.rfd-revealed.positive{background:var(--rfd-positive); border-color:var(--rfd-positive);}
+  .rfd-cell.rfd-revealed.neutral{background:var(--rfd-neutral); border-color:var(--rfd-neutral);}
+  .rfd-cell.rfd-revealed.negative{background:var(--rfd-negative); border-color:var(--rfd-negative);}
+  .rfd-cell.rfd-current{outline:2px solid var(--rfd-accent); outline-offset:1px;}
+  .rfd-cell.rfd-shared{background:var(--rfd-reinforce); border-color:var(--rfd-reinforce);}
+  .rfd-cell.rfd-others{background:var(--rfd-reinforce-soft); border-color:var(--rfd-reinforce-soft);}
+  .rfd-cb .rfd-cell.rfd-others{background-image:repeating-linear-gradient(-45deg, rgba(255,255,255,.6) 0 2px, transparent 2px 5px);}
+  .rfd-cb .rfd-cell.rfd-revealed.negative, .rfd-cb .rfd-prop-seg.negative{background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 2px, transparent 2px 6px);}
+  .rfd-cb .rfd-cell.rfd-revealed.neutral, .rfd-cb .rfd-prop-seg.neutral{background-image:radial-gradient(rgba(255,255,255,.6) 1px, transparent 1.5px); background-size:5px 5px;}
+
+  .rfd-stat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:10px;}
+  .rfd-stat-grid-3{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:900px){ .rfd-stat-grid-3{grid-template-columns:1fr 1fr;} }
+  .rfd-stat-names{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:1rem; font-weight:600; line-height:1.3;}
+  @media (max-width:640px){ .rfd-stat-grid{grid-template-columns:1fr;} }
+  .rfd-stat-card{background:var(--rfd-surface-2); border-radius:10px; padding:14px 16px;}
+  .rfd-stat-card h4{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--rfd-ink-soft); font-weight:500; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; margin-bottom:8px;}
+  .rfd-stat-big{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:1.5rem; font-weight:600; line-height:1;}
+
+  .rfd-prop-bar{display:flex; height:14px; border-radius:100px; overflow:hidden; margin-top:8px;}
+  .rfd-prop-seg.positive{background:var(--rfd-positive);}
+  .rfd-prop-seg.neutral{background:var(--rfd-neutral);}
+  .rfd-prop-seg.negative{background:var(--rfd-negative);}
+  .rfd-prop-caption{display:flex; justify-content:space-between; font-size:.72rem; color:var(--rfd-ink-soft); margin-top:4px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
+
+  .rfd-no-reinforce{font-size:.85rem; color:var(--rfd-ink-soft); line-height:1.6; background:var(--rfd-surface-2); padding:12px 14px; border-radius:10px;}
+
+  .rfd-methodology{
+    margin-top:26px; margin-bottom:0; padding:18px 20px; border:1px solid var(--rfd-line); border-radius:12px;
+    background:var(--rfd-surface); font-size:.85rem; color:var(--rfd-ink-soft); line-height:1.65;
+  }
+  .rfd-methodology h3{font-size:.85rem; text-transform:uppercase; letter-spacing:.05em; color:var(--rfd-ink); margin-bottom:8px; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-weight:500;}
+  .rfd-methodology p{margin:0 0 10px;}
+  .rfd-methodology p:last-child{margin-bottom:0;}
+</style>
+
+<div class="rfd-wrap">
+
+  <!-- ===== EDITABLE TEXT: intro and disclaimer ===== -->
+  <div class="rfd-intro">
+    <h1>Shared sentiment, reinforced</h1>
+    <p>An interactive illustration of a core finding from my dissertation, <a href="{{ '/publications/simulating-affective-information-diffusion/' | relative_url }}"><em>Simulating affective information diffusion using natural language in online social networks</em></a>, built on the model's real transition-probability data. Every agent below is a synthetic composite; nobody in this network is a real person.</p>
+    <span class="rfd-badge">Beta: a simplified illustration, not the full simulation</span>
+  </div>
+
+  <div class="rfd-disclaimer">
+    <b>For illustration only.</b> This page doesn't predict anyone's real behaviour. It plays back a fixed, seeded run of a simplified version of the model. It's animated like a live simulation, but it isn't randomly different each visit: the same agents always play out the same way.
+  </div>
+
+  <div class="rfd-key-row">
+    <div class="rfd-key-item"><span class="rfd-swatch-dpr" style="background:var(--rfd-positive)"></span>diagnosed with depression, positive</div>
+    <div class="rfd-key-item"><span class="rfd-swatch-hollow" style="border-color:var(--rfd-negative)"></span>not diagnosed, negative</div>
+    <div class="rfd-key-item">Agents diagnosed with depression are filled circles &middot; agents not diagnosed are outlined squares</div>
+    <div class="rfd-key-item"><span class="rfd-swatch-tie"></span>highlighted tie: both agents share a sentiment (reinforcement)</div>
+    <div class="rfd-key-item rfd-cb-key">Symbols: + positive &middot; &minus; negative &middot; 0 neutral; striped cells are negative, dotted cells neutral</div>
+    <button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button>
+  </div>
+  <!-- ===== END EDITABLE TEXT ===== -->
+
+    <div class="rfd-panel">
+      <!-- ===== EDITABLE TEXT ===== -->
+      <h2>A network of agents</h2>
+      <p class="rfd-sub">Twelve agents form one connected group with no isolates inside it. Three more (User 13–15, in the corners) have no ties at all: they're the baseline case, showing how an agent behaves without any connections. Click one agent to follow it, or a second to compare a pair, then run the simulation to watch every agent's state play out tick by tick. Arrows show who influences whom; an agent can only be reinforced by agents whose arrows point towards it.</p>
+      <!-- ===== END EDITABLE TEXT ===== -->
+      <svg class="rfd-network" viewBox="0 0 760 460" id="rfd-netSvg"></svg>
+      <div class="rfd-legend-mini" id="rfd-netHint"></div>
+      <div class="rfd-actions" id="rfd-actionsRow" style="display:none;">
+        <button class="rfd-run-btn" id="rfd-runBtn">Run simulation</button>
+        <button class="rfd-clear-btn" id="rfd-clearBtn">Clear selection</button>
+        <span class="rfd-live-note" id="rfd-liveNote"></span>
+      </div>
+    </div>
+
+    <div class="rfd-panel" id="rfd-relPanel" style="display:none;">
+      <!-- ===== EDITABLE TEXT ===== -->
+      <h2>Relationship</h2>
+      <p class="rfd-sub">How the two selected agents are tied to each other. The tie itself doesn't change; whether both share the same sentiment does, and the pair is highlighted while they do.</p>
+      <!-- ===== END EDITABLE TEXT ===== -->
+      <div class="rfd-rel-layout">
+        <svg class="rfd-rel" viewBox="0 0 320 160" id="rfd-relSvg"></svg>
+        <div>
+          <div class="rfd-rel-summary" id="rfd-relSummary"></div>
+          <div class="rfd-rel-verdict" id="rfd-relVerdict"></div>
+        </div>
+      </div>
+    </div>
+
+  <div class="rfd-panel" id="rfd-resultsPanel" style="display:none;">
+    <h2 id="rfd-resultsTitle">Change over time</h2>
+    <p class="rfd-sub" id="rfd-resultsSub"></p>
+    <div class="rfd-playback-row" id="rfd-playbackRow">
+      <button class="rfd-clear-btn" id="rfd-playBtn">Pause</button>
+      <input type="range" id="rfd-tickSlider" min="0" max="24" value="0" step="1" aria-label="Tick">
+      <span class="rfd-mono" id="rfd-tickReadout">Tick 0 / 24</span>
+    </div>
+    <div id="rfd-resultsBody"></div>
+  </div>
+
+  <!-- ===== EDITABLE TEXT: methodology notes ===== -->
+  <div class="rfd-methodology">
+    <h3>How this works</h3>
+    <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
+    <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
+    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its state with at least one agent that influences it, probability shifts towards staying in that state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
+    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent that isn't being reinforced can hold the same state for at most four ticks. Ties are directional: an agent is only reinforced by agents that influence it (an arrow pointing towards it, or a mutual tie). On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. An agent that shares its state with an agent it's tied to can stay in that state for longer, so isolated and unreinforced agents change state more often than reinforced ones. This rule isn't part of the dissertation's model.</p>
+    <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
+  </div>
+  <!-- ===== END EDITABLE TEXT ===== -->
+
+</div>
+
+<script>
+(function(){
+  // ===== EDITABLE TEXT: messages that change as the visitor interacts =====
+  // Keep the quote marks around each message. {a} and {b} are replaced with
+  // agent names (e.g. "User 06").
+  var TEXT = {
+    hintNone:   'Nothing selected yet. Click an agent to begin.',
+    hintOne:    'One agent selected. Run the simulation to follow it, or click a second agent to compare a pair.',
+    hintTwo:    'Two agents selected. Run the simulation to follow both, and their tie, over time.',
+    liveNote:   'Seeded and deterministic: replaying it gives the same run every time.',
+    relMutual:  'Mutual tie: {a} and {b} influence each other.',
+    relAtoB:    'One-directional tie: {a} influences {b}, not the reverse.',
+    relNone:    'No direct tie between {a} and {b}.',
+    resultsOne: '{a}’s state, tick by tick, from a fixed, seeded run.',
+    resultsTwo: 'Both agents’ states, tick by tick, plus whether their tie has them sharing a sentiment at each point.',
+    noTie:      'No direct tie, so there’s no pathway for reinforcement between these two. Each simply follows its own state above.',
+    pairNote:   'Recalculated every tick from both agents’ current state. Highlighted cells mark ticks where they share a sentiment. While two tied agents share a state, the agent being influenced gets a persistence boost towards staying in it (both agents, if the tie is mutual), on top of its own baseline odds. This is how the demo represents the reinforcement effect observed in the dissertation’s full simulation (see How this works, below).',
+    sharingNow: 'Sharing a sentiment now',
+    notSharing: 'Not sharing a sentiment now',
+    runLabel:   'Run simulation',
+    pauseLabel: 'Pause simulation',
+    resumeLabel:'Resume simulation',
+    reinforcedRow: 'Reinforced',
+    fromOthers:    'from others',
+    othersNote:    'The lighter rows mark ticks when each agent is reinforced by agents outside this pair, which is why an agent can stay in a state for more than four ticks even when the two aren’t sharing one.',
+    reinforcedBy:  'Reinforced by, this tick',
+    nobody:        'no one',
+    noInfluencers: 'no one (nothing influences this agent)',
+    cbLabel:    'Colourblind-friendly',
+    cbOn:       'ON',
+    cbOff:      'OFF',
+    diagnosed:  'diagnosed with depression',
+    notDiagnosed: 'not diagnosed'
+  };
+  // ===== END EDITABLE TEXT =====
+  function fill(tpl, a, b){ return tpl.replace(/\{a\}/g, a || '').replace(/\{b\}/g, b || ''); }
+
+  var TICKS = 24;
+  var TICK_MS = 900; // playback speed: milliseconds per tick
+
+  var nodes = [
+    {id:1, label:'User 01', x:150, y:130, type:'dpr',    state:'positive'},
+    {id:2, label:'User 02', x:270, y:100, type:'hollow', state:'positive'},
+    {id:3, label:'User 03', x:390, y:140, type:'dpr',    state:'neutral'},
+    {id:4, label:'User 04', x:310, y:230, type:'hollow', state:'neutral'},
+    {id:5, label:'User 05', x:190, y:250, type:'dpr',    state:'neutral'},
+    {id:6, label:'User 06', x:230, y:340, type:'hollow', state:'negative'},
+    {id:7, label:'User 07', x:350, y:360, type:'dpr',    state:'negative'},
+    {id:8, label:'User 08', x:460, y:325, type:'hollow', state:'positive'},
+    {id:9, label:'User 09', x:555, y:250, type:'dpr',    state:'neutral'},
+    {id:10,label:'User 10', x:500, y:170, type:'hollow', state:'positive'},
+    {id:11,label:'User 11', x:610, y:150, type:'dpr',    state:'negative'},
+    {id:12,label:'User 12', x:630, y:280, type:'hollow', state:'negative'},
+    {id:13,label:'User 13', x:55,  y:55,  type:'dpr',    state:'positive'},
+    {id:14,label:'User 14', x:705, y:55,  type:'hollow', state:'negative'},
+    {id:15,label:'User 15', x:55,  y:420, type:'dpr',    state:'neutral'}
+  ];
+
+  // [from, to, bidirectional]; isolates (13,14,15) intentionally have no edges
+  var edges = [
+    [1,2,true], [1,3,false], [2,3,false], [3,4,false], [4,5,true],
+    [3,5,false], [5,6,false], [6,7,true], [7,8,false], [8,9,false],
+    [6,9,false], [9,10,true], [8,10,false], [10,11,false], [11,12,true], [9,12,false]
+  ];
+
+  // Network agent sizes, in the network's 760 x 460 drawing units.
+  var NODE_R = 13.5;      // connected agents
+  var ISOLATE_R = 11.5;   // isolated agents (User 13-15)
+  function nodeRadius(n){ return n.id > 12 ? ISOLATE_R : NODE_R; }
+
+  var byId = {};
+  nodes.forEach(function(n){ byId[n.id] = n; });
+
+  function typeLabel(type){ return type === 'dpr' ? TEXT.diagnosed : TEXT.notDiagnosed; }
+  function pillClass(type, state){ return 'rfd-state-pill ' + state + (type === 'dpr' ? ' rfd-pill-solid' : ' rfd-pill-outline'); }
+  // The --rfd-* custom properties are declared on .rfd-wrap (namespaced, deliberately
+  // not on :root/html, so nothing leaks into the rest of the site). Custom properties
+  // only inherit downward, so they must be read off that element, not <html>.
+  var rfdWrapEl = document.querySelector('.rfd-wrap');
+  function cssVar(name){ return getComputedStyle(rfdWrapEl).getPropertyValue(name).trim(); }
+  var stateVar = {positive:'--rfd-positive', neutral:'--rfd-neutral', negative:'--rfd-negative'};
+  var stateSym = {positive:'+', neutral:'0', negative:'\u2212'};
+  var svgNS = 'http://www.w3.org/2000/svg';
+
+  // Ties are directional: [a, b, false] means a influences b only; [a, b, true] is
+  // mutual. An agent can only be reinforced by the agents that influence it.
+  function influencersOf(id){
+    var out = [];
+    edges.forEach(function(e){
+      if(e[1] === id) out.push(e[0]);
+      else if(e[2] && e[0] === id) out.push(e[1]);
+    });
+    return out;
+  }
+
+  // From the model's transition-probability table (t-only rows: the unconditioned,
+  // non-duplicated slice). TRANS[type][state] = odds of the next state given the agent
+  // posts this tick while currently in `state`.
+  var TRANS = {
+    dpr: {
+      positive: {positive:0.716, neutral:0.101, negative:0.183},
+      neutral:  {positive:0.363, neutral:0.286, negative:0.352},
+      negative: {positive:0.273, neutral:0.142, negative:0.585}
+    },
+    hollow: {
+      positive: {positive:0.647, neutral:0.121, negative:0.232},
+      neutral:  {positive:0.310, neutral:0.340, negative:0.350},
+      negative: {positive:0.240, neutral:0.115, negative:0.646}
+    }
+  };
+  // From the model's posting-probability table: chance an agent posts (and so can
+  // change state at all) on a given tick, by attribute and current state.
+  var POSTING = {
+    dpr:    { positive:0.641, neutral:0.396, negative:0.514 },
+    hollow: { positive:0.648, neutral:0.372, negative:0.562 }
+  };
+  // Emotional reinforcement: an observed outcome of the dissertation's full simulation
+  // (agents sharing a sentiment with a tied agent formed reinforcing groups). It isn't
+  // a single parameter in the transition table, so the demo represents it as a fixed
+  // persistence boost, applied by redistributing probability mass from the two other
+  // states onto the current one (the same proportional-redistribution approach the
+  // NetLogo model uses for its neutral-threshold intervention). Kept modest so it
+  // stays subtle alongside the real posting odds (Table 6.5; one tick = 24 hours):
+  // across 500 seeds, connected agents change state on ~18% of ticks vs ~22% for
+  // isolated agents. Larger values leave tied agents stuck in one state for too long.
+  var CONNECTION_BOOST = 0.08;
+  // From the NetLogo source: an agent that hasn't posted in more than 20 ticks is
+  // reset to neutral, overriding every other rule.
+  var INACTIVITY_RESET_TICKS = 20;
+
+  function redistributeToward(probs, targetState, boost){
+    var others = Object.keys(probs).filter(function(k){ return k !== targetState; });
+    var totalOther = others.reduce(function(s,k){ return s + probs[k]; }, 0);
+    if(totalOther <= 0) return probs;
+    var moved = Math.min(boost, totalOther);
+    var out = {}; out[targetState] = probs[targetState] + moved;
+    others.forEach(function(k){ out[k] = probs[k] - moved * (probs[k] / totalOther); });
+    return out;
+  }
+
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // Demo rule (not part of the dissertation model): a run is only 24 ticks (24 days),
+  // so an agent that is NOT being reinforced may hold the same state for at most
+  // MAX_UNREINFORCED_TICKS ticks; on the next tick it posts and moves to one of its other
+  // two states, weighted by its own transition odds for those states. A reinforced agent
+  // can stay in its state for longer, which is what makes reinforcement visible:
+  // isolated and unreinforced agents change state more often than reinforced ones.
+  var MAX_UNREINFORCED_TICKS = 4;
+
+  function sampleState(probs, r){
+    var keys = ['positive','neutral','negative'].filter(function(k){ return k in probs; }), total = 0, acc = 0;
+    keys.forEach(function(k){ total += probs[k]; });
+    for(var i = 0; i < keys.length; i++){ acc += probs[keys[i]] / total; if(r < acc) return keys[i]; }
+    return keys[keys.length - 1];
+  }
+
+  function computeStateTable(){
+    var table = {}, rngs = {}, sinceLastPost = {}, streak = {};
+    nodes.forEach(function(n){ table[n.id] = [n.state]; rngs[n.id] = mulberry32(2026 + n.id * 97); sinceLastPost[n.id] = 0; streak[n.id] = 1; });
+    for(var t = 1; t <= TICKS; t++){
+      var prev = {};
+      nodes.forEach(function(n){ prev[n.id] = table[n.id][t-1]; });
+      nodes.forEach(function(n){
+        var cur = prev[n.id], next;
+        // Reinforced: an agent that influences this one held the same state (positive, neutral or negative) last tick.
+        var reinforced = influencersOf(n.id).some(function(x){ return prev[x] === cur; });
+
+        if(sinceLastPost[n.id] > INACTIVITY_RESET_TICKS){
+          // Model rule: an agent inactive for more than 20 ticks reverts to neutral.
+          sinceLastPost[n.id] = 0;
+          next = 'neutral';
+        } else if(streak[n.id] >= MAX_UNREINFORCED_TICKS && !reinforced){
+          // Demo rule: unreinforced and in this state for MAX_UNREINFORCED_TICKS ticks already, so the agent posts and moves to another state.
+          sinceLastPost[n.id] = 0;
+          var others = {};
+          Object.keys(TRANS[n.type][cur]).forEach(function(k){ if(k !== cur) others[k] = TRANS[n.type][cur][k]; });
+          next = sampleState(others, rngs[n.id]());
+        } else if(rngs[n.id]() >= POSTING[n.type][cur]){
+          // No post this tick: state carries over unchanged, and the inactivity clock ticks up.
+          sinceLastPost[n.id] += 1;
+          next = cur;
+        } else {
+          sinceLastPost[n.id] = 0;
+          var probs = TRANS[n.type][cur];
+          if(reinforced && CONNECTION_BOOST > 0){ probs = redistributeToward(probs, cur, CONNECTION_BOOST); }
+          next = sampleState(probs, rngs[n.id]());
+        }
+        streak[n.id] = next === cur ? streak[n.id] + 1 : 1;
+        table[n.id].push(next);
+      });
+    }
+    return table;
+  }
+  var stateTable = computeStateTable();
+  function stateAt(id, tick){ return stateTable[id][Math.max(0, Math.min(tick, TICKS))]; }
+
+  // A tie (or a selected pair) is "reinforcing" at a tick when both agents hold the
+  // same state (positive, neutral or negative).
+  // Agents reinforcing `id` at `tick`: its influencers holding the same state.
+  function reinforcersAt(id, tick){
+    var st = stateAt(id, tick);
+    return influencersOf(id).filter(function(x){ return stateAt(x, tick) === st; });
+  }
+  function pairSharing(aId, bId, rel, tick){
+    return rel !== 'none' && stateAt(aId, tick) === stateAt(bId, tick);
+  }
+
+  function nodeGlyph(n, r, selected){
+    var g = document.createElementNS(svgNS,'g');
+    g.setAttribute('class','rfd-node' + (selected ? ' rfd-selected' : ''));
+    g.setAttribute('data-id', n.id);
+    var color = cssVar(stateVar[n.state]);
+
+    var halo = document.createElementNS(svgNS,'circle');
+    halo.setAttribute('class','rfd-halo');
+    halo.setAttribute('cx',n.x); halo.setAttribute('cy',n.y); halo.setAttribute('r', r + 7);
+    halo.setAttribute('stroke', cssVar('--rfd-accent'));
+    g.appendChild(halo);
+
+    if(n.type === 'dpr'){
+      var c = document.createElementNS(svgNS,'circle');
+      c.setAttribute('class','rfd-core-dpr');
+      c.setAttribute('cx',n.x); c.setAttribute('cy',n.y); c.setAttribute('r', r);
+      c.setAttribute('fill', color); c.setAttribute('stroke', cssVar('--rfd-ink-soft'));
+      g.appendChild(c);
+    } else {
+      var s = document.createElementNS(svgNS,'rect');
+      var side = r * 1.7;
+      s.setAttribute('class','rfd-core-hollow');
+      s.setAttribute('x', n.x - side/2); s.setAttribute('y', n.y - side/2);
+      s.setAttribute('width', side); s.setAttribute('height', side);
+      s.setAttribute('rx', 2); s.setAttribute('stroke', color);
+      g.appendChild(s);
+    }
+    var sym = document.createElementNS(svgNS,'text');
+    sym.setAttribute('class','rfd-node-sym');
+    sym.setAttribute('x', n.x); sym.setAttribute('y', n.y + 0.5);
+    sym.style.fontSize = Math.round(r * 1.25) + 'px';
+    g.appendChild(sym);
+    setNodeState(g, n.type, n.state);
+    return g;
+  }
+  // Colour (and colourblind symbol) for one node glyph in a given state.
+  function setNodeState(g, type, st){
+    var color = cssVar(stateVar[st]);
+    var dpr = g.querySelector('.rfd-core-dpr'); if(dpr) dpr.setAttribute('fill', color);
+    var hollow = g.querySelector('.rfd-core-hollow'); if(hollow) hollow.setAttribute('stroke', color);
+    var sym = g.querySelector('.rfd-node-sym');
+    if(sym){ sym.textContent = stateSym[st]; sym.style.fill = type === 'dpr' ? cssVar('--rfd-surface') : color; }
+  }
+
+  var netSvg = document.getElementById('rfd-netSvg');
+
+  function drawNetwork(){
+    while(netSvg.firstChild) netSvg.removeChild(netSvg.firstChild);
+    var defs = document.createElementNS(svgNS,'defs');
+    var arrowFill = cssVar('--rfd-ink-soft');
+    defs.innerHTML =
+      '<marker id="rfd-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="' + arrowFill + '"></path></marker>' +
+      '<marker id="rfd-arrow-start" markerWidth="7" markerHeight="7" refX="0" refY="3" orient="auto"><path d="M6,0 L0,3 L6,6 Z" fill="' + arrowFill + '"></path></marker>';
+    netSvg.appendChild(defs);
+
+    // Stop each edge at the node's visible boundary (circle radius for filled nodes,
+    // the square's corner distance for outlined ones) so arrowheads rest on the outline.
+    function nodeBoundaryRadius(n){
+      var r = nodeRadius(n);
+      if(n.type === 'dpr') return r;
+      var side = r * 1.7;
+      return (side / 2) * Math.SQRT2;
+    }
+
+    edges.forEach(function(e){
+      var a = byId[e[0]], b = byId[e[1]];
+      var dx = b.x - a.x, dy = b.y - a.y;
+      var dist = Math.sqrt(dx*dx + dy*dy) || 1;
+      var ux = dx / dist, uy = dy / dist;
+      var ra = nodeBoundaryRadius(a), rb = nodeBoundaryRadius(b);
+      var line = document.createElementNS(svgNS,'line');
+      line.setAttribute('x1', a.x + ux*ra); line.setAttribute('y1', a.y + uy*ra);
+      line.setAttribute('x2', b.x - ux*rb); line.setAttribute('y2', b.y - uy*rb);
+      line.setAttribute('class','rfd-link' + (e[2] ? ' rfd-bi' : ''));
+      line.setAttribute('data-a', e[0]); line.setAttribute('data-b', e[1]);
+      netSvg.appendChild(line);
+    });
+
+    nodes.forEach(function(n){
+      var g = nodeGlyph(n, nodeRadius(n), selected.indexOf(n.id) > -1);
+      // Invisible, larger hit area so small agents are easy to tap on phones.
+      var hit = document.createElementNS(svgNS,'circle');
+      hit.setAttribute('class','rfd-hit'); hit.setAttribute('cx', n.x); hit.setAttribute('cy', n.y); hit.setAttribute('r', 30);
+      g.insertBefore(hit, g.firstChild);
+      // Keyboard access: Tab to an agent, Enter or Space to select it.
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('role', 'button');
+      g.setAttribute('aria-label', n.label + ', ' + typeLabel(n.type));
+      g.setAttribute('aria-pressed', selected.indexOf(n.id) > -1 ? 'true' : 'false');
+      g.addEventListener('click', function(){ selectNode(n.id); });
+      g.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); selectNode(n.id); }
+      });
+      netSvg.appendChild(g);
+      var label = document.createElementNS(svgNS,'text');
+      label.setAttribute('x', n.x); label.setAttribute('y', n.y - nodeRadius(n) - 11);
+      label.textContent = n.label;
+      netSvg.appendChild(label);
+    });
+  }
+
+  function updateNetworkColors(tick){
+    nodes.forEach(function(n){
+      var g = netSvg.querySelector('.rfd-node[data-id="' + n.id + '"]');
+      if(g) setNodeState(g, n.type, stateAt(n.id, tick));
+    });
+    netSvg.querySelectorAll('.rfd-link').forEach(function(line){
+      var a = Number(line.getAttribute('data-a')), b = Number(line.getAttribute('data-b'));
+      line.classList.toggle('rfd-reinforcing', runStarted && pairSharing(a, b, 'tied', tick));
+    });
+  }
+
+  var selected = [];
+  var currentTick = 0, playing = false, playTimer = null, runStarted = false;
+
+  // Selecting agents never resets the network: it stays at the current tick, and if a
+  // run is under way the results panel switches to the new selection at that tick.
+  function selectNode(id){
+    var idx = selected.indexOf(id);
+    if(idx > -1){ selected.splice(idx,1); }
+    else{
+      selected.push(id);
+      if(selected.length > 2) selected.shift();
+    }
+    render();
+    if(runStarted && selected.length > 0){ buildResults(); applyTick(); }
+    else { document.getElementById('rfd-resultsPanel').style.display = 'none'; }
+  }
+
+  function relationship(aId, bId){
+    var fwd = edges.some(function(e){ return e[0]===aId && e[1]===bId; });
+    var bwd = edges.some(function(e){ return e[0]===bId && e[1]===aId; });
+    var biEdge = edges.some(function(e){ return e[2] && ((e[0]===aId && e[1]===bId) || (e[0]===bId && e[1]===aId)); });
+    if(biEdge) return 'bidirectional';
+    if(fwd) return 'uni-ab';
+    if(bwd) return 'uni-ba';
+    return 'none';
+  }
+
+  function drawRelationship(a, b, rel){
+    var svg = document.getElementById('rfd-relSvg');
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    var defs = document.createElementNS(svgNS,'defs');
+    var relArrowFill = cssVar('--rfd-ink-soft');
+    defs.innerHTML =
+      '<marker id="rfd-arrowRel" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="' + relArrowFill + '"></path></marker>' +
+      '<marker id="rfd-arrowRelStart" markerWidth="8" markerHeight="8" refX="0" refY="3.5" orient="auto"><path d="M7,0 L0,3.5 L7,7 Z" fill="' + relArrowFill + '"></path></marker>';
+    svg.appendChild(defs);
+
+    var ax = 80, bx = 240, y = 70;
+    var dyad = document.createElementNS(svgNS,'rect');
+    dyad.setAttribute('class','rfd-dyad'); dyad.setAttribute('id','rfd-relDyad');
+    dyad.setAttribute('x', ax - 32); dyad.setAttribute('y', y - 30);
+    dyad.setAttribute('width', bx - ax + 64); dyad.setAttribute('height', 60); dyad.setAttribute('rx', 30);
+    svg.appendChild(dyad);
+    if(rel !== 'none'){
+      var lineEl = document.createElementNS(svgNS,'line');
+      lineEl.setAttribute('x1', ax+22); lineEl.setAttribute('y1', y);
+      lineEl.setAttribute('x2', bx-22); lineEl.setAttribute('y2', y);
+      lineEl.setAttribute('stroke', cssVar('--rfd-ink-soft'));
+      lineEl.setAttribute('stroke-width','2');
+      if(rel === 'bidirectional' || rel === 'uni-ab') lineEl.setAttribute('marker-end','url(#rfd-arrowRel)');
+      if(rel === 'bidirectional' || rel === 'uni-ba') lineEl.setAttribute('marker-start','url(#rfd-arrowRelStart)');
+      svg.appendChild(lineEl);
+    } else {
+      var dash = document.createElementNS(svgNS,'line');
+      dash.setAttribute('x1', ax+22); dash.setAttribute('y1', y);
+      dash.setAttribute('x2', bx-22); dash.setAttribute('y2', y);
+      dash.setAttribute('stroke', cssVar('--rfd-line'));
+      dash.setAttribute('stroke-width','2'); dash.setAttribute('stroke-dasharray','3,5');
+      svg.appendChild(dash);
+    }
+
+    var ga = nodeGlyph(Object.assign({}, a, {x:ax, y:y, state:stateAt(a.id, currentTick)}), 16, false);
+    ga.setAttribute('id','rfd-relGlyphA');
+    var gb = nodeGlyph(Object.assign({}, b, {x:bx, y:y, state:stateAt(b.id, currentTick)}), 16, false);
+    gb.setAttribute('id','rfd-relGlyphB');
+    svg.appendChild(ga); svg.appendChild(gb);
+
+    [[a,ax],[b,bx]].forEach(function(pair){
+      var label = document.createElementNS(svgNS,'text');
+      label.setAttribute('x', pair[1]); label.setAttribute('y', y + 50);
+      label.textContent = pair[0].label;
+      svg.appendChild(label);
+    });
+  }
+
+  function relDescription(rel, aLabel, bLabel){
+    if(rel === 'bidirectional') return fill(TEXT.relMutual, aLabel, bLabel);
+    if(rel === 'uni-ab') return fill(TEXT.relAtoB, aLabel, bLabel);
+    if(rel === 'uni-ba') return fill(TEXT.relAtoB, bLabel, aLabel);
+    return fill(TEXT.relNone, aLabel, bLabel);
+  }
+
+  function updateRelationship(tick){
+    if(selected.length !== 2) return;
+    var a = byId[selected[0]], b = byId[selected[1]];
+    var rel = relationship(a.id, b.id);
+    [['rfd-relGlyphA', a], ['rfd-relGlyphB', b]].forEach(function(pair){
+      var g = document.getElementById(pair[0]);
+      if(g) setNodeState(g, pair[1].type, stateAt(pair[1].id, tick));
+    });
+    var dyad = document.getElementById('rfd-relDyad');
+    if(dyad) dyad.classList.toggle('rfd-on', runStarted && pairSharing(a.id, b.id, rel, tick));
+    var stA = stateAt(a.id, tick), stB = stateAt(b.id, tick);
+    document.getElementById('rfd-relSummary').innerHTML =
+      '<span class="rfd-mono">' + a.label + '</span> <span class="' + pillClass(a.type, stA) + '">' + typeLabel(a.type) + ' &middot; ' + stA + '</span>' +
+      '<br><span class="rfd-mono">' + b.label + '</span> <span class="' + pillClass(b.type, stB) + '">' + typeLabel(b.type) + ' &middot; ' + stB + '</span>';
+  }
+
+  function stripHtml(id){
+    var cells = '';
+    for(var i=0;i<=TICKS;i++){ cells += '<span class="rfd-cell" data-i="' + i + '"></span>'; }
+    return '<div class="rfd-strip" id="' + id + '">' + cells + '</div>';
+  }
+  function updateStrip(stripId, nodeId, tick){
+    var strip = document.getElementById(stripId);
+    if(!strip) return;
+    Array.prototype.forEach.call(strip.children, function(cell){
+      var i = Number(cell.getAttribute('data-i'));
+      cell.className = 'rfd-cell';
+      if(i <= tick){ cell.classList.add('rfd-revealed', stateAt(nodeId, i)); }
+      if(i === tick) cell.classList.add('rfd-current');
+    });
+  }
+  function updateSharedStrip(stripId, aId, bId, rel, tick){
+    var strip = document.getElementById(stripId);
+    if(!strip) return;
+    Array.prototype.forEach.call(strip.children, function(cell){
+      var i = Number(cell.getAttribute('data-i'));
+      cell.className = 'rfd-cell';
+      if(i <= tick && pairSharing(aId, bId, rel, i)){ cell.classList.add('rfd-revealed','rfd-shared'); }
+      if(i === tick) cell.classList.add('rfd-current');
+    });
+  }
+
+  function streakEndingAt(nodeId, tick){
+    var st = stateAt(nodeId, tick), n = 1;
+    for(var i = tick - 1; i >= 0; i--){ if(stateAt(nodeId,i) === st) n++; else break; }
+    return n;
+  }
+  function proportionsSoFar(nodeId, tick){
+    var counts = {positive:0, neutral:0, negative:0};
+    for(var i=0;i<=tick;i++){ counts[stateAt(nodeId,i)]++; }
+    var total = tick + 1;
+    return {
+      positive: Math.round(counts.positive/total*100),
+      neutral: Math.round(counts.neutral/total*100),
+      negative: Math.round(counts.negative/total*100)
+    };
+  }
+  function propBarHtml(prop){
+    return '<div class="rfd-prop-bar">' +
+      '<div class="rfd-prop-seg positive" style="width:' + prop.positive + '%"></div>' +
+      '<div class="rfd-prop-seg neutral" style="width:' + prop.neutral + '%"></div>' +
+      '<div class="rfd-prop-seg negative" style="width:' + prop.negative + '%"></div>' +
+      '</div>' +
+      '<div class="rfd-prop-caption"><span>Positive ' + prop.positive + '%</span><span>Neutral ' + prop.neutral + '%</span><span>Negative ' + prop.negative + '%</span></div>';
+  }
+
+  function agentBlockHtml(n, stripId, showReinforcedRow){
+    return '<div class="rfd-result-block">' +
+      '<div class="rfd-result-block-head"><h3 class="rfd-mono">' + n.label + '</h3><span class="' + pillClass(n.type, n.state) + '" id="' + stripId + '-pill">' + typeLabel(n.type) + '</span></div>' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">State</span>' + stripHtml(stripId) + '</div>' +
+      (showReinforcedRow ? '<div class="rfd-strip-row"><span class="rfd-strip-who">' + TEXT.reinforcedRow + '</span>' + stripHtml(stripId + '-rf') + '</div>' : '') +
+      '<div class="rfd-stat-grid rfd-stat-grid-3">' +
+        '<div class="rfd-stat-card"><h4>Current run in this state</h4><div class="rfd-stat-big" id="' + stripId + '-streak">1 tick</div></div>' +
+        '<div class="rfd-stat-card"><h4>' + TEXT.reinforcedBy + '</h4><div class="rfd-stat-names" id="' + stripId + '-by"></div></div>' +
+        '<div class="rfd-stat-card"><h4>Time in each state so far <span class="rfd-tag-note">this run</span></h4><div id="' + stripId + '-prop">' + propBarHtml({positive:0,neutral:0,negative:0}) + '</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+  function updateAgentBlock(n, stripId, tick){
+    updateStrip(stripId, n.id, tick);
+    var st = stateAt(n.id, tick);
+    var pill = document.getElementById(stripId + '-pill');
+    if(pill){ pill.className = pillClass(n.type, st); pill.textContent = typeLabel(n.type) + ' · ' + st; }
+    var streakEl = document.getElementById(stripId + '-streak');
+    var streak = streakEndingAt(n.id, tick);
+    if(streakEl) streakEl.textContent = streak + ' tick' + (streak === 1 ? '' : 's');
+    var propEl = document.getElementById(stripId + '-prop');
+    if(propEl) propEl.innerHTML = propBarHtml(proportionsSoFar(n.id, tick));
+    var rf = document.getElementById(stripId + '-rf');
+    if(rf) Array.prototype.forEach.call(rf.children, function(cell){
+      var i = Number(cell.getAttribute('data-i'));
+      cell.className = 'rfd-cell';
+      if(i <= tick && reinforcersAt(n.id, i).length) cell.classList.add('rfd-revealed','rfd-shared');
+      if(i === tick) cell.classList.add('rfd-current');
+    });
+    var by = document.getElementById(stripId + '-by');
+    if(by){
+      var who = reinforcersAt(n.id, tick).map(function(x){ return byId[x].label; });
+      by.textContent = who.length ? who.join(', ') : (influencersOf(n.id).length ? TEXT.nobody : TEXT.noInfluencers);
+    }
+  }
+
+  function othersRowsHtml(a, b){
+    return '<div class="rfd-strip-row"><span class="rfd-strip-who">' + a.label + '<small>' + TEXT.fromOthers + '</small></span>' + stripHtml('rfd-strip-oa') + '</div>' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">' + b.label + '<small>' + TEXT.fromOthers + '</small></span>' + stripHtml('rfd-strip-ob') + '</div>';
+  }
+  function reinforcementBlockHtml(a, b, rel){
+    if(rel === 'none'){
+      return '<div class="rfd-result-block">' +
+        '<div class="rfd-result-block-head"><h3>' + a.label + ' and ' + b.label + '</h3></div>' +
+        '<div class="rfd-no-reinforce">' + TEXT.noTie + '</div>' +
+        '<p class="rfd-result-note" style="margin-top:12px;">' + TEXT.othersNote + '</p>' +
+        othersRowsHtml(a, b) +
+      '</div>';
+    }
+    return '<div class="rfd-result-block">' +
+      '<div class="rfd-result-block-head"><h3>' + a.label + ' and ' + b.label + '</h3><span class="rfd-state-pill" id="rfd-livePill"></span></div>' +
+      '<p class="rfd-result-note">' + TEXT.pairNote + '</p>' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">' + a.label + '</span>' + stripHtml('rfd-strip-pa') + '</div>' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">' + b.label + '</span>' + stripHtml('rfd-strip-pb') + '</div>' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">Shared</span>' + stripHtml('rfd-strip-shared') + '</div>' +
+      '<p class="rfd-result-note" style="margin:14px 0 8px;">' + TEXT.othersNote + '</p>' +
+      othersRowsHtml(a, b) +
+      '<div class="rfd-stat-grid">' +
+        '<div class="rfd-stat-card"><h4>Ticks sharing a sentiment, so far</h4><div class="rfd-stat-big" id="rfd-reinforceCount">0 / 1</div></div>' +
+        '<div class="rfd-stat-card"><h4>Longest unbroken streak together</h4><div class="rfd-stat-big" id="rfd-reinforceLongest">0 ticks</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+  // Ticks where `id` is reinforced by an influencer other than the selected partner.
+  function updateOthersStrip(stripId, id, partnerId, tick){
+    var strip = document.getElementById(stripId);
+    if(!strip) return;
+    Array.prototype.forEach.call(strip.children, function(cell){
+      var i = Number(cell.getAttribute('data-i'));
+      cell.className = 'rfd-cell';
+      if(i <= tick && reinforcersAt(id, i).some(function(x){ return x !== partnerId; })) cell.classList.add('rfd-revealed','rfd-others');
+      if(i === tick) cell.classList.add('rfd-current');
+    });
+  }
+  function updateReinforcementBlock(a, b, rel, tick){
+    updateOthersStrip('rfd-strip-oa', a.id, b.id, tick);
+    updateOthersStrip('rfd-strip-ob', b.id, a.id, tick);
+    if(rel === 'none') return;
+    updateStrip('rfd-strip-pa', a.id, tick);
+    updateStrip('rfd-strip-pb', b.id, tick);
+    updateSharedStrip('rfd-strip-shared', a.id, b.id, rel, tick);
+
+    var sharedNow = pairSharing(a.id, b.id, rel, tick);
+    var pill = document.getElementById('rfd-livePill');
+    if(pill){
+      pill.className = 'rfd-state-pill ' + (sharedNow ? 'live-on' : 'live-off');
+      pill.textContent = sharedNow ? TEXT.sharingNow : TEXT.notSharing;
+    }
+
+    var sharedCount = 0, longest = 0, run = 0;
+    for(var i=0;i<=tick;i++){
+      if(pairSharing(a.id, b.id, rel, i)){ sharedCount++; run++; longest = Math.max(longest, run); } else { run = 0; }
+    }
+    var countEl = document.getElementById('rfd-reinforceCount');
+    if(countEl) countEl.textContent = sharedCount + ' / ' + (tick + 1);
+    var longestEl = document.getElementById('rfd-reinforceLongest');
+    if(longestEl) longestEl.textContent = longest + ' tick' + (longest === 1 ? '' : 's');
+  }
+
+  // Run button: starts a run, pauses a playing run, resumes a paused one; once a run
+  // has reached the last tick it starts again from tick 0.
+  function updateButtons(){
+    var runBtn = document.getElementById('rfd-runBtn');
+    runBtn.textContent = playing ? TEXT.pauseLabel : (runStarted && currentTick < TICKS ? TEXT.resumeLabel : TEXT.runLabel);
+    document.getElementById('rfd-playBtn').textContent = playing ? 'Pause' : 'Play';
+  }
+  function stopPlayback(){
+    playing = false;
+    if(playTimer){ clearInterval(playTimer); playTimer = null; }
+    updateButtons();
+  }
+  function startPlayback(){
+    if(currentTick >= TICKS){ currentTick = 0; applyTick(); }
+    playing = true;
+    if(playTimer) clearInterval(playTimer);
+    playTimer = setInterval(function(){
+      if(currentTick >= TICKS){ stopPlayback(); return; }
+      currentTick++;
+      applyTick();
+      if(currentTick >= TICKS) stopPlayback();
+    }, TICK_MS);
+    updateButtons();
+  }
+  function applyTick(){
+    updateNetworkColors(currentTick);
+    document.getElementById('rfd-tickSlider').value = currentTick;
+    document.getElementById('rfd-tickReadout').textContent = 'Tick ' + currentTick + ' / ' + TICKS;
+    updateRelationship(currentTick);
+
+    if(selected.length === 1){
+      updateAgentBlock(byId[selected[0]], 'rfd-strip-solo', currentTick);
+    } else if(selected.length === 2){
+      var a = byId[selected[0]], b = byId[selected[1]];
+      var rel = relationship(a.id, b.id);
+      updateAgentBlock(a, 'rfd-strip-a', currentTick);
+      updateAgentBlock(b, 'rfd-strip-b', currentTick);
+      updateReinforcementBlock(a, b, rel, currentTick);
+    }
+    updateButtons();
+  }
+
+  function buildResults(){
+    document.getElementById('rfd-resultsPanel').style.display = '';
+    if(selected.length === 1){
+      var n = byId[selected[0]];
+      document.getElementById('rfd-resultsSub').textContent = fill(TEXT.resultsOne, n.label);
+      document.getElementById('rfd-resultsBody').innerHTML = agentBlockHtml(n, 'rfd-strip-solo', true);
+    } else {
+      var a = byId[selected[0]], b = byId[selected[1]];
+      var rel = relationship(a.id, b.id);
+      document.getElementById('rfd-resultsSub').textContent = TEXT.resultsTwo;
+      document.getElementById('rfd-resultsBody').innerHTML = agentBlockHtml(a, 'rfd-strip-a', false) + agentBlockHtml(b, 'rfd-strip-b', false) + reinforcementBlockHtml(a, b, rel);
+    }
+  }
+
+  function runSimulation(){
+    currentTick = 0;
+    runStarted = true;
+    buildResults();
+    applyTick();
+    // Respect reduced-motion preferences: show tick 0 and let the visitor press
+    // Play or drag the slider instead of auto-advancing.
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ stopPlayback(); }
+    else { startPlayback(); }
+  }
+
+  function onRunClick(){
+    if(playing) stopPlayback();
+    else if(runStarted && currentTick < TICKS) startPlayback();
+    else runSimulation();
+  }
+
+  function render(){
+    document.querySelectorAll('#rfd-netSvg .rfd-node').forEach(function(g){
+      var isSel = selected.indexOf(Number(g.getAttribute('data-id'))) > -1;
+      g.classList.toggle('rfd-selected', isSel);
+      g.setAttribute('aria-pressed', isSel ? 'true' : 'false');
+    });
+
+    var netHint = document.getElementById('rfd-netHint');
+    document.getElementById('rfd-actionsRow').style.display = selected.length > 0 ? '' : 'none';
+    netHint.textContent = selected.length === 0 ? TEXT.hintNone : (selected.length === 1 ? TEXT.hintOne : TEXT.hintTwo);
+
+    var relPanel = document.getElementById('rfd-relPanel');
+    if(selected.length < 2){ relPanel.style.display = 'none'; return; }
+    relPanel.style.display = '';
+    var a = byId[selected[0]], b = byId[selected[1]];
+    var rel = relationship(a.id, b.id);
+    drawRelationship(a, b, rel);
+    document.getElementById('rfd-relVerdict').innerHTML = '<b>' + relDescription(rel, a.label, b.label) + '</b>';
+    updateRelationship(currentTick);
+  }
+
+  document.getElementById('rfd-liveNote').textContent = TEXT.liveNote;
+  // Colourblind-friendly toggle: off for first-time visitors, then remembers the
+  // visitor's last choice in this browser (where storage is available).
+  var cbToggle = document.getElementById('rfd-cbToggle');
+  document.getElementById('rfd-cbLabel').textContent = TEXT.cbLabel;
+  function redrawAll(){
+    drawNetwork();
+    updateNetworkColors(currentTick);
+    render();
+    if(document.getElementById('rfd-resultsPanel').style.display !== 'none') applyTick();
+  }
+  function setColourblind(on){
+    rfdWrapEl.classList.toggle('rfd-cb', on);
+    cbToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+    document.getElementById('rfd-cbState').textContent = on ? TEXT.cbOn : TEXT.cbOff;
+    try { localStorage.setItem('rfdColourblind', on ? '1' : '0'); } catch(e){}
+  }
+  var cbSaved = false;
+  try { cbSaved = localStorage.getItem('rfdColourblind') === '1'; } catch(e){}
+  setColourblind(cbSaved);
+  cbToggle.addEventListener('click', function(){
+    setColourblind(!rfdWrapEl.classList.contains('rfd-cb'));
+    redrawAll();
+  });
+  document.getElementById('rfd-runBtn').addEventListener('click', onRunClick);
+  document.getElementById('rfd-clearBtn').addEventListener('click', function(){
+    stopPlayback();
+    selected = []; currentTick = 0; runStarted = false;
+    updateNetworkColors(0);
+    document.getElementById('rfd-resultsPanel').style.display = 'none';
+    render();
+    updateButtons();
+  });
+  document.getElementById('rfd-playBtn').addEventListener('click', function(){
+    if(playing) stopPlayback(); else startPlayback();
+  });
+  document.getElementById('rfd-tickSlider').addEventListener('input', function(e){
+    stopPlayback();
+    currentTick = Number(e.target.value);
+    applyTick();
+  });
+
+  drawNetwork();
+  updateNetworkColors(0);
+  render();
+
+  // Colours are read from CSS variables at draw time, so redraw when the site's
+  // dark-mode class is added/removed (including dark-mode.js applying a saved
+  // preference on load, which runs after this script).
+  new MutationObserver(redrawAll).observe(document.body, {attributes:true, attributeFilter:['class']});
+})();
+</script>

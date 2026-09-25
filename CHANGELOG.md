@@ -4,6 +4,26 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25
+
+### Added
+- `/reinforcement-demo/`: interactive, seeded illustration of emotional
+  reinforcement built on the dissertation model's transition and posting
+  probabilities. Supports site dark mode and reduced-motion preferences.
+- Homepage "Try it yourself" teaser card linking to the demo (styles in
+  `_sass/main.scss` under DEMO TEASER); same width as the hero and "In the
+  Media" cards, opens in a new tab.
+- Demo: reinforcement shown as a highlighted tie in the network and a
+  highlight around the pair in the Relationship panel; run button
+  pauses/resumes; slower ticks (900ms); selecting agents no longer resets
+  colours; state pills solid (diagnosed) vs outlined (not diagnosed);
+  larger labels and network; colourblind-friendly toggle; full dissertation
+  title; no em dashes. Demo rule: an unreinforced agent can't hold one
+  state for more than 4 ticks (reinforced agents can); reinforcement
+  includes shared neutral states. Reinforcement follows tie direction; each
+  agent's timeline shows when and by whom it is reinforced; the pair view
+  adds "from others" rows for reinforcement from outside the pair. Highlights only appear once a run starts. Page text grouped in marked EDITABLE TEXT blocks.
+
 ## 2026-09-24 (7)
 
 ### Changed
