@@ -21,7 +21,8 @@ is the baseline. Add new entries at the top.
   title; no em dashes. Demo rule: an unreinforced agent can't hold one
   state for more than 4 ticks (reinforced agents can); reinforcement
   includes shared neutral states. Reinforcement follows tie direction; each
-  agent's timeline shows when and by whom it is reinforced. Highlights only appear once a run starts. Page text grouped in marked EDITABLE TEXT blocks.
+  agent's timeline shows when and by whom it is reinforced; the pair view
+  adds "from others" rows for reinforcement from outside the pair. Highlights only appear once a run starts. Page text grouped in marked EDITABLE TEXT blocks.
 
 ## 2026-09-24 (7)
 

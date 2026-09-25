@@ -195,8 +195,10 @@ leaks into other pages. Consequences worth remembering:
   isolated agents are more volatile than reinforced ones (500 seeds:
   33.9% vs 22.5% state changes per tick). "How this works" describes the
   rule; keep them in sync.
-- Each agent's results block shows a "Reinforced" row and a "Reinforced
-  by" card, so every stay past 4 ticks is visibly explained on screen.
+- Every stay past 4 ticks must be visibly explained on screen. Single-agent
+  view: a "Reinforced" row. Two-agent view: the pair's "Shared" row plus
+  one lighter "from others" row per agent (reinforced by influencers other
+  than the selected partner). Both views have a "Reinforced by" card.
 - Starting states: User 03 neutral and User 08 positive, so every directed
   reinforcement combination this network allows (influencer attribute ->
   influenced attribute x shared state x tie type, 18 in total) occurs in ticks 1-24 of the deployed

@@ -21,7 +21,7 @@ permalink: /reinforcement-demo/
     --rfd-positive:#28855F; --rfd-positive-bg:#E3F3EA;
     --rfd-neutral:#7C8177; --rfd-neutral-bg:#ECEDE8;
     --rfd-negative:#B85536; --rfd-negative-bg:#F7E8E0;
-    --rfd-reinforce:#C9A227; --rfd-reinforce-bg:#F6EFDC;
+    --rfd-reinforce:#C9A227; --rfd-reinforce-bg:#F6EFDC; --rfd-reinforce-soft:#E6D38F;
     --rfd-note:#9A7A21; --rfd-note-bg:#F6EFDC; /* disclaimer box; not changed by colourblind mode */
     --rfd-on-accent:#FFFFFF;
     font-family: inherit; color:var(--rfd-ink);
@@ -35,16 +35,16 @@ permalink: /reinforcement-demo/
     --rfd-positive:#5BBF90; --rfd-positive-bg:#1E3A2D;
     --rfd-neutral:#A3A89E; --rfd-neutral-bg:#353A33;
     --rfd-negative:#E08A67; --rfd-negative-bg:#46291F;
-    --rfd-reinforce:#D9B95E; --rfd-reinforce-bg:#3D3522;
+    --rfd-reinforce:#D9B95E; --rfd-reinforce-bg:#3D3522; --rfd-reinforce-soft:#8A7640;
     --rfd-note:#D9B95E; --rfd-note-bg:#3D3522;
     --rfd-on-accent:#101820;
   }
   /* Colourblind-friendly mode (toggle in the key row): Okabe-Ito blue/vermillion
      for positive/negative, reddish purple for reinforcement, ink for selection. */
   .rfd-wrap.rfd-cb{ --rfd-positive:#0072B2; --rfd-positive-bg:#DDEBF5; --rfd-negative:#D55E00; --rfd-negative-bg:#F9E3D3;
-    --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#F5E4EE; --rfd-accent:#191C19; --rfd-accent-soft:#EDEFEA; --rfd-on-accent:#FFFFFF; }
+    --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#F5E4EE; --rfd-reinforce-soft:#E8BDD5; --rfd-accent:#191C19; --rfd-accent-soft:#EDEFEA; --rfd-on-accent:#FFFFFF; }
   body.dark-mode .rfd-wrap.rfd-cb{ --rfd-positive:#56B4E9; --rfd-positive-bg:#1B3445; --rfd-negative:#E69F00; --rfd-negative-bg:#3F2F12;
-    --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#3A2733; --rfd-accent:#e8e9e5; --rfd-accent-soft:#30362f; --rfd-on-accent:#101820; }
+    --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#3A2733; --rfd-reinforce-soft:#7A4A65; --rfd-accent:#e8e9e5; --rfd-accent-soft:#30362f; --rfd-on-accent:#101820; }
   .rfd-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
   .rfd-wrap h1,.rfd-wrap h2,.rfd-wrap h3,.rfd-wrap h4{margin:0;} /* inherits the site's own heading font */
 
@@ -163,7 +163,8 @@ permalink: /reinforcement-demo/
   .rfd-result-note{font-size:.85rem; color:var(--rfd-ink-soft); margin-bottom:10px; line-height:1.55;}
 
   .rfd-strip-row{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
-  .rfd-strip-who{font-size:.78rem; color:var(--rfd-ink-soft); width:72px; flex:none;}
+  .rfd-strip-who{font-size:.78rem; color:var(--rfd-ink-soft); width:84px; flex:none; line-height:1.15;}
+  .rfd-strip-who small{display:block; font-size:.68rem; opacity:.85;}
   .rfd-strip{display:flex; gap:1.5px; flex:1;}
   .rfd-cell{flex:1; height:16px; border-radius:2px; background:var(--rfd-surface-2); border:1px solid var(--rfd-line);}
   .rfd-cell.rfd-revealed.positive{background:var(--rfd-positive); border-color:var(--rfd-positive);}
@@ -171,6 +172,8 @@ permalink: /reinforcement-demo/
   .rfd-cell.rfd-revealed.negative{background:var(--rfd-negative); border-color:var(--rfd-negative);}
   .rfd-cell.rfd-current{outline:2px solid var(--rfd-accent); outline-offset:1px;}
   .rfd-cell.rfd-shared{background:var(--rfd-reinforce); border-color:var(--rfd-reinforce);}
+  .rfd-cell.rfd-others{background:var(--rfd-reinforce-soft); border-color:var(--rfd-reinforce-soft);}
+  .rfd-cb .rfd-cell.rfd-others{background-image:repeating-linear-gradient(-45deg, rgba(255,255,255,.6) 0 2px, transparent 2px 5px);}
   .rfd-cb .rfd-cell.rfd-revealed.negative, .rfd-cb .rfd-prop-seg.negative{background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 2px, transparent 2px 6px);}
   .rfd-cb .rfd-cell.rfd-revealed.neutral, .rfd-cb .rfd-prop-seg.neutral{background-image:radial-gradient(rgba(255,255,255,.6) 1px, transparent 1.5px); background-size:5px 5px;}
 
@@ -298,6 +301,8 @@ permalink: /reinforcement-demo/
     pauseLabel: 'Pause simulation',
     resumeLabel:'Resume simulation',
     reinforcedRow: 'Reinforced',
+    fromOthers:    'from others',
+    othersNote:    'The lighter rows mark ticks when each agent is reinforced by agents outside this pair, which is why an agent can stay in a state for more than four ticks even when the two aren’t sharing one.',
     reinforcedBy:  'Reinforced by, this tick',
     nobody:        'no one',
     noInfluencers: 'no one (nothing influences this agent)',
@@ -736,11 +741,11 @@ permalink: /reinforcement-demo/
       '<div class="rfd-prop-caption"><span>Positive ' + prop.positive + '%</span><span>Neutral ' + prop.neutral + '%</span><span>Negative ' + prop.negative + '%</span></div>';
   }
 
-  function agentBlockHtml(n, stripId){
+  function agentBlockHtml(n, stripId, showReinforcedRow){
     return '<div class="rfd-result-block">' +
       '<div class="rfd-result-block-head"><h3 class="rfd-mono">' + n.label + '</h3><span class="' + pillClass(n.type, n.state) + '" id="' + stripId + '-pill">' + typeLabel(n.type) + '</span></div>' +
       '<div class="rfd-strip-row"><span class="rfd-strip-who">State</span>' + stripHtml(stripId) + '</div>' +
-      '<div class="rfd-strip-row"><span class="rfd-strip-who">' + TEXT.reinforcedRow + '</span>' + stripHtml(stripId + '-rf') + '</div>' +
+      (showReinforcedRow ? '<div class="rfd-strip-row"><span class="rfd-strip-who">' + TEXT.reinforcedRow + '</span>' + stripHtml(stripId + '-rf') + '</div>' : '') +
       '<div class="rfd-stat-grid rfd-stat-grid-3">' +
         '<div class="rfd-stat-card"><h4>Current run in this state</h4><div class="rfd-stat-big" id="' + stripId + '-streak">1 tick</div></div>' +
         '<div class="rfd-stat-card"><h4>' + TEXT.reinforcedBy + '</h4><div class="rfd-stat-names" id="' + stripId + '-by"></div></div>' +
@@ -772,11 +777,17 @@ permalink: /reinforcement-demo/
     }
   }
 
+  function othersRowsHtml(a, b){
+    return '<div class="rfd-strip-row"><span class="rfd-strip-who">' + a.label + '<small>' + TEXT.fromOthers + '</small></span>' + stripHtml('rfd-strip-oa') + '</div>' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">' + b.label + '<small>' + TEXT.fromOthers + '</small></span>' + stripHtml('rfd-strip-ob') + '</div>';
+  }
   function reinforcementBlockHtml(a, b, rel){
     if(rel === 'none'){
       return '<div class="rfd-result-block">' +
         '<div class="rfd-result-block-head"><h3>' + a.label + ' and ' + b.label + '</h3></div>' +
         '<div class="rfd-no-reinforce">' + TEXT.noTie + '</div>' +
+        '<p class="rfd-result-note" style="margin-top:12px;">' + TEXT.othersNote + '</p>' +
+        othersRowsHtml(a, b) +
       '</div>';
     }
     return '<div class="rfd-result-block">' +
@@ -785,13 +796,28 @@ permalink: /reinforcement-demo/
       '<div class="rfd-strip-row"><span class="rfd-strip-who">' + a.label + '</span>' + stripHtml('rfd-strip-pa') + '</div>' +
       '<div class="rfd-strip-row"><span class="rfd-strip-who">' + b.label + '</span>' + stripHtml('rfd-strip-pb') + '</div>' +
       '<div class="rfd-strip-row"><span class="rfd-strip-who">Shared</span>' + stripHtml('rfd-strip-shared') + '</div>' +
+      '<p class="rfd-result-note" style="margin:14px 0 8px;">' + TEXT.othersNote + '</p>' +
+      othersRowsHtml(a, b) +
       '<div class="rfd-stat-grid">' +
         '<div class="rfd-stat-card"><h4>Ticks sharing a sentiment, so far</h4><div class="rfd-stat-big" id="rfd-reinforceCount">0 / 1</div></div>' +
         '<div class="rfd-stat-card"><h4>Longest unbroken streak together</h4><div class="rfd-stat-big" id="rfd-reinforceLongest">0 ticks</div></div>' +
       '</div>' +
     '</div>';
   }
+  // Ticks where `id` is reinforced by an influencer other than the selected partner.
+  function updateOthersStrip(stripId, id, partnerId, tick){
+    var strip = document.getElementById(stripId);
+    if(!strip) return;
+    Array.prototype.forEach.call(strip.children, function(cell){
+      var i = Number(cell.getAttribute('data-i'));
+      cell.className = 'rfd-cell';
+      if(i <= tick && reinforcersAt(id, i).some(function(x){ return x !== partnerId; })) cell.classList.add('rfd-revealed','rfd-others');
+      if(i === tick) cell.classList.add('rfd-current');
+    });
+  }
   function updateReinforcementBlock(a, b, rel, tick){
+    updateOthersStrip('rfd-strip-oa', a.id, b.id, tick);
+    updateOthersStrip('rfd-strip-ob', b.id, a.id, tick);
     if(rel === 'none') return;
     updateStrip('rfd-strip-pa', a.id, tick);
     updateStrip('rfd-strip-pb', b.id, tick);
@@ -861,12 +887,12 @@ permalink: /reinforcement-demo/
     if(selected.length === 1){
       var n = byId[selected[0]];
       document.getElementById('rfd-resultsSub').textContent = fill(TEXT.resultsOne, n.label);
-      document.getElementById('rfd-resultsBody').innerHTML = agentBlockHtml(n, 'rfd-strip-solo');
+      document.getElementById('rfd-resultsBody').innerHTML = agentBlockHtml(n, 'rfd-strip-solo', true);
     } else {
       var a = byId[selected[0]], b = byId[selected[1]];
       var rel = relationship(a.id, b.id);
       document.getElementById('rfd-resultsSub').textContent = TEXT.resultsTwo;
-      document.getElementById('rfd-resultsBody').innerHTML = agentBlockHtml(a, 'rfd-strip-a') + agentBlockHtml(b, 'rfd-strip-b') + reinforcementBlockHtml(a, b, rel);
+      document.getElementById('rfd-resultsBody').innerHTML = agentBlockHtml(a, 'rfd-strip-a', false) + agentBlockHtml(b, 'rfd-strip-b', false) + reinforcementBlockHtml(a, b, rel);
     }
   }
 
