@@ -39,7 +39,7 @@ permalink: /reinforcement-demo/
     --rfd-note:#D9B95E; --rfd-note-bg:#3D3522;
     --rfd-on-accent:#101820;
   }
-  /* Colourblind-friendly mode (toggle in the key row): Okabe-Ito blue/vermillion
+  /* Colourblind-friendly mode (toggle in the key card header): Okabe-Ito blue/vermillion
      for positive/negative, reddish purple for reinforcement, ink for selection. */
   .rfd-wrap.rfd-cb{ --rfd-positive:#0072B2; --rfd-positive-bg:#DDEBF5; --rfd-negative:#D55E00; --rfd-negative-bg:#F9E3D3;
     --rfd-reinforce:#CC79A7; --rfd-reinforce-bg:#F5E4EE; --rfd-reinforce-soft:#E8BDD5; --rfd-accent:#191C19; --rfd-accent-soft:#EDEFEA; --rfd-on-accent:#FFFFFF; }
@@ -64,13 +64,46 @@ permalink: /reinforcement-demo/
     border-radius:8px; padding:12px 16px; margin-bottom:22px; font-size:.88rem; line-height:1.55;
   }
 
-  .rfd-key-row{display:flex; flex-wrap:wrap; gap:12px 22px; margin-bottom:22px; font-size:.82rem; color:var(--rfd-ink-soft);}
-  .rfd-key-item{display:flex; align-items:center; gap:7px;}
+  /* Key: lives inside the network panel. From 900px it's a narrow column to the
+     right of the network (the panel becomes a grid); narrower, it sits below
+     the Run/Clear row with its three groups side by side where they fit.
+     Colourblind mode only changes what's inside the sentiment chips (symbols,
+     patterns), never adds text, so toggling it can't change the key's size. */
+  .rfd-toolbar{display:flex; justify-content:flex-end; margin:-6px 0 10px;}
+  .rfd-key{background:var(--rfd-surface-2); border-radius:10px; padding:12px 14px; margin-top:18px; font-size:.78rem; color:var(--rfd-ink-soft);}
+  .rfd-key-head{margin-bottom:8px;}
+  .rfd-key-title{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.72rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--rfd-ink-soft);}
+  .rfd-key-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:10px 22px;}
+  @media (min-width:900px){
+    /* Column 2 is wider than the key, and the key is centred in it both ways:
+       it floats between the network and the panel's right edge, level with
+       the middle of the network. It sits in the network's row only, so the
+       rows below (hint, Run/Clear) never stretch to fit it. */
+    .rfd-net-panel{display:grid; grid-template-columns:minmax(0,1fr) minmax(230px, 280px); column-gap:12px; align-items:start;}
+    .rfd-net-panel > *{grid-column:1;}
+    .rfd-net-panel > h2, .rfd-net-panel > .rfd-sub{grid-column:1 / -1;}
+    .rfd-net-panel > .rfd-key{grid-column:2; grid-row:3; width:210px; justify-self:center; align-self:center; margin-top:0;}
+    .rfd-net-panel > svg.rfd-network{align-self:center;} /* if the key is taller (narrow desktops), centre the network instead */
+    .rfd-net-panel .rfd-key-grid{grid-template-columns:1fr; gap:12px;}
+  }
+  .rfd-key-group{display:flex; flex-direction:column; gap:6px; min-width:0;}
+  .rfd-key-label{margin:0; font-size:.68rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--rfd-ink);}
+  .rfd-key-item{display:flex; align-items:center; gap:8px; line-height:1.35;}
+  .rfd-key-item > span:first-child, .rfd-key-item > svg{flex:none;}
+  .rfd-chip{width:14px; height:14px; border-radius:3px; display:inline-flex; align-items:center; justify-content:center; font:700 11px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:#fff;}
+  .rfd-chip.positive{background:var(--rfd-positive);}
+  .rfd-chip.neutral{background:var(--rfd-neutral);}
+  .rfd-chip.negative{background:var(--rfd-negative);}
+  .rfd-chip-sym{visibility:hidden;}
+  .rfd-cb .rfd-chip-sym{visibility:visible;}
+  .rfd-cb .rfd-chip.negative{background-image:repeating-linear-gradient(45deg, rgba(255,255,255,.45) 0 2px, transparent 2px 6px);}
+  .rfd-cb .rfd-chip.neutral{background-image:radial-gradient(rgba(255,255,255,.55) 1px, transparent 1.5px); background-size:5px 5px;}
+  .rfd-key-arrow line{stroke:var(--rfd-ink-soft); stroke-width:1.4; opacity:.7;}
+  .rfd-key-arrow path{fill:var(--rfd-ink-soft); opacity:.7;}
+  @media (max-width:480px){ .rfd-cb-toggle{padding:6px 11px 6px 8px;} }
   .rfd-swatch-dpr{width:12px; height:12px; border-radius:50%; display:inline-block; flex:none;}
   .rfd-swatch-hollow{width:12px; height:12px; border-radius:2px; display:inline-block; flex:none; border:2px solid; background:transparent;}
   .rfd-swatch-tie{width:22px; height:3px; border-radius:2px; display:inline-block; flex:none; background:var(--rfd-reinforce);}
-  .rfd-cb-key{display:none;}
-  .rfd-cb .rfd-cb-key{display:flex;}
   /* Colourblind-friendly toggle: same pill shape and type as the Run/Clear buttons, with a switch. */
   .rfd-cb-toggle{
     margin-left:auto; display:inline-flex; align-items:center; gap:9px;
@@ -251,18 +284,11 @@ permalink: /reinforcement-demo/
   <div class="rfd-disclaimer">
     <b>For illustration purposes only.</b> This simulation does not predict anyone's real behaviour. It executes a fixed, seeded run of a simplified version of the model. It is animated to depict a live simulation, but does not incorporate randomness or variability: each run executes the same as the last, with the states of the agents always resulting in the same behaviour.
   </div>
-
-  <div class="rfd-key-row">
-    <div class="rfd-key-item"><span class="rfd-swatch-dpr" style="background:var(--rfd-positive)"></span>Diagnosed with depression, positive</div>
-    <div class="rfd-key-item"><span class="rfd-swatch-hollow" style="border-color:var(--rfd-negative)"></span>Not diagnosed, negative</div>
-    <div class="rfd-key-item">(Agents diagnosed with depression are filled circles &middot; agents not diagnosed are outlined squares)</div>
-    <div class="rfd-key-item"><span class="rfd-swatch-tie"></span>Highlighted tie: both agents share the same sentiment at that time (represents reinforcement)</div>
-    <div class="rfd-key-item rfd-cb-key">Symbols: + positive &middot; &minus; negative &middot; 0 neutral (striped cells are negative, dotted cells neutral)</div>
-    <button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button>
-  </div>
   <!-- ===== END EDITABLE TEXT ===== -->
 
-    <div class="rfd-panel">
+    <div class="rfd-toolbar"><button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button></div>
+
+    <div class="rfd-panel rfd-net-panel">
       <!-- ===== EDITABLE TEXT ===== -->
       <h2>A network of agents</h2>
       <p class="rfd-sub">Twelve agents form one connected component (Users 01–12). Three additional agents (Users 13–15, in the corners) are depicted as isolates with no ties: these isolates represent the baseline case, depicting how an agent behaves without any connections. Click one agent to follow its behaviour, or select a second agent to compare a pair of users, then run the simulation to watch every agent's state play out tick by tick. Arrows show who influences whom; an agent can only be reinforced by agents whose arrows point towards it.</p>
@@ -275,6 +301,31 @@ permalink: /reinforcement-demo/
         <button class="rfd-clear-btn" id="rfd-clearBtn">Clear selection</button>
         <span class="rfd-live-note" id="rfd-liveNote"></span>
       </div>
+      <!-- ===== EDITABLE TEXT: key ===== -->
+      <aside class="rfd-key" role="group" aria-labelledby="rfd-keyTitle">
+        <div class="rfd-key-head">
+          <span class="rfd-key-title" id="rfd-keyTitle">Key</span>
+        </div>
+        <div class="rfd-key-grid">
+          <div class="rfd-key-group">
+            <p class="rfd-key-label">Agents</p>
+            <div class="rfd-key-item"><span class="rfd-swatch-dpr" style="background:var(--rfd-ink-soft)"></span>Diagnosed with depression (filled circle)</div>
+            <div class="rfd-key-item"><span class="rfd-swatch-hollow" style="border-color:var(--rfd-ink-soft)"></span>Not diagnosed (outlined square)</div>
+          </div>
+          <div class="rfd-key-group">
+            <p class="rfd-key-label">Sentiment</p>
+            <div class="rfd-key-item"><span class="rfd-chip positive" aria-hidden="true"><span class="rfd-chip-sym">+</span></span>Positive</div>
+            <div class="rfd-key-item"><span class="rfd-chip neutral" aria-hidden="true"><span class="rfd-chip-sym">0</span></span>Neutral</div>
+            <div class="rfd-key-item"><span class="rfd-chip negative" aria-hidden="true"><span class="rfd-chip-sym">&minus;</span></span>Negative</div>
+          </div>
+          <div class="rfd-key-group">
+            <p class="rfd-key-label">Ties</p>
+            <div class="rfd-key-item"><svg class="rfd-key-arrow" width="22" height="10" viewBox="0 0 22 10" aria-hidden="true"><line x1="1" y1="5" x2="16" y2="5"/><path d="M15,1.5 L21,5 L15,8.5 Z"/></svg>Arrow: who influences whom</div>
+            <div class="rfd-key-item"><span class="rfd-swatch-tie"></span>Highlighted: both agents share the same sentiment at that time (represents reinforcement)</div>
+          </div>
+        </div>
+      </aside>
+      <!-- ===== END EDITABLE TEXT ===== -->
     </div>
 
     <div class="rfd-panel" id="rfd-relPanel" style="display:none;">
