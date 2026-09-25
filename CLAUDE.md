@@ -262,6 +262,10 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   other. Radii are divided by the zoom level, so dots keep the same screen
   size and spread apart when zoomed (Europe cluster: ~6px targets at full
   view on phones, ~15px at 4x).
+- Zoom animates (`animateTo`, ~260ms ease-out, size changes geometrically
+  around the fixed point so the zoom anchor stays put). Rapid clicks/wheel
+  steps build on `goal()` (the target view), so they accumulate; dragging
+  calls `stopAnim()`; `prefers-reduced-motion` zooms instantly.
 - Zoom: +/−/reset buttons (bottom-left row), drag to pan when zoomed,
   mouse wheel only in the enlarged view (never hijacks page scroll). Zoom
   changes the SVG viewBox; strokes use `vector-effect: non-scaling-stroke`.

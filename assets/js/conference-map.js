@@ -177,46 +177,87 @@
     });
   }
 
+  // Where the view is heading (during a zoom animation), else the view itself.
+  var target = null, anim = null;
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var ZOOM_MS = 260;
+  function goal() { return target || view; }
+  function goalZoom() { return MAP_W / goal().w; }
+
   function applyView() {
     svg.setAttribute("viewBox", [view.x, view.y, view.w, view.h].join(" "));
     sizeDots();
-    var z = zoomLevel();
-    if (zoomOut) zoomOut.disabled = z <= 1.001;
-    if (zoomReset) zoomReset.disabled = z <= 1.001;
-    if (zoomIn) zoomIn.disabled = z >= MAX_ZOOM - 0.001;
-    svg.classList.toggle("is-zoomed", z > 1.001);
+    var zg = goalZoom();   // buttons reflect where the zoom is heading
+    if (zoomOut) zoomOut.disabled = zg <= 1.001;
+    if (zoomReset) zoomReset.disabled = zg <= 1.001;
+    if (zoomIn) zoomIn.disabled = zg >= MAX_ZOOM - 0.001;
+    svg.classList.toggle("is-zoomed", zoomLevel() > 1.001 || zg > 1.001);
   }
 
-  function clampView() {
-    view.x = Math.min(Math.max(view.x, 0), MAP_W - view.w);
-    view.y = Math.min(Math.max(view.y, 0), MAP_H - view.h);
+  function clamp(v) {
+    v.x = Math.min(Math.max(v.x, 0), MAP_W - v.w);
+    v.y = Math.min(Math.max(v.y, 0), MAP_H - v.h);
+    return v;
+  }
+  function clampView() { clamp(view); }
+
+  function stopAnim() { if (anim) cancelAnimationFrame(anim); anim = null; target = null; }
+
+  // The point that stays put on screen between two views of different size
+  // (so zooming visibly happens "around" it); null if the size doesn't change.
+  function fixedPoint(a0, w0, a1, w1) {
+    if (Math.abs(w0 - w1) < 1e-9) return null;
+    var p = (a1 * w0 - a0 * w1) / (w0 - w1);
+    return { p: p, f: (p - a0) / w0 };
   }
 
-  // Zoom to level z, keeping map point (cx, cy) at the same place on screen.
-  function zoomTo(z, cx, cy) {
+  // Ease from the current view to `to`: size changes geometrically (so each
+  // doubling takes the same time) around the fixed point, easing out.
+  function animateTo(to) {
+    if (anim) cancelAnimationFrame(anim);
+    target = to;
+    if (reduceMotion) { view.x = to.x; view.y = to.y; view.w = to.w; view.h = to.h; target = null; applyView(); return; }
+    var from = { x: view.x, y: view.y, w: view.w, h: view.h };
+    var fpx = fixedPoint(from.x, from.w, to.x, to.w), fpy = fixedPoint(from.y, from.h, to.y, to.h);
+    var start = performance.now();
+    function step(now) {
+      // rAF timestamps can be a hair earlier than `start`; clamp so the first
+      // frame never overshoots backwards.
+      var k = Math.min(1, Math.max(0, (now - start) / ZOOM_MS)), e = 1 - Math.pow(1 - k, 3);
+      view.w = from.w * Math.pow(to.w / from.w, e);
+      view.h = from.h * Math.pow(to.h / from.h, e);
+      view.x = fpx ? fpx.p - fpx.f * view.w : from.x + (to.x - from.x) * e;
+      view.y = fpy ? fpy.p - fpy.f * view.h : from.y + (to.y - from.y) * e;
+      if (k >= 1) { view.x = to.x; view.y = to.y; view.w = to.w; view.h = to.h; anim = null; target = null; }
+      applyView();
+      if (k < 1) anim = requestAnimationFrame(step);
+    }
+    anim = requestAnimationFrame(step);
+  }
+
+  // Zoom to level z, keeping the point at screen fraction (fx, fy) of the map
+  // (default: the centre) in the same place. Builds on any zoom in progress,
+  // so quick repeated clicks or wheel steps add up smoothly.
+  function zoomTo(z, fx, fy) {
     z = Math.min(Math.max(z, 1), MAX_ZOOM);
-    if (cx === undefined) { cx = view.x + view.w / 2; cy = view.y + view.h / 2; }
-    var fx = (cx - view.x) / view.w, fy = (cy - view.y) / view.h;
-    view.w = MAP_W / z; view.h = MAP_H / z;
-    view.x = cx - fx * view.w; view.y = cy - fy * view.h;
-    clampView();
-    applyView();
+    if (fx === undefined) { fx = 0.5; fy = 0.5; }
+    var b = goal();
+    var px = b.x + fx * b.w, py = b.y + fy * b.h;
+    var to = { w: MAP_W / z, h: MAP_H / z };
+    to.x = px - fx * to.w; to.y = py - fy * to.h;
+    animateTo(clamp(to));
   }
 
-  if (zoomIn) zoomIn.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(zoomLevel() * 2); });
-  if (zoomOut) zoomOut.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(zoomLevel() / 2); });
+  if (zoomIn) zoomIn.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(goalZoom() * 2); });
+  if (zoomOut) zoomOut.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(goalZoom() / 2); });
   if (zoomReset) zoomReset.addEventListener("click", function (ev) { ev.stopPropagation(); zoomTo(1); });
-
-  function toMap(clientX, clientY) {
-    var rect = svg.getBoundingClientRect();
-    return [view.x + (clientX - rect.left) / rect.width * view.w, view.y + (clientY - rect.top) / rect.height * view.h];
-  }
 
   // Drag to pan (mouse or finger) once zoomed in. A press that starts on a dot
   // never starts a pan, so dots keep their own hover/tap behaviour.
   var drag = null;
   svg.addEventListener("pointerdown", function (ev) {
     if (zoomLevel() <= 1.001 || ev.target.closest(".ecm-dot")) return;
+    stopAnim();   // dragging takes over immediately from any zoom in progress
     drag = { x: ev.clientX, y: ev.clientY, vx: view.x, vy: view.y, id: ev.pointerId };
     svg.classList.add("is-dragging");
   });
@@ -237,8 +278,8 @@
   svg.addEventListener("wheel", function (ev) {
     if (!panel.classList.contains("is-expanded")) return;
     ev.preventDefault();
-    var p = toMap(ev.clientX, ev.clientY);
-    zoomTo(zoomLevel() * (ev.deltaY < 0 ? 1.25 : 0.8), p[0], p[1]);
+    var rect = svg.getBoundingClientRect();
+    zoomTo(goalZoom() * (ev.deltaY < 0 ? 1.25 : 0.8), (ev.clientX - rect.left) / rect.width, (ev.clientY - rect.top) / rect.height);
   }, { passive: false });
 
   // ---------- enlarge (overlay, 768px and up) ----------

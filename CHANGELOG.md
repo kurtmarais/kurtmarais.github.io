@@ -15,7 +15,8 @@ is the baseline. Add new entries at the top.
   show as an outlined gold dot; events with a future `start_date` show as
   "Upcoming" until their date. Zoom buttons and drag-to-pan in the map, an
   enlarge button (tablet and desktop) that opens a large overlay with
-  mouse-wheel zoom, and earlier events listed newest first.
+  mouse-wheel zoom, and earlier events listed newest first. Zoom animates
+  smoothly (instant for visitors who prefer reduced motion).
 
 ## 2026-09-25 (2)
 
