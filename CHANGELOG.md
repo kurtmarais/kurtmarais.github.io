@@ -4,6 +4,15 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25
+
+### Added
+- `/reinforcement-demo/`: interactive, seeded illustration of emotional
+  reinforcement built on the dissertation model's transition and posting
+  probabilities. Supports site dark mode and reduced-motion preferences.
+- Homepage "Try it yourself" teaser card linking to the demo (styles in
+  `_sass/main.scss` under DEMO TEASER).
+
 ## 2026-09-24 (7)
 
 ### Changed

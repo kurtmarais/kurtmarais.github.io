@@ -161,3 +161,27 @@ that class, not the old hidden `.engagement-keywords` span (removed). Sort
 now runs once automatically on page load (`applySort()` called at the end of
 the IIFE), so "Newest first" is genuinely true on first render, not only
 after the dropdown is touched.
+
+## Reinforcement demo (`reinforcement-demo.html`, `/reinforcement-demo/`)
+
+Self-contained page: all CSS/JS inline, every class and CSS variable
+prefixed `rfd-`, variables declared on `.rfd-wrap` (not `:root`) so nothing
+leaks into other pages. Consequences worth remembering:
+
+- JS reads colours with `getComputedStyle(.rfd-wrap)` — reading off `<html>`
+  returns empty strings. Dark mode overrides the variables under
+  `body.dark-mode .rfd-wrap`; a `MutationObserver` on `body`'s class redraws
+  the SVGs, because `dark-mode.js` applies the saved preference *after* the
+  inline script has drawn.
+- SVG node labels are appended to the `<svg>`, not inside `.rfd-node`, so
+  label styles target `svg.rfd-network text` / `svg.rfd-rel text`.
+- Outlined (not-diagnosed) nodes are `fill:none`; they need
+  `pointer-events:all` or only the 2.5px outline is clickable.
+- Site-wide `h1`–`h4` are uppercase, and that applies here too.
+- `CONNECTION_BOOST = 0.08` is a labelled placeholder, not a measured value
+  (the page's methodology note explains why).
+
+Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
+under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
+link's stretched `::after`.
+

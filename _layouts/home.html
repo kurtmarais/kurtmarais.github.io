@@ -88,6 +88,28 @@ layout: default
   </div>
 </div>
 
+<div class="demo-teaser mb-5">
+  <div class="demo-teaser-icon" aria-hidden="true">
+    <svg viewBox="0 0 44 44">
+      <line class="teaser-edge" x1="10" y1="14" x2="22" y2="22"/>
+      <line class="teaser-edge" x1="34" y1="12" x2="22" y2="22"/>
+      <line class="teaser-edge" x1="22" y1="22" x2="14" y2="34"/>
+      <line class="teaser-edge" x1="22" y1="22" x2="32" y2="32"/>
+      <circle class="teaser-leaf teaser-leaf-a" cx="10" cy="14" r="3"/>
+      <circle class="teaser-leaf teaser-leaf-b" cx="34" cy="12" r="3"/>
+      <circle class="teaser-hub" cx="22" cy="22" r="3.5"/>
+      <circle class="teaser-leaf teaser-leaf-c" cx="14" cy="34" r="3"/>
+      <circle class="teaser-leaf teaser-leaf-d" cx="32" cy="32" r="3"/>
+    </svg>
+  </div>
+  <div class="demo-teaser-body">
+    <p class="eyebrow">Try it yourself</p>
+    <h4>Watch sentiment reinforce itself in a social network</h4>
+    <p>An interactive, tick-by-tick illustration of the dissertation's core finding — built on the real model data, not a live simulation.</p>
+    <a href="{{ '/reinforcement-demo/' | relative_url }}" class="demo-teaser-link">Open the demo <span class="arrow">&rarr;</span></a>
+  </div>
+</div>
+
 {% assign media_items = site.data.engagements | where: "type", "media" | where: "featured", true %}
 {% if site.show_media and media_items.size > 0 %}
 <section class="media-strip mb-5">
