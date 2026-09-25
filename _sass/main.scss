@@ -493,6 +493,9 @@ h4 {
    card is clickable: the link's ::after stretches over the card. */
 
 .demo-teaser {
+  max-width: 960px; // same width as the hero card and the "In the Media" card
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
   display: flex;
   align-items: flex-start;

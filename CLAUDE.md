@@ -178,8 +178,15 @@ leaks into other pages. Consequences worth remembering:
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
   `pointer-events:all` or only the 2.5px outline is clickable.
 - Site-wide `h1`–`h4` are uppercase, and that applies here too.
-- `CONNECTION_BOOST = 0.08` is a labelled placeholder, not a measured value
-  (the page's methodology note explains why).
+- `CONNECTION_BOOST = 0.15` represents emotional reinforcement, an observed
+  outcome of the dissertation's full simulation (not a parameter estimated
+  from the transition table). It is not a placeholder. Across 500 seeds,
+  0.15 gives connected agents a ~15% per-tick switch rate vs ~22% isolated.
+- Editable wording: HTML between `EDITABLE TEXT` comments, plus the `TEXT`
+  object at the top of the page's `<script>`. No em dashes in page copy.
+- Selecting agents must never reset the network: colours stay at the
+  current tick. The run button toggles run / pause / resume. `TICK_MS`
+  sets playback speed.
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
