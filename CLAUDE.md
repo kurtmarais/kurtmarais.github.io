@@ -224,9 +224,70 @@ leaks into other pages. Consequences worth remembering:
   object at the top of the page's `<script>`. No em dashes in page copy.
 - Selecting agents must never reset the network: colours stay at the
   current tick. The run button toggles run / pause / resume. `TICK_MS`
-  sets playback speed.
+  is the x1 speed; the speed button cycles `SPEEDS` (x0.5, x1, x1.5, x2, x2.5)
+  and divides `TICK_MS` by it, restarting the timer if playing.
+- Tick inspector: `#rfd-snapshot` ("All agents at tick N", below the
+  timelines) shows from the start of every run and follows `currentTick`.
+  Agents whose state differs from the previous tick get `.is-changed` and a
+  "Changed from X" line (the line's space is always reserved so cards don't
+  jump), plus a one-off `.is-flash` only when playback steps onto the tick.
+  Every timeline cell in `#rfd-resultsBody` is clickable at any time
+  (playing, paused, finished): a click pauses and jumps to that tick. The
+  chevron (or a header click) minimises the panel. `revealedTo` (furthest tick reached this run) sets
+  how much of each timeline is drawn, so stepping back doesn't hide later
+  ticks; stat cards still use `currentTick`. New run / Clear reset it.
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
 link's stretched `::after`.
+
+## Conference map (Engagements page)
+
+Toggle `#ecm-toggle` sits in `.filters-wrapper`, left of the filters; panel
+in `_includes/conference-map.html`; behaviour in `assets/js/conference-map.js`;
+styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
+
+- Data: entries in `engagements.yml` with a `map:` block (`city`, `region`,
+  `lat`, `lon`). One dot per region, on the most recent engagement's city;
+  older ones listed in the card.
+- Projection: coastlines are pre-rendered static SVG (d3-geo
+  `geoEqualEarth().scale(155).translate([450,230])`, viewBox `0 0 900 460`).
+  The JS `project()` is the same Equal Earth formula at the same scale and
+  was checked against d3's output (within 0.01 units), so new dots only
+  need lat/lon. Never hand-place pixel coordinates.
+- The details card is docked below the map, never floating over it (a
+  floating card collided with dots in the mockup's testing).
+- Desktop (>= 992px): map is a 380px sticky right column. Narrower: above
+  the list. Phones (< 768px): the toggle is an icon-only 1.5rem bubble
+  styled like `.engagement-type-pill`.
+- Touch: a tap focuses a dot *before* its click fires, so focus from a
+  pointer is ignored (otherwise tap shows then immediately hides the card).
+  Blur/mouseleave only hide the card if that dot owns it.
+- `map.online: true` → outlined gold dot (`.is-online`), "Online" in the
+  card. Upcoming = `start_date` after the visitor's today (runtime check in
+  JS, so it flips without a rebuild) → dashed ring (`.is-upcoming`), card
+  says "Upcoming, <date>". Legend items for online/upcoming only show when
+  a dot uses them.
+- Tap targets are capped at half the distance to the nearest other dot, so
+  close dots (Trondheim/Malmö are ~18 map units apart) can't block each
+  other. Radii are divided by the zoom level, so dots keep the same screen
+  size and spread apart when zoomed (Europe cluster: ~6px targets at full
+  view on phones, ~15px at 4x).
+- Zoom animates (`animateTo`, ~260ms ease-out, size changes geometrically
+  around the fixed point so the zoom anchor stays put). Rapid clicks/wheel
+  steps build on `goal()` (the target view), so they accumulate; dragging
+  calls `stopAnim()`; `prefers-reduced-motion` zooms instantly.
+- Zoom: +/−/reset buttons (bottom-left row), drag to pan when zoomed,
+  mouse wheel only in the enlarged view (never hijacks page scroll). Zoom
+  changes the SVG viewBox; strokes use `vector-effect: non-scaling-stroke`.
+  Never set a halo/core size in CSS (`r:` in CSS overrides the JS radius);
+  hover uses `transform: scale()`.
+- Enlarge (768px and up): the panel and backdrop move to `<body>` while
+  enlarged (the sticky column is its own stacking context) and move back on
+  close; Escape/backdrop click closes.
+- `.ecm-stage > svg` targets the map only: a plain `.ecm-stage svg` rule
+  also hit the Font Awesome zoom icons and blew them up to full width.
+- Card: "Earlier in this region" is a newest-first list, one per line.
+- Any engagement type can be mapped (Bath 2023 is a seminar); cards show the
+  type via `TYPE_LABELS` in the JS. Heading: "Where I've presented".
 

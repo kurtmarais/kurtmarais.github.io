@@ -4,6 +4,29 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (3)
+
+### Added
+- Engagements page conference map: MAP control in the filter row opens an
+  Equal Earth world map with one dot per region where a conference talk or
+  poster was presented in person, with a details card. Sticky right-hand
+  column on desktop, above the list on smaller screens. Dots come from new
+  `map:` blocks in `_data/engagements.yml`. Online events (Malmö 2024)
+  show as an outlined gold dot; events with a future `start_date` show as
+  "Upcoming" until their date. Zoom buttons and drag-to-pan in the map, an
+  enlarge button (tablet and desktop) that opens a large overlay with
+  mouse-wheel zoom, and earlier events listed newest first. Zoom animates
+  smoothly (instant for visitors who prefer reduced motion).
+  Any engagement type can be mapped (Bath 2023 seminar added); cards show
+  the engagement type; heading renamed "Where I've presented".
+- Reinforcement demo: speed button next to Run (x0.5, x1 default, x1.5,
+  x2, x2.5). "All agents at tick N" below the timelines shows every
+  agent's state and who reinforces it, with totals, throughout the run;
+  agents that just changed state are highlighted with what they changed
+  from. Click any tick in the timelines, at any point, to jump to it. The
+  panel minimises with a chevron. Stepping back keeps the rest of the
+  timeline visible.
+
 ## 2026-09-25 (2)
 
 ### Fixed

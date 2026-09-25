@@ -29,6 +29,13 @@ and both pages follow):
   an entry, or nothing if it has no date. Call with
   `{% include engagement-date.html item=item %}`.
 
+Engagements page:
+
+- `conference-map.html` — the conference map panel: pre-rendered Equal
+  Earth coastlines (static SVG, no map library) plus the dot data as JSON,
+  built from `_data/engagements.yml` entries with a `map:` block. Behaviour
+  in `assets/js/conference-map.js`.
+
 Homepage:
 
 - `publications.html` — the homepage "Selected publications" section

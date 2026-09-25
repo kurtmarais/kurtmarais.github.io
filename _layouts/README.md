@@ -18,7 +18,8 @@ content lives in `_data/`, the collections, or the root `.md` files.
   `research/*`).
 - `supervision.html` — Supervision page: filters/sort/search, current and
   completed lists (`supervision-filters.js`).
-- `engagements.html` — Engagements page: filters/sort/search, year groups,
+- `engagements.html` — Engagements page: filters/sort/search, conference
+  map toggle and panel (`_includes/conference-map.html`), year groups,
   standard entries and media cards (`engagements-filters.js`). Type
   icon/label and date come from `_includes/engagement-type.html` and
   `_includes/engagement-date.html`.
