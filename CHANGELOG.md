@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (11)
+
+### Fixed
+- Homepage "Find me online" cards on tablets and small laptops: names no
+  longer wrap or sit left-aligned. Tablets (768–991px) show three cards per
+  row in two rows; 992–1199px uses the full width for one row; all cards
+  are the same width and names are centred.
+
 ## 2026-09-25 (10)
 
 ### Fixed

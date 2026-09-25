@@ -126,6 +126,11 @@ makes this bug confusing to diagnose. Confirmed root cause, not a guess.
 `.social-card-clone` must be `display: none` on desktop, or the cloned cards
 show up as stray extra entries in the row.
 
+Card widths by screen: names are `nowrap` and centred. 768–991px: 3×2 grid.
+992–1199px: one row without the end spacers. 1200px+: one row with the
+spacers. With spacers below 1200px, six cards shrank to ~90–105px and
+"Research profile" / "Google Scholar" wrapped (left-aligned).
+
 ## Liquid gotchas worth remembering
 
 - Avoid parenthetical grouping in `{% if %}` (`and (x or y)`) — unreliable

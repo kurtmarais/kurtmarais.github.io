@@ -2846,6 +2846,12 @@ body.dark-mode .legend-app li::before {
 .social-card svg {
   font-size: 1.5rem !important;
 }
+// Names stay on one line and centred under the icon. At narrow widths the
+// layout below gives cards enough room instead of letting names wrap.
+.social-card span {
+  text-align: center;
+  white-space: nowrap;
+}
 
 body.dark-mode .social-card {
   background: #f5f1e7;
@@ -2898,6 +2904,26 @@ body.dark-mode .social-card {
 
   body.dark-mode .social-card:hover {
     background: #9ab8aa;
+  }
+}
+
+/* Below 1200px the end spacers would squeeze six cards to ~90-105px, too
+   narrow for "Research profile" / "Google Scholar": drop the spacers so the
+   cards use the full width (992-1199px), and on tablets (768-991px) switch
+   to three cards per row, two rows. Every card gets the same width. */
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .social-card-spacer {
+    display: none;
+  }
+  .social-card {
+    min-width: 0;
+    padding: 0 0.5rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .social-links-track {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
