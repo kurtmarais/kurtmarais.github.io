@@ -587,7 +587,9 @@ h4 {
   position: absolute;
   inset: 0;
 }
-.demo-teaser-link:hover {
+.demo-teaser-link:hover,
+.demo-teaser-link:focus {
+  color: $linkColor; // keep the site's link colour instead of Bootstrap's blue hover
   text-decoration: underline;
 }
 .demo-teaser-link .arrow {
@@ -1682,6 +1684,11 @@ body.dark-mode .demo-teaser {
 
 body.dark-mode .demo-teaser:hover {
   border-color: #9ab8aa;
+}
+
+body.dark-mode .demo-teaser-link:hover,
+body.dark-mode .demo-teaser-link:focus {
+  color: #9ab8aa;
 }
 
 body.dark-mode .demo-teaser-body p {
