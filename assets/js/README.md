@@ -27,5 +27,9 @@ Loaded only by the page that needs it:
   Sorts "Newest first" on page load.
 - `publications-filters.js` — Publications filters/sort/search.
 - `supervision-filters.js` — Supervision filters/sort/search.
+- `conference-map.js` — Engagements page conference map: MAP toggle,
+  Equal Earth projection of each `map:` entry's lat/lon, one dot per
+  region, docked details card (hover on desktop, tap on touch screens,
+  focus/Enter/Escape on keyboard).
 - `research-network.js` — the animated OR ↔ Computational Social Science
   network on the About page (loaded from `about.md`).

@@ -175,6 +175,11 @@
   year: 2025
   venue: "Optimization and Decision Sciences Conference"
   location: "Milan, Italy"
+  map:                            # conference map on the Engagements page
+    city: "Milan"
+    region: "Lombardy, Italy"
+    lat: 45.4642
+    lon: 9.1900
   keywords:
     - agent-based simulation
     - sentiment analysis
@@ -186,6 +191,11 @@
   year: 2025
   venue: "EURO Working Group on Operational Research Applied to Health Services (ORAHS)"
   location: "Trondheim, Norway"
+  map:
+    city: "Trondheim"
+    region: "Trøndelag, Norway"
+    lat: 63.4305
+    lon: 10.3951
   keywords:
     - sentiment analysis
     - lexicon construction
@@ -289,6 +299,11 @@
   year: 2022
   venue: "Operations Research Society of South Africa Conference"
   location: "Cape Town, South Africa"
+  map:
+    city: "Cape Town"
+    region: "Western Cape, South Africa"
+    lat: -33.9249
+    lon: 18.4241
   keywords:
     - infodemiology
     - mental health
@@ -312,6 +327,11 @@
   publication: "Professional Educational Development of Academics (PREDAC) 2019"
   venue: "Stellenbosch University Scholarship of Teaching and Learning Conference"
   location: "Somerset West, South Africa"
+  map:
+    city: "Somerset West"
+    region: "Western Cape, South Africa"
+    lat: -34.0757
+    lon: 18.8433
   start_date: "2019-10-30"        # exact date within 2019 unknown — replace if you have the specific PREDAC 2019 date
   end_date: "2019-10-30"
   year: 2019
@@ -340,6 +360,11 @@
   year: 2019
   venue: "Operations Research Society of South Africa Conference"
   location: "Cape Town, South Africa"
+  map:
+    city: "Cape Town"
+    region: "Western Cape, South Africa"
+    lat: -33.9249
+    lon: 18.4241
   keywords:
     - data envelopment analysis
     - efficiency

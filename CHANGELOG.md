@@ -4,6 +4,15 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (3)
+
+### Added
+- Engagements page conference map: MAP control in the filter row opens an
+  Equal Earth world map with one dot per region where a conference talk or
+  poster was presented in person, with a details card. Sticky right-hand
+  column on desktop, above the list on smaller screens. Dots come from new
+  `map:` blocks in `_data/engagements.yml`.
+
 ## 2026-09-25 (2)
 
 ### Fixed

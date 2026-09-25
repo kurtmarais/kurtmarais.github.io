@@ -143,6 +143,27 @@ filters as a seminar but gets the video card.
 - Sort order ("Newest first" is applied on page load) uses `start_date`,
   falling back to the optional `sort_date`, then order in the file.
 
+## Conference map
+
+Any entry with a `map:` block gets a dot on the Engagements page's
+conference map (the MAP control in the filter row):
+
+```yaml
+  map:
+    city: "Cape Town"                     # shown in the card
+    region: "Western Cape, South Africa"  # one dot per region
+    lat: -33.9249                         # decimal degrees (south is negative)
+    lon: 18.4241                          # decimal degrees (west is negative)
+```
+
+- One dot per `region`, placed on the city of the most recent engagement
+  there (by `start_date`, else `year`); earlier ones in the same region are
+  listed in the card under "Also presented in this region".
+- Leave `map:` off online events, and anything that shouldn't be on the map.
+- Currently mapped: Milan and Trondheim (2025), Cape Town (2022, 2019) and
+  Somerset West (2019 poster). The EMS Research Impact Day poster (2026)
+  isn't mapped; add a `map:` block to include it.
+
 ## Posters
 
 Poster entries hold everything the poster page shows. Extra fields:

@@ -1579,6 +1579,208 @@ body.dark-mode .poster-embed {
 }
 
 
+/* CONFERENCE MAP (Engagements page) — toggle in the filter row, panel in
+   _includes/conference-map.html, behaviour in assets/js/conference-map.js.
+   Everything prefixed ecm- so nothing collides with other page styles. */
+
+// Toggle: same type treatment as the filter controls beside it on desktop.
+.ecm-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-right: 1.5rem; // same spacing as between the filter controls
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #69706b;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ecm-toggle:hover,
+.ecm-toggle[aria-expanded="true"] {
+  color: $linkColor;
+}
+.ecm-toggle-icon i,
+.ecm-toggle-icon svg {
+  font-size: 0.8rem;
+}
+
+// Phones: icon-only round bubble, same size and colours as .engagement-type-pill.
+@media (max-width: 767.98px) {
+  .ecm-toggle {
+    margin-right: 0.9rem;
+    padding: 0.35rem; // larger tap target around the 1.5rem bubble
+    margin-top: -0.35rem;
+    margin-bottom: -0.35rem;
+    align-self: center;
+  }
+  .ecm-toggle-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+  .ecm-toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    background: rgba(54, 91, 82, 0.15);
+  }
+  .ecm-toggle-icon i,
+  .ecm-toggle-icon svg {
+    color: $linkColor;
+    font-size: 0.7rem;
+  }
+  .ecm-toggle[aria-expanded="true"] .ecm-toggle-icon {
+    background: $linkColor;
+  }
+  .ecm-toggle[aria-expanded="true"] .ecm-toggle-icon i,
+  .ecm-toggle[aria-expanded="true"] .ecm-toggle-icon svg {
+    color: #fff;
+  }
+}
+
+// Layout: list only by default; map above the list when open, and a sticky
+// right-hand column from 992px up.
+.ecm-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+.ecm-content {
+  min-width: 0;
+}
+.ecm-col {
+  display: none;
+}
+.ecm-shell.is-open .ecm-col {
+  display: block;
+  order: -1;
+}
+@media (min-width: 992px) {
+  .ecm-shell.is-open {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .ecm-shell.is-open .ecm-content {
+    flex: 1 1 auto;
+  }
+  .ecm-shell.is-open .ecm-col {
+    order: 0;
+    flex: 0 0 380px;
+    width: 380px;
+    position: sticky;
+    top: 1.5rem;
+  }
+}
+
+.ecm-panel {
+  background: #fff;
+  border: 1px solid #d9d9d1;
+  border-radius: 12px;
+  padding: 1.1rem 1.1rem 1rem;
+}
+.ecm-panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.ecm-panel-head h4 {
+  font-size: 0.95rem;
+  margin: 0;
+}
+.ecm-panel-head span,
+.ecm-card-meta {
+  font-size: 0.72rem;
+  color: #69706b;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.ecm-stage svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.ecm-land { fill: #dbe3dc; stroke: #c3cdc4; stroke-width: 0.6; }
+.ecm-graticule { fill: none; stroke: #c3cdc4; stroke-width: 0.5; opacity: 0.5; }
+.ecm-sphere { fill: none; stroke: #d9d9d1; stroke-width: 1; }
+
+.ecm-dot { cursor: pointer; outline: none; }
+.ecm-dot-hit { fill: transparent; }
+.ecm-dot-halo { fill: #6ea491; opacity: 0.22; transition: r .15s ease, opacity .15s ease; }
+.ecm-dot-core {
+  fill: $linkColor;
+  stroke: #fff;
+  stroke-width: 1.2;
+  transition: transform .15s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.ecm-dot:hover .ecm-dot-halo,
+.ecm-dot.is-active .ecm-dot-halo { r: 9; opacity: 0.32; }
+.ecm-dot:hover .ecm-dot-core,
+.ecm-dot.is-active .ecm-dot-core { transform: scale(1.25); }
+.ecm-dot:focus-visible .ecm-dot-halo { stroke: $linkColor; stroke-width: 1.2; opacity: 0.5; }
+
+// Details card docked below the map (never floats over it, so it can't cover a dot).
+.ecm-hint {
+  margin: 0.9rem 0 0;
+  padding: 0.85rem 0.95rem;
+  border: 1px dashed #d9d9d1;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  color: #69706b;
+  text-align: center;
+}
+.ecm-card {
+  display: none;
+  margin: 0.9rem 0 0;
+  background: #f7f6f1;
+  border: 1px solid #d9d9d1;
+  border-radius: 10px;
+  padding: 0.85rem 0.95rem;
+}
+.ecm-card.is-visible { display: block; }
+.ecm-card p { margin: 0; }
+.ecm-card-place { font-weight: 600; font-size: 0.88rem; margin-bottom: 0.15rem !important; }
+.ecm-card-meta { margin-bottom: 0.45rem !important; }
+.ecm-card-talk { font-size: 0.82rem; line-height: 1.4; }
+.ecm-card-earlier {
+  font-size: 0.72rem;
+  color: #69706b;
+  margin-top: 0.5rem !important;
+  padding-top: 0.4rem;
+  border-top: 1px solid #d9d9d1;
+  line-height: 1.4;
+}
+.ecm-legend {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.9rem;
+  font-size: 0.72rem;
+  color: #69706b;
+}
+.ecm-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: $linkColor;
+  display: inline-block;
+}
+
+
 /* DARK MODE */
 
 body.dark-mode {
@@ -1694,6 +1896,36 @@ body.dark-mode .demo-teaser-link:focus {
 body.dark-mode .demo-teaser-body p {
   color: #aeb3ae;
 }
+
+/* CONFERENCE MAP */
+
+body.dark-mode .ecm-toggle { color: #aeb3ae; }
+body.dark-mode .ecm-toggle:hover,
+body.dark-mode .ecm-toggle[aria-expanded="true"] { color: #9ab8aa; }
+@media (max-width: 767.98px) {
+  body.dark-mode .ecm-toggle-icon { background: rgba(154, 184, 170, 0.15); }
+  body.dark-mode .ecm-toggle-icon i,
+  body.dark-mode .ecm-toggle-icon svg { color: #9ab8aa; }
+  body.dark-mode .ecm-toggle[aria-expanded="true"] .ecm-toggle-icon { background: #9ab8aa; }
+  body.dark-mode .ecm-toggle[aria-expanded="true"] .ecm-toggle-icon i,
+  body.dark-mode .ecm-toggle[aria-expanded="true"] .ecm-toggle-icon svg { color: #202421; }
+}
+body.dark-mode .ecm-panel { background: #262a26; border-color: #444943; }
+body.dark-mode .ecm-panel-head span,
+body.dark-mode .ecm-card-meta,
+body.dark-mode .ecm-card-earlier,
+body.dark-mode .ecm-hint,
+body.dark-mode .ecm-legend { color: #aeb3ae; }
+body.dark-mode .ecm-land { fill: #31382f; stroke: #414b3f; }
+body.dark-mode .ecm-graticule { stroke: #414b3f; }
+body.dark-mode .ecm-sphere { stroke: #444943; }
+body.dark-mode .ecm-dot-core { fill: #9ab8aa; stroke: #262a26; }
+body.dark-mode .ecm-swatch { background: #9ab8aa; }
+body.dark-mode .ecm-hint,
+body.dark-mode .ecm-card,
+body.dark-mode .ecm-card-earlier { border-color: #444943; }
+body.dark-mode .ecm-card { background: #202421; }
+
 
 body.dark-mode .course-years,
 body.dark-mode .course-description {

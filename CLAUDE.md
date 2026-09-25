@@ -230,3 +230,26 @@ Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
 link's stretched `::after`.
 
+## Conference map (Engagements page)
+
+Toggle `#ecm-toggle` sits in `.filters-wrapper`, left of the filters; panel
+in `_includes/conference-map.html`; behaviour in `assets/js/conference-map.js`;
+styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
+
+- Data: entries in `engagements.yml` with a `map:` block (`city`, `region`,
+  `lat`, `lon`). One dot per region, on the most recent engagement's city;
+  older ones listed in the card.
+- Projection: coastlines are pre-rendered static SVG (d3-geo
+  `geoEqualEarth().scale(155).translate([450,230])`, viewBox `0 0 900 460`).
+  The JS `project()` is the same Equal Earth formula at the same scale and
+  was checked against d3's output (within 0.01 units), so new dots only
+  need lat/lon. Never hand-place pixel coordinates.
+- The details card is docked below the map, never floating over it (a
+  floating card collided with dots in the mockup's testing).
+- Desktop (>= 992px): map is a 380px sticky right column. Narrower: above
+  the list. Phones (< 768px): the toggle is an icon-only 1.5rem bubble
+  styled like `.engagement-type-pill`.
+- Touch: a tap focuses a dot *before* its click fires, so focus from a
+  pointer is ignored (otherwise tap shows then immediately hides the card).
+  Blur/mouseleave only hide the card if that dot owns it.
+
