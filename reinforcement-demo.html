@@ -94,7 +94,9 @@ permalink: /reinforcement-demo/
   .rfd-panel .rfd-sub{color:var(--rfd-ink-soft); font-size:.85rem; margin-bottom:14px;}
 
   svg.rfd-network{width:100%; height:auto; display:block; max-width:700px; margin:0 auto;}
-  .rfd-node{cursor:pointer;}
+  .rfd-node{cursor:pointer; outline:none;}
+  .rfd-node .rfd-hit{fill:transparent; pointer-events:all;}
+  .rfd-node:focus-visible .rfd-halo{opacity:1; stroke-dasharray:4 3;}
   .rfd-node .rfd-halo{fill:none; stroke-width:3; opacity:0;}
   .rfd-node.rfd-selected .rfd-halo{opacity:1;}
   .rfd-node .rfd-core-dpr{stroke-width:1.5; transition:fill .3s;}
@@ -270,7 +272,7 @@ permalink: /reinforcement-demo/
     <h3>How this works</h3>
     <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
     <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
-    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its sentiment with at least one agent it's tied to, probability shifts towards staying in its current state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
+    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its state with at least one agent that influences it, probability shifts towards staying in that state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
     <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent that isn't being reinforced can hold the same state for at most four ticks. Ties are directional: an agent is only reinforced by agents that influence it (an arrow pointing towards it, or a mutual tie). On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. An agent that shares its state with an agent it's tied to can stay in that state for longer, so isolated and unreinforced agents change state more often than reinforced ones. This rule isn't part of the dissertation's model.</p>
     <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
   </div>
@@ -573,7 +575,19 @@ permalink: /reinforcement-demo/
 
     nodes.forEach(function(n){
       var g = nodeGlyph(n, nodeRadius(n), selected.indexOf(n.id) > -1);
+      // Invisible, larger hit area so small agents are easy to tap on phones.
+      var hit = document.createElementNS(svgNS,'circle');
+      hit.setAttribute('class','rfd-hit'); hit.setAttribute('cx', n.x); hit.setAttribute('cy', n.y); hit.setAttribute('r', 30);
+      g.insertBefore(hit, g.firstChild);
+      // Keyboard access: Tab to an agent, Enter or Space to select it.
+      g.setAttribute('tabindex', '0');
+      g.setAttribute('role', 'button');
+      g.setAttribute('aria-label', n.label + ', ' + typeLabel(n.type));
+      g.setAttribute('aria-pressed', selected.indexOf(n.id) > -1 ? 'true' : 'false');
       g.addEventListener('click', function(){ selectNode(n.id); });
+      g.addEventListener('keydown', function(ev){
+        if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); selectNode(n.id); }
+      });
       netSvg.appendChild(g);
       var label = document.createElementNS(svgNS,'text');
       label.setAttribute('x', n.x); label.setAttribute('y', n.y - nodeRadius(n) - 11);
@@ -915,7 +929,9 @@ permalink: /reinforcement-demo/
 
   function render(){
     document.querySelectorAll('#rfd-netSvg .rfd-node').forEach(function(g){
-      g.classList.toggle('rfd-selected', selected.indexOf(Number(g.getAttribute('data-id'))) > -1);
+      var isSel = selected.indexOf(Number(g.getAttribute('data-id'))) > -1;
+      g.classList.toggle('rfd-selected', isSel);
+      g.setAttribute('aria-pressed', isSel ? 'true' : 'false');
     });
 
     var netHint = document.getElementById('rfd-netHint');

@@ -207,6 +207,9 @@ leaks into other pages. Consequences worth remembering:
 - Sizes: network `max-width: 700px`; agents `NODE_R = 13.5`, isolates
   `ISOLATE_R = 11.5` (drawing units in a 760-wide viewBox). Keep network
   agents smaller than the Relationship panel's (34px).
+- Network agents are keyboard-accessible (`tabindex`, `role="button"`,
+  Enter/Space) and have an invisible `.rfd-hit` circle (r=30) so the small
+  phone-size agents are still easy to tap (about 25px target at 390px).
 - Colourblind mode is off for first-time visitors and remembers the last
   choice (`localStorage` key `rfdColourblind`).
 - Highlights (network ties, Relationship capsule) only appear once a run
