@@ -32,6 +32,14 @@ satisfy an unpinned install and give a false read.
 `html { font-size: 85%; }` — 1rem ≈ 13.6px, not 16px. Relevant any time a rem
 value seems visually smaller than expected.
 
+## No sideways scrolling on phones/tablets
+
+Pages wrap content in `.col-lg-10 p-3` (13.6px side padding) and use
+`.row.g-5`, whose 3rem gutter pulls rows out 20.4px each side, 6.8px past the
+screen below 992px. `main.scss` sets `--bs-gutter-x: 2rem` on `.row.g-5`
+below 992px so the pull-out equals the padding. Any new wrapper or row type
+must be checked for `scrollWidth > clientWidth` at phone and tablet widths.
+
 ## Engagement type → icon/label system
 
 Lives in **one place**: `_includes/engagement-type.html` (sets `type_icon`

@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-25 (12)
+
+### Fixed
+- Phones and tablets: pages no longer slide sideways. Every page was 7px
+  wider than the screen because the layout rows stuck out past the page
+  padding; below 992px the rows now fit exactly, with text in the same
+  place as before.
+
 ## 2026-09-25 (11)
 
 ### Fixed
