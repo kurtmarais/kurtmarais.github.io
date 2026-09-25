@@ -184,6 +184,14 @@ leaks into other pages. Consequences worth remembering:
   larger values (tried 0.15) leave tied agents stuck in one state for too
   long given the real posting odds (`POSTING` = dissertation Table 6.5, one
   tick = 24 hours).
+- Demo-only rule `MAX_UNREINFORCED_TICKS = 4`: an agent can't hold one state
+  for more than 4 ticks unless reinforced (a tied agent held the same
+  positive/negative sentiment last tick); on the 5th it moves to one of its
+  other two states, weighted by its own transition odds. Reinforcement
+  (boost, rule and highlights) never counts shared *neutral* states. The
+  page's "How this works" section describes this rule; keep them in sync.
+- Highlights (network ties, Relationship capsule) only appear once a run
+  has started (`runStarted`).
 - Reinforcement is shown on the network only as a recoloured tie (same
   stroke width, so arrowheads don't grow), and in the Relationship panel as
   a capsule behind the pair. No highlights on individual network nodes.

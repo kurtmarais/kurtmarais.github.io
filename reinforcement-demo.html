@@ -68,8 +68,21 @@ permalink: /reinforcement-demo/
   .rfd-swatch-tie{width:22px; height:3px; border-radius:2px; display:inline-block; flex:none; background:var(--rfd-reinforce);}
   .rfd-cb-key{display:none;}
   .rfd-cb .rfd-cb-key{display:flex;}
-  .rfd-cb-toggle{margin-left:auto;}
-  .rfd-cb .rfd-cb-toggle{border-color:var(--rfd-ink); color:var(--rfd-ink); font-weight:600;}
+  /* Colourblind-friendly toggle: same pill shape and type as the Run/Clear buttons, with a switch. */
+  .rfd-cb-toggle{
+    margin-left:auto; display:inline-flex; align-items:center; gap:9px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.78rem; font-weight:500;
+    background:var(--rfd-surface); color:var(--rfd-ink-soft); border:1px solid var(--rfd-line);
+    padding:7px 14px 7px 9px; border-radius:100px; cursor:pointer; transition:border-color .15s, color .15s, background .15s;
+  }
+  .rfd-cb-toggle:hover{border-color:var(--rfd-accent); color:var(--rfd-ink);}
+  .rfd-cb-toggle:focus-visible{outline:2px solid var(--rfd-accent); outline-offset:2px;}
+  .rfd-switch{position:relative; width:30px; height:17px; border-radius:100px; background:var(--rfd-surface-2); border:1px solid var(--rfd-line); flex:none; transition:background .2s, border-color .2s;}
+  .rfd-switch-knob{position:absolute; top:2px; left:2px; width:11px; height:11px; border-radius:50%; background:var(--rfd-ink-soft); transition:transform .2s, background .2s;}
+  .rfd-cb-state{font-weight:700; letter-spacing:.06em; min-width:2.2em; text-align:left;}
+  .rfd-cb .rfd-cb-toggle{color:var(--rfd-ink); border-color:var(--rfd-ink);}
+  .rfd-cb .rfd-switch{background:var(--rfd-ink); border-color:var(--rfd-ink);}
+  .rfd-cb .rfd-switch-knob{transform:translateX(13px); background:var(--rfd-surface);}
   .rfd-tag-note{
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.68rem; letter-spacing:.03em; padding:2px 7px; border-radius:5px; font-weight:500;
     background:var(--rfd-surface); color:var(--rfd-ink-soft); border:1px solid var(--rfd-line); text-transform:none;
@@ -80,7 +93,7 @@ permalink: /reinforcement-demo/
   .rfd-panel h3{font-size:.95rem; font-weight:600;}
   .rfd-panel .rfd-sub{color:var(--rfd-ink-soft); font-size:.85rem; margin-bottom:14px;}
 
-  svg.rfd-network{width:100%; height:auto; display:block; max-width:625px; margin:0 auto;}
+  svg.rfd-network{width:100%; height:auto; display:block; max-width:645px; margin:0 auto;}
   .rfd-node{cursor:pointer;}
   .rfd-node .rfd-halo{fill:none; stroke-width:3; opacity:0;}
   .rfd-node.rfd-selected .rfd-halo{opacity:1;}
@@ -203,7 +216,7 @@ permalink: /reinforcement-demo/
     <div class="rfd-key-item">Agents diagnosed with depression are filled circles &middot; agents not diagnosed are outlined squares</div>
     <div class="rfd-key-item"><span class="rfd-swatch-tie"></span>highlighted tie: both agents share a sentiment (reinforcement)</div>
     <div class="rfd-key-item rfd-cb-key">Symbols: + positive &middot; &minus; negative &middot; 0 neutral; striped cells are negative, dotted cells neutral</div>
-    <button type="button" class="rfd-clear-btn rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false">Colourblind-friendly: off</button>
+    <button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
 
@@ -251,7 +264,8 @@ permalink: /reinforcement-demo/
     <h3>How this works</h3>
     <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
     <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
-    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its sentiment with at least one agent it's tied to, probability shifts towards staying in its current state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is sized so the effect is easy to see in a short, 24-tick run.</p>
+    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its sentiment with at least one agent it's tied to, probability shifts towards staying in its current state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
+    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent can hold the same state for at most four ticks unless it is being reinforced by an agent it's tied to. On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. This rule isn't part of the dissertation's model.</p>
     <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
@@ -280,8 +294,9 @@ permalink: /reinforcement-demo/
     runLabel:   'Run simulation',
     pauseLabel: 'Pause simulation',
     resumeLabel:'Resume simulation',
-    cbOn:       'Colourblind-friendly: on',
-    cbOff:      'Colourblind-friendly: off',
+    cbLabel:    'Colourblind-friendly',
+    cbOn:       'ON',
+    cbOff:      'OFF',
     diagnosed:  'diagnosed with depression',
     notDiagnosed: 'not diagnosed'
   };
@@ -393,37 +408,51 @@ permalink: /reinforcement-demo/
     };
   }
 
+  // Demo rule (not part of the dissertation model): a run is only 24 ticks (24 days),
+  // so an agent may hold the same state for at most MAX_UNREINFORCED_TICKS ticks unless
+  // it is being reinforced. On the next tick it is made to post and move to one of the
+  // other two states, weighted by its own transition odds for those states.
+  var MAX_UNREINFORCED_TICKS = 4;
+
+  function sampleState(probs, r){
+    var keys = ['positive','neutral','negative'].filter(function(k){ return k in probs; }), total = 0, acc = 0;
+    keys.forEach(function(k){ total += probs[k]; });
+    for(var i = 0; i < keys.length; i++){ acc += probs[keys[i]] / total; if(r < acc) return keys[i]; }
+    return keys[keys.length - 1];
+  }
+
   function computeStateTable(){
-    var table = {}, rngs = {}, sinceLastPost = {};
-    nodes.forEach(function(n){ table[n.id] = [n.state]; rngs[n.id] = mulberry32(2026 + n.id * 97); sinceLastPost[n.id] = 0; });
+    var table = {}, rngs = {}, sinceLastPost = {}, streak = {};
+    nodes.forEach(function(n){ table[n.id] = [n.state]; rngs[n.id] = mulberry32(2026 + n.id * 97); sinceLastPost[n.id] = 0; streak[n.id] = 1; });
     for(var t = 1; t <= TICKS; t++){
       var prev = {};
       nodes.forEach(function(n){ prev[n.id] = table[n.id][t-1]; });
       nodes.forEach(function(n){
         var cur = prev[n.id], next;
-        // Hard reset: an agent inactive for more than 20 ticks reverts to neutral, no matter what else applies.
+        // Reinforced: holding a positive or negative sentiment that a tied agent also held last tick.
+        var reinforced = cur !== 'neutral' && neighborsOf(n.id).some(function(nb){ return prev[nb.id] === cur; });
+
         if(sinceLastPost[n.id] > INACTIVITY_RESET_TICKS){
+          // Model rule: an agent inactive for more than 20 ticks reverts to neutral.
           sinceLastPost[n.id] = 0;
-          table[n.id].push('neutral');
-          return;
-        }
-        var doesPost = rngs[n.id]() < POSTING[n.type][cur];
-        if(!doesPost){
+          next = 'neutral';
+        } else if(streak[n.id] >= MAX_UNREINFORCED_TICKS && !reinforced){
+          // Demo rule: unreinforced for too long, so the agent posts and moves to another state.
+          sinceLastPost[n.id] = 0;
+          var others = {};
+          Object.keys(TRANS[n.type][cur]).forEach(function(k){ if(k !== cur) others[k] = TRANS[n.type][cur][k]; });
+          next = sampleState(others, rngs[n.id]());
+        } else if(rngs[n.id]() >= POSTING[n.type][cur]){
           // No post this tick: state carries over unchanged, and the inactivity clock ticks up.
           sinceLastPost[n.id] += 1;
-          table[n.id].push(cur);
-          return;
+          next = cur;
+        } else {
+          sinceLastPost[n.id] = 0;
+          var probs = TRANS[n.type][cur];
+          if(reinforced && CONNECTION_BOOST > 0){ probs = redistributeToward(probs, cur, CONNECTION_BOOST); }
+          next = sampleState(probs, rngs[n.id]());
         }
-        sinceLastPost[n.id] = 0;
-        var probs = TRANS[n.type][cur];
-        var sameNeighbor = neighborsOf(n.id).some(function(nb){ return prev[nb.id] === cur; });
-        if(sameNeighbor && CONNECTION_BOOST > 0){
-          probs = redistributeToward(probs, cur, CONNECTION_BOOST);
-        }
-        var r = rngs[n.id]();
-        if(r < probs.positive) next = 'positive';
-        else if(r < probs.positive + probs.neutral) next = 'neutral';
-        else next = 'negative';
+        streak[n.id] = next === cur ? streak[n.id] + 1 : 1;
         table[n.id].push(next);
       });
     }
@@ -535,7 +564,7 @@ permalink: /reinforcement-demo/
     });
     netSvg.querySelectorAll('.rfd-link').forEach(function(line){
       var a = Number(line.getAttribute('data-a')), b = Number(line.getAttribute('data-b'));
-      line.classList.toggle('rfd-reinforcing', pairSharing(a, b, 'tied', tick));
+      line.classList.toggle('rfd-reinforcing', runStarted && pairSharing(a, b, 'tied', tick));
     });
   }
 
@@ -579,8 +608,8 @@ permalink: /reinforcement-demo/
     var ax = 80, bx = 240, y = 70;
     var dyad = document.createElementNS(svgNS,'rect');
     dyad.setAttribute('class','rfd-dyad'); dyad.setAttribute('id','rfd-relDyad');
-    dyad.setAttribute('x', ax - 40); dyad.setAttribute('y', y - 40);
-    dyad.setAttribute('width', bx - ax + 80); dyad.setAttribute('height', 80); dyad.setAttribute('rx', 40);
+    dyad.setAttribute('x', ax - 32); dyad.setAttribute('y', y - 30);
+    dyad.setAttribute('width', bx - ax + 64); dyad.setAttribute('height', 60); dyad.setAttribute('rx', 30);
     svg.appendChild(dyad);
     if(rel !== 'none'){
       var lineEl = document.createElementNS(svgNS,'line');
@@ -630,7 +659,7 @@ permalink: /reinforcement-demo/
       if(g) setNodeState(g, pair[1].type, stateAt(pair[1].id, tick));
     });
     var dyad = document.getElementById('rfd-relDyad');
-    if(dyad) dyad.classList.toggle('rfd-on', pairSharing(a.id, b.id, rel, tick));
+    if(dyad) dyad.classList.toggle('rfd-on', runStarted && pairSharing(a.id, b.id, rel, tick));
     var stA = stateAt(a.id, tick), stB = stateAt(b.id, tick);
     document.getElementById('rfd-relSummary').innerHTML =
       '<span class="rfd-mono">' + a.label + '</span> <span class="' + pillClass(a.type, stA) + '">' + typeLabel(a.type) + ' &middot; ' + stA + '</span>' +
@@ -846,6 +875,7 @@ permalink: /reinforcement-demo/
   document.getElementById('rfd-liveNote').textContent = TEXT.liveNote;
   // Colourblind-friendly toggle (remembered per browser where storage is available).
   var cbToggle = document.getElementById('rfd-cbToggle');
+  document.getElementById('rfd-cbLabel').textContent = TEXT.cbLabel;
   function redrawAll(){
     drawNetwork();
     updateNetworkColors(currentTick);
@@ -855,7 +885,7 @@ permalink: /reinforcement-demo/
   function setColourblind(on){
     rfdWrapEl.classList.toggle('rfd-cb', on);
     cbToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
-    cbToggle.textContent = on ? TEXT.cbOn : TEXT.cbOff;
+    document.getElementById('rfd-cbState').textContent = on ? TEXT.cbOn : TEXT.cbOff;
     try { localStorage.setItem('rfdColourblind', on ? '1' : '0'); } catch(e){}
   }
   var cbSaved = false;
