@@ -243,21 +243,21 @@ permalink: /reinforcement-demo/
 
   <!-- ===== EDITABLE TEXT: intro and disclaimer ===== -->
   <div class="rfd-intro">
-    <h1>Shared sentiment, reinforced</h1>
-    <p>An interactive illustration of a core finding from my dissertation, <a href="{{ '/publications/simulating-affective-information-diffusion/' | relative_url }}"><em>Simulating affective information diffusion using natural language in online social networks</em></a>, built on the model's real transition-probability data. Every agent below is a synthetic composite; nobody in this network is a real person.</p>
+    <h1>Simulating reinforced sentiment</h1>
+    <p>An interactive illustration of a core finding from my dissertation, <a href="{{ '/publications/simulating-affective-information-diffusion/' | relative_url }}"><em>Simulating affective information diffusion using natural language in online social networks</em></a>, constructed from the model's real transition-probability data. Every agent below is a synthetic composite; no agent in this network is representative of a real person.</p>
     <span class="rfd-badge">Beta: a simplified illustration, not the full simulation</span>
   </div>
 
   <div class="rfd-disclaimer">
-    <b>For illustration only.</b> This page doesn't predict anyone's real behaviour. It plays back a fixed, seeded run of a simplified version of the model. It's animated like a live simulation, but it isn't randomly different each visit: the same agents always play out the same way.
+    <b>For illustration purposes only.</b> This simulation does not predict anyone's real behaviour. It executes a fixed, seeded run of a simplified version of the model. It is animated to depict a live simulation, but does not incorporate randomness or variability: each run executes the same as the last, with the states of the agents always resulting in the same behaviour.
   </div>
 
   <div class="rfd-key-row">
-    <div class="rfd-key-item"><span class="rfd-swatch-dpr" style="background:var(--rfd-positive)"></span>diagnosed with depression, positive</div>
-    <div class="rfd-key-item"><span class="rfd-swatch-hollow" style="border-color:var(--rfd-negative)"></span>not diagnosed, negative</div>
-    <div class="rfd-key-item">Agents diagnosed with depression are filled circles &middot; agents not diagnosed are outlined squares</div>
-    <div class="rfd-key-item"><span class="rfd-swatch-tie"></span>highlighted tie: both agents share a sentiment (reinforcement)</div>
-    <div class="rfd-key-item rfd-cb-key">Symbols: + positive &middot; &minus; negative &middot; 0 neutral; striped cells are negative, dotted cells neutral</div>
+    <div class="rfd-key-item"><span class="rfd-swatch-dpr" style="background:var(--rfd-positive)"></span>Diagnosed with depression, positive</div>
+    <div class="rfd-key-item"><span class="rfd-swatch-hollow" style="border-color:var(--rfd-negative)"></span>Not diagnosed, negative</div>
+    <div class="rfd-key-item">(Agents diagnosed with depression are filled circles &middot; agents not diagnosed are outlined squares)</div>
+    <div class="rfd-key-item"><span class="rfd-swatch-tie"></span>Highlighted tie: both agents share the same sentiment at that time (represents reinforcement)</div>
+    <div class="rfd-key-item rfd-cb-key">Symbols: + positive &middot; &minus; negative &middot; 0 neutral (striped cells are negative, dotted cells neutral)</div>
     <button type="button" class="rfd-cb-toggle" id="rfd-cbToggle" aria-pressed="false"><span class="rfd-switch" aria-hidden="true"><span class="rfd-switch-knob"></span></span><span id="rfd-cbLabel"></span><span class="rfd-cb-state" id="rfd-cbState"></span></button>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
@@ -265,7 +265,7 @@ permalink: /reinforcement-demo/
     <div class="rfd-panel">
       <!-- ===== EDITABLE TEXT ===== -->
       <h2>A network of agents</h2>
-      <p class="rfd-sub">Twelve agents form one connected group with no isolates inside it. Three more (User 13–15, in the corners) have no ties at all: they're the baseline case, showing how an agent behaves without any connections. Click one agent to follow it, or a second to compare a pair, then run the simulation to watch every agent's state play out tick by tick. Arrows show who influences whom; an agent can only be reinforced by agents whose arrows point towards it.</p>
+      <p class="rfd-sub">Twelve agents form one connected component (Users 01–12). Three additional agents (Users 13–15, in the corners) depicted isolates no ties: these isolates represent the baseline case, depicting how an agent behaves without any connections. Click one agent to follow its behaviour, or select a second agent to compare a pair of users, then run the simulation to watch every agent's state play out tick by tick. Arrows show who influences whom; an agent can only be reinforced by agents whose arrows point towards it.</p>
       <!-- ===== END EDITABLE TEXT ===== -->
       <svg class="rfd-network" viewBox="0 0 760 460" id="rfd-netSvg"></svg>
       <div class="rfd-legend-mini" id="rfd-netHint"></div>
@@ -280,7 +280,7 @@ permalink: /reinforcement-demo/
     <div class="rfd-panel" id="rfd-relPanel" style="display:none;">
       <!-- ===== EDITABLE TEXT ===== -->
       <h2>Relationship</h2>
-      <p class="rfd-sub">How the two selected agents are tied to each other. The tie itself doesn't change; whether both share the same sentiment does, and the pair is highlighted while they do.</p>
+      <p class="rfd-sub">How the two selected agents are connected to each other. The tie itself does not change, but each agent is able to change sentiment states. When both share the same sentiment, the pair is highlighted to indicate some reinforcement occurring.</p>
       <!-- ===== END EDITABLE TEXT ===== -->
       <div class="rfd-rel-layout">
         <svg class="rfd-rel" viewBox="0 0 320 160" id="rfd-relSvg"></svg>
@@ -313,11 +313,11 @@ permalink: /reinforcement-demo/
   <!-- ===== EDITABLE TEXT: methodology notes ===== -->
   <div class="rfd-methodology">
     <h3>How this works</h3>
-    <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
-    <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
-    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its state with at least one agent that influences it, probability shifts towards staying in that state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
-    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent that isn't being reinforced can hold the same state for at most four ticks. Ties are directional: an agent is only reinforced by agents that influence it (an arrow pointing towards it, or a mutual tie). On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. An agent that shares its state with an agent it's tied to can stay in that state for longer, so isolated and unreinforced agents change state more often than reinforced ones. This rule isn't part of the dissertation's model.</p>
-    <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
+    <p><b>Deterministic versus stochastic.</b> The model used in the initial study is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. This demo does not employ randomness on every run execution. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site will reproduce the identical run.</p>
+    <p><b>The underlying model data.</b> Each agent's chance of transitioning to a new state is determined by a transition-probability table determined from real Twitter data, and split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. Additional criteria to transition is determined by an agent's historical states, their chances of generating a post online agents, and their posting inactivity.</p>
+    <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the study's full simulation: an agent connected to another experiencing the same sentiment state would form a reinforcing dyad that would amplify their existing emotional tendencies. It is an observed phenomenon that emerges from thousands of runs as opposed to being a single parameter in the transition table, so this demo represents it (with a fixed persistence boost). While an agent shares its state with at least one agent that influences it, probability shifts towards staying in that state, using the same proportional-redistribution approach the model uses. The boost is to demonstrate the reinforcement, and is kept modest so it is a fair representation of the actual model's posting probabilities.</p>
+    <p><b>One rule specific to this demo.</b> A run of this simulation is only 24 ticks, with each tick representing 24 hours. To keep that short window readable, agent behaviour has been altered to best illustrate reinforcement taking place. Ties are directional, which means that an agent is only reinforced by agents that influence it (an arrow pointing towards it, or a mutual tie). Reinforcement describes the phemenon wwhere an agent that shares its state with an agent that it is connected with can remain in that state for longer; isolated and unreinforced agents therefore tend to change states more frequently compared to reinforced agents.</p>
+    <p><b>The network and its agents.</b> The network configuration, comprised of variations in the types of connections (as well as mix of unidirectional and bidirectional reciprocated ties), attempts to mirror the real network's structure. However, every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
 
@@ -333,25 +333,25 @@ permalink: /reinforcement-demo/
     hintOne:    'One agent selected. Run the simulation to follow it, or click a second agent to compare a pair.',
     hintTwo:    'Two agents selected. Run the simulation to follow both, and their tie, over time.',
     liveNote:   'Seeded and deterministic: replaying it gives the same run every time.',
-    relMutual:  'Mutual tie: {a} and {b} influence each other.',
-    relAtoB:    'One-directional tie: {a} influences {b}, not the reverse.',
-    relNone:    'No direct tie between {a} and {b}.',
+    relMutual:  'Mutual tie: {a} and {b} can influence one another.',
+    relAtoB:    'One-directional tie: {a} can influence {b}, but not the reverse.',
+    relNone:    'No direct tie exists between {a} and {b}.',
     resultsOne: '{a}’s state, tick by tick, from a fixed, seeded run.',
-    resultsTwo: 'Both agents’ states, tick by tick, plus whether their tie has them sharing a sentiment at each point.',
-    noTie:      'No direct tie, so there’s no pathway for reinforcement between these two. Each simply follows its own state above.',
-    pairNote:   'Recalculated every tick from both agents’ current state. Highlighted cells mark ticks where they share a sentiment. While two tied agents share a state, the agent being influenced gets a persistence boost towards staying in it (both agents, if the tie is mutual), on top of its own baseline odds. This is how the demo represents the reinforcement effect observed in the dissertation’s full simulation (see How this works, below).',
-    sharingNow: 'Sharing a sentiment now',
-    notSharing: 'Not sharing a sentiment now',
+    resultsTwo: 'Both agents’ states, tick by tick, plus whether they share the same sentiment at a particular point.',
+    noTie:      'No direct tie, so there is no pathway for reinforcement between these two. Each agent simply follows its own state.',
+    pairNote:   'Recalculated every tick from both agents’ current state. Highlighted cells mark ticks where they share a sentiment. While two tied agents share a state, the influenced agent's sentiment may persist boost towards staying in it (both agents, if the tie is mutual), on top of its own baseline probability to change states. This is how the demo represents the reinforcement effect observed in the dissertation’s full simulation (see How this works, below).',
+    sharingNow: 'Currently sharing the same sentiment state',
+    notSharing: 'Not sharing the same sentiment state',
     runLabel:   'Run simulation',
     pauseLabel: 'Pause simulation',
     resumeLabel:'Resume simulation',
     reinforcedRow: 'Reinforced',
     fromOthers:    'from others',
-    othersNote:    'The lighter rows mark ticks when each agent is reinforced by agents outside this pair, which is why an agent can stay in a state for more than four ticks even when the two aren’t sharing one.',
+    othersNote:    'The lighter rows mark ticks when an agent is reinforced by agents outside of the selected pair, which is why an agent's state may persist for longer than expected.',
     reinforcedBy:  'Reinforced by, this tick',
     nobody:        'no one',
     noInfluencers: 'no one (nothing influences this agent)',
-    inspectHint:  'Click any tick in the timelines to jump to it. The panel below lists every agent at the current tick and marks who changed state.',
+    inspectHint:  'Click any tick in the timelines to jump to it. The panel below lists every agent at the current tick and marks which agents changed state.',
     snapshotTitle:'All agents at tick {a}',
     cellTitle:    'Tick {a}: show every agent',
     speedLabel:   'Speed x{a}',
@@ -363,15 +363,15 @@ permalink: /reinforcement-demo/
     cbLabel:    'Colourblind-friendly',
     cbOn:       'ON',
     cbOff:      'OFF',
-    diagnosed:  'diagnosed with depression',
-    notDiagnosed: 'not diagnosed'
+    diagnosed:  'Diagnosed with depression',
+    notDiagnosed: 'Not diagnosed'
   };
   // ===== END EDITABLE TEXT =====
   function fill(tpl, a, b){ return tpl.replace(/\{a\}/g, a || '').replace(/\{b\}/g, b || ''); }
 
   var TICKS = 24;
   var TICK_MS = 900; // playback speed at x1: milliseconds per tick
-  var SPEEDS = [0.5, 1, 1.5, 2, 2.5]; // the speed button cycles through these
+  var SPEEDS = [0.5, 1, 1.5, 2, 2.5, 3]; // the speed button cycles through these
 
   var nodes = [
     {id:1, label:'User 01', x:150, y:130, type:'dpr',    state:'positive'},
