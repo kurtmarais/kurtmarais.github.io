@@ -9,6 +9,11 @@
   year: 2026
   type: "poster"
   featured: false
+  map:                            # conference map on the Engagements page
+    city: "Stellenbosch"
+    region: "Western Cape, South Africa"
+    lat: -33.9321
+    lon: 18.8602
   description: "A summary of research on emotional contagion and sentiment diffusion in online mental health communities, and its implications beyond academia."
   keywords:
     - research impact
