@@ -175,6 +175,9 @@ permalink: /reinforcement-demo/
   .rfd-cb .rfd-cell.rfd-revealed.neutral, .rfd-cb .rfd-prop-seg.neutral{background-image:radial-gradient(rgba(255,255,255,.6) 1px, transparent 1.5px); background-size:5px 5px;}
 
   .rfd-stat-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:10px;}
+  .rfd-stat-grid-3{grid-template-columns:repeat(3,1fr);}
+  @media (max-width:900px){ .rfd-stat-grid-3{grid-template-columns:1fr 1fr;} }
+  .rfd-stat-names{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:1rem; font-weight:600; line-height:1.3;}
   @media (max-width:640px){ .rfd-stat-grid{grid-template-columns:1fr;} }
   .rfd-stat-card{background:var(--rfd-surface-2); border-radius:10px; padding:14px 16px;}
   .rfd-stat-card h4{font-size:.78rem; text-transform:uppercase; letter-spacing:.04em; color:var(--rfd-ink-soft); font-weight:500; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; margin-bottom:8px;}
@@ -223,7 +226,7 @@ permalink: /reinforcement-demo/
     <div class="rfd-panel">
       <!-- ===== EDITABLE TEXT ===== -->
       <h2>A network of agents</h2>
-      <p class="rfd-sub">Twelve agents form one connected group with no isolates inside it. Three more (User 13–15, in the corners) have no ties at all: they're the baseline case, showing how an agent behaves without any connections. Click one agent to follow it, or a second to compare a pair, then run the simulation to watch every agent's state play out tick by tick.</p>
+      <p class="rfd-sub">Twelve agents form one connected group with no isolates inside it. Three more (User 13–15, in the corners) have no ties at all: they're the baseline case, showing how an agent behaves without any connections. Click one agent to follow it, or a second to compare a pair, then run the simulation to watch every agent's state play out tick by tick. Arrows show who influences whom; an agent can only be reinforced by agents whose arrows point towards it.</p>
       <!-- ===== END EDITABLE TEXT ===== -->
       <svg class="rfd-network" viewBox="0 0 760 460" id="rfd-netSvg"></svg>
       <div class="rfd-legend-mini" id="rfd-netHint"></div>
@@ -265,7 +268,7 @@ permalink: /reinforcement-demo/
     <p><b>Seeded, not randomly live.</b> The dissertation's model is stochastic by design: it takes thousands of runs for a pattern to become reliable, and a single unrepeatable run is closer to noise than to a finding. So this playback doesn't sample fresh randomness on every visit. Each agent's tick-by-tick path is generated from a fixed seed (<code>2026 + agent_id &times; 97</code>, one per agent), using the same step-by-step sampling logic the real model uses. Re-running the simulation, reloading the page or rebuilding the site all reproduce the identical run.</p>
     <p><b>What comes from the model's data.</b> Each agent's full transition odds (not just whether it stays in its state, but where it goes if it doesn't) come directly from the dissertation's transition-probability table, split by attribute and current state. For example, an agent diagnosed with depression that is currently positive has a 71.6% chance of staying positive, 10.1% of becoming neutral and 18.3% of becoming negative on its next post (n=454); one that is currently negative is 58.5% negative, 14.2% neutral and 27.3% positive (n=289). Agents not diagnosed have 64.7% positive persistence (n=405) and 64.6% negative persistence (n=384), with the remainder split the same way. The table also breaks these down by how much post history the model has for an agent; those rows are the same observations sliced more finely, so the figures above use the unconditioned count for each cell. Two other mechanics come directly from the NetLogo source: agents only change state on ticks when they actually post (a posting probability specific to each attribute and state gates every tick), and an agent that goes more than 20 ticks without posting is reset to neutral.</p>
     <p><b>How reinforcement is shown.</b> Emotional reinforcement is an observed outcome of the dissertation's full simulation: agents tied to others in the same sentiment state formed reinforcing groups that amplified their existing emotional tendencies. It emerges across thousands of runs rather than being a single parameter in the transition table, so this demo represents it with a fixed persistence boost. While an agent shares its sentiment with at least one agent it's tied to, probability shifts towards staying in its current state, using the same proportional-redistribution approach the model uses for its neutral-threshold intervention. The boost is kept modest so it sits alongside the model's real posting odds.</p>
-    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent that isn't being reinforced can hold the same state for at most four ticks. On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. An agent that shares its state with an agent it's tied to can stay in that state for longer, so isolated and unreinforced agents change state more often than reinforced ones. This rule isn't part of the dissertation's model.</p>
+    <p><b>One rule specific to this demo.</b> A run here is only 24 ticks, and each tick represents 24 hours. To keep that short window readable, an agent that isn't being reinforced can hold the same state for at most four ticks. Ties are directional: an agent is only reinforced by agents that influence it (an arrow pointing towards it, or a mutual tie). On the fifth tick it posts and moves to one of its other two states, weighted by its own transition odds for those states. An agent that shares its state with an agent it's tied to can stay in that state for longer, so isolated and unreinforced agents change state more often than reinforced ones. This rule isn't part of the dissertation's model.</p>
     <p><b>Network and agents.</b> The group's shape (who has many ties, who has few, and the mix of one-directional and mutual ties) mirrors the real seed network's structure, but every agent shown is synthetic, with no one-to-one mapping to actual participants.</p>
   </div>
   <!-- ===== END EDITABLE TEXT ===== -->
@@ -288,12 +291,16 @@ permalink: /reinforcement-demo/
     resultsOne: '{a}’s state, tick by tick, from a fixed, seeded run.',
     resultsTwo: 'Both agents’ states, tick by tick, plus whether their tie has them sharing a sentiment at each point.',
     noTie:      'No direct tie, so there’s no pathway for reinforcement between these two. Each simply follows its own state above.',
-    pairNote:   'Recalculated every tick from both agents’ current state. Highlighted cells mark ticks where they share a sentiment. While two tied agents share a sentiment, each gets a persistence boost towards staying in it, on top of its own baseline odds. This is how the demo represents the reinforcement effect observed in the dissertation’s full simulation (see How this works, below).',
+    pairNote:   'Recalculated every tick from both agents’ current state. Highlighted cells mark ticks where they share a sentiment. While two tied agents share a state, the agent being influenced gets a persistence boost towards staying in it (both agents, if the tie is mutual), on top of its own baseline odds. This is how the demo represents the reinforcement effect observed in the dissertation’s full simulation (see How this works, below).',
     sharingNow: 'Sharing a sentiment now',
     notSharing: 'Not sharing a sentiment now',
     runLabel:   'Run simulation',
     pauseLabel: 'Pause simulation',
     resumeLabel:'Resume simulation',
+    reinforcedRow: 'Reinforced',
+    reinforcedBy:  'Reinforced by, this tick',
+    nobody:        'no one',
+    noInfluencers: 'no one (nothing influences this agent)',
     cbLabel:    'Colourblind-friendly',
     cbOn:       'ON',
     cbOff:      'OFF',
@@ -350,11 +357,13 @@ permalink: /reinforcement-demo/
   var stateSym = {positive:'+', neutral:'0', negative:'\u2212'};
   var svgNS = 'http://www.w3.org/2000/svg';
 
-  function neighborsOf(id){
+  // Ties are directional: [a, b, false] means a influences b only; [a, b, true] is
+  // mutual. An agent can only be reinforced by the agents that influence it.
+  function influencersOf(id){
     var out = [];
     edges.forEach(function(e){
-      if(e[0]===id) out.push({id:e[1], bi:e[2]});
-      if(e[1]===id) out.push({id:e[0], bi:e[2]});
+      if(e[1] === id) out.push(e[0]);
+      else if(e[2] && e[0] === id) out.push(e[1]);
     });
     return out;
   }
@@ -436,8 +445,8 @@ permalink: /reinforcement-demo/
       nodes.forEach(function(n){ prev[n.id] = table[n.id][t-1]; });
       nodes.forEach(function(n){
         var cur = prev[n.id], next;
-        // Reinforced: holding the same state (positive, neutral or negative) that a tied agent held last tick.
-        var reinforced = neighborsOf(n.id).some(function(nb){ return prev[nb.id] === cur; });
+        // Reinforced: an agent that influences this one held the same state (positive, neutral or negative) last tick.
+        var reinforced = influencersOf(n.id).some(function(x){ return prev[x] === cur; });
 
         if(sinceLastPost[n.id] > INACTIVITY_RESET_TICKS){
           // Model rule: an agent inactive for more than 20 ticks reverts to neutral.
@@ -470,6 +479,11 @@ permalink: /reinforcement-demo/
 
   // A tie (or a selected pair) is "reinforcing" at a tick when both agents hold the
   // same state (positive, neutral or negative).
+  // Agents reinforcing `id` at `tick`: its influencers holding the same state.
+  function reinforcersAt(id, tick){
+    var st = stateAt(id, tick);
+    return influencersOf(id).filter(function(x){ return stateAt(x, tick) === st; });
+  }
   function pairSharing(aId, bId, rel, tick){
     return rel !== 'none' && stateAt(aId, tick) === stateAt(bId, tick);
   }
@@ -726,8 +740,10 @@ permalink: /reinforcement-demo/
     return '<div class="rfd-result-block">' +
       '<div class="rfd-result-block-head"><h3 class="rfd-mono">' + n.label + '</h3><span class="' + pillClass(n.type, n.state) + '" id="' + stripId + '-pill">' + typeLabel(n.type) + '</span></div>' +
       '<div class="rfd-strip-row"><span class="rfd-strip-who">State</span>' + stripHtml(stripId) + '</div>' +
-      '<div class="rfd-stat-grid">' +
+      '<div class="rfd-strip-row"><span class="rfd-strip-who">' + TEXT.reinforcedRow + '</span>' + stripHtml(stripId + '-rf') + '</div>' +
+      '<div class="rfd-stat-grid rfd-stat-grid-3">' +
         '<div class="rfd-stat-card"><h4>Current run in this state</h4><div class="rfd-stat-big" id="' + stripId + '-streak">1 tick</div></div>' +
+        '<div class="rfd-stat-card"><h4>' + TEXT.reinforcedBy + '</h4><div class="rfd-stat-names" id="' + stripId + '-by"></div></div>' +
         '<div class="rfd-stat-card"><h4>Time in each state so far <span class="rfd-tag-note">this run</span></h4><div id="' + stripId + '-prop">' + propBarHtml({positive:0,neutral:0,negative:0}) + '</div></div>' +
       '</div>' +
     '</div>';
@@ -742,6 +758,18 @@ permalink: /reinforcement-demo/
     if(streakEl) streakEl.textContent = streak + ' tick' + (streak === 1 ? '' : 's');
     var propEl = document.getElementById(stripId + '-prop');
     if(propEl) propEl.innerHTML = propBarHtml(proportionsSoFar(n.id, tick));
+    var rf = document.getElementById(stripId + '-rf');
+    if(rf) Array.prototype.forEach.call(rf.children, function(cell){
+      var i = Number(cell.getAttribute('data-i'));
+      cell.className = 'rfd-cell';
+      if(i <= tick && reinforcersAt(n.id, i).length) cell.classList.add('rfd-revealed','rfd-shared');
+      if(i === tick) cell.classList.add('rfd-current');
+    });
+    var by = document.getElementById(stripId + '-by');
+    if(by){
+      var who = reinforcersAt(n.id, tick).map(function(x){ return byId[x].label; });
+      by.textContent = who.length ? who.join(', ') : (influencersOf(n.id).length ? TEXT.nobody : TEXT.noInfluencers);
+    }
   }
 
   function reinforcementBlockHtml(a, b, rel){

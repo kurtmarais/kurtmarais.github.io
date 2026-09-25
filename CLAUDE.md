@@ -187,14 +187,19 @@ leaks into other pages. Consequences worth remembering:
 - Demo-only rule `MAX_UNREINFORCED_TICKS = 4`: an agent that is NOT
   reinforced can't hold one state for more than 4 ticks; on the 5th it moves
   to one of its other two states, weighted by its own transition odds.
-  Reinforced agents (a tied agent held the same state last tick, neutral
-  included) can stay longer. That contrast is the point of the demo:
+  Reinforced agents (an agent that *influences* it held the same state
+  last tick, neutral included) can stay longer. Ties are directional:
+  `[a, b, false]` means a influences b only; use `influencersOf()`, never
+  an undirected neighbour list (that bug let Users 3/4 look reinforced by
+  agents they only influence). That contrast is the point of the demo:
   isolated agents are more volatile than reinforced ones (500 seeds:
   33.9% vs 22.5% state changes per tick). "How this works" describes the
   rule; keep them in sync.
-- Starting states: User 03 neutral and User 08 positive, so every
-  reinforcement combination this network allows (attribute pair x shared
-  state x tie direction, 12 in total) occurs in ticks 1-24 of the deployed
+- Each agent's results block shows a "Reinforced" row and a "Reinforced
+  by" card, so every stay past 4 ticks is visibly explained on screen.
+- Starting states: User 03 neutral and User 08 positive, so every directed
+  reinforcement combination this network allows (influencer attribute ->
+  influenced attribute x shared state x tie type, 18 in total) occurs in ticks 1-24 of the deployed
   run. Re-check coverage if the network, starting states, seeds or rules
   change.
 - Sizes: network `max-width: 700px`; agents `NODE_R = 13.5`, isolates
