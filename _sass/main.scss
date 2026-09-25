@@ -577,22 +577,27 @@ h4 {
 }
 .demo-teaser-trace path {
   fill: none;
-  stroke: #6ea491;
-  stroke-width: 2;
+  stroke: $linkColor;   // same green as the card's left border
+  stroke-width: 1.5;
   stroke-linecap: round;
   stroke-dasharray: 100 100;
   stroke-dashoffset: 100;
   opacity: 0;
-  filter: drop-shadow(0 0 3px rgba(110, 164, 145, 0.9)) drop-shadow(0 0 8px rgba(110, 164, 145, 0.45));
+  filter: drop-shadow(0 0 2px rgba(54, 91, 82, 0.3));   // a faint halo only
 }
 .demo-teaser-trace.is-tracing path {
-  animation: teaserTrace 2.4s forwards;
+  animation: teaserTrace 2.6s forwards, teaserTraceFade 2.6s forwards;
 }
-// 2s to draw the loop, then a 0.4s fade (the last 17%).
+// The draw eases around the loop over the whole 2.6s; the fade starts at 60%
+// (about two-thirds of the way round), so the line is already dissolving as
+// it approaches the bottom-left corner and is gone when it arrives.
 @keyframes teaserTrace {
-  0%   { stroke-dashoffset: 100; opacity: 1; animation-timing-function: cubic-bezier(.45, 0, .35, 1); }
-  83%  { stroke-dashoffset: 0;   opacity: 1; animation-timing-function: ease-out; }
-  100% { stroke-dashoffset: 0;   opacity: 0; }
+  from { stroke-dashoffset: 100; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes teaserTraceFade {
+  0%, 60% { opacity: 0.8; }
+  100%    { opacity: 0; }
 }
 .demo-teaser .eyebrow {
   margin-bottom: 0.35rem;
@@ -2009,10 +2014,6 @@ body.dark-mode .publication-item {
 
 /* DEMO TEASER */
 
-body.dark-mode .demo-teaser-trace path {
-  stroke: #9ab8aa;
-  filter: drop-shadow(0 0 3px rgba(154, 184, 170, 0.9)) drop-shadow(0 0 8px rgba(154, 184, 170, 0.4));
-}
 body.dark-mode .demo-teaser {
   border-color: #444943;
   border-left-color: $linkColor;

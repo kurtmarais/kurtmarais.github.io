@@ -242,8 +242,11 @@ under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
 link's stretched `::after`. Border trace: `assets/js/demo-teaser-trace.js`
 appends an SVG path (rebuilt on resize, corners match the 10px radius) that
 starts mid bottom-left corner and runs anticlockwise; `.is-tracing` animates
-`stroke-dashoffset` 100 -> 0 on `pathLength="100"` (2s draw), then fades
-opacity to 0 in 0.4s. It never retraces or erases along the path. Every
+`stroke-dashoffset` 100 -> 0 on `pathLength="100"` over 2.6s, while a second
+animation fades opacity 0.8 -> 0 from 60% onward, so it dissolves before it
+closes the loop. Never retraces or erases along the path. Stroke is
+`$linkColor` (the card's left-border green) in both themes, 1.5px, faint
+2px halo only. Every
 60s (`EVERY_MS`) once the card has been in view.
 Skipped for reduced motion and while the tab is hidden. The SVG is offset
 `left: -3px` because the card's left border is 3px (others 1px);

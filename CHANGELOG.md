@@ -7,9 +7,9 @@ is the baseline. Add new entries at the top.
 ## 2026-09-25 (6)
 
 ### Added
-- Homepage demo card: every minute a glowing line traces the card's
-  border from the bottom-left corner, anticlockwise, and fades out quickly
-  once it gets back to the start. Off for visitors who prefer reduced motion.
+- Homepage demo card: every minute a thin line in the card's left-border
+  green traces the border from the bottom-left corner, anticlockwise,
+  fading out as it nears the start again. Off for visitors who prefer reduced motion.
 
 ## 2026-09-25 (5)
 

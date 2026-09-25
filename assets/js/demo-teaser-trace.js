@@ -1,7 +1,6 @@
 /* Homepage demo teaser: every 60 seconds a line traces the card's border,
    starting at the bottom-left corner and running anticlockwise (bottom,
-   right, top, left). Once it's back at the bottom-left corner the outline
-   fades out quickly.
+   right, top, left), fading out as it nears the bottom-left corner again.
    The outline is an SVG path rebuilt whenever the card resizes, so its
    rounded corners always match the card. Skipped for reduced motion. */
 (function () {
