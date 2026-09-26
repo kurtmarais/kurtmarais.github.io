@@ -73,7 +73,11 @@ the type name as **plain text beside it, not inside the pill** — deliberate,
 so it doesn't visually collide with keyword badges, which do have text
 inside their pill.
 
-Meta line format: `[pill+icon] Type · Venue/Publication · Date`.
+Meta line format: `[pill+icon] Type · Venue/Publication · Date`. The pill is
+a hanging bullet: `.engagement-meta` / `.media-meta` are flex rows and
+everything after the pill sits in `<span class="meta-text">`, so wrapped
+lines align under the first line's text, not under the pill. The span's top
+padding (`(1.5rem - 1.6em) / 2`) centres its first line on the pill.
 `engagement-date.html` emits the `·` only if a date exists
 (`item.start_date` or `item.date`), so there's no dangling separator.
 
@@ -125,6 +129,16 @@ no-JS fallback; the script sets an inline `max-width`,
 which also overrides the mobile `max-width: none`. Add new title/text pairs
 to `PAIRS` in the script. The demo card's description is deliberately not
 capped: it runs to the card's right padding (equal to the left).
+
+## In the Media carousel (`media-carousel.js`, homepage)
+
+Touch swipe on `.media-carousel`: fingers/pens only (`pointerType !==
+"mouse"`), all widths. A swipe counts at 40px horizontal movement that is
+larger than the vertical movement; left = next, right = previous, and it
+resets autoplay. `touch-action: pan-y` on `.media-carousel` keeps vertical
+page scrolling native. No `setPointerCapture()` (see the social carousel
+note below); instead a capture-phase `click` listener swallows the click
+for 400ms after a swipe, so a swipe starting on a link doesn't open it.
 
 ## Social links carousel (`social-carousel.js`, homepage)
 

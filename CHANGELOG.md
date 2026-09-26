@@ -4,6 +4,22 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26 (9)
+
+### Changed
+- Engagements list and homepage "In the Media" strip: the type icon now
+  works like a bullet (hanging indent). When the meta line wraps on
+  smaller screens, the following lines line up with the first line's text
+  instead of running back under the icon, and the icon is centred on the
+  first line.
+
+### Added
+- Homepage "In the Media" card: swipe left or right with a finger (or pen)
+  to move to the next or previous item, as on the social links carousel on
+  phones. Vertical swipes still scroll the page, a swipe that starts on a
+  link doesn't open it, and a swipe restarts the autoplay timer. Mouse
+  drags do nothing; the arrow buttons are unchanged.
+
 ## 2026-09-26 (8)
 
 ### Removed
