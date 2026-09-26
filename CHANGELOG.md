@@ -4,6 +4,15 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26 (8)
+
+### Removed
+- Unused files: `assets/apple-icon-152x152.png`,
+  `assets/img/network-github-1.png` / `.ico` (old icons) and
+  `assets/libs/bootstrap/bootstrap.min.css.map` (developer source map; its
+  pointer at the end of `bootstrap.min.css` is removed too).
+- Stale "placeholder monogram" comment above the homepage headshot.
+
 ## 2026-09-26 (7)
 
 ### Changed
