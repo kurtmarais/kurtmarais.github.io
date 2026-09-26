@@ -22,6 +22,8 @@ Loaded only by the page that needs it:
   Mobile: infinite loop using 2 cloned cards at each end with a silent
   snap-back. Any `setPointerCapture()` must stay mobile-only — on desktop
   it breaks the links' click-through while hover still looks fine.
+- `fit-to-title.js` — homepage: caps the hero intro and the demo card text
+  at the width of their title's longest displayed line.
 - `demo-teaser-trace.js` — homepage demo card: a line traces the card's
   border (bottom-left, anticlockwise, fading before it closes). First trace
   30s after the page opens (or when the card is next in view), then every
