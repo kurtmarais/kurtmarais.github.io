@@ -229,7 +229,7 @@ leaks into other pages. Consequences worth remembering:
 - Every stay past 4 ticks must be visibly explained on screen. Single-agent
   view: a "Reinforced" row. Two-agent view: the pair's "Shared" row plus
   one lighter "from others" row per agent (reinforced by influencers other
-  than the selected partner). Both views have a "Who is reinforcing it at
+  than the selected partner). Both views have a "Reinforcing agent(s) at
   this tick" card. Stat-card headings live in `TEXT` (`streakTitle`,
   `reinforcedBy`, `propTitle`) and are written as plain phrases, not
   clipped labels.

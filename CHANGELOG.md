@@ -7,9 +7,9 @@ is the baseline. Add new entries at the top.
 ## 2026-09-26 (7)
 
 ### Changed
-- Reinforcement demo stat cards: clearer headings ("How long it has held
-  its current state", "Who is reinforcing it at this tick", "Share of
-  ticks spent in each state so far"); the "this run" tag is removed.
+- Reinforcement demo stat cards: clearer headings ("Duration of current
+  state", "Reinforcing agent(s) at this tick", "Breakdown of states
+  experienced thus far"); the "this run" tag is removed.
 
 ## 2026-09-26 (6)
 
