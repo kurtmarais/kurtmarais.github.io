@@ -229,7 +229,10 @@ leaks into other pages. Consequences worth remembering:
 - Every stay past 4 ticks must be visibly explained on screen. Single-agent
   view: a "Reinforced" row. Two-agent view: the pair's "Shared" row plus
   one lighter "from others" row per agent (reinforced by influencers other
-  than the selected partner). Both views have a "Reinforced by" card.
+  than the selected partner). Both views have a "Who is reinforcing it at
+  this tick" card. Stat-card headings live in `TEXT` (`streakTitle`,
+  `reinforcedBy`, `propTitle`) and are written as plain phrases, not
+  clipped labels.
 - Starting states: User 03 neutral and User 08 positive, so every directed
   reinforcement combination this network allows (influencer attribute ->
   influenced attribute x shared state x tie type, 18 in total) occurs in ticks 1-24 of the deployed

@@ -122,10 +122,6 @@ permalink: /reinforcement-demo/
   .rfd-cb .rfd-cb-toggle{color:var(--rfd-ink); border-color:var(--rfd-ink);}
   .rfd-cb .rfd-switch{background:var(--rfd-ink); border-color:var(--rfd-ink);}
   .rfd-cb .rfd-switch-knob{transform:translateX(13px); background:var(--rfd-surface);}
-  .rfd-tag-note{
-    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.68rem; letter-spacing:.03em; padding:2px 7px; border-radius:5px; font-weight:500;
-    background:var(--rfd-surface); color:var(--rfd-ink-soft); border:1px solid var(--rfd-line); text-transform:none;
-  }
 
   .rfd-panel{background:var(--rfd-surface); border:1px solid var(--rfd-line); border-radius:14px; padding:20px; margin-bottom:22px;}
   .rfd-panel h2{font-size:1.05rem; font-weight:600; margin-bottom:4px;}
@@ -408,7 +404,9 @@ permalink: /reinforcement-demo/
     reinforcedRow: 'Reinforced',
     fromOthers:    'from others',
     othersNote:    'The lighter rows mark ticks when an agent is reinforced by agents outside of the selected pair, which is why an agent’s state may persist for longer than expected.',
-    reinforcedBy:  'Reinforced by, this tick',
+    streakTitle:   'How long it has held its current state',
+    reinforcedBy:  'Who is reinforcing it at this tick',
+    propTitle:     'Share of ticks spent in each state so far',
     nobody:        'no one',
     noInfluencers: 'no one (nothing influences this agent)',
     inspectHint:  'Click any tick in the timelines to jump to it. The panel below lists every agent at the current tick and marks which agents changed state.',
@@ -877,9 +875,9 @@ permalink: /reinforcement-demo/
       '<div class="rfd-strip-row"><span class="rfd-strip-who">State</span>' + stripHtml(stripId) + '</div>' +
       (showReinforcedRow ? '<div class="rfd-strip-row"><span class="rfd-strip-who">' + TEXT.reinforcedRow + '</span>' + stripHtml(stripId + '-rf') + '</div>' : '') +
       '<div class="rfd-stat-grid rfd-stat-grid-3">' +
-        '<div class="rfd-stat-card"><h4>Current run in this state</h4><div class="rfd-stat-big" id="' + stripId + '-streak">1 tick</div></div>' +
+        '<div class="rfd-stat-card"><h4>' + TEXT.streakTitle + '</h4><div class="rfd-stat-big" id="' + stripId + '-streak">1 tick</div></div>' +
         '<div class="rfd-stat-card"><h4>' + TEXT.reinforcedBy + '</h4><div class="rfd-stat-names" id="' + stripId + '-by"></div></div>' +
-        '<div class="rfd-stat-card"><h4>Time in each state so far <span class="rfd-tag-note">this run</span></h4><div id="' + stripId + '-prop">' + propBarHtml({positive:0,neutral:0,negative:0}) + '</div></div>' +
+        '<div class="rfd-stat-card"><h4>' + TEXT.propTitle + '</h4><div id="' + stripId + '-prop">' + propBarHtml({positive:0,neutral:0,negative:0}) + '</div></div>' +
       '</div>' +
     '</div>';
   }
