@@ -115,6 +115,16 @@ both the stub and engagements.yml) was rejected as redundant maintenance.
 toolbar/zoom) sized to that poster's own aspect ratio via inline
 `style="aspect-ratio: {{ poster_data.pdf_width }} / {{ poster_data.pdf_height }};"`.
 
+## Homepage card text width (`fit-to-title.js`)
+
+The hero intro and the demo card's description are capped at the rendered
+width of their title's longest wrapped line (measured with a Range over the
+title's text, re-run on `document.fonts.ready` and title resize), so text
+never runs past the title's right edge. CSS `max-width` (48ch hero, 38rem
+demo) is only the no-JS fallback; the script sets an inline `max-width`,
+which also overrides the mobile `max-width: none`. Add new title/text pairs
+to `PAIRS` in the script.
+
 ## Social links carousel (`social-carousel.js`, homepage)
 
 Desktop: static row, all cards shown via `flex`. `.social-carousel-viewport`

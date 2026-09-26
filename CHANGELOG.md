@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26 (4)
+
+### Changed
+- Homepage hero card and demo card: the text under each title now runs
+  as wide as the title's longest line (instead of a fixed, narrower
+  width), never past it.
+
 ## 2026-09-26 (3)
 
 ### Changed
