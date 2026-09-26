@@ -151,9 +151,10 @@ layout: default
           <div class="media-content">
 
             <div class="media-meta">
-              {% if type_icon != "" %}<span class="engagement-type-pill"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{{ type_label }} · {% endif %}
+              {% if type_icon != "" %}<span class="engagement-type-pill"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{% endif %}
+              <span class="meta-text">{% if type_icon != "" %}{{ type_label }} · {% endif %}
               {{ item.publication }}
-              {% include engagement-date.html item=item %}
+              {% include engagement-date.html item=item %}</span>
             </div>
 
             <h4>{{ item.title }}</h4>

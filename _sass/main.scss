@@ -1019,6 +1019,23 @@ body.dark-mode .engagement-keyword-badge {
   flex-shrink: 0;
 }
 
+// Meta lines with a type pill use a hanging indent: the pill sits in its own
+// column like a bullet, and wrapped lines line up under the first line's
+// text instead of running back under the pill. The text's top padding
+// centres its first line on the pill (pill height minus one line, halved).
+.engagement-meta,
+.media-meta {
+  display: flex;
+  align-items: flex-start;
+}
+.engagement-meta .meta-text,
+.media-meta .meta-text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.6;
+  padding-top: calc((1.5rem - 1.6em) / 2);
+}
+
 .engagement-type-pill i,
 .engagement-type-pill svg {
   color: $linkColor;
@@ -2660,8 +2677,7 @@ body.dark-mode .mobile-menu-toggle span {
   }
 
   .media-meta {
-    display: block;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0.4rem;   // stays flex: the pill keeps its hanging indent on phones
   }
 
   .media-content h4 {

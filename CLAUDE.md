@@ -73,7 +73,11 @@ the type name as **plain text beside it, not inside the pill** — deliberate,
 so it doesn't visually collide with keyword badges, which do have text
 inside their pill.
 
-Meta line format: `[pill+icon] Type · Venue/Publication · Date`.
+Meta line format: `[pill+icon] Type · Venue/Publication · Date`. The pill is
+a hanging bullet: `.engagement-meta` / `.media-meta` are flex rows and
+everything after the pill sits in `<span class="meta-text">`, so wrapped
+lines align under the first line's text, not under the pill. The span's top
+padding (`(1.5rem - 1.6em) / 2`) centres its first line on the pill.
 `engagement-date.html` emits the `·` only if a date exists
 (`item.start_date` or `item.date`), so there's no dangling separator.
 

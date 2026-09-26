@@ -136,10 +136,11 @@ layout: default
 
                 <div class="engagement-content">
                   <div class="engagement-meta">
-                    {% if type_icon != "" %}<span class="engagement-type-pill"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{{ type_label }} · {% endif %}
+                    {% if type_icon != "" %}<span class="engagement-type-pill"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{% endif %}
+                    <span class="meta-text">{% if type_icon != "" %}{{ type_label }} · {% endif %}
                     {% if item.publication %}{{ item.publication }}{% else %}{{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}{% endif %}
                     {% include engagement-date.html item=item %}
-                    {% if item.featured %}<span class="engagement-featured-badge">Featured</span>{% endif %}
+                    {% if item.featured %}<span class="engagement-featured-badge">Featured</span>{% endif %}</span>
                   </div>
 
                   <h4 class="engagement-title">{{ item.title }}</h4>
