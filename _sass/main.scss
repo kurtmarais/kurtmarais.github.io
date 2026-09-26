@@ -500,7 +500,9 @@ h4 {
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  padding: 1.5rem 1.75rem;
+  // Right padding is 2px wider than the left to make up for the 3px left
+  // border (vs 1px right), so content sits the same distance from both edges.
+  padding: 1.5rem calc(1.75rem + 2px) 1.5rem 1.75rem;
   border: 1px solid #d9d9d1;
   border-left: 3px solid $linkColor;
   border-radius: 10px;
@@ -626,7 +628,7 @@ h4 {
 .demo-teaser-body p {
   color: #69706b;
   margin: 0 0 0.85rem;
-  max-width: 38rem;
+  // No width cap: the description runs to the card's right padding.
 }
 .demo-teaser-link {
   display: inline-flex;
@@ -657,7 +659,7 @@ h4 {
   .demo-teaser {
     flex-direction: column;
     gap: 1rem;
-    padding: 1.25rem 1.5rem;
+    padding: 1.25rem calc(1.5rem + 2px) 1.25rem 1.5rem;
   }
   .demo-teaser-icon {
     width: 44px;

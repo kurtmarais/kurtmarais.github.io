@@ -1,4 +1,4 @@
-/* Homepage cards: the intro text under a title is never wider than the
+/* Homepage hero: the intro text under the title is never wider than the
    title's longest line as it's actually displayed (after wrapping), so the
    paragraph lines up with the heading's right edge instead of running past
    it or stopping at a fixed width. Measured from the rendered text, and
@@ -8,8 +8,7 @@
   "use strict";
 
   var PAIRS = [
-    [".hero-heading", ".hero-intro"],
-    [".demo-teaser-body h4", ".demo-teaser-body > p:not(.eyebrow)"]
+    [".hero-heading", ".hero-intro"]
   ];
 
   // Width of the widest rendered line of an element's text.
