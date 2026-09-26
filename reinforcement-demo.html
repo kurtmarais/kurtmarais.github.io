@@ -157,7 +157,6 @@ permalink: /reinforcement-demo/
 
   .rfd-rel-layout{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center;}
   @media (max-width:640px){ .rfd-rel-layout{grid-template-columns:1fr;} }
-  #rfd-relPanel{scroll-margin-top:16px;}
   svg.rfd-rel{width:100%; height:auto; display:block; max-width:340px; margin:0 auto;}
   /* One row per agent (name + pill), then the tie verdict. Rows are separate
      boxes with real gaps, so pills never touch, even when a pill wraps under
@@ -720,7 +719,7 @@ permalink: /reinforcement-demo/
   }
 
   var selected = [];
-  var currentTick = 0, playing = false, playTimer = null, runStarted = false;
+  var currentTick = 0, playing = false, playTimer = null, playDelay = null, runStarted = false;
   // revealedTo: furthest tick reached this run, so stepping back to inspect an
   // earlier tick keeps the rest of the timeline visible.
   var revealedTo = 0, speed = 1, snapshotShown = false, snapshotMin = false;
@@ -979,18 +978,26 @@ permalink: /reinforcement-demo/
   function stopPlayback(){
     playing = false;
     if(playTimer){ clearInterval(playTimer); playTimer = null; }
+    if(playDelay){ clearTimeout(playDelay); playDelay = null; }
     updateButtons();
   }
-  function startPlayback(){
+  // delayMs (optional) holds the first tick back, e.g. while the page moves
+  // to the Relationship panel; the run counts as playing during the wait.
+  function startPlayback(delayMs){
     if(currentTick >= TICKS){ currentTick = 0; applyTick(); }
     playing = true;
     if(playTimer) clearInterval(playTimer);
-    playTimer = setInterval(function(){
-      if(currentTick >= TICKS){ stopPlayback(); return; }
-      currentTick++;
-      applyTick();
-      if(currentTick >= TICKS) stopPlayback();
-    }, TICK_MS / speed);
+    if(playDelay){ clearTimeout(playDelay); playDelay = null; }
+    function tickLoop(){
+      playDelay = null;
+      playTimer = setInterval(function(){
+        if(currentTick >= TICKS){ stopPlayback(); return; }
+        currentTick++;
+        applyTick();
+        if(currentTick >= TICKS) stopPlayback();
+      }, TICK_MS / speed);
+    }
+    if(delayMs) playDelay = setTimeout(tickLoop, delayMs); else tickLoop();
     updateButtons();
   }
   function applyTick(){
@@ -1078,9 +1085,10 @@ permalink: /reinforcement-demo/
     applyTick();
     // Respect reduced-motion preferences: show tick 0 and let the visitor press
     // Play or drag the slider instead of auto-advancing.
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ stopPlayback(); }
-    else { startPlayback(); }
-    guideToRelationship();
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var moving = guideToRelationship(still);
+    if(still){ stopPlayback(); }
+    else { startPlayback(moving ? GUIDE_MS + GUIDE_PAUSE_MS : 0); }
   }
 
   // The first run on this page load that has a pair selected moves the screen
@@ -1088,12 +1096,41 @@ permalink: /reinforcement-demo/
   // load (a plain variable, not storage): after that, the visitor scrolls freely
   // until the page is refreshed or reopened. A single-agent run has no
   // Relationship panel, so it doesn't use up the one-off move.
+  // The panel's top edge stops GUIDE_GAP px below the top of the screen, or
+  // below the site header on phones, where the header stays pinned (sticky).
+  // The scroll takes GUIDE_MS, and the first tick waits a further
+  // GUIDE_PAUSE_MS so the run starts once the panel is settled in view.
+  // Touching, wheeling or pressing a key during the move stops it.
+  var GUIDE_MS = 1000, GUIDE_PAUSE_MS = 300, GUIDE_GAP = 12;
   var guidedToRel = false;
-  function guideToRelationship(){
-    if(guidedToRel || selected.length < 2) return;
+  function guideToRelationship(still){
+    if(guidedToRel || selected.length < 2) return false;
     guidedToRel = true;
-    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    document.getElementById('rfd-relPanel').scrollIntoView({block:'start', behavior: still ? 'auto' : 'smooth'});
+    var offset = GUIDE_GAP;
+    var header = document.querySelector('.site-header');
+    if(header){
+      var pos = getComputedStyle(header).position;
+      if(pos === 'sticky' || pos === 'fixed') offset += header.getBoundingClientRect().height;
+    }
+    var from = window.pageYOffset;
+    var maxY = document.documentElement.scrollHeight - window.innerHeight;
+    var to = Math.max(0, Math.min(maxY, from + document.getElementById('rfd-relPanel').getBoundingClientRect().top - offset));
+    if(still){ window.scrollTo({top: to, behavior: 'instant'}); return false; }
+    var t0 = null, stopped = false;
+    function stop(){ stopped = true; }
+    var evs = ['wheel', 'touchstart', 'keydown', 'mousedown'];
+    evs.forEach(function(e){ window.addEventListener(e, stop, {passive:true, once:true}); });
+    function step(now){
+      if(stopped) return;
+      if(t0 === null) t0 = now;
+      var k = Math.min(1, (now - t0) / GUIDE_MS);
+      var ease = k < 0.5 ? 4*k*k*k : 1 - Math.pow(-2*k + 2, 3) / 2;
+      window.scrollTo({top: from + (to - from) * ease, behavior: 'instant'});
+      if(k < 1) requestAnimationFrame(step);
+      else evs.forEach(function(e){ window.removeEventListener(e, stop); });
+    }
+    requestAnimationFrame(step);
+    return true;
   }
 
   function onRunClick(){
