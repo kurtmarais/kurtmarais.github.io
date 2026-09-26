@@ -191,11 +191,10 @@ leaks into other pages. Consequences worth remembering:
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
   `pointer-events:all` or only the 2.5px outline is clickable.
 - Site-wide `h1`–`h4` are uppercase, and that applies here too.
-- Page title (`.rfd-intro h1`): bold (700) Source Serif 4, no rule under
-  it, with the same total space below as the other pages' titles
-  (`calc(4rem + 1px)` = pb-3 + rule + mb-5). Weight 700 is loaded in
-  `head.html`'s Google Fonts link. The front-matter `title` sets the
-  browser tab; keep it the same as the h1.
+- Page title (`.rfd-intro h1`): Source Serif 4 at weight 500, the same as
+  the homepage hero heading (`.hero-heading`), no rule under it, then a
+  normal paragraph gap (1rem) before the intro. The front-matter `title`
+  sets the browser tab; keep it the same as the h1.
 - `CONNECTION_BOOST = 0.08` represents emotional reinforcement, an observed
   outcome of the dissertation's full simulation (not a parameter estimated
   from the transition table), and is not a placeholder. Keep it at 0.08:
