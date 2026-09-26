@@ -10,5 +10,3 @@ Static files served as-is (plus `css/main.scss`, which Jekyll compiles).
 - `posters/` — poster PDFs embedded on `/posters/<slug>/` pages (see
   `_posters/README.md`).
 - `references/` — BibTeX file, not used by the build.
-- `apple-icon-152x152.png` — not referenced by any template (the live
-  Apple touch icon is `img/favicon-180.png`). Safe to delete.

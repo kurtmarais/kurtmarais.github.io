@@ -11,9 +11,8 @@ In use:
 - `engagements/` — poster thumbnails (`poster-thumb.jpg`,
   `predac-thumb.jpg`). New poster thumbnails go here as `<slug>-thumb.jpg`.
 
-Not referenced by any template (safe to delete):
+Not referenced by any template (kept on purpose):
 
-- `network-github-1.ico`, `network-github-1.png` — older favicon.
 - `og-image.png` — `og:image` is deliberately omitted in `head.html` so link
   previews stay a compact title/description card.
 
