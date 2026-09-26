@@ -273,10 +273,13 @@ leaks into other pages. Consequences worth remembering:
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
-link's stretched `::after`. Icon: an inline SVG of a hand (Font Awesome Free
-"hand-pointer" solid path, scaled into a 44-unit viewBox) tapping a
-three-ring target at (24, 15). 6s loop: hand presses (`teaserTap`), then the
-dot and rings light up outwards (`teaserDot`, `teaserRing`, 0.25s steps).
+link's stretched `::after`. Icon (48px box, between the 44px Research focus
+icons and the old 52px): an outline hand (1.6 stroke, filled with the page
+background so it hides the rings behind it) tapping a three-ring target.
+Index finger up, three curled fingers as bumps, straight thumb angled
+down-left; fingertip just below the centre dot so the dot stays visible.
+6s loop: hand presses and its outline turns mint (`teaserTap`), then the dot
+and rings light up outwards (`teaserDot`, `teaserRing`, 0.25s steps).
 Colours come from `--tap-rest` / `--tap-hot` on `.demo-teaser-icon`,
 swapped to mint in dark mode. Border trace: `assets/js/demo-teaser-trace.js`
 appends an SVG path (rebuilt on resize, corners match the 10px radius) that
