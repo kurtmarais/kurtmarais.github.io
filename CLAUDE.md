@@ -191,10 +191,11 @@ leaks into other pages. Consequences worth remembering:
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
   `pointer-events:all` or only the 2.5px outline is clickable.
 - Site-wide `h1`–`h4` are uppercase, and that applies here too.
-- Page title (`.rfd-intro h1`): Source Serif 4 (like the homepage hero
-  heading), with the other pages' title pattern (`h3.border-bottom pb-3
-  mb-5`: 1rem padding, #dee2e6 rule in both themes, 3rem gap below). The
-  front-matter `title` sets the browser tab; keep it the same as the h1.
+- Page title (`.rfd-intro h1`): bold (700) Source Serif 4, no rule under
+  it, with the same total space below as the other pages' titles
+  (`calc(4rem + 1px)` = pb-3 + rule + mb-5). Weight 700 is loaded in
+  `head.html`'s Google Fonts link. The front-matter `title` sets the
+  browser tab; keep it the same as the h1.
 - `CONNECTION_BOOST = 0.08` represents emotional reinforcement, an observed
   outcome of the dissertation's full simulation (not a parameter estimated
   from the transition table), and is not a placeholder. Keep it at 0.08:
@@ -273,7 +274,12 @@ leaks into other pages. Consequences worth remembering:
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
-link's stretched `::after`. Border trace: `assets/js/demo-teaser-trace.js`
+link's stretched `::after`. Icon: an inline SVG of a hand (Font Awesome Free
+"hand-pointer" solid path, scaled into a 44-unit viewBox) tapping a
+three-ring target at (24, 15). 6s loop: hand presses (`teaserTap`), then the
+dot and rings light up outwards (`teaserDot`, `teaserRing`, 0.25s steps).
+Colours come from `--tap-rest` / `--tap-hot` on `.demo-teaser-icon`,
+swapped to mint in dark mode. Border trace: `assets/js/demo-teaser-trace.js`
 appends an SVG path (rebuilt on resize, corners match the 10px radius) that
 starts mid bottom-left corner and runs anticlockwise; `.is-tracing` animates
 `stroke-dashoffset` 100 -> 0 on `pathLength="100"` over 2.6s, while a second

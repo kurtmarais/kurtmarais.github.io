@@ -523,35 +523,51 @@ h4 {
   overflow: visible;
 }
 
-/* Centre-to-tip pulse, same cascading technique as the research strip's
-   "Machine learning" icon: the hub fires first, each outer node slightly
-   later, so the glow reads as travelling outward. 9.6s per loop. */
-.demo-teaser-icon .teaser-edge {
+/* "Interact" icon: a hand taps a target. Each 6s loop: the hand presses
+   (nudges down, turns mint), then the centre dot, middle ring and outer ring
+   light up in turn, so the pulse travels outwards from where the finger
+   touched. Same cascading-delay technique as the old network icon.
+   Colours are variables so dark mode can swap them (keyframes read them). */
+.demo-teaser-icon {
+  --tap-rest: #{$linkColor};
+  --tap-hot: #6ea491;
+}
+.demo-teaser-icon .teaser-hand {
+  fill: var(--tap-rest);
+  stroke: $backgroundColor;   // thin cut-out so the hand reads cleanly over the rings
+  stroke-width: 36;           // path units (the hand is scaled ~0.05), about 1.8px
+  paint-order: stroke;
+  transform-box: fill-box;
+  transform-origin: 38% 0;    // the fingertip
+  animation: teaserTap 6s ease-in-out infinite;
+}
+.demo-teaser-icon .teaser-dot {
+  fill: var(--tap-rest);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: teaserDot 6s ease-in-out infinite;
+}
+.demo-teaser-icon .teaser-ring {
   fill: none;
   stroke: #6ea491;
   stroke-width: 1.4;
   opacity: .35;
-  animation: teaserEdgeGlow 9.6s ease-in-out infinite;
+  animation: teaserRing 6s ease-in-out infinite;
 }
-.demo-teaser-icon .teaser-hub,
-.demo-teaser-icon .teaser-leaf {
-  fill: $linkColor;
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: teaserNodeGlow 9.6s ease-in-out infinite;
-}
-.demo-teaser-icon .teaser-leaf-a { animation-delay: .24s; }
-.demo-teaser-icon .teaser-leaf-b { animation-delay: .48s; }
-.demo-teaser-icon .teaser-leaf-c { animation-delay: .72s; }
-.demo-teaser-icon .teaser-leaf-d { animation-delay: .96s; }
+.demo-teaser-icon .teaser-ring-b { animation-delay: .25s; }
+.demo-teaser-icon .teaser-ring-c { animation-delay: .5s; }
 
-@keyframes teaserEdgeGlow {
-  0%, 15%, 60%, 100% { opacity: .35; }
-  30%, 45%           { opacity: 1; }
+@keyframes teaserTap {
+  0%, 10%, 34%, 100% { fill: var(--tap-rest); transform: translateY(0) scale(1); }
+  16%, 24%           { fill: var(--tap-hot);  transform: translateY(26px) scale(.94); }
 }
-@keyframes teaserNodeGlow {
-  0%, 25%, 78%, 100% { fill: $linkColor; transform: scale(1); }
-  45%, 65%           { fill: #6ea491; transform: scale(1.25); }
+@keyframes teaserDot {
+  0%, 15%, 36%, 100% { fill: var(--tap-rest); transform: scale(1); }
+  21%, 28%           { fill: var(--tap-hot);  transform: scale(1.35); }
+}
+@keyframes teaserRing {
+  0%, 15%, 38%, 100% { opacity: .35; }
+  22%, 28%           { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .demo-teaser-icon * { animation: none !important; }
@@ -2014,6 +2030,8 @@ body.dark-mode .publication-item {
 
 /* DEMO TEASER */
 
+body.dark-mode .demo-teaser-icon { --tap-rest: #9ab8aa; --tap-hot: #d4e4dc; }
+body.dark-mode .demo-teaser-icon .teaser-hand { stroke: #202421; }
 body.dark-mode .demo-teaser {
   border-color: #444943;
   border-left-color: $linkColor;

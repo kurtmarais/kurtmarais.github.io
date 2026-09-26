@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26 (2)
+
+### Changed
+- Reinforcement demo: title is bold, with no line under it (same space).
+- Homepage demo card icon: a hand tapping a target instead of a network.
+  The hand presses and changes colour, then the target's centre, middle
+  and outer rings light up in turn. Mint in dark mode.
+
 ## 2026-09-26
 
 ### Changed
