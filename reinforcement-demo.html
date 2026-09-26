@@ -51,13 +51,12 @@ permalink: /reinforcement-demo/
   .rfd-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;}
   .rfd-wrap h1,.rfd-wrap h2,.rfd-wrap h3,.rfd-wrap h4{margin:0;} /* inherits the site's own heading font */
 
-  /* Title matches the other pages' title pattern (h3.border-bottom.pb-3.mb-5:
-     rule under the title, 1rem above it, 3rem below it) and uses the serif
-     of the homepage hero heading. The intro no longer has its own bottom
-     rule, so there's only one line. */
+  /* Title: bold Source Serif 4 (the homepage hero's serif), no rule under it,
+     with the same total space below it as the other pages' titles
+     (h3.pb-3.mb-5: 1rem + 1px rule + 3rem). */
   .rfd-intro{padding-top:8px; margin-bottom:26px;}
-  .rfd-intro h1{font-family:"Source Serif 4", Georgia, serif; font-size:clamp(1.4rem,3vw,2rem); font-weight:500; line-height:1.25; letter-spacing:-0.01em;
-    padding-bottom:1rem; margin-bottom:3rem !important; border-bottom:1px solid #dee2e6;}
+  .rfd-intro h1{font-family:"Source Serif 4", Georgia, serif; font-size:clamp(1.4rem,3vw,2rem); font-weight:700; line-height:1.25; letter-spacing:-0.01em;
+    margin-bottom:calc(4rem + 1px) !important;}
   .rfd-intro p{margin:0; color:var(--rfd-ink-soft); font-size:.98rem; line-height:1.6;}
   .rfd-badge{
     font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.7rem; letter-spacing:.06em; text-transform:uppercase;
