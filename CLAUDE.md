@@ -191,11 +191,10 @@ leaks into other pages. Consequences worth remembering:
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
   `pointer-events:all` or only the 2.5px outline is clickable.
 - Site-wide `h1`–`h4` are uppercase, and that applies here too.
-- Page title (`.rfd-intro h1`): bold (700) Source Serif 4, no rule under
-  it, with the same total space below as the other pages' titles
-  (`calc(4rem + 1px)` = pb-3 + rule + mb-5). Weight 700 is loaded in
-  `head.html`'s Google Fonts link. The front-matter `title` sets the
-  browser tab; keep it the same as the h1.
+- Page title (`.rfd-intro h1`): Source Serif 4 at weight 500, the same as
+  the homepage hero heading (`.hero-heading`), no rule under it, then a
+  normal paragraph gap (1rem) before the intro. The front-matter `title`
+  sets the browser tab; keep it the same as the h1.
 - `CONNECTION_BOOST = 0.08` represents emotional reinforcement, an observed
   outcome of the dissertation's full simulation (not a parameter estimated
   from the transition table), and is not a placeholder. Keep it at 0.08:
@@ -274,10 +273,13 @@ leaks into other pages. Consequences worth remembering:
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
-link's stretched `::after`. Icon: an inline SVG of a hand (Font Awesome Free
-"hand-pointer" solid path, scaled into a 44-unit viewBox) tapping a
-three-ring target at (24, 15). 6s loop: hand presses (`teaserTap`), then the
-dot and rings light up outwards (`teaserDot`, `teaserRing`, 0.25s steps).
+link's stretched `::after`. Icon (50px box, between the 44px Research focus
+icons and the old 52px): an outline hand (1.6 stroke, filled with the page
+background so it hides the rings behind it) tapping a three-ring target.
+Index finger up, three curled fingers as bumps, straight thumb angled
+down-left; fingertip just below the centre dot so the dot stays visible.
+6s loop: hand presses and its outline turns mint (`teaserTap`), then the dot
+and rings light up outwards (`teaserDot`, `teaserRing`, 0.25s steps).
 Colours come from `--tap-rest` / `--tap-hot` on `.demo-teaser-icon`,
 swapped to mint in dark mode. Border trace: `assets/js/demo-teaser-trace.js`
 appends an SVG path (rebuilt on resize, corners match the 10px radius) that

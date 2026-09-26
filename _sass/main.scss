@@ -512,8 +512,8 @@ h4 {
   transform: translateY(-1px);
 }
 .demo-teaser-icon {
-  width: 52px;
-  height: 52px;
+  width: 50px;   // between the 44px Research focus icons and the old 52px
+  height: 50px;
   flex: 0 0 auto;
   margin-top: 0.15rem;
 }
@@ -523,22 +523,22 @@ h4 {
   overflow: visible;
 }
 
-/* "Interact" icon: a hand taps a target. Each 6s loop: the hand presses
-   (nudges down, turns mint), then the centre dot, middle ring and outer ring
-   light up in turn, so the pulse travels outwards from where the finger
-   touched. Same cascading-delay technique as the old network icon.
-   Colours are variables so dark mode can swap them (keyframes read them). */
+/* "Interact" icon: an outline hand taps a target. Each 6s loop: the hand
+   presses (nudges down, outline turns mint), then the centre dot, middle ring
+   and outer ring light up in turn, so the pulse travels outwards from where
+   the finger touched. Colours are variables so dark mode can swap them
+   (keyframes read them). */
 .demo-teaser-icon {
   --tap-rest: #{$linkColor};
   --tap-hot: #6ea491;
 }
 .demo-teaser-icon .teaser-hand {
-  fill: var(--tap-rest);
-  stroke: $backgroundColor;   // thin cut-out so the hand reads cleanly over the rings
-  stroke-width: 36;           // path units (the hand is scaled ~0.05), about 1.8px
-  paint-order: stroke;
+  fill: $backgroundColor;     // hides the rings behind the hand
+  stroke: var(--tap-rest);
+  stroke-width: 1.6;          // same line weight as the Research focus icons
+  stroke-linejoin: round;
   transform-box: fill-box;
-  transform-origin: 38% 0;    // the fingertip
+  transform-origin: 30% 0;    // the fingertip
   animation: teaserTap 6s ease-in-out infinite;
 }
 .demo-teaser-icon .teaser-dot {
@@ -550,7 +550,7 @@ h4 {
 .demo-teaser-icon .teaser-ring {
   fill: none;
   stroke: #6ea491;
-  stroke-width: 1.4;
+  stroke-width: 1.6;
   opacity: .35;
   animation: teaserRing 6s ease-in-out infinite;
 }
@@ -558,8 +558,8 @@ h4 {
 .demo-teaser-icon .teaser-ring-c { animation-delay: .5s; }
 
 @keyframes teaserTap {
-  0%, 10%, 34%, 100% { fill: var(--tap-rest); transform: translateY(0) scale(1); }
-  16%, 24%           { fill: var(--tap-hot);  transform: translateY(26px) scale(.94); }
+  0%, 10%, 34%, 100% { stroke: var(--tap-rest); transform: translateY(0) scale(1); }
+  16%, 24%           { stroke: var(--tap-hot);  transform: translateY(1.2px) scale(.95); }
 }
 @keyframes teaserDot {
   0%, 15%, 36%, 100% { fill: var(--tap-rest); transform: scale(1); }
@@ -2031,7 +2031,7 @@ body.dark-mode .publication-item {
 /* DEMO TEASER */
 
 body.dark-mode .demo-teaser-icon { --tap-rest: #9ab8aa; --tap-hot: #d4e4dc; }
-body.dark-mode .demo-teaser-icon .teaser-hand { stroke: #202421; }
+body.dark-mode .demo-teaser-icon .teaser-hand { fill: #202421; }
 body.dark-mode .demo-teaser {
   border-color: #444943;
   border-left-color: $linkColor;
