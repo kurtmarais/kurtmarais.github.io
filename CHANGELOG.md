@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26
+
+### Changed
+- Reinforcement demo: browser tab now reads "Simulating reinforced
+  sentiment", matching the page heading. The heading uses Source Serif 4
+  and has the same line and spacing below it as the other pages' titles.
+
 ## 2026-09-25 (12)
 
 ### Fixed
