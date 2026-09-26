@@ -130,6 +130,16 @@ which also overrides the mobile `max-width: none`. Add new title/text pairs
 to `PAIRS` in the script. The demo card's description is deliberately not
 capped: it runs to the card's right padding (equal to the left).
 
+## In the Media carousel (`media-carousel.js`, homepage)
+
+Touch swipe on `.media-carousel`: fingers/pens only (`pointerType !==
+"mouse"`), all widths. A swipe counts at 40px horizontal movement that is
+larger than the vertical movement; left = next, right = previous, and it
+resets autoplay. `touch-action: pan-y` on `.media-carousel` keeps vertical
+page scrolling native. No `setPointerCapture()` (see the social carousel
+note below); instead a capture-phase `click` listener swallows the click
+for 400ms after a swipe, so a swipe starting on a link doesn't open it.
+
 ## Social links carousel (`social-carousel.js`, homepage)
 
 Desktop: static row, all cards shown via `flex`. `.social-carousel-viewport`

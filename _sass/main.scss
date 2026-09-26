@@ -831,6 +831,9 @@ body.dark-mode .engagement-keyword-badge {
 .media-carousel {
   position: relative;
   overflow: hidden;
+  // Vertical page scrolling stays native; horizontal finger swipes are left
+  // to media-carousel.js, which changes the item.
+  touch-action: pan-y;
 }
 
 .media-carousel-track {

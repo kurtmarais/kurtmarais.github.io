@@ -13,6 +13,13 @@ is the baseline. Add new entries at the top.
   instead of running back under the icon, and the icon is centred on the
   first line.
 
+### Added
+- Homepage "In the Media" card: swipe left or right with a finger (or pen)
+  to move to the next or previous item, as on the social links carousel on
+  phones. Vertical swipes still scroll the page, a swipe that starts on a
+  link doesn't open it, and a swipe restarts the autoplay timer. Mouse
+  drags do nothing; the arrow buttons are unchanged.
+
 ## 2026-09-26 (8)
 
 ### Removed
