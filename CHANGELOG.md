@@ -10,7 +10,7 @@ is the baseline. Add new entries at the top.
 - Reinforcement demo title: same weight as the homepage hero heading, with
   a normal paragraph gap before the intro text.
 - Homepage demo card icon: simpler outline hand (index finger, three
-  curled fingers, straight thumb) tapping the target, at 48px.
+  curled fingers, straight thumb) tapping the target, at 50px.
 
 ## 2026-09-26 (2)
 

@@ -273,7 +273,7 @@ leaks into other pages. Consequences worth remembering:
 
 Homepage teaser card: markup in `home.html` (after `.research-strip`), styles
 under `DEMO TEASER` in `main.scss`; the whole card is clickable via the
-link's stretched `::after`. Icon (48px box, between the 44px Research focus
+link's stretched `::after`. Icon (50px box, between the 44px Research focus
 icons and the old 52px): an outline hand (1.6 stroke, filled with the page
 background so it hides the rings behind it) tapping a three-ring target.
 Index finger up, three curled fingers as bumps, straight thumb angled
