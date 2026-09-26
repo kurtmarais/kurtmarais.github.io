@@ -191,6 +191,10 @@ leaks into other pages. Consequences worth remembering:
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
   `pointer-events:all` or only the 2.5px outline is clickable.
 - Site-wide `h1`–`h4` are uppercase, and that applies here too.
+- Page title (`.rfd-intro h1`): Source Serif 4 (like the homepage hero
+  heading), with the other pages' title pattern (`h3.border-bottom pb-3
+  mb-5`: 1rem padding, #dee2e6 rule in both themes, 3rem gap below). The
+  front-matter `title` sets the browser tab; keep it the same as the h1.
 - `CONNECTION_BOOST = 0.08` represents emotional reinforcement, an observed
   outcome of the dissertation's full simulation (not a parameter estimated
   from the transition table), and is not a placeholder. Keep it at 0.08:
