@@ -145,10 +145,13 @@ makes this bug confusing to diagnose. Confirmed root cause, not a guess.
 `.social-card-clone` must be `display: none` on desktop, or the cloned cards
 show up as stray extra entries in the row.
 
-Card widths by screen: names are `nowrap` and centred. 768–991px: 3×2 grid.
-992–1199px: one row without the end spacers. 1200px+: one row with the
-spacers. With spacers below 1200px, six cards shrank to ~90–105px and
-"Research profile" / "Google Scholar" wrapped (left-aligned).
+Desktop/tablet layout (768px+): the strip has a fixed side padding
+(`--social-pad`, 2.5rem ≈ 34px) and a fixed gap between cards
+(`--social-gap`, 16px); cards are `flex: 1 1 0` and share the rest equally.
+The old invisible end-spacer cards are hidden (they made the side space
+scale with card width). Names are `nowrap` and centred; below 1200px card
+padding drops to 0.5rem so "Research profile" / "Google Scholar" fit.
+768–991px: 3×2 grid with the same padding and gap.
 
 ## Liquid gotchas worth remembering
 
