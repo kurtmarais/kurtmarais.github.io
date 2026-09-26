@@ -293,7 +293,14 @@ leaks into other pages. Consequences worth remembering:
   and divides `TICK_MS` by it, restarting the timer if playing.
 - First run with a pair selected (per page load) scrolls to the
   Relationship panel (`guideToRelationship()`, `guidedToRel` flag in a plain
-  variable, so a refresh/reopen resets it; `scroll-margin-top: 16px`).
+  variable, so a refresh/reopen resets it). The panel's top stops
+  `GUIDE_GAP` (12px) below the screen top, or below `.site-header` when it
+  is sticky (phones, < 768px), so the heading is never under the header.
+  It's a JS-animated scroll over `GUIDE_MS` (1s) with `behavior:'instant'`
+  steps (Bootstrap's `scroll-behavior: smooth` on `:root` would otherwise
+  fight each frame); the first tick waits `GUIDE_MS + GUIDE_PAUSE_MS`
+  (`startPlayback(delayMs)`, timer `playDelay`, cleared by
+  `stopPlayback()`). Wheel/touch/key/mouse input cancels the move.
   Resume, later runs and single-agent runs never scroll; a single-agent
   first run doesn't use up the move (no Relationship panel then).
 - Tick inspector: `#rfd-snapshot` ("All agents at tick N", below the

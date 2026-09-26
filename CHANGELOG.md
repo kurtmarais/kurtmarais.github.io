@@ -4,6 +4,15 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26 (11)
+
+### Changed
+- Reinforcement demo: the one-off move to the Relationship panel now stops
+  with the panel's top just below the site header on phones (the header
+  stays pinned there and was covering the heading), and just below the top
+  of the screen on tablets and desktops. The move takes one second and the
+  run starts once it has settled, instead of ticking while the page scrolls.
+
 ## 2026-09-26 (10)
 
 ### Added
