@@ -2897,38 +2897,40 @@ body.dark-mode .social-card {
   display: none;
 }
 
-/* Desktop: static full-width row, evenly spaced, no sliding.
+/* Desktop and tablet: static layout, no sliding. The strip has a fixed
+   side padding (--social-pad) and a fixed gap between cards (--social-gap);
+   the six cards share the remaining width equally, so every screen size gets
+   the same side padding and the same spacing between cards.
    overflow stays visible here specifically so the hover-scale isn't
    clipped by the viewport that mobile needs for its peek/fade effect. */
 @media (min-width: 768px) {
+  .social-carousel {
+    --social-pad: 2.5rem;
+    --social-gap: 16px;
+  }
+
   .social-carousel-viewport {
     overflow: visible;
   }
 
   .social-links-track {
-    justify-content: space-between;
+    gap: var(--social-gap);
+    padding: 0 var(--social-pad);
     transform: none !important;
   }
 
   // Clones exist only to support the mobile infinite-loop illusion —
   // at desktop, every real card is already shown at once, so a clone
   // has no purpose and would just appear as a stray duplicate entry.
-  .social-card-clone {
+  // The old end spacers are replaced by the fixed side padding above.
+  .social-card-clone,
+  .social-card-spacer {
     display: none;
   }
 
-  .social-card,
-  .social-card-spacer {
-    flex: 1;
-  }
-
-  // Invisible spacers at each end so the visible cards don't stretch
-  // all the way to the page margins — they take up the same proportional
-  // width as a real card, without being visible or counted by the JS
-  // (which only queries .social-card, not this class).
-  .social-card-spacer {
-    visibility: hidden;
-    pointer-events: none;
+  .social-card {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .social-card:hover {
@@ -2941,16 +2943,11 @@ body.dark-mode .social-card {
   }
 }
 
-/* Below 1200px the end spacers would squeeze six cards to ~90-105px, too
-   narrow for "Research profile" / "Google Scholar": drop the spacers so the
-   cards use the full width (992-1199px), and on tablets (768-991px) switch
-   to three cards per row, two rows. Every card gets the same width. */
+/* Narrower desktops: tighter padding inside each card so "Research
+   profile" / "Google Scholar" stay on one line. Tablets (768-991px): three
+   cards per row, two rows, with the same side padding and gap. */
 @media (min-width: 768px) and (max-width: 1199.98px) {
-  .social-card-spacer {
-    display: none;
-  }
   .social-card {
-    min-width: 0;
     padding: 0 0.5rem;
   }
 }

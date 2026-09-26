@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-26 (6)
+
+### Changed
+- Homepage "Find me online" cards (tablet and desktop): a fixed side
+  padding on the strip and slightly wider, equal gaps between cards; the
+  cards share the remaining width, so spacing stays the same at every
+  screen size.
+
 ## 2026-09-26 (5)
 
 ### Changed
