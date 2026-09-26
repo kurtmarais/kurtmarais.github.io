@@ -157,6 +157,7 @@ permalink: /reinforcement-demo/
 
   .rfd-rel-layout{display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center;}
   @media (max-width:640px){ .rfd-rel-layout{grid-template-columns:1fr;} }
+  #rfd-relPanel{scroll-margin-top:16px;}
   svg.rfd-rel{width:100%; height:auto; display:block; max-width:340px; margin:0 auto;}
   /* One row per agent (name + pill), then the tie verdict. Rows are separate
      boxes with real gaps, so pills never touch, even when a pill wraps under
@@ -1079,6 +1080,20 @@ permalink: /reinforcement-demo/
     // Play or drag the slider instead of auto-advancing.
     if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){ stopPlayback(); }
     else { startPlayback(); }
+    guideToRelationship();
+  }
+
+  // The first run on this page load that has a pair selected moves the screen
+  // to the Relationship panel so the interaction is in view. Only once per page
+  // load (a plain variable, not storage): after that, the visitor scrolls freely
+  // until the page is refreshed or reopened. A single-agent run has no
+  // Relationship panel, so it doesn't use up the one-off move.
+  var guidedToRel = false;
+  function guideToRelationship(){
+    if(guidedToRel || selected.length < 2) return;
+    guidedToRel = true;
+    var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.getElementById('rfd-relPanel').scrollIntoView({block:'start', behavior: still ? 'auto' : 'smooth'});
   }
 
   function onRunClick(){
