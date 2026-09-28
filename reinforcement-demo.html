@@ -1086,26 +1086,30 @@ permalink: /reinforcement-demo/
     // Respect reduced-motion preferences: show tick 0 and let the visitor press
     // Play or drag the slider instead of auto-advancing.
     var still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var moving = guideToRelationship(still);
+    var moving = guideOnFirstRun(still);
     if(still){ stopPlayback(); }
     else { startPlayback(moving ? GUIDE_MS + GUIDE_PAUSE_MS : 0); }
   }
 
-  // The first run on this page load that has a pair selected moves the screen
-  // to the Relationship panel so the interaction is in view. Only once per page
-  // load (a plain variable, not storage): after that, the visitor scrolls freely
-  // until the page is refreshed or reopened. A single-agent run has no
-  // Relationship panel, so it doesn't use up the one-off move.
-  // The panel's top edge stops GUIDE_GAP px below the top of the screen, or
+  // The first run on this page load moves the screen to a panel: on phones
+  // (up to 767px, the site's mobile breakpoint) the Relationship panel, so the
+  // pair's interaction is in view; on tablets and desktops the "A network of
+  // agents" panel. Only once per page load (a plain variable, not storage):
+  // after that, the visitor scrolls freely until the page is refreshed or
+  // reopened. On phones a single-agent run has no Relationship panel, so it
+  // doesn't use up the one-off move there. The panel's top edge stops GUIDE_GAP px below the top of the screen, or
   // below the site header on phones, where the header stays pinned (sticky).
   // The scroll takes GUIDE_MS, and the first tick waits a further
   // GUIDE_PAUSE_MS so the run starts once the panel is settled in view.
   // Touching, wheeling or pressing a key during the move stops it.
   var GUIDE_MS = 1000, GUIDE_PAUSE_MS = 300, GUIDE_GAP = 12;
-  var guidedToRel = false;
-  function guideToRelationship(still){
-    if(guidedToRel || selected.length < 2) return false;
-    guidedToRel = true;
+  var guided = false;
+  function guideOnFirstRun(still){
+    if(guided) return false;
+    var phone = window.matchMedia('(max-width: 767px)').matches;
+    if(phone && selected.length < 2) return false;
+    guided = true;
+    var target = phone ? document.getElementById('rfd-relPanel') : document.querySelector('.rfd-net-panel');
     var offset = GUIDE_GAP;
     var header = document.querySelector('.site-header');
     if(header){
@@ -1114,7 +1118,8 @@ permalink: /reinforcement-demo/
     }
     var from = window.pageYOffset;
     var maxY = document.documentElement.scrollHeight - window.innerHeight;
-    var to = Math.max(0, Math.min(maxY, from + document.getElementById('rfd-relPanel').getBoundingClientRect().top - offset));
+    var to = Math.max(0, Math.min(maxY, from + target.getBoundingClientRect().top - offset));
+    if(Math.abs(to - from) < 4) return false;
     if(still){ window.scrollTo({top: to, behavior: 'instant'}); return false; }
     var t0 = null, stopped = false;
     function stop(){ stopped = true; }

@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-09-28
+
+### Changed
+- Reinforcement demo: the one-off move on the first run now depends on the
+  screen. Phones still go to the Relationship panel (with two agents
+  selected); tablets and desktops go to the top of the "A network of
+  agents" panel instead, whatever is selected.
+
 ## 2026-09-26 (11)
 
 ### Changed

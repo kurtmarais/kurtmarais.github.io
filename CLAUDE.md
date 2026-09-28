@@ -291,18 +291,21 @@ leaks into other pages. Consequences worth remembering:
   current tick. The run button toggles run / pause / resume. `TICK_MS`
   is the x1 speed; the speed button cycles `SPEEDS` (x0.5, x1, x1.5, x2, x2.5)
   and divides `TICK_MS` by it, restarting the timer if playing.
-- First run with a pair selected (per page load) scrolls to the
-  Relationship panel (`guideToRelationship()`, `guidedToRel` flag in a plain
-  variable, so a refresh/reopen resets it). The panel's top stops
+- First run per page load scrolls to a panel (`guideOnFirstRun()`, `guided`
+  flag in a plain variable, so a refresh/reopen resets it). Phones
+  (<= 767px, the site's mobile breakpoint): the Relationship panel, only
+  when a pair is selected (a single-agent run there doesn't use up the
+  move). Tablets/desktops (>= 768px): the "A network of agents" panel
+  (`.rfd-net-panel`), for any selection. The panel's top stops
   `GUIDE_GAP` (12px) below the screen top, or below `.site-header` when it
-  is sticky (phones, < 768px), so the heading is never under the header.
+  is sticky (phones), so the heading is never under the header.
   It's a JS-animated scroll over `GUIDE_MS` (1s) with `behavior:'instant'`
   steps (Bootstrap's `scroll-behavior: smooth` on `:root` would otherwise
   fight each frame); the first tick waits `GUIDE_MS + GUIDE_PAUSE_MS`
   (`startPlayback(delayMs)`, timer `playDelay`, cleared by
-  `stopPlayback()`). Wheel/touch/key/mouse input cancels the move.
-  Resume, later runs and single-agent runs never scroll; a single-agent
-  first run doesn't use up the move (no Relationship panel then).
+  `stopPlayback()`). No wait if the panel is already in place (< 4px).
+  Wheel/touch/key/mouse input cancels the move. Resume and later runs
+  never scroll.
 - Tick inspector: `#rfd-snapshot` ("All agents at tick N", below the
   timelines) shows from the start of every run and follows `currentTick`.
   Agents whose state differs from the previous tick get `.is-changed` and a
