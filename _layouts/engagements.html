@@ -130,6 +130,10 @@ layout: default
                       <span class="engagement-media-play-icon">
                         <i class="fas fa-play"></i>
                       </span>
+                    {% elsif item.media_format == "podcast" %}
+                      <span class="engagement-media-play-icon">
+                        <i class="fas fa-headphones"></i>
+                      </span>
                     {% endif %}
                   </a>
                 {% endif %}
@@ -177,7 +181,7 @@ layout: default
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {% if item.media_format == "video" %}Watch video →{% elsif item.media_format == "poster" %}View poster →{% else %}Read article →{% endif %}
+                      {% if item.media_format == "video" %}Watch video →{% elsif item.media_format == "podcast" %}Listen to episode →{% elsif item.media_format == "poster" %}View poster →{% else %}Read article →{% endif %}
                     </a>
                   {% endif %}
                 </div>
