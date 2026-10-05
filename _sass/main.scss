@@ -984,7 +984,7 @@ body.dark-mode .engagement-keyword-badge {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(32, 36, 33, 0.75);
+  background: rgba(32, 36, 33, 0.55);
   color: #f7f6f1;
   font-size: 0.7rem;
 }
@@ -1045,6 +1045,12 @@ body.dark-mode .engagement-keyword-badge {
   font-size: 0.7rem;
 }
 
+// The podcast glyph is fine detail that reads as a blur at 0.7rem.
+.engagement-type-pill.is-fa-podcast i,
+.engagement-type-pill.is-fa-podcast svg {
+  font-size: 0.85rem;
+}
+
 body.dark-mode .engagement-type-pill {
   background: rgba(154, 184, 170, 0.15);
 }
@@ -1103,7 +1109,7 @@ body.dark-mode .engagement-type-pill svg {
   }
 }
 
-/* VIDEO PLAY / PODCAST HEADPHONES ICON */
+/* VIDEO / PODCAST PLAY ICON */
 
 .media-play-icon {
   position: absolute;
@@ -1119,7 +1125,7 @@ body.dark-mode .engagement-type-pill svg {
   justify-content: center;
 
   border-radius: 50%;
-  background: rgba(32, 36, 33, 0.75);
+  background: rgba(32, 36, 33, 0.55);
   color: #f7f6f1;
 
   font-size: 0.8rem;

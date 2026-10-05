@@ -68,11 +68,16 @@ separate lookups — keeps them from drifting out of sync:
 the generic `type: media` with the real distinction living in
 `media_format` (`video`/`podcast`/`poster`/`newspaper`/`article`) instead.
 Card extras by `media_format`: `video` = play overlay + "Watch video →",
-`podcast` = headphones overlay (`fa-headphones`, same overlay span) +
-"Listen to episode →", `poster` = "View poster →", else "Read article →".
+`podcast` = the same play overlay + "Listen to episode →" (overlay bubble
+`rgba(32,36,33,0.55)`, lighter so more thumbnail shows), `poster` = "View poster →", else "Read article →".
 Set in both `engagements.html` and `home.html`. The homepage "In the Media"
 strip only lists `type: media` + `featured: true`, so a podcast meant for the
 homepage is `type: media` + `media_format: podcast`, not `type: podcast`.
+The strip is sorted newest first by `start_date` (`sort: "start_date",
+"first" | reverse`, undated entries last), not file order.
+The pill gets an `is-<icon>` class (e.g. `is-fa-podcast`); the podcast
+glyph is 0.85rem instead of 0.7rem because its detail blurs at the
+smaller size.
 
 Icon renders inside `.engagement-type-pill` (icon-only colored pill), with
 the type name as **plain text beside it, not inside the pill** — deliberate,
