@@ -114,18 +114,19 @@
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
-- title: "Emotional Reinforcement in Online Communities"   # placeholder: replace
+- title: "Spektrum op RSG met Suzanne Paxton"   # placeholder: replace
   type: "media"
   year: 2026
   media_format: "podcast"
   featured: true
-  publication: "The Research Hour Podcast"   # placeholder: replace
-  start_date: "2026-10-01"   # placeholder: replace
-  end_date: "2026-10-01"     # placeholder: replace
-  image: ""   # add the thumbnail (full URL or /assets/... path)
-  description: "Dr. Kurt Marais joins the show to discuss how negative sentiment can be reinforced through social media interactions, and what this means for online mental health communities."   # placeholder: replace
-  url: ""     # add the episode link
-  keywords: ["social media", "mental health awareness", "depression"]
+  publication: "RSG (Radio Sonder Grense)"   
+  start_date: "2026-10-05"   
+  end_date: "2026-10-05"     
+  image: "https://www.sabc.co.za/sabc/wp-content/uploads/2025/06/06-rsg-700x394-12-600x338-2.png"  
+  description: "Regstreekse uitsending van Spektrum op RSG by die Toyota Stellenbosch Woordfees 2026: Duisende inwoners in die Tshwane-metro is steeds sonder krag. Miljoene onderwysers wêreldwyd teen 2030 benodig. Het die verbod op selfone in die klaskamer ‘n positiewe uitwerking op leerlinge se akademiese prestasie? Die Stellenbosch Wynroete vier sy 55ste bestaansjaar."   
+  url: "https://www.rsg.co.za/rsg-fm/potgooisnitte/spektrum-duisende-in-tshwane-steeds-kragloos/"     
+  keywords: ["sosiale media", "geestesgesondheid", "depressie", "emosionele versterking"]
+  tags: ["mental health", "media coverage", "afrikaans", "rsg", "radio", "podcast", "sosiale media", "woordfees"]
 
 - title: "Dr. Kurt Marais Discusses Emotional Reinforcement Online"
   type: "media"
