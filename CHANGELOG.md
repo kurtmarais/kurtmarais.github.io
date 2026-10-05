@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-05
+
+### Added
+- Podcasts as a media format (`media_format: podcast`): podcast icon and
+  "Podcast" label, a headphones overlay on the thumbnail, and a "Listen to
+  episode →" link, on the Engagements page and the homepage "In the Media"
+  strip.
+- First podcast entry in `engagements.yml` (image, link and details still to
+  be filled in).
+
 ## 2026-09-28
 
 ### Changed

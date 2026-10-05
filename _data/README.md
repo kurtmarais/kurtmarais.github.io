@@ -118,7 +118,7 @@ fields relevant to the entry:
 | `media` | from `media_format` | from `media_format` |
 
 `type: media` has no icon of its own — the icon/label come from
-`media_format` instead (`video`, `poster`, `newspaper`, `article`). Any other
+`media_format` instead (`video`, `podcast`, `poster`, `newspaper`, `article`). Any other
 unknown `type` renders with no icon. The mapping lives in one place,
 `_includes/engagement-type.html`, used by both the Engagements page and the
 homepage.
@@ -130,6 +130,9 @@ Setting `media_format` switches an entry to the media-card layout
 
 - `article` / `newspaper` → "Read article →"
 - `video` → play-icon overlay, "Watch video →"
+- `podcast` → headphones-icon overlay, "Listen to episode →" (with
+  `type: media`, the podcast icon and "Podcast" label come from here, and the
+  entry can appear in the homepage "In the Media" strip when `featured`)
 - `poster` → wide thumbnail crop, "View poster →", links to the poster page
 
 So a recorded seminar can be `type: seminar` + `media_format: video` — it

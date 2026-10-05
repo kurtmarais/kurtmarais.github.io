@@ -66,7 +66,13 @@ separate lookups — keeps them from drifting out of sync:
 ```
 **Fall back to `media_format`** when `type` doesn't match — many entries use
 the generic `type: media` with the real distinction living in
-`media_format` (`video`/`poster`/`newspaper`/`article`) instead.
+`media_format` (`video`/`podcast`/`poster`/`newspaper`/`article`) instead.
+Card extras by `media_format`: `video` = play overlay + "Watch video →",
+`podcast` = headphones overlay (`fa-headphones`, same overlay span) +
+"Listen to episode →", `poster` = "View poster →", else "Read article →".
+Set in both `engagements.html` and `home.html`. The homepage "In the Media"
+strip only lists `type: media` + `featured: true`, so a podcast meant for the
+homepage is `type: media` + `media_format: podcast`, not `type: podcast`.
 
 Icon renders inside `.engagement-type-pill` (icon-only colored pill), with
 the type name as **plain text beside it, not inside the pill** — deliberate,

@@ -144,6 +144,10 @@ layout: default
               <span class="media-play-icon">
                 <i class="fas fa-play"></i>
               </span>
+            {% elsif item.media_format == "podcast" %}
+              <span class="media-play-icon">
+                <i class="fas fa-headphones"></i>
+              </span>
             {% endif %}
 
           </a>
@@ -168,6 +172,8 @@ layout: default
 
               {% if item.media_format == "video" %}
                 Watch video →
+              {% elsif item.media_format == "podcast" %}
+                Listen to episode →
               {% else %}
                 Read article →
               {% endif %}

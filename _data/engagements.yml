@@ -114,6 +114,19 @@
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "Emotional Reinforcement in Online Communities"   # placeholder: replace
+  type: "media"
+  year: 2026
+  media_format: "podcast"
+  featured: true
+  publication: "The Research Hour Podcast"   # placeholder: replace
+  start_date: "2026-10-01"   # placeholder: replace
+  end_date: "2026-10-01"     # placeholder: replace
+  image: ""   # add the thumbnail (full URL or /assets/... path)
+  description: "Dr. Kurt Marais joins the show to discuss how negative sentiment can be reinforced through social media interactions, and what this means for online mental health communities."   # placeholder: replace
+  url: ""     # add the episode link
+  keywords: ["social media", "mental health awareness", "depression"]
+
 - title: "Dr. Kurt Marais Discusses Emotional Reinforcement Online"
   type: "media"
   year: 2026
