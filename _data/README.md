@@ -130,7 +130,7 @@ Setting `media_format` switches an entry to the media-card layout
 
 - `article` / `newspaper` → "Read article →"
 - `video` → play-icon overlay, "Watch video →"
-- `podcast` → headphones-icon overlay, "Listen to episode →" (with
+- `podcast` → play-icon overlay (same as video), "Listen to episode →" (with
   `type: media`, the podcast icon and "Podcast" label come from here, and the
   entry can appear in the homepage "In the Media" strip when `featured`)
 - `poster` → wide thumbnail crop, "View poster →", links to the poster page

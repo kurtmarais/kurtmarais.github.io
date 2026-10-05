@@ -4,6 +4,18 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-05 (2)
+
+### Changed
+- Homepage "In the Media": items are ordered newest first by date, so the
+  most recent featured engagement is always shown first.
+- Podcast type icon is slightly larger in its bubble (Engagements page and
+  homepage) so it reads clearly.
+- Podcast thumbnails use the play button, like videos, instead of
+  headphones.
+- The play button's dark bubble is more see-through, so more of the
+  thumbnail shows (videos and podcasts).
+
 ## 2026-10-05
 
 ### Added

@@ -111,7 +111,8 @@ layout: default
   </div>
 </div>
 
-{% assign media_items = site.data.engagements | where: "type", "media" | where: "featured", true %}
+{% comment %} Newest first, by start_date (undated entries go last). {% endcomment %}
+{% assign media_items = site.data.engagements | where: "type", "media" | where: "featured", true | sort: "start_date", "first" | reverse %}
 {% if site.show_media and media_items.size > 0 %}
 <section class="media-strip mb-5">
 
@@ -140,13 +141,9 @@ layout: default
               alt="{{ item.title }}"
             >
 
-            {% if item.media_format == "video" %}
+            {% if item.media_format == "video" or item.media_format == "podcast" %}
               <span class="media-play-icon">
                 <i class="fas fa-play"></i>
-              </span>
-            {% elsif item.media_format == "podcast" %}
-              <span class="media-play-icon">
-                <i class="fas fa-headphones"></i>
               </span>
             {% endif %}
 
@@ -155,7 +152,7 @@ layout: default
           <div class="media-content">
 
             <div class="media-meta">
-              {% if type_icon != "" %}<span class="engagement-type-pill"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{% endif %}
+              {% if type_icon != "" %}<span class="engagement-type-pill is-{{ type_icon }}"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{% endif %}
               <span class="meta-text">{% if type_icon != "" %}{{ type_label }} · {% endif %}
               {{ item.publication }}
               {% include engagement-date.html item=item %}</span>
