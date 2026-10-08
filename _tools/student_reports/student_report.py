@@ -94,6 +94,10 @@ HONOURS_THRESHOLD = 60.0                        # unweighted mean of OR3 modules
 # OR modules always shown as columns on the Honours tab (any other OR2/OR3
 # module found in an applicant's records gets a column too)
 HONOURS_OR_MODULES = ["55336-314", "55336-322", "55336-344", "55336-352", "55336-244"]
+# OR3 modules taken (enrolled or graded): this many or more can qualify and be ranked;
+# from HONOURS_MIN_OR3 up to one fewer = "Check eligibility"; fewer = not eligible
+HONOURS_FULL_OR3 = 4
+HONOURS_MIN_OR3 = 2
 # Which attempt of a repeated module counts towards averages: "latest" or "best"
 REPEAT_ATTEMPT = "latest"
 
@@ -758,17 +762,23 @@ def bdatsci_status(rows):
 
 
 def honours_stats(rows):
-    """Eligible unless an OR module is failed or the OR3 average is below the bar."""
+    """(OR3 average, status, OR3 modules taken). Mirrors the Status formula."""
     or_rows = [r for r in rows if is_or(r["code"])]
-    marks = [r["mark"] for r in or_rows if r["code"].startswith(OR3_PREFIX) and r["mark"] is not None]
+    or3 = [r for r in or_rows if r["code"].startswith(OR3_PREFIX)]
+    marks = [r["mark"] for r in or3 if r["mark"] is not None]
+    taken = sum(1 for r in or3 if r["result"] != "Not taken")
     avg = sum(marks) / len(marks) if marks else None
     if any(r["result"] == "Failed" for r in or_rows):
         status = "Not eligible (failed OR module)"
+    elif taken < HONOURS_MIN_OR3:
+        status = "Not eligible (fewer than %d OR3 modules)" % HONOURS_MIN_OR3
     elif avg is not None and avg < HONOURS_THRESHOLD:
         status = "Below %g%%" % HONOURS_THRESHOLD
+    elif taken < HONOURS_FULL_OR3:
+        status = "Check eligibility"
     else:
         status = "Qualifies"
-    return avg, status
+    return avg, status, taken
 
 
 # ---------------------------------------------------------------------------
@@ -913,9 +923,9 @@ MOD_COLS = ["SU Number", "Student", "Summary", "Module code", "Module", "Mark", 
 # Modules column letters
 M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY, M_FAILED = "A", "D", "F", "G", "I", "M", "N", "Q"
 
-GREEN, YELLOW, RED, GREY, BLUE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7"
+GREEN, YELLOW, RED, GREY, BLUE, ORANGE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7", "F8CBAD"
 # First match wins (case-insensitive "contains")
-COLOUR_RULES = [("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
+COLOUR_RULES = [("check eligibility", ORANGE), ("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
                 ("provisional", YELLOW), ("outstanding", YELLOW), ("no grade recorded", YELLOW),
                 ("no su grade", GREY), ("not taken", GREY), ("external", BLUE),
                 ("eligible", GREEN), ("qualifies", GREEN), ("passed", GREEN)]
@@ -1101,24 +1111,27 @@ def write_honours(wb, applied, rows_by_su, current_prog):
         info = person_record(app_rows)
         info.pop("Applications", None)
         if su:
-            avg, status = honours_stats(rows_by_su[su])
+            avg, status, taken = honours_stats(rows_by_su[su])
         else:
-            avg, status = None, "External applicant"
-        built.append((su, info, avg, status))
+            avg, status, taken = None, "External applicant", 0
+        built.append((su, info, avg, status, taken))
     group = lambda s, avg: (0 if s == "Qualifies" and avg is not None else 1 if s == "Qualifies" else
-                            2 if s.startswith("Below") else 3 if s.startswith("Not eligible") else 4)
-    built.sort(key=lambda b: (group(b[3], b[2]), -(b[2] or 0), (b[1].get("Surname") or "").lower()))
+                            2 if s == "Check eligibility" else 3 if s.startswith("Below") else
+                            4 if s.startswith("Not eligible (failed") else 5 if s.startswith("Not eligible")
+                            else 6)
+    built.sort(key=lambda b: (group(b[3], b[2]), -b[4], -(b[2] or 0), (b[1].get("Surname") or "").lower()))
 
     info_cols = [c for c in (built[0][1].keys() if built else []) if c not in
                  ("Internal / External", "SU Number", "Surname", "First Name")]
-    headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name", "OR3 average"]
+    headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name",
+                "OR3 modules taken", "OR3 average"]
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
                + ["OR2 + OR3 average", "Repeated OR modules"]
                + info_cols + ["Current programme"]
                + ["_or3_graded", "_or3_yearend", "_or3_other", "_failed"])
     sh = Sheet(wb, "Honours", headers)
     L = {h: sh.col(h) for h in headers}
-    for su, info, _, status in built:
+    for su, info, _, status, _ in built:
         r = sh.next_row
         row = dict(info, **{"SU Number": su_cell(su), "Current programme": current_prog.get(su) if su else None})
         if su:
@@ -1136,6 +1149,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             row["OR2 + OR3 average"] = '=IFERROR((%s+%s)/(%s+%s),"")' % (
                 sm(OR2_PREFIX), sm(OR3_PREFIX), n(OR2_PREFIX), n(OR3_PREFIX))
             row["_or3_graded"] = "=" + n(OR3_PREFIX)
+            row["OR3 modules taken"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "<>Not taken"))
             row["_failed"] = "=%s+%s" % (cnt(s, (M_CODE, OR2_PREFIX + "*"), (M_RES, "Failed")),
                                          cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Failed")))
             row["_or3_yearend"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Outstanding (year-end)"))
@@ -1143,10 +1157,14 @@ def write_honours(wb, applied, rows_by_su, current_prog):
                                             cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "No grade recorded")))
             g, ye, ot, av, fl = (L["_or3_graded"] + str(r), L["_or3_yearend"] + str(r),
                                  L["_or3_other"] + str(r), L["OR3 average"] + str(r), L["_failed"] + str(r))
-            # Eligible unless an OR module is failed or the OR3 average is below the bar.
-            # No marks yet / marks outstanding still qualify (outstanding cells are highlighted).
-            row["Status"] = ('=IF({fl}>0,"Not eligible (failed OR module)",IF(AND({g}>0,{av}<{t}),'
-                             '"Below {t:g}%","Qualifies"))').format(fl=fl, g=g, av=av, t=HONOURS_THRESHOLD)
+            # Failed OR module or too few OR3 modules: not eligible. Average below the bar:
+            # Below. Fewer than all OR3 modules: Check eligibility. Otherwise Qualifies
+            # (outstanding marks don't change this; they're highlighted).
+            tk = L["OR3 modules taken"] + str(r)
+            row["Status"] = ('=IF({fl}>0,"Not eligible (failed OR module)",IF({tk}<{mn},"Not eligible '
+                             '(fewer than {mn} OR3 modules)",IF(AND({g}>0,{av}<{t}),"Below {t:g}%",'
+                             'IF({tk}<{full},"Check eligibility","Qualifies"))))').format(
+                fl=fl, tk=tk, mn=HONOURS_MIN_OR3, full=HONOURS_FULL_OR3, g=g, av=av, t=HONOURS_THRESHOLD)
             row["Rank"] = ('=IF(AND(B{r}="Qualifies",ISNUMBER({a})),'
                            'COUNTIFS($B:$B,"Qualifies",${c}:${c},">"&{a})+1,"")').format(
                 r=r, a=av, c=L["OR3 average"])
@@ -1265,15 +1283,20 @@ def write_overview(wb, year, sections_src):
         b = sections_src["Honours"][0].col("Status")
         hsh = sections_src["Honours"][0]
         hye, hot = hsh.col("_or3_yearend"), hsh.col("_or3_other")
-        hg = hsh.col("_or3_graded")
-        section("Honours applicants (no OR module failed, OR3 average >= %g%%)" % HONOURS_THRESHOLD, "Honours", [
+        hg, htk = hsh.col("_or3_graded"), hsh.col("OR3 modules taken")
+        section("Honours applicants (all %d OR3 modules, none failed, average >= %g%%)"
+                % (HONOURS_FULL_OR3, HONOURS_THRESHOLD), "Honours", [
             ("Qualify", [(b, "Qualifies")], False),
             ("all OR3 marks in", [(b, "Qualifies"), (hg, ">0"), (hye, "0"), (hot, "0")], True),
             ("year-end OR3 marks outstanding only", [(b, "Qualifies"), (hg, ">0"), (hye, ">0"), (hot, "0")], True),
             ("other OR3 marks outstanding", [(b, "Qualifies"), (hg, ">0"), (hot, ">0")], True),
             ("no OR3 marks on record yet", [(b, "Qualifies"), (hg, "0")], True),
+            ("Check eligibility (not all OR3 modules taken)", [(b, "Check eligibility")], False),
+            ] + [("%d OR3 modules" % k, [(b, "Check eligibility"), (htk, str(k))], True)
+                 for k in range(HONOURS_FULL_OR3 - 1, HONOURS_MIN_OR3 - 1, -1)] + [
             ("Below %g%%" % HONOURS_THRESHOLD, [(b, "Below*")], False),
-            ("Not eligible (failed an OR module)", [(b, "Not eligible*")], False),
+            ("Not eligible (failed an OR module)", [(b, "Not eligible (failed*")], False),
+            ("Not eligible (fewer than %d OR3 modules)" % HONOURS_MIN_OR3, [(b, "Not eligible (fewer*")], False),
             ("External applicants", [(b, "External applicant")], False),
             ("Total applicants", [(b, "?*"), (b, "<>Status")], False)])
     for key in ("Masters", "PhD", "Other"):
@@ -1396,11 +1419,14 @@ def main():
                               "Outstanding marks don't change eligibility; they are highlighted yellow. "
                               "Students whose Student Status is '%s' are left out. 'Highest module "
                               "level this year' is for information only." % FINAL_YEAR_STATUS),
-             ("Honours rule", "Honours applicants only; OR modules only. Qualifies unless an OR module "
-                              "is failed or the unweighted mean of the %s* marks so far is below %g%% "
-                              "(no marks yet still qualifies; outstanding marks are highlighted). "
-                              "Columns always shown: %s." % (OR3_PREFIX, HONOURS_THRESHOLD,
-                                                             ", ".join(HONOURS_OR_MODULES))),
+             ("Honours rule", "Honours applicants only; OR modules only. Not eligible: an OR module "
+                              "failed, or fewer than %d OR3 modules taken (enrolled or graded). Below: "
+                              "OR3 average so far < %g%%. Check eligibility: %d-%d OR3 modules. "
+                              "Qualifies (and ranked): all %d. Unweighted mean of %s* marks; outstanding "
+                              "marks are highlighted. "
+                              "Columns always shown: %s." % (
+                                  HONOURS_MIN_OR3, HONOURS_THRESHOLD, HONOURS_MIN_OR3, HONOURS_FULL_OR3 - 1,
+                                  HONOURS_FULL_OR3, OR3_PREFIX, ", ".join(HONOURS_OR_MODULES))),
              ("Repeated modules", "A module enrolled this year counts only this year's mark; otherwise the "
                                   "%s attempt counts. All attempts are listed on the Modules tab." % REPEAT_ATTEMPT),
              ("Row order", "Rows are sorted when the report is generated; use the filter arrows to "
