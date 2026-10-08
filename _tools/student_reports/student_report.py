@@ -71,7 +71,8 @@ PASS_MARK = 50.0
 # A student is BDatSci when "Program Code/Name" (enrolment) or "Program Code / Name"
 # (grade roster) contains any of these (case-insensitive), e.g.
 # "0720_100_E101 / BDatSci Focal Area: Analytics and Optimisation"
-BDATSCI_PROGRAMME_KEYWORDS = ["BDatSci", "Data Science"]
+# Not "Data Science": that also matches e.g. "BCom (Mathematical Sciences) Focal Area: Data Science".
+BDATSCI_PROGRAMME_KEYWORDS = ["BDatSci"]
 BDATSCI_REQUIRED_MODULES = {                    # must be passed (any year) or
     "55336-314": "Operations Research 314",     # enrolled now with mark outstanding
     "55336-344": "Operations Research 344",
@@ -871,9 +872,12 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
     # Highest module level enrolled this year (shown only, never used to decide anything)
     cur_e = bd[bd.year == current_year] if len(bd) else bd
     for su, i in info.items():
-        codes_ = set(cur_e[cur_e.su == su].code) if len(cur_e) else set()
-        lv = [int(c.split("-")[1][0]) for c in codes_ if re.match(r"\d+-\d{3}$", c)]
-        i["Highest module level this year"] = max(lv) if lv else None
+        rows_ = cur_e[cur_e.su == su] if len(cur_e) else cur_e
+        names = dict(zip(rows_.code, rows_["Module Code/Name"].map(module_name))) if len(rows_) else {}
+        lv = {c: int(c.split("-")[1][0]) for c in names if re.match(r"\d+-\d{3}$", c)}
+        i["Highest module level this year"] = max(lv.values()) if lv else None
+        i["Level-4 modules this year"] = ", ".join(
+            "%s %s" % (c, names[c] or "") for c in sorted(lv) if lv[c] == 4).strip() or None
 
     req = set(BDATSCI_REQUIRED_MODULES)
     out = []
@@ -1044,7 +1048,7 @@ def write_modules(wb, students):
 def write_bdatsci(wb, students, rows_by_su):
     req = list(BDATSCI_REQUIRED_MODULES.items())
     headers = (["Status", "SU Number", "Surname", "Name", "Email", "Programme", "Student Status",
-                "Highest module level this year"]
+                "Highest module level this year", "Level-4 modules this year"]
                + [label for _, label in req]
                + ["Failed modules (below %g)" % PASS_MARK, "Failed", "Required not enrolled",
                   "Outstanding (year-end)", "Outstanding (other)", "Marks changed by hand", "Repeated modules"])
@@ -1077,7 +1081,8 @@ def write_bdatsci(wb, students, rows_by_su):
     sh.finish(colour_cols=["Status"] + [label for _, label in req],
               count_cols={"Failed": RED, "Required not enrolled": RED, "Outstanding (year-end)": YELLOW,
                           "Outstanding (other)": YELLOW},
-              widths={"Status": 16, "Programme": 30, "Failed modules (below %g)" % PASS_MARK: 45},
+              widths={"Status": 16, "Programme": 30, "Failed modules (below %g)" % PASS_MARK: 45,
+                      "Level-4 modules this year": 45},
               table="BDatSciTable")
     return sh
 
