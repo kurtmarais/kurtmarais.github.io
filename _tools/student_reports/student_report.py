@@ -151,6 +151,52 @@ def find_header_row(raw, key):
     return None
 
 
+# Columns describing the student/applicant (not the module or application).
+# A row with a blank SU Number / Application Code is a continuation of the
+# row above (merged or blanked cells in the export) and inherits these.
+ENROL_PERSON_COLS = ["Faculty Campus", "Academic Term", "Admission Code", "Admission Status",
+                     "Student Status", "SU Number", "Student Code", "Full Name", "Surname",
+                     "Student Name", "Population Group", "Student Email ID",
+                     "Student Alternate Email ID", "Primary Citizenship", "Program Code/Name",
+                     "Program Group", "Intake", "Seat Type"]
+GRADE_PERSON_COLS = ["Brand Campuses", "SU Number", "Student ID", "Student Status", "Admission ID",
+                     "Admission Status", "Student Name", "Program Code / Name", "Program Group",
+                     "Intake", "Seat Type", "Registration Type", "Mode of Delivery", "Period"]
+APPLICANT_PERSON_COLS = 9     # Application Code .. Nationality
+
+
+def load_sheets(path):
+    """Read every sheet; a merged block gets its value copied into every cell."""
+    from openpyxl import load_workbook
+    wb = load_workbook(path, data_only=True)
+    out = {}
+    for ws in wb.worksheets:
+        for rng in list(ws.merged_cells.ranges):
+            v = ws.cell(rng.min_row, rng.min_col).value
+            ws.unmerge_cells(str(rng))
+            for r in range(rng.min_row, rng.max_row + 1):
+                for c in range(rng.min_col, rng.max_col + 1):
+                    ws.cell(r, c).value = v
+        out[ws.title] = pd.DataFrame(list(ws.values), dtype=object)
+    return out
+
+
+def fill_continuations(df, key, cols):
+    """Rows with a blank `key` inherit blank `cols` from the row above."""
+    cols = [c for c in cols if c in df.columns]
+    if key not in df.columns:
+        return df
+    prev = None
+    recs = df.to_dict("records")
+    for rec in recs:
+        if clean(rec.get(key)) is None and prev is not None:
+            for c in cols:
+                if clean(rec.get(c)) is None:
+                    rec[c] = prev.get(c)
+        prev = rec
+    return pd.DataFrame(recs, columns=df.columns)
+
+
 def read_inputs(paths):
     files = []
     for p in paths:
@@ -162,7 +208,7 @@ def read_inputs(paths):
     enrol, grades, applicants, log = [], [], [], []
     for f in files:
         try:
-            sheets = pd.read_excel(f, sheet_name=None, header=None, dtype=object)
+            sheets = load_sheets(f)
         except Exception as e:  # noqa: BLE001
             log.append((f.name, "", "Could not read: %s" % e))
             continue
@@ -184,6 +230,9 @@ def read_inputs(paths):
                 df = body.copy()
                 df.columns = [str(c).strip() if clean(c) is not None else "col%d" % i
                               for i, c in enumerate(raw.iloc[h].tolist())]
+                df = df.loc[:, ~df.columns.duplicated()]
+                df = fill_continuations(df, "SU Number",
+                                        GRADE_PERSON_COLS if kind == "grades" else ENROL_PERSON_COLS)
                 df["_source"] = f.name
                 (grades if kind == "grades" else enrol).append(df)
             log.append((f.name, sname, "%s report, %d rows" % (kind.capitalize(), len(body))))
@@ -196,9 +245,19 @@ def parse_applicants(header, body, source):
     header = [str(c).strip() if clean(c) is not None else "" for c in header]
     base = header[:APPLICANT_BASE_COLS]
     rows = []
+    prev = None
     for _, r in body.iterrows():
-        vals = r.tolist()
-        rec = {base[i]: clean(vals[i]) for i in range(min(len(base), len(vals))) if base[i]}
+        vals = [clean(v) for v in r.tolist()]
+        # Continuation row (merged/blank Application Code): inherit the applicant's
+        # details; if Program Name is blank too it is the same application, so
+        # inherit all application columns as well.
+        if vals[0] is None and prev is not None:
+            upto = APPLICANT_PERSON_COLS if vals[base.index("Program Name")] is not None else len(base)
+            for i in range(min(upto, len(vals))):
+                if vals[i] is None:
+                    vals[i] = prev[i]
+        prev = vals
+        rec = {base[i]: vals[i] for i in range(min(len(base), len(vals))) if base[i]}
         tert = []
         start = APPLICANT_BASE_COLS
         while start + TERTIARY_BLOCK <= len(header):
@@ -250,8 +309,15 @@ def attempts_by_student(gr):
     """{su: {code: [ {year, mark, period, order}, ... ]}} graded and ungraded rows."""
     res = {}
     for r in gr.itertuples(index=False):
-        res.setdefault(r.su, {}).setdefault(r.code, []).append(
-            {"year": r.year, "mark": r.mark, "period": r.period, "order": r.order, "name": r.name})
+        atts = res.setdefault(r.su, {}).setdefault(r.code, [])
+        mark = None if r.mark is None or pd.isna(r.mark) else r.mark
+        if any(a["year"] == r.year and a["period"] == r.period and a["mark"] == mark for a in atts):
+            continue        # same grade listed twice (e.g. one row per section)
+        if mark is not None:   # a graded row replaces an ungraded placeholder for that period
+            atts[:] = [a for a in atts if not (a["mark"] is None and a["period"] == r.period)]
+        elif any(a["period"] == r.period for a in atts):
+            continue
+        atts.append({"year": r.year, "mark": mark, "period": r.period, "order": r.order, "name": r.name})
     return res
 
 
@@ -293,6 +359,84 @@ def avg_for_prefix(mods, prefix):
     return avg, len(marks), pending
 
 
+RESULT_ORDER = {"Failed": 0, "Not taken (required)": 1, "Outstanding": 2,
+                "No grade recorded": 3, "Passed": 4}
+
+
+def module_detail(mods, enrolled, current_year, required=(), keep=lambda code: True):
+    """One dict per module for a student: result, counting mark, every attempt."""
+    rows = []
+    for code in sorted((set(mods) | set(enrolled) | set(required))):
+        if not keep(code):
+            continue
+        atts = sorted(mods.get(code, []), key=lambda a: (a["year"] or 0, a["order"]))
+        g = graded(atts)
+        enr_years = enrolled.get(code, {}).get("years", set())
+        pending_now = (current_year in enr_years and not graded([a for a in atts if a["year"] == current_year])) \
+            or any(a["mark"] is None and a["year"] == current_year for a in atts)
+        if any(a["mark"] >= PASS_MARK for a in g):
+            result = "Passed"
+        elif pending_now:
+            result = "Outstanding"
+        elif g:
+            result = "Failed"
+        elif code in required and not atts and not enr_years:
+            result = "Not taken (required)"
+        else:
+            result = "No grade recorded"
+        name = enrolled.get(code, {}).get("name") or next((a["name"] for a in atts if a["name"]), None)
+        years = sorted({a["year"] for a in atts if a["year"]} | {y for y in enr_years if y})
+        rows.append({
+            "Module code": code,
+            "Module": name or (required.get(code) if isinstance(required, dict) else None),
+            "Result": result,
+            "Mark": counting_mark(atts),
+            "Attempts": "; ".join("%s: %s" % (a["year"] or "?", fmt_mark(a["mark"]) if a["mark"] is not None
+                                               else "outstanding") for a in atts) or None,
+            "Year(s)": ", ".join(str(y) for y in years) or None,
+            "Required": "Yes" if code in required else None,
+            "Repeated": "Yes" if len(g) > 1 and (len({a["year"] for a in g}) > 1
+                                                 or any(a["mark"] < PASS_MARK for a in g)) else None,
+        })
+    rows.sort(key=lambda r: (RESULT_ORDER[r["Result"]], r["Module code"]))
+    return rows
+
+
+def grouped_detail(students):
+    """students: list of (header dict, [module dicts]) -> one frame with an _level column."""
+    out = []
+    for head, mods in students:
+        counts = {}
+        for m in mods:
+            counts[m["Result"]] = counts.get(m["Result"], 0) + 1
+        summary = ", ".join("%s %d" % (k, counts[k]) for k in RESULT_ORDER if k in counts)
+        out.append(dict(head, **{"Module": summary or "No module records", "_level": 0}))
+        for m in mods:
+            out.append(dict({"SU Number": head["SU Number"], "Student": head["Student"]}, **m, _level=1))
+    cols = ["SU Number", "Student", "Status", "Module code", "Module", "Result", "Mark",
+            "Attempts", "Year(s)", "Required", "Repeated", "_level"]
+    return pd.DataFrame(out, columns=cols)
+
+
+def enrolments_by_student(enrol):
+    """{su: {code: {"name", "years"}}} from non-dropped enrolments."""
+    res = {}
+    if enrol.empty:
+        return res
+    for _, r in enrol.iterrows():
+        if is_dropped(r):
+            continue
+        su, code = su_number(r.get("SU Number")), module_code(r.get("Module Code/Name"))
+        if not su or not code:
+            continue
+        d = res.setdefault(su, {}).setdefault(code, {"name": module_name(r.get("Module Code/Name")),
+                                                     "years": set()})
+        y = year_of(r.get("Academic Term"))
+        if y:
+            d["years"].add(y)
+    return res
+
+
 # ---------------------------------------------------------------------------
 # BDatSci
 # ---------------------------------------------------------------------------
@@ -304,9 +448,9 @@ def is_dropped(row):
     return clean(row.get("Unenrolled Date")) is not None
 
 
-def build_bdatsci(enrol, attempts, current_year):
+def build_bdatsci(enrol, attempts, current_year, enrolled_by):
     if enrol.empty:
-        return pd.DataFrame(), current_year
+        return pd.DataFrame(), pd.DataFrame(), current_year
     e = enrol.copy()
     e["su"] = e["SU Number"].map(su_number)
     e["year"] = e["Academic Term"].map(year_of)
@@ -320,7 +464,7 @@ def build_bdatsci(enrol, attempts, current_year):
         current_year = int(bd.year.max()) if bd.year.notna().any() else None
     cur = bd[bd.year == current_year]
 
-    rows = []
+    rows, details = [], {}
     for su, grp in cur.groupby("su"):
         mods = attempts.get(su, {})
         enrolled_now = dict(zip(grp.code, grp.mname))
@@ -389,13 +533,19 @@ def build_bdatsci(enrol, attempts, current_year):
             "Repeat flag": "Yes" if rep else None,
         })
         rows.append(row)
+        details[su] = module_detail(mods, enrolled_by.get(su, {}), current_year,
+                                    required=BDATSCI_REQUIRED_MODULES)
 
     df = pd.DataFrame(rows)
+    detail = pd.DataFrame()
     if not df.empty:
         order = {"Eligible": 0, "Provisionally eligible": 1, "Not eligible": 2}
         df = df.sort_values(["Status", "Surname", "Name"],
                             key=lambda s: s.map(order) if s.name == "Status" else s.fillna("").str.lower())
-    return df, current_year
+        detail = grouped_detail([
+            ({"SU Number": r["SU Number"], "Student": " ".join(x for x in (r["Name"], r["Surname"]) if x),
+              "Status": r["Status"]}, details[r["SU Number"]]) for _, r in df.iterrows()])
+    return df, detail, current_year
 
 
 def fmt_mark(m):
@@ -443,10 +593,64 @@ def prepare_applicants(app):
     a = app.copy()
     # object dtype keeps None (pandas would otherwise store missing as NaN, which is truthy)
     a["su"] = pd.Series([su_number(x) for x in a.get("SU Number")], index=a.index, dtype=object)
+    a["person"] = [su or clean(code) or clean(mail) or "%s|%s" % (sn, fn) for su, code, mail, sn, fn in
+                   zip(a.su, a.get("Application Code"), a.get("Email ID"), a.get("Surname"), a.get("First Name"))]
+    # One record per person + programme: rows split over several lines are merged
+    # (first non-blank value per column, tertiary studies combined).
+    recs = []
+    for _, grp in a.groupby(["person", a.get("Program Name").fillna("")], sort=False):
+        rec = {}
+        for col in grp.columns:
+            if col == "_tertiary":
+                continue
+            rec[col] = next((v for v in grp[col] if clean(v) is not None), None)
+        rec["_tertiary"] = merge_tertiary(grp["_tertiary"])
+        recs.append(rec)
+    # Tertiary studies belong to the person, not one application: share them
+    by_person = {}
+    for rec in recs:
+        by_person.setdefault(rec["person"], []).append(rec["_tertiary"])
+    for rec in recs:
+        rec["_tertiary"] = merge_tertiary(by_person[rec["person"]])
+    a = pd.DataFrame(recs)
+    a["su"] = pd.Series([su_number(x) for x in a["su"]], index=a.index, dtype=object)
     a["level"] = a.get("Program Name").map(classify)
-    a = a.drop_duplicates(subset=[c for c in ("Application Code", "Program Name") if c in a.columns],
-                          keep="last")
     return a
+
+
+def merge_tertiary(lists):
+    seen, out = set(), []
+    for tert in lists:
+        for b in tert or []:
+            key = tuple(sorted((k, str(v)) for k, v in b.items() if v is not None))
+            if key not in seen:
+                seen.add(key)
+                out.append(b)
+    return out
+
+
+APPLICATION_FIELDS = {"Programme applied for": "Program Name",
+                      "Application Status": "Program Application Status",
+                      "Offer Status": "Program Offer STATUS",
+                      "Stage Status": "Program Stage Status",
+                      "Eligibility Status": "Program Eligibility Status"}
+
+
+def person_record(app_rows):
+    """Combine one person's applications (same level) into one row."""
+    r = app_rows[-1]
+    row = applicant_base(r)
+    if len(app_rows) > 1:
+        progs = [clean(x.get("Program Name")) for x in app_rows]
+        for out_col, src in APPLICATION_FIELDS.items():
+            if out_col == "Programme applied for":
+                row[out_col] = "; ".join(str(p) for p in progs)
+            else:
+                vals = [clean(x.get(src)) for x in app_rows]
+                row[out_col] = "; ".join("%s: %s" % (p, v) for p, v in zip(progs, vals) if v is not None) or None
+    row["Applications"] = len(app_rows)
+    row.update(tertiary_summary(merge_tertiary(x["_tertiary"] for x in app_rows)))
+    return row
 
 
 def applicant_base(r):
@@ -470,11 +674,11 @@ def applicant_base(r):
     return base
 
 
-def build_honours(apps, attempts, grades_df, current_year, people):
+def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
     hons_apps = apps[apps.level == "Honours"] if not apps.empty else apps
     applied = {}
     for _, r in hons_apps.iterrows():
-        key = r.su or ("EXT:" + str(clean(r.get("Application Code")) or len(applied)))
+        key = r.su or ("EXT:" + str(r.person))
         applied.setdefault(key, []).append(r)
 
     # Internal students with OR3 activity this year, applied or not. BDatSci
@@ -492,11 +696,7 @@ def build_honours(apps, attempts, grades_df, current_year, people):
         r = app_rows[-1] if app_rows else None
         su = None if str(key).startswith("EXT:") else key
         if r is not None:
-            row = applicant_base(r)
-            row.update(tertiary_summary(r["_tertiary"]))
-            if len(app_rows) > 1:
-                row["Programme applied for"] = "; ".join(
-                    sorted({str(clean(x.get("Program Name"))) for x in app_rows}))
+            row = person_record(app_rows)
         else:
             p = people.get(su, {})
             row = {"Internal / External": "Internal", "SU Number": su,
@@ -535,7 +735,7 @@ def build_honours(apps, attempts, grades_df, current_year, people):
 
     df = pd.DataFrame(rows)
     if df.empty:
-        return df
+        return df, pd.DataFrame()
     order = {"Qualifies": 0, "Qualifies (provisional)": 1, "Grades outstanding": 3,
              "No SU grade records": 4, "External applicant": 5}
     df["_g"] = df.Status.map(lambda s: order.get(s, 2))
@@ -546,7 +746,16 @@ def build_honours(apps, attempts, grades_df, current_year, people):
     lead = ["Rank", "Status", "Applied for Honours", "Internal / External", "SU Number", "Surname",
             "First Name", "OR3 average", "OR3 modules graded", "OR3 outstanding", "OR2 average",
             "OR2 modules graded", "OR2 + OR3 average", "Repeat flag", "Repeated OR modules"]
-    return df[[c for c in lead if c in df.columns] + [c for c in df.columns if c not in lead]]
+    df = df[[c for c in lead if c in df.columns] + [c for c in df.columns if c not in lead]]
+    is_or = lambda c: c.startswith(OR2_PREFIX) or c.startswith(OR3_PREFIX)
+    detail = grouped_detail([
+        ({"SU Number": r["SU Number"],
+          "Student": " ".join(str(x) for x in (r.get("First Name"), r.get("Surname")) if clean(x)),
+          "Status": r["Status"]},
+         module_detail(attempts.get(r["SU Number"], {}), enrolled_by.get(r["SU Number"], {}),
+                       current_year, keep=is_or))
+        for _, r in df.iterrows() if r["SU Number"]])
+    return df, detail
 
 
 def people_lookup(enrol, grades_df):
@@ -570,12 +779,15 @@ def people_lookup(enrol, grades_df):
 
 def build_pg(apps, level, attempts):
     sub = apps[apps.level == level] if not apps.empty else apps
-    rows = []
+    people = {}
     for _, r in sub.iterrows():
-        row = applicant_base(r)
-        row.update(tertiary_summary(r["_tertiary"]))
-        mods = attempts.get(r.su, {}) if r.su else {}
-        row["SU grade records"] = "Yes" if mods else ("No" if r.su else None)
+        people.setdefault(r.su or "EXT:" + str(r.person), []).append(r)
+    rows = []
+    for app_rows in people.values():
+        row = person_record(app_rows)
+        su = app_rows[-1].su
+        mods = attempts.get(su, {}) if su else {}
+        row["SU grade records"] = "Yes" if mods else ("No" if su else None)
         rows.append(row)
     df = pd.DataFrame(rows)
     if df.empty:
@@ -595,6 +807,7 @@ FILLS = {
     "Provisionally eligible": "FFEB9C", "Qualifies (provisional)": "FFEB9C", "Grades outstanding": "FFEB9C",
     "Not eligible": "FFC7CE",
     "No SU grade records": "EDEDED", "External applicant": "DDEBF7",
+    "Passed": "C6EFCE", "Failed": "FFC7CE", "Not taken (required)": "FFC7CE", "Outstanding": "FFEB9C",
 }
 
 
@@ -606,6 +819,10 @@ def write_workbook(path, sheets):
         for name, df in sheets.items():
             if df is None or df.empty:
                 df = pd.DataFrame({"Info": ["No records found for this tab."]})
+            levels = None
+            if "_level" in df.columns:
+                levels = list(df["_level"])
+                df = df.drop(columns="_level")
             if "SU Number" in df.columns:
                 df = df.copy()
                 df["SU Number"] = [int(v) if isinstance(v, str) and v.isdigit() else v
@@ -621,8 +838,20 @@ def write_workbook(path, sheets):
             for i, col in enumerate(df.columns, start=1):
                 width = max([len(str(col))] + [len(str(v)) for v in df[col].head(500) if v is not None])
                 ws.column_dimensions[get_column_letter(i)].width = min(max(width + 2, 8), 60)
-            if "Status" in df.columns:
-                sc = list(df.columns).index("Status") + 1
+            if levels:
+                # Student line in bold, its module lines grouped under it (+/- to collapse)
+                ws.sheet_properties.outlinePr.summaryBelow = False
+                for i, lvl in enumerate(levels, start=2):
+                    if lvl:
+                        ws.row_dimensions[i].outline_level = 1
+                    else:
+                        for c in ws[i]:
+                            c.font = Font(bold=True)
+                            c.fill = PatternFill("solid", fgColor="E7EEEC")
+            for col_name in ("Status", "Result"):
+                if col_name not in df.columns:
+                    continue
+                sc = list(df.columns).index(col_name) + 1
                 for row in ws.iter_rows(min_row=2, min_col=sc, max_col=sc):
                     for c in row:
                         key = "Below" if str(c.value).startswith("Below") else c.value
@@ -644,11 +873,12 @@ def main():
 
     grades = normalise_grades(grades_raw)
     attempts = attempts_by_student(grades)
-    bdat, year = build_bdatsci(enrol, attempts, args.year)
+    enrolled_by = enrolments_by_student(enrol)
+    bdat, bdat_detail, year = build_bdatsci(enrol, attempts, args.year, enrolled_by)
     if year is None and not grades.empty and grades.year.notna().any():
         year = int(grades.year.max())
     apps = prepare_applicants(apps_raw)
-    hons = build_honours(apps, attempts, grades, year, people_lookup(enrol, grades))
+    hons, hons_detail = build_honours(apps, attempts, grades, year, people_lookup(enrol, grades), enrolled_by)
     masters = build_pg(apps, "Masters", attempts)
     phd = build_pg(apps, "PhD", attempts)
 
@@ -664,6 +894,10 @@ def main():
              ("Honours list", "Honours applicants plus internal students with %s* modules in %s; "
                               "no-record and external applicants at the bottom." % (OR3_PREFIX, year)),
              ("Repeat flag", "Module graded more than once (across years, or after a fail)."),
+             ("Module tabs", "One bold line per student, then every module with its result, counting "
+                             "mark and all attempts. Use the +/- in the margin to collapse a student."),
+             ("Applications", "Rows split over several lines (merged cells) are combined; one row per "
+                              "person per tab, with every programme applied for listed."),
              ("Unclassified applications", len(other))]
     notes_df = pd.DataFrame(notes, columns=["Item", "Value"])
     files_df = pd.DataFrame(log, columns=["File", "Sheet", "Result"])
@@ -672,7 +906,8 @@ def main():
                           .assign(Item=files_df.File + " [" + files_df.Sheet.astype(str) + "]")],
                          ignore_index=True)
 
-    sheets = {"BDatSci": bdat, "Honours": hons, "Masters": masters, "PhD": phd, "Notes": notes_df}
+    sheets = {"BDatSci": bdat, "BDatSci modules": bdat_detail, "Honours": hons,
+              "Honours OR modules": hons_detail, "Masters": masters, "PhD": phd, "Notes": notes_df}
     if not other.empty:
         sheets["Other applications"] = build_pg(other.assign(level="Other"), "Other", attempts)
     write_workbook(args.output, sheets)
