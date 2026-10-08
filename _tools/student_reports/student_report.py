@@ -10,9 +10,10 @@ so file names don't matter):
   - PG Applicant Report               (postgraduate applications)
 
 Usage:
-  python student_report.py INPUT [INPUT ...] [-o OUTPUT.xlsx] [--year 2026]
-
-INPUT can be .xlsx files or folders (every .xlsx inside is read).
+  1. Fill in INPUT FILES below (grouped by report type), then run:
+       python student_report.py
+  2. Or pass files/folders on the command line (overrides INPUT FILES):
+       python student_report.py INPUT [INPUT ...] [-o OUTPUT.xlsx] [--year 2026]
 Writes one workbook with tabs: Overview, BDatSci, Honours, Masters, PhD,
 Modules, Notes. Marks typed into the yellow Mark cells on the Modules tab
 update every status, average and count (all formulas).
@@ -27,6 +28,33 @@ from datetime import date
 from pathlib import Path
 
 import pandas as pd
+
+# ---------------------------------------------------------------------------
+# INPUT FILES (edit here)
+# ---------------------------------------------------------------------------
+# List as many entries per report type as you need. Each entry can be:
+#   - one file:            r"C:\Reports\Grades\Grade_Roster_2026.xlsx"
+#   - a folder:            r"C:\Reports\Grades"            (every .xlsx inside)
+#   - a pattern:           r"C:\Reports\Grade_Roster_*.xlsx"
+# Keep the r before the quotes for Windows paths. Mac/Linux: "/Users/me/Reports/Grades".
+# Files whose headers show they belong to a different type are still read, as
+# that type, and the Notes tab says so.
+
+ENROLMENT_FILES = [         # Student Module Enrollment Report(s)
+    # r"C:\Reports\Enrolment",
+]
+
+GRADE_FILES = [             # Grade Roster Report(s)
+    # r"C:\Reports\Grades",
+]
+
+APPLICANT_FILES = [         # PG Applicant Report(s)
+    # r"C:\Reports\Applicants\PG_Applicant_Report.xlsx",
+]
+
+# Where to save the report. Blank = Student_Report_<today>.xlsx in the folder
+# the script is run from.
+OUTPUT_FILE = r""
 
 # ---------------------------------------------------------------------------
 # SETTINGS (edit here)
@@ -202,16 +230,35 @@ def fill_continuations(df, key, cols):
     return pd.DataFrame(recs, columns=df.columns)
 
 
-def read_inputs(paths):
-    files = []
-    for p in paths:
-        p = Path(p)
-        if p.is_dir():
-            files += sorted(x for x in p.glob("*.xlsx") if not x.name.startswith("~$"))
-        elif p.suffix.lower() == ".xlsx":
-            files.append(p)
-    enrol, grades, applicants, log = [], [], [], []
-    for f in files:
+KIND_LABELS = {"enrolment": "Enrolment", "grades": "Grades", "applicant": "Applicant"}
+
+
+def expand(entry):
+    """A file, folder or glob pattern -> list of .xlsx paths (Excel lock files skipped)."""
+    import glob
+    p = Path(str(entry).strip().strip('"')).expanduser()
+    if p.is_dir():
+        found = sorted(p.glob("*.xlsx"))
+    elif any(ch in str(p) for ch in "*?["):
+        found = sorted(Path(x) for x in glob.glob(str(p)))
+    else:
+        found = [p] if p.exists() else []
+    return [f for f in found if f.suffix.lower() == ".xlsx" and not f.name.startswith("~$")]
+
+
+def read_inputs(entries):
+    """entries: [(path, expected kind or None)]."""
+    files, seen, log = [], set(), []
+    for entry, expected in entries:
+        found = expand(entry)
+        if not found:
+            log.append((str(entry), "", "Not found (no .xlsx files at this path)"))
+        for f in found:
+            if f.resolve() not in seen:
+                seen.add(f.resolve())
+                files.append((f, expected))
+    enrol, grades, applicants = [], [], []
+    for f, expected in files:
         try:
             sheets = load_sheets(f)
         except Exception as e:  # noqa: BLE001
@@ -240,7 +287,11 @@ def read_inputs(paths):
                                         GRADE_PERSON_COLS if kind == "grades" else ENROL_PERSON_COLS)
                 df["_source"] = f.name
                 (grades if kind == "grades" else enrol).append(df)
-            log.append((f.name, sname, "%s report, %d rows" % (kind.capitalize(), len(body))))
+            note = "%s report, %d rows" % (KIND_LABELS[kind], len(body))
+            if expected and expected != kind:
+                note += " (listed under %s files, but its headers match the %s report; read as %s)" % (
+                    KIND_LABELS[expected], KIND_LABELS[kind], KIND_LABELS[kind])
+            log.append((f.name, sname, note))
     cat = lambda xs: pd.concat(xs, ignore_index=True) if xs else pd.DataFrame()
     return cat(enrol), cat(grades), cat(applicants), log
 
@@ -1056,14 +1107,25 @@ def write_overview(wb, year, sections_src):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("inputs", nargs="+", help=".xlsx files and/or folders")
-    ap.add_argument("-o", "--output", default="Student_Report_%s.xlsx" % date.today().isoformat())
+    ap.add_argument("inputs", nargs="*", help=".xlsx files and/or folders (default: INPUT FILES in the script)")
+    ap.add_argument("-o", "--output", default=OUTPUT_FILE or "Student_Report_%s.xlsx" % date.today().isoformat())
     ap.add_argument("--year", type=int, help="current academic year (default: latest BDatSci Academic Term)")
     args = ap.parse_args()
 
-    enrol, grades_raw, apps_raw, log = read_inputs(args.inputs)
+    if args.inputs:
+        entries = [(p, None) for p in args.inputs]
+    else:
+        entries = ([(p, "enrolment") for p in ENROLMENT_FILES] + [(p, "grades") for p in GRADE_FILES]
+                   + [(p, "applicant") for p in APPLICANT_FILES])
+        if not entries:
+            sys.exit("No input files. Fill in ENROLMENT_FILES, GRADE_FILES and APPLICANT_FILES at the "
+                     "top of the script, or pass files/folders on the command line.")
+    enrol, grades_raw, apps_raw, log = read_inputs(entries)
+    for name, _, msg in log:
+        if msg.startswith("Not found") or "listed under" in msg:
+            print("Note: %s: %s" % (name, msg))
     if enrol.empty and grades_raw.empty and apps_raw.empty:
-        sys.exit("No recognised reports found in: %s" % ", ".join(args.inputs))
+        sys.exit("No recognised reports found in: %s" % ", ".join(str(e) for e, _ in entries))
 
     grades = normalise_grades(grades_raw)
     attempts = attempts_by_student(grades)
@@ -1134,7 +1196,7 @@ def main():
              ("Filtering by programme", "Overview: pick a programme in the yellow cell under each heading. "
                                         "Tabs: use the Programme column's filter arrow, or click in the table "
                                         "and choose Table Design > Insert Slicer > Programme."),
-             ("", "")] + [("%s [%s]" % (f, s), res) for f, s, res in log]
+             ("", "")] + [("%s [%s]" % (f, s) if s else f, res) for f, s, res in log]
     sh = Sheet(wb, "Notes", ["Item", "Value"])
     for item in notes:
         sh.add(list(item))
