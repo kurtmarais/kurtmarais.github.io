@@ -26,10 +26,15 @@ Requires: pandas, openpyxl  (pip install pandas openpyxl)
 import argparse
 import re
 import sys
+import warnings
 from datetime import date
 from pathlib import Path
 
 import pandas as pd
+
+# The SU exports have no default cell style; openpyxl warns about it on every
+# file. Harmless, so hidden.
+warnings.filterwarnings("ignore", message="Workbook contains no default style")
 
 # ---------------------------------------------------------------------------
 # INPUT FILES (edit here)
@@ -63,7 +68,10 @@ OUTPUT_FILE = r""
 PASS_MARK = 50.0
 
 # BDatSci final-year eligibility
-BDATSCI_PROGRAMME_KEYWORD = "BDatSci"          # matched in "Program Code/Name"
+# A student is BDatSci when "Program Code/Name" (enrolment) or "Program Code / Name"
+# (grade roster) contains any of these (case-insensitive), e.g.
+# "0720_100_E101 / BDatSci Focal Area: Analytics and Optimisation"
+BDATSCI_PROGRAMME_KEYWORDS = ["BDatSci", "Data Science"]
 BDATSCI_REQUIRED_MODULES = {                    # must be passed (any year) or
     "55336-314": "Operations Research 314",     # enrolled now with mark outstanding
     "55336-344": "Operations Research 344",
@@ -460,7 +468,13 @@ def is_dropped(row):
     status = str(clean(row.get("Module Status")) or "").lower()
     if any(w in status for w in DROPPED_STATUS_WORDS):
         return True
-    return clean(row.get("Unenrolled Date")) is not None
+    # Only a real date counts (exports may fill the column with "-", "N/A", 0, ...)
+    v = clean(row.get("Unenrolled Date"))
+    if v is None:
+        return False
+    if hasattr(v, "year"):
+        return True
+    return bool(re.search(r"\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/ ]\w{2,9}[-/ ]\d{2,4}", str(v)))
 
 
 def enrolments_by_student(enrol):
@@ -725,32 +739,70 @@ def honours_stats(rows):
 # Selecting students
 # ---------------------------------------------------------------------------
 
-def bdatsci_students(enrol, attempts, current_year):
-    """[(su, info dict)] for current-year BDatSci students (final-year candidates)."""
-    if enrol.empty:
-        return [], current_year
-    e = enrol.copy()
-    e["su"] = e["SU Number"].map(su_number)
-    e["year"] = e["Academic Term"].map(year_of)
-    e["code"] = e["Module Code/Name"].map(module_code)
-    e["prog"] = e["Program Code/Name"].map(clean).fillna("")
-    e = e[e.su.notna() & e.code.notna()]
-    e = e[~e.apply(is_dropped, axis=1)]
-    bd = e[e.prog.str.contains(BDATSCI_PROGRAMME_KEYWORD, case=False, regex=False)]
+def is_bdatsci(programme):
+    p = str(programme or "").lower()
+    return any(k.lower() in p for k in BDATSCI_PROGRAMME_KEYWORDS)
+
+
+def bdatsci_students(enrol, grades_df, attempts, current_year):
+    """[(su, info dict)] for current-year BDatSci students (final-year candidates),
+    plus diagnostic lines explaining the count. Uses enrolments, and the grade
+    roster for students who have no enrolment rows."""
+    diag = []
+    e = pd.DataFrame(columns=["su", "year", "code", "prog"])
+    if not enrol.empty:
+        e = enrol.copy()
+        e["su"] = e["SU Number"].map(su_number) if "SU Number" in e else None
+        e["year"] = e["Academic Term"].map(year_of) if "Academic Term" in e else None
+        e["code"] = e["Module Code/Name"].map(module_code) if "Module Code/Name" in e else None
+        e["prog"] = e["Program Code/Name"].map(clean).fillna("") if "Program Code/Name" in e else ""
+        e = e[e.su.notna() & e.code.notna()]
+    diag.append("Enrolment rows with an SU Number and module: %d" % len(e))
+    dropped = e.apply(is_dropped, axis=1) if len(e) else pd.Series(dtype=bool)
+    if len(e) and dropped.any():
+        diag.append("Ignored as unenrolled/withdrawn: %d" % int(dropped.sum()))
+        e = e[~dropped]
+    bd = e[e.prog.map(is_bdatsci)] if len(e) else e
+    g = grades_df[grades_df.programme.map(is_bdatsci)] if not grades_df.empty else grades_df
+    diag.append("BDatSci rows (programme contains %s): %d enrolment, %d grade roster"
+                % (" or ".join('"%s"' % k for k in BDATSCI_PROGRAMME_KEYWORDS), len(bd), len(g)))
+    if not len(bd) and not len(g):
+        seen = pd.concat([e.prog if len(e) else pd.Series(dtype=object),
+                          grades_df.programme if not grades_df.empty else pd.Series(dtype=object)])
+        top = seen.dropna().astype(str).value_counts().head(8)
+        diag.append("No BDatSci programme found. Most common programme values: " +
+                    ("; ".join("%s (%d)" % (k, v) for k, v in top.items()) or "none (programme column empty)"))
     if current_year is None:
-        current_year = int(bd.year.max()) if bd.year.notna().any() else None
-    out = []
+        years = [y for y in list(bd.year if len(bd) else []) + list(g.year if len(g) else [])
+                 if y is not None and not pd.isna(y)]
+        current_year = int(max(years)) if years else None
+    diag.append("Current year used: %s%s" % (current_year, "" if current_year else " (none found)"))
+
+    info = {}
+    for _, f in (bd[bd.year == current_year].iterrows() if len(bd) else []):
+        info.setdefault(f.su, {"Surname": clean(f.get("Surname")),
+                               "Name": clean(f.get("Student Name")) or clean(f.get("Full Name")),
+                               "Email": clean(f.get("Student Email ID")),
+                               "Programme": clean(f.get("Program Code/Name")),
+                               "Student Status": clean(f.get("Student Status"))})
+    n_enrol = len(info)
+    for r in (g[g.year == current_year].itertuples(index=False) if len(g) else []):
+        info.setdefault(r.su, {"Surname": None, "Name": r.student_name, "Email": None,
+                               "Programme": r.programme, "Student Status": None})
+    diag.append("BDatSci students in %s: %d (%d from enrolments, %d only in the grade roster)"
+                % (current_year, len(info), n_enrol, len(info) - n_enrol))
+
     req = set(BDATSCI_REQUIRED_MODULES)
-    for su, grp in bd[bd.year == current_year].groupby("su"):
-        if BDATSCI_ONLY_CANDIDATES and not (req & (set(e[e.su == su].code) | set(attempts.get(su, {})))):
+    out = []
+    for su, i in info.items():
+        taken = set(e[e.su == su].code) if len(e) else set()
+        if BDATSCI_ONLY_CANDIDATES and not (req & (taken | set(attempts.get(su, {})))):
             continue
-        f = grp.iloc[0]
-        out.append((su, {"Surname": clean(f.get("Surname")),
-                         "Name": clean(f.get("Student Name")) or clean(f.get("Full Name")),
-                         "Email": clean(f.get("Student Email ID")),
-                         "Programme": clean(f.get("Program Code/Name")),
-                         "Student Status": clean(f.get("Student Status"))}))
-    return out, current_year
+        out.append((su, i))
+    if BDATSCI_ONLY_CANDIDATES:
+        diag.append("With OR 314, 344 or 352 in their records (listed): %d" % len(out))
+    out.sort(key=lambda x: ((x[1]["Surname"] or "").lower(), (x[1]["Name"] or "").lower()))
+    return out, current_year, diag
 
 
 def honours_applicants(apps):
@@ -1181,7 +1233,10 @@ def main():
     grades = normalise_grades(grades_raw)
     attempts = attempts_by_student(grades)
     enrolled_by = enrolments_by_student(enrol)
-    bd_students, year = bdatsci_students(enrol, attempts, args.year)
+    bd_students, year, bd_diag = bdatsci_students(enrol, grades, attempts, args.year)
+    print("BDatSci check:")
+    for line in bd_diag:
+        print("  " + line)
     if year is None and not grades.empty and grades.year.notna().any():
         year = int(grades.year.max())
     apps = prepare_applicants(apps_raw)
@@ -1247,7 +1302,8 @@ def main():
              ("Filtering by programme", "Overview: pick a programme in the yellow cell under each heading. "
                                         "Tabs: use the Programme column's filter arrow, or click in the table "
                                         "and choose Table Design > Insert Slicer > Programme."),
-             ("", "")] + [("%s [%s]" % (f, s) if s else f, res) for f, s, res in log]
+             ("", "")] + [("BDatSci check", line) for line in bd_diag] + [("", "")] \
+        + [("%s [%s]" % (f, s) if s else f, res) for f, s, res in log]
     sh = Sheet(wb, "Notes", ["Item", "Value"])
     for item in notes:
         sh.add(list(item))
