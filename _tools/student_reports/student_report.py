@@ -10,9 +10,11 @@ so file names don't matter):
   - PG Applicant Report               (postgraduate applications)
 
 Usage:
-  1. Fill in INPUT FILES below (grouped by report type), then run:
-       python student_report.py
-  2. Or pass files/folders on the command line (overrides INPUT FILES):
+  1. Paste file paths into INPUT FILES below (one per line, grouped by
+     report type), then run:     python student_report.py
+  2. Or leave INPUT FILES blank: running the script opens a window per
+     report type to select the files (Ctrl/Shift-click for several).
+  3. Or pass files/folders on the command line (overrides both):
        python student_report.py INPUT [INPUT ...] [-o OUTPUT.xlsx] [--year 2026]
 Writes one workbook with tabs: Overview, BDatSci, Honours, Masters, PhD,
 Modules, Notes. Marks typed into the yellow Mark cells on the Modules tab
@@ -32,28 +34,26 @@ import pandas as pd
 # ---------------------------------------------------------------------------
 # INPUT FILES (edit here)
 # ---------------------------------------------------------------------------
-# List as many entries per report type as you need. Each entry can be:
-#   - one file:            r"C:\Reports\Grades\Grade_Roster_2026.xlsx"
-#   - a folder:            r"C:\Reports\Grades"            (every .xlsx inside)
-#   - a pattern:           r"C:\Reports\Grade_Roster_*.xlsx"
-# Keep the r before the quotes for Windows paths. Mac/Linux: "/Users/me/Reports/Grades".
-# Files whose headers show they belong to a different type are still read, as
-# that type, and the Notes tab says so.
+# Paste the full path of each file between the triple quotes, ONE PER LINE.
+# Any number of files per report type. A folder path reads every .xlsx in it.
+# Paths straight from Windows Explorer work as they are: select the files,
+# Shift + right-click > "Copy as path", paste. Quotes around a path are fine.
+# Lines starting with # are ignored.
+#
+# Leave all three blank to choose the files in pop-up windows instead.
 
-ENROLMENT_FILES = [         # Student Module Enrollment Report(s)
-    # r"C:\Reports\Enrolment",
-]
+ENROLMENT_FILES = r"""
+"""     # Student Module Enrollment Report(s), e.g. C:\Reports\Enrolment_2026_S1.xlsx
 
-GRADE_FILES = [             # Grade Roster Report(s)
-    # r"C:\Reports\Grades",
-]
+GRADE_FILES = r"""
+"""     # Grade Roster Report(s), e.g. C:\Reports\Grades 2025.xlsx
 
-APPLICANT_FILES = [         # PG Applicant Report(s)
-    # r"C:\Reports\Applicants\PG_Applicant_Report.xlsx",
-]
+APPLICANT_FILES = r"""
+"""     # PG Applicant Report(s), e.g. C:\Reports\Applicants\PG applicants.xlsx
 
-# Where to save the report. Blank = Student_Report_<today>.xlsx in the folder
-# the script is run from.
+# Where to save the report (full path ending in .xlsx). Blank = choose in a
+# pop-up window when files were chosen in pop-ups, else
+# Student_Report_<today>.xlsx next to this script.
 OUTPUT_FILE = r""
 
 # ---------------------------------------------------------------------------
@@ -231,6 +231,47 @@ def fill_continuations(df, key, cols):
 
 
 KIND_LABELS = {"enrolment": "Enrolment", "grades": "Grades", "applicant": "Applicant"}
+
+
+def path_lines(block):
+    """Text block -> list of paths: one per line, quotes and blank/# lines dropped."""
+    out = []
+    for line in str(block or "").splitlines():
+        line = line.strip().strip(",").strip()
+        if len(line) >= 2 and line[0] == line[-1] and line[0] in "\"'":
+            line = line[1:-1].strip()
+        if line and not line.startswith("#"):
+            out.append(line)
+    return out
+
+
+def pick_files():
+    """Pop-up file choosers, one per report type, then where to save.
+    Returns ([(path, kind)], output path) or None if no window can be shown."""
+    try:
+        import tkinter as tk
+        from tkinter import filedialog
+        root = tk.Tk()
+    except Exception:  # noqa: BLE001  (no tkinter, or no screen)
+        return None
+    root.withdraw()
+    root.attributes("-topmost", True)
+    entries = []
+    for kind, label in (("enrolment", "Student Module Enrollment Report"),
+                        ("grades", "Grade Roster Report"),
+                        ("applicant", "PG Applicant Report")):
+        chosen = filedialog.askopenfilenames(
+            parent=root, title="Select %s file(s), Ctrl/Shift-click for several (Cancel = none)" % label,
+            filetypes=[("Excel workbooks", "*.xlsx")])
+        entries += [(f, kind) for f in chosen]
+    output = None
+    if entries:
+        output = filedialog.asksaveasfilename(
+            parent=root, title="Save the student report as", defaultextension=".xlsx",
+            initialfile="Student_Report_%s.xlsx" % date.today().isoformat(),
+            filetypes=[("Excel workbook", "*.xlsx")])
+    root.destroy()
+    return entries, output or None
 
 
 def expand(entry):
@@ -1108,18 +1149,28 @@ def write_overview(wb, year, sections_src):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("inputs", nargs="*", help=".xlsx files and/or folders (default: INPUT FILES in the script)")
-    ap.add_argument("-o", "--output", default=OUTPUT_FILE or "Student_Report_%s.xlsx" % date.today().isoformat())
+    ap.add_argument("-o", "--output", default=OUTPUT_FILE.strip().strip('"') or None)
     ap.add_argument("--year", type=int, help="current academic year (default: latest BDatSci Academic Term)")
     args = ap.parse_args()
 
     if args.inputs:
         entries = [(p, None) for p in args.inputs]
     else:
-        entries = ([(p, "enrolment") for p in ENROLMENT_FILES] + [(p, "grades") for p in GRADE_FILES]
-                   + [(p, "applicant") for p in APPLICANT_FILES])
+        entries = ([(p, "enrolment") for p in path_lines(ENROLMENT_FILES)]
+                   + [(p, "grades") for p in path_lines(GRADE_FILES)]
+                   + [(p, "applicant") for p in path_lines(APPLICANT_FILES)])
         if not entries:
-            sys.exit("No input files. Fill in ENROLMENT_FILES, GRADE_FILES and APPLICANT_FILES at the "
-                     "top of the script, or pass files/folders on the command line.")
+            picked = pick_files()
+            if picked is None:
+                sys.exit("No input files. Paste paths into ENROLMENT_FILES, GRADE_FILES and "
+                         "APPLICANT_FILES at the top of the script (one per line), or pass "
+                         "files/folders on the command line.")
+            entries, chosen_out = picked
+            if not entries:
+                sys.exit("No files selected.")
+            args.output = args.output or chosen_out
+    if not args.output:
+        args.output = str(Path(__file__).resolve().parent / ("Student_Report_%s.xlsx" % date.today().isoformat()))
     enrol, grades_raw, apps_raw, log = read_inputs(entries)
     for name, _, msg in log:
         if msg.startswith("Not found") or "listed under" in msg:
