@@ -81,11 +81,10 @@ BDATSCI_REQUIRED_MODULES = {                    # must be passed (any year) or
 # records (enrolled or graded). False = list every BDatSci student registered
 # in the current year, including first/second years.
 BDATSCI_ONLY_CANDIDATES = True
-# Students already in their final year are left out: most of this year's modules
-# are at this level (first digit of the module number, e.g. 55336-414 is level 4).
-# The enrolment 'Semester' is not used: it counts semesters since first
-# registration, so a student who repeated a year shows a final-year semester.
-FINAL_YEAR_MODULE_LEVEL = 4
+# Students already in their final year are left out: "Student Status" (enrolment
+# or grade roster) equals this text, case-insensitive. Nothing else (semesters,
+# module levels) is used to decide this.
+FINAL_YEAR_STATUS = "Final Year"
 
 # Honours
 OR3_PREFIX = "55336-3"
@@ -410,6 +409,7 @@ def normalise_grades(g):
         "su": g.get("SU Number").map(su_number),
         "student_id": g.get("Student ID"),
         "student_name": g.get("Student Name").map(clean),
+        "student_status": g.get("Student Status").map(clean) if "Student Status" in g else None,
         "programme": g.get("Program Code / Name").map(clean),
         "code": g.get("Module Code / Name").map(module_code),
         "name": g.get("Module Code / Name").map(module_name),
@@ -678,7 +678,7 @@ def fmt_mark(m):
 # Module rows (the editable "Modules" tab every status is calculated from)
 # ---------------------------------------------------------------------------
 
-RESULT_ORDER = {"Failed": 0, "Not taken (required)": 1, "Outstanding": 2, "No grade recorded": 3,
+RESULT_ORDER = {"Failed": 0, "Not enrolled (required)": 1, "Outstanding": 2, "No grade recorded": 3,
                 "Outstanding (year-end)": 4, "Not taken": 5, "Passed": 6}
 
 
@@ -727,7 +727,7 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
             if atts or enr_years:
                 no_mark = "No grade recorded"
             else:
-                no_mark = "Not taken (required)" if code in req else "Not taken"
+                no_mark = "Not enrolled (required)" if code in req else "Not taken"
         g = graded(atts)
         name = (enrolled.get(code, {}).get("name") or next((a["name"] for a in atts if a["name"]), None)
                 or BDATSCI_REQUIRED_MODULES.get(code)
@@ -752,7 +752,7 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
 # Python versions of the sheet formulas, used only for the initial sort order
 
 def bdatsci_status(rows):
-    bad = sum(1 for r in rows if r["result"] in ("Failed", "Not taken (required)"))
+    bad = sum(1 for r in rows if r["result"] in ("Failed", "Not enrolled (required)"))
     return "Not eligible" if bad else "Eligible"
 
 
@@ -850,22 +850,30 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
     diag.append("BDatSci students in %s: %d (%d from enrolments, %d only in the grade roster)"
                 % (current_year, len(info), n_enrol, len(info) - n_enrol))
 
-    # Leave out students already in their final year
-    final = set()
+    # Leave out students whose Student Status says they are in their final year
+    statuses = {}
+    if len(bd) and "Student Status" in bd.columns:
+        for su, st in zip(bd.su, bd["Student Status"]):
+            if clean(st) is not None:
+                statuses.setdefault(su, set()).add(str(clean(st)))
+    if len(g) and g.student_status is not None:
+        for su, st in zip(g.su, g.student_status):
+            if clean(st) is not None:
+                statuses.setdefault(su, set()).add(str(clean(st)))
+    final = sorted(su for su in info
+                   if any(st.lower() == FINAL_YEAR_STATUS.lower() for st in statuses.get(su, ())))
+    for su in final:
+        del info[su]
+    seen = pd.Series([st for v in statuses.values() for st in v]).value_counts().head(6) if statuses else {}
+    diag.append('Left out as Student Status "%s": %d (Student Status values seen: %s)'
+                % (FINAL_YEAR_STATUS, len(final), "; ".join("%s (%d)" % kv for kv in dict(seen).items()) or "none"))
+
+    # Highest module level enrolled this year (shown only, never used to decide anything)
     cur_e = bd[bd.year == current_year] if len(bd) else bd
-    for su in list(info):
-        rows_ = cur_e[cur_e.su == su] if len(cur_e) else cur_e
-        codes_ = set(rows_.code) if len(rows_) else set()
+    for su, i in info.items():
+        codes_ = set(cur_e[cur_e.su == su].code) if len(cur_e) else set()
         lv = [int(c.split("-")[1][0]) for c in codes_ if re.match(r"\d+-\d{3}$", c)]
-        top = sum(1 for x in lv if x == FINAL_YEAR_MODULE_LEVEL)
-        below = sum(1 for x in lv if x == FINAL_YEAR_MODULE_LEVEL - 1)
-        if top > below:
-            final.add((su, top, below))
-            del info[su]
-    diag.append("Left out as already in their final year (more level-%d than level-%d modules this "
-                "year): %d" % (FINAL_YEAR_MODULE_LEVEL, FINAL_YEAR_MODULE_LEVEL - 1, len(final)))
-    if final:
-        diag.append("  Left out: " + ", ".join("%s (%d vs %d)" % f for f in sorted(final)))
+        i["Highest module level this year"] = max(lv) if lv else None
 
     req = set(BDATSCI_REQUIRED_MODULES)
     out = []
@@ -903,7 +911,7 @@ M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY, M_FAILED = "A", "D", "F", "G",
 
 GREEN, YELLOW, RED, GREY, BLUE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7"
 # First match wins (case-insensitive "contains")
-COLOUR_RULES = [("not eligible", RED), ("failed", RED), ("not taken (required)", RED), ("below", RED),
+COLOUR_RULES = [("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
                 ("provisional", YELLOW), ("outstanding", YELLOW), ("no grade recorded", YELLOW),
                 ("no su grade", GREY), ("not taken", GREY), ("external", BLUE),
                 ("eligible", GREEN), ("qualifies", GREEN), ("passed", GREEN)]
@@ -1035,9 +1043,10 @@ def write_modules(wb, students):
 
 def write_bdatsci(wb, students, rows_by_su):
     req = list(BDATSCI_REQUIRED_MODULES.items())
-    headers = (["Status", "SU Number", "Surname", "Name", "Email", "Programme", "Student Status"]
+    headers = (["Status", "SU Number", "Surname", "Name", "Email", "Programme", "Student Status",
+                "Highest module level this year"]
                + [label for _, label in req]
-               + ["Failed modules (below %g)" % PASS_MARK, "Failed", "Required not taken",
+               + ["Failed modules (below %g)" % PASS_MARK, "Failed", "Required not enrolled",
                   "Outstanding (year-end)", "Outstanding (other)", "Marks changed by hand", "Repeated modules"])
     sh = Sheet(wb, "BDatSci", headers)
     order = {"Eligible": 0, "Not eligible": 1}
@@ -1050,11 +1059,11 @@ def write_bdatsci(wb, students, rows_by_su):
         row = dict(info, **{"SU Number": su_cell(su)})
         for code, label in req:
             k = '%s&"|%s"' % (su_ref, code)
-            row[label] = '=IFERROR(%s&IF(ISNUMBER(%s)," ("&%s&")",""),"Not taken")' % (
+            row[label] = '=IFERROR(%s&IF(ISNUMBER(%s)," ("&%s&")",""),"Not enrolled")' % (
                 lookup(k, M_RES), lookup(k, M_MARK), lookup(k, M_MARK))
         row["Failed modules (below %g)" % PASS_MARK] = '=IFERROR(%s,"")' % lookup('%s&"|"' % su_ref, M_FAILED)
         row["Failed"] = "=" + cnt(su_ref, (M_RES, "Failed"))
-        row["Required not taken"] = "=" + cnt(su_ref, (M_RES, "Not taken (required)"))
+        row["Required not enrolled"] = "=" + cnt(su_ref, (M_RES, "Not enrolled (required)"))
         row["Outstanding (year-end)"] = "=" + cnt(su_ref, (M_RES, "Outstanding (year-end)"))
         row["Outstanding (other)"] = "=%s+%s" % (cnt(su_ref, (M_RES, "Outstanding")),
                                                  cnt(su_ref, (M_RES, "No grade recorded")))
@@ -1063,10 +1072,10 @@ def write_bdatsci(wb, students, rows_by_su):
         row["Repeated modules"] = ", ".join(rep) or None
         # Eligible = nothing failed (outstanding marks don't change that; they're highlighted)
         row["Status"] = '=IF({f}{r}+{n}{r}>0,"Not eligible","Eligible")'.format(
-            f=L["Failed"], n=L["Required not taken"], r=r)
+            f=L["Failed"], n=L["Required not enrolled"], r=r)
         sh.add(row)
     sh.finish(colour_cols=["Status"] + [label for _, label in req],
-              count_cols={"Failed": RED, "Required not taken": RED, "Outstanding (year-end)": YELLOW,
+              count_cols={"Failed": RED, "Required not enrolled": RED, "Outstanding (year-end)": YELLOW,
                           "Outstanding (other)": YELLOW},
               widths={"Status": 16, "Programme": 30, "Failed modules (below %g)" % PASS_MARK: 45},
               table="BDatSciTable")
@@ -1245,7 +1254,7 @@ def write_overview(wb, year, sections_src):
             ("all marks in", [(a, "Eligible"), (ye, "0"), (ot, "0")], True),
             ("year-end marks outstanding only", [(a, "Eligible"), (ye, ">0"), (ot, "0")], True),
             ("other marks outstanding", [(a, "Eligible"), (ot, ">0")], True),
-            ("Not eligible (failed, or OR 314/344/352 not taken)", [(a, "Not eligible")], False),
+            ("Not eligible (failed, or not enrolled for OR 314/344/352)", [(a, "Not eligible")], False),
             ("Total listed", [(a, "?*"), (a, "<>Status")], False)])
     if "Honours" in sections_src:
         b = sections_src["Honours"][0].col("Status")
@@ -1380,8 +1389,8 @@ def main():
                                   "Both are highlighted yellow and don't affect eligibility."),
              ("BDatSci rule", "Eligible = no failed module and OR 314, 344 and 352 passed or being taken. "
                               "Outstanding marks don't change eligibility; they are highlighted yellow. "
-                              "Students already in their final year (mostly level-%d modules this "
-                              "year) are left out." % FINAL_YEAR_MODULE_LEVEL),
+                              "Students whose Student Status is '%s' are left out. 'Highest module "
+                              "level this year' is for information only." % FINAL_YEAR_STATUS),
              ("Honours rule", "Honours applicants only; OR modules only. Qualifies unless an OR module "
                               "is failed or the unweighted mean of the %s* marks so far is below %g%% "
                               "(no marks yet still qualifies; outstanding marks are highlighted). "
