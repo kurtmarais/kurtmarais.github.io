@@ -464,17 +464,26 @@ def avg_for_prefix(mods, prefix):
     return avg, len(marks), pending
 
 
-def is_dropped(row):
+def drop_reason(row):
+    """Why an enrolment row is ignored, or None. Module Status words count; an
+    'Unenrolled Date' counts only if it is a real date (exports often hold a
+    blank date as 0, which Excel shows as 1899/1900)."""
     status = str(clean(row.get("Module Status")) or "").lower()
     if any(w in status for w in DROPPED_STATUS_WORDS):
-        return True
-    # Only a real date counts (exports may fill the column with "-", "N/A", 0, ...)
+        return "Module Status"
     v = clean(row.get("Unenrolled Date"))
     if v is None:
-        return False
+        return None
     if hasattr(v, "year"):
-        return True
-    return bool(re.search(r"\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/ ]\w{2,9}[-/ ]\d{2,4}", str(v)))
+        return "Unenrolled Date" if v.year >= 1950 else None
+    y = year_of(v)
+    if y and y >= 1950 and re.search(r"\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/ ]\w{2,9}[-/ ]\d{2,4}", str(v)):
+        return "Unenrolled Date"
+    return None
+
+
+def is_dropped(row):
+    return drop_reason(row) is not None
 
 
 def enrolments_by_student(enrol):
@@ -680,7 +689,7 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
             current_year in enr_years or any(a["year"] == current_year for a in atts))
         if current:
             # Taken this year: only this year's mark counts (an old fail stays in Attempts)
-            mark = counting_mark([a for a in atts if a["year"] == current_year])
+            mark = counting_mark([a for a in atts if a["year"] == current_year or not a["year"]])
             no_mark = "Outstanding (year-end)" if is_year_end(code) else "Outstanding"
         else:
             mark = counting_mark(atts)
@@ -758,9 +767,16 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
         e["prog"] = e["Program Code/Name"].map(clean).fillna("") if "Program Code/Name" in e else ""
         e = e[e.su.notna() & e.code.notna()]
     diag.append("Enrolment rows with an SU Number and module: %d" % len(e))
-    dropped = e.apply(is_dropped, axis=1) if len(e) else pd.Series(dtype=bool)
+    reasons = e.apply(drop_reason, axis=1) if len(e) else pd.Series(dtype=object)
+    dropped = reasons.notna() if len(e) else pd.Series(dtype=bool)
     if len(e) and dropped.any():
-        diag.append("Ignored as unenrolled/withdrawn: %d" % int(dropped.sum()))
+        detail = []
+        for why, col in (("Module Status", "Module Status"), ("Unenrolled Date", "Unenrolled Date")):
+            hit = e[reasons == why]
+            if len(hit):
+                ex = hit[col].astype(str).value_counts().head(3)
+                detail.append("%d by %s (e.g. %s)" % (len(hit), why, "; ".join(ex.index)))
+        diag.append("Ignored as unenrolled/withdrawn: %d: %s" % (int(dropped.sum()), ", ".join(detail)))
         e = e[~dropped]
     bd = e[e.prog.map(is_bdatsci)] if len(e) else e
     g = grades_df[grades_df.programme.map(is_bdatsci)] if not grades_df.empty else grades_df
@@ -777,6 +793,12 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
                  if y is not None and not pd.isna(y)]
         current_year = int(max(years)) if years else None
     diag.append("Current year used: %s%s" % (current_year, "" if current_year else " (none found)"))
+    if not grades_df.empty:
+        no_year = grades_df[grades_df.year.isna()]
+        if len(no_year):
+            ex = no_year.period.astype(str).value_counts().head(3)
+            diag.append("Grade rows whose Period has no year: %d (e.g. %s); a mark like this for a module "
+                        "enrolled this year is treated as this year's" % (len(no_year), "; ".join(ex.index)))
 
     info = {}
     for _, f in (bd[bd.year == current_year].iterrows() if len(bd) else []):
