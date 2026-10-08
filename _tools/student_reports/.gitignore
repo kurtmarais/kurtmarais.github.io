@@ -1,0 +1,4 @@
+# Student exports and generated reports contain personal data: never commit them
+*.xlsx
+*.xls
+*.csv
