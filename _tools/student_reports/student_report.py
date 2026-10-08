@@ -47,7 +47,10 @@ BDATSCI_ONLY_CANDIDATES = True
 # Honours
 OR3_PREFIX = "55336-3"
 OR2_PREFIX = "55336-2"
-HONOURS_THRESHOLD = 60.0                        # unweighted mean of OR3 modules
+HONOURS_THRESHOLD = 60.0
+# OR modules always shown as columns on the Honours tab (any other OR2/OR3
+# module found in an applicant's records gets a column too)
+HONOURS_OR_MODULES = ["55336-314", "55336-322", "55336-344", "55336-352", "55336-244"]                        # unweighted mean of OR3 modules
 # Which attempt of a repeated module counts towards averages: "latest" or "best"
 REPEAT_ATTEMPT = "latest"
 
@@ -360,10 +363,12 @@ def avg_for_prefix(mods, prefix):
 
 
 RESULT_ORDER = {"Failed": 0, "Not taken (required)": 1, "Outstanding": 2,
-                "No grade recorded": 3, "Passed": 4}
+                "No grade recorded": 3, "Not taken": 4, "Passed": 5}
 
 
-def module_detail(mods, enrolled, current_year, required=(), keep=lambda code: True):
+def module_detail(mods, enrolled, current_year, required=(), keep=lambda code: True, prerequisite=True):
+    """`required` modules are listed even if never taken; prerequisite=False labels
+    them plain 'Not taken' (Honours) instead of a failed requirement (BDatSci)."""
     """One dict per module for a student: result, counting mark, every attempt."""
     rows = []
     for code in sorted((set(mods) | set(enrolled) | set(required))):
@@ -381,20 +386,21 @@ def module_detail(mods, enrolled, current_year, required=(), keep=lambda code: T
         elif g:
             result = "Failed"
         elif code in required and not atts and not enr_years:
-            result = "Not taken (required)"
+            result = "Not taken (required)" if prerequisite else "Not taken"
         else:
             result = "No grade recorded"
         name = enrolled.get(code, {}).get("name") or next((a["name"] for a in atts if a["name"]), None)
         years = sorted({a["year"] for a in atts if a["year"]} | {y for y in enr_years if y})
         rows.append({
             "Module code": code,
-            "Module": name or (required.get(code) if isinstance(required, dict) else None),
+            "Module": name or (required.get(code) if isinstance(required, dict) else None)
+            or ("Operations Research " + code.split("-", 1)[1] if code.startswith("55336-") else None),
             "Result": result,
             "Mark": counting_mark(atts),
             "Attempts": "; ".join("%s: %s" % (a["year"] or "?", fmt_mark(a["mark"]) if a["mark"] is not None
                                                else "outstanding") for a in atts) or None,
             "Year(s)": ", ".join(str(y) for y in years) or None,
-            "Required": "Yes" if code in required else None,
+            "Required": "Yes" if prerequisite and code in required else None,
             "Repeated": "Yes" if len(g) > 1 and (len({a["year"] for a in g}) > 1
                                                  or any(a["mark"] < PASS_MARK for a in g)) else None,
         })
@@ -683,7 +689,7 @@ def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
 
     is_or = lambda c: c.startswith(OR2_PREFIX) or c.startswith(OR3_PREFIX)
     # One column per OR2/OR3 module found in the applicants' records (or enrolments)
-    or_codes = set()
+    or_codes = set(HONOURS_OR_MODULES)
     for key in applied:
         if not str(key).startswith("EXT:"):
             or_codes |= {c for c in attempts.get(key, {}) if is_or(c)}
@@ -756,7 +762,8 @@ def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
           "Student": " ".join(str(x) for x in (r.get("First Name"), r.get("Surname")) if clean(x)),
           "Status": r["Status"]},
          module_detail(attempts.get(r["SU Number"], {}), enrolled_by.get(r["SU Number"], {}),
-                       current_year, keep=is_or))
+                       current_year, required=HONOURS_OR_MODULES, keep=is_or,
+                       prerequisite=False))
         for _, r in df.iterrows() if clean(r["SU Number"]) is not None])
     return df, detail
 
