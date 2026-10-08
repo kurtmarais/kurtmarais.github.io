@@ -678,9 +678,9 @@ def honours_applicants(apps):
 MOD = "Modules"
 MOD_COLS = ["SU Number", "Student", "Summary", "Module code", "Module", "Mark", "Result",
             "Year-end module", "Counts for BDatSci", "Attempts", "Year(s)", "Repeated",
-            "Changed by hand", "Key", "If no mark", "Original mark"]
+            "Changed by hand", "Key", "If no mark", "Original mark", "Failed modules", "_failed"]
 # Modules column letters
-M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY = "A", "D", "F", "G", "I", "M", "N"
+M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY, M_FAILED = "A", "D", "F", "G", "I", "M", "N", "Q"
 
 GREEN, YELLOW, RED, GREY, BLUE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7"
 # First match wins (case-insensitive "contains")
@@ -732,7 +732,7 @@ class Sheet:
     def add(self, values):
         self.ws.append([values.get(h) for h in self.headers] if isinstance(values, dict) else values)
 
-    def finish(self, colour_cols=(), hide=(), widths=None, filter_=True):
+    def finish(self, colour_cols=(), hide=(), widths=None, filter_=True, table=None):
         from openpyxl.formatting.rule import FormulaRule
         from openpyxl.styles import PatternFill
         from openpyxl.utils import get_column_letter
@@ -756,8 +756,15 @@ class Sheet:
             ws.conditional_formatting.add(rng, FormulaRule(
                 formula=["AND(ISNUMBER(%s2),%s2<%g)" % (letter, letter, PASS_MARK)], stopIfTrue=True,
                 fill=PatternFill("solid", fgColor=RED, bgColor=RED)))
-        if filter_:
-            ws.auto_filter.ref = "A1:%s%d" % (get_column_letter(len(self.headers)), last)
+        ref = "A1:%s%d" % (get_column_letter(len(self.headers)), last)
+        if table and ws.max_row >= 2:
+            # An Excel table: filter arrows on every column, and Table Design > Insert Slicer works
+            from openpyxl.worksheet.table import Table, TableStyleInfo
+            t = Table(displayName=table, ref=ref)
+            t.tableStyleInfo = TableStyleInfo(name="TableStyleLight1", showRowStripes=False)
+            ws.add_table(t)
+        elif filter_:
+            ws.auto_filter.ref = ref
 
 
 def write_modules(wb, students):
@@ -776,7 +783,10 @@ def write_modules(wb, students):
     for su, name, lists, rows in students:
         r = sh.next_row
         a = "$A%d" % r
-        sh.add({"SU Number": su_cell(su), "Student": name, "Module": lists,
+        # Failed modules (any year) joined from the hidden _failed pieces below this line
+        joined = "&".join("R%d" % i for i in range(r + 1, r + 1 + len(rows))) or '""'
+        sh.add({"SU Number": su_cell(su), "Student": name, "Module": lists, "Key": "%s|" % su,
+                "Failed modules": '=IF(LEN({j})>0,LEFT({j},LEN({j})-2),"")'.format(j="(" + joined + ")"),
                 "Summary": '="Passed "&%s&", failed "&%s&", outstanding "&%s' % (
                     cnt(a, (M_RES, "Passed")), cnt(a, (M_RES, "Failed")), cnt(a, (M_RES, "Outstanding*")))})
         for c in ws[r]:
@@ -790,20 +800,21 @@ def write_modules(wb, students):
                     "Year-end module": m["year_end"], "Counts for BDatSci": m["bdatsci"],
                     "Attempts": m["attempts"], "Year(s)": m["years"], "Repeated": m["repeated"],
                     "Changed by hand": '=IF(F{r}&""=P{r}&"","","Yes")'.format(r=r),
-                    "Key": "%s|%s" % (su, m["code"]), "If no mark": m["no_mark"], "Original mark": m["mark"]})
+                    "Key": "%s|%s" % (su, m["code"]), "If no mark": m["no_mark"], "Original mark": m["mark"],
+                    "_failed": '=IF(G{r}="Failed",E{r}&" ("&F{r}&"), ","")'.format(r=r)})
             ws.row_dimensions[r].outline_level = 1
             ws["F%d" % r].fill = input_fill
             dv.add("F%d" % r)
-    sh.finish(colour_cols=["Result"], hide=["Key", "If no mark", "Original mark"],
-              widths={"Summary": 34, "Module": 30})
+    sh.finish(colour_cols=["Result"], hide=["Key", "If no mark", "Original mark", "_failed"],
+              widths={"Summary": 34, "Module": 30, "Failed modules": 45})
 
 
 def write_bdatsci(wb, students, rows_by_su):
     req = list(BDATSCI_REQUIRED_MODULES.items())
     headers = (["Status", "SU Number", "Surname", "Name", "Email", "Programme", "Student Status"]
                + [label for _, label in req]
-               + ["Failed", "Required not taken", "Outstanding (year-end)", "Outstanding (other)",
-                  "Marks changed by hand", "Repeated modules"])
+               + ["Failed modules (below %g)" % PASS_MARK, "Failed", "Required not taken",
+                  "Outstanding (year-end)", "Outstanding (other)", "Marks changed by hand", "Repeated modules"])
     sh = Sheet(wb, "BDatSci", headers)
     order = {"Eligible": 0, "Provisionally eligible (year-end grades)": 1,
              "Provisionally eligible (grades outstanding)": 2, "Not eligible": 3}
@@ -818,6 +829,7 @@ def write_bdatsci(wb, students, rows_by_su):
             k = '%s&"|%s"' % (su_ref, code)
             row[label] = '=IFERROR(%s&IF(ISNUMBER(%s)," ("&%s&")",""),"Not taken")' % (
                 lookup(k, M_RES), lookup(k, M_MARK), lookup(k, M_MARK))
+        row["Failed modules (below %g)" % PASS_MARK] = '=IFERROR(%s,"")' % lookup('%s&"|"' % su_ref, M_FAILED)
         row["Failed"] = "=" + cnt(su_ref, (M_BD, "<>"), (M_RES, "Failed"))
         row["Required not taken"] = "=" + cnt(su_ref, (M_RES, "Not taken (required)"))
         row["Outstanding (year-end)"] = "=" + cnt(su_ref, (M_BD, "<>"), (M_RES, "Outstanding (year-end)"))
@@ -832,10 +844,12 @@ def write_bdatsci(wb, students, rows_by_su):
                                   y=L["Outstanding (year-end)"], r=r)
         sh.add(row)
     sh.finish(colour_cols=["Status"] + [label for _, label in req],
-              widths={"Status": 40, "Programme": 30})
+              widths={"Status": 40, "Programme": 30, "Failed modules (below %g)" % PASS_MARK: 45},
+              table="BDatSciTable")
+    return sh
 
 
-def write_honours(wb, applied, rows_by_su):
+def write_honours(wb, applied, rows_by_su, current_prog):
     from openpyxl.utils import get_column_letter
     codes = set(HONOURS_OR_MODULES)
     for key in applied:
@@ -861,13 +875,13 @@ def write_honours(wb, applied, rows_by_su):
                  ("Internal / External", "SU Number", "Surname", "First Name")]
     headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name", "OR3 average"]
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
-               + ["OR2 + OR3 average", "Repeated OR modules"] + info_cols
+               + ["OR2 + OR3 average", "Repeated OR modules"] + info_cols + ["Current programme"]
                + ["_or3_graded", "_or3_yearend", "_or3_other"])
     sh = Sheet(wb, "Honours", headers)
     L = {h: sh.col(h) for h in headers}
     for su, info, _, status in built:
         r = sh.next_row
-        row = dict(info, **{"SU Number": su_cell(su)})
+        row = dict(info, **{"SU Number": su_cell(su), "Current programme": current_prog.get(su) if su else None})
         if su:
             s = "$D%d" % r
             for c in or3 + or2:
@@ -904,7 +918,26 @@ def write_honours(wb, applied, rows_by_su):
             for cell in sh.ws[L[h]][1:]:
                 cell.number_format = "0.00"
     sh.finish(colour_cols=["Status"] + [label(c) for c in or3 + or2],
-              hide=["_or3_graded", "_or3_yearend", "_or3_other"], widths={"Status": 44})
+              hide=["_or3_graded", "_or3_yearend", "_or3_other"], widths={"Status": 44},
+              table="HonoursTable")
+    return sh
+
+
+def current_programmes(enrol, grades_df):
+    """{su: programme} from the latest enrolment (Academic Term), else the latest grade."""
+    best = {}
+    if not enrol.empty:
+        for _, r in enrol.iterrows():
+            su, prog, y = su_number(r.get("SU Number")), clean(r.get("Program Code/Name")), \
+                year_of(r.get("Academic Term")) or 0
+            if su and prog and (su not in best or y >= best[su][0]):
+                best[su] = (y, prog)
+    if not grades_df.empty:
+        for g in grades_df.itertuples(index=False):
+            y = g.year if g.year and not pd.isna(g.year) else 0
+            if g.programme and (g.su not in best or (best[g.su][0] < y)):
+                best[g.su] = (y, g.programme)
+    return {su: p for su, (_, p) in best.items()}
 
 
 def write_frame(wb, title, df):
@@ -915,68 +948,109 @@ def write_frame(wb, title, df):
         sh.add({k: (su_cell(v) if k == "SU Number" else (None if v is None or (isinstance(v, float)
                                                                                 and pd.isna(v)) else v))
                 for k, v in rec.items()})
-    sh.finish()
+    sh.finish(table=re.sub(r"\W", "", title) + "Table")
     return sh
 
 
-def write_overview(wb, year, pg_sheets):
+def write_overview(wb, year, sections_src):
+    """sections_src: {key: (Sheet, programme column header, list of programmes)}."""
     from openpyxl.styles import Font, PatternFill
     ws = wb.create_sheet("Overview", 0)
     ws.column_dimensions["A"].width = 52
     ws.column_dimensions["B"].width = 12
     ws.append(["Student report overview", None])
     ws["A1"].font = Font(bold=True, size=14)
-    ws.append(["Academic year %s. Counts update when marks are entered on the Modules tab." % year])
+    ws.append(["Academic year %s. Counts update when marks are entered on the Modules tab. "
+               "Pick a programme in a yellow cell to count only that programme." % year])
     ws["A2"].font = Font(italic=True, color="666666")
+    ws.column_dimensions["B"].width = 48
 
-    def section(title, items):
+    # Hidden sheet holding each section's programme list for the dropdowns
+    lists = wb.create_sheet("Lists")
+    lists.sheet_state = "hidden"
+    from openpyxl.utils import get_column_letter
+    from openpyxl.worksheet.datavalidation import DataValidation
+
+    def section(title, key, items):
+        """items: (label, criteria, indent); criteria is a list of (column, value) on
+        the section's sheet, or None for a sub-heading."""
         ws.append([])
         ws.append([title, "Count"])
         for c in ws[ws.max_row]:
             c.font = Font(bold=True, color="FFFFFF")
             c.fill = PatternFill("solid", fgColor="365B52")
-        for label, formula, indent in items:
-            ws.append([("    " if indent else "") + label, formula])
+        sh, prog_header, progs = sections_src[key]
+        ws.append(["Programme", "All"])
+        sel = "$B$%d" % ws.max_row
+        ws.cell(ws.max_row, 2).fill = PatternFill("solid", fgColor="FFF8DC")
+        ws.cell(ws.max_row, 1).font = Font(italic=True)
+        n = section.lists_used = getattr(section, "lists_used", 0) + 1
+        lc = get_column_letter(n)
+        for i, p in enumerate(["All"] + progs, start=1):
+            lists.cell(i, n, p)
+        dv = DataValidation(type="list", formula1="=Lists!$%s$1:$%s$%d" % (lc, lc, len(progs) + 1),
+                            allow_blank=False)
+        ws.add_data_validation(dv)
+        dv.add(sel)
+        t = sh.ws.title
+        pc = sh.col(prog_header) if sh and prog_header in sh.headers else None
+        rng = lambda col: "%s!$%s:$%s" % (t, col, col)
+        for label, crit, indent in items:
+            if crit is None:
+                f = None
+            else:
+                parts = ",".join("%s,\"%s\"" % (rng(c), v) for c, v in crit)
+                if pc:
+                    f = '=IF(%s="All",COUNTIFS(%s),COUNTIFS(%s,%s,"*"&%s&"*"))' % (sel, parts, parts, rng(pc), sel)
+                else:
+                    f = "=COUNTIFS(%s)" % parts
+            ws.append([("    " if indent else "") + label, f])
             if not indent:
                 ws.cell(ws.max_row, 1).font = Font(bold=True)
 
-    ci = lambda sheet, col, val: '=COUNTIF(%s!$%s:$%s,"%s")' % (sheet, col, col, val)
-    section("BDatSci: continuing to final year", [
-        ("Eligible", ci("BDatSci", "A", "Eligible"), False),
-        ("Provisionally eligible", '=COUNTIF(BDatSci!$A:$A,"Provisionally*")', False),
-        ("year-end grades outstanding only", ci("BDatSci", "A", "Provisionally eligible (year-end grades)"), True),
-        ("other grades outstanding", ci("BDatSci", "A", "Provisionally eligible (grades outstanding)"), True),
-        ("Not eligible", ci("BDatSci", "A", "Not eligible"), False),
-        ("Total listed", "=COUNTA(BDatSci!$B:$B)-1", False)])
-    q = lambda v: ci("Honours", "B", v)
-    section("Honours applicants (OR3 average >= %g%%)" % HONOURS_THRESHOLD, [
-        ("Qualify", '=COUNTIF(Honours!$B:$B,"Qualifies*")', False),
-        ("confirmed", q("Qualifies"), True),
-        ("provisional: year-end grades outstanding", q("Qualifies (provisional: year-end grades)"), True),
-        ("provisional: other grades outstanding", q("Qualifies (provisional: grades outstanding)"), True),
-        ("Below %g%%" % HONOURS_THRESHOLD, '=COUNTIF(Honours!$B:$B,"Below*")', False),
-        ("of which provisional", '=COUNTIF(Honours!$B:$B,"Below*provisional*")', True),
-        ("All OR3 grades outstanding", q("Grades outstanding"), False),
-        ("Internal, no SU grade records", q("No SU grade records"), False),
-        ("External applicants", q("External applicant"), False),
-        ("Total applicants", "=COUNTA(Honours!$B:$B)-1", False)])
-    for title, (sh, df) in pg_sheets.items():
-        if df is None or df.empty:
-            section(title + " applicants", [("Total applicants", 0, False)])
+    if "BDatSci" in sections_src:
+        a = sections_src["BDatSci"][0].col("Status")
+        section("BDatSci: continuing to final year", "BDatSci", [
+            ("Eligible", [(a, "Eligible")], False),
+            ("Provisionally eligible", [(a, "Provisionally*")], False),
+            ("year-end grades outstanding only", [(a, "Provisionally eligible (year-end grades)")], True),
+            ("other grades outstanding", [(a, "Provisionally eligible (grades outstanding)")], True),
+            ("Not eligible", [(a, "Not eligible")], False),
+            ("Total listed", [(a, "?*"), (a, "<>Status")], False)])
+    if "Honours" in sections_src:
+        b = sections_src["Honours"][0].col("Status")
+        section("Honours applicants (OR3 average >= %g%%)" % HONOURS_THRESHOLD, "Honours", [
+            ("Qualify", [(b, "Qualifies*")], False),
+            ("confirmed", [(b, "Qualifies")], True),
+            ("provisional: year-end grades outstanding", [(b, "Qualifies (provisional: year-end grades)")], True),
+            ("provisional: other grades outstanding", [(b, "Qualifies (provisional: grades outstanding)")], True),
+            ("Below %g%%" % HONOURS_THRESHOLD, [(b, "Below*")], False),
+            ("of which provisional", [(b, "Below*provisional*")], True),
+            ("All OR3 grades outstanding", [(b, "Grades outstanding")], False),
+            ("Internal, no SU grade records", [(b, "No SU grade records")], False),
+            ("External applicants", [(b, "External applicant")], False),
+            ("Total applicants", [(b, "?*"), (b, "<>Status")], False)])
+    for key in ("Masters", "PhD", "Other"):
+        if key not in sections_src:
+            continue
+        sh, _, _ = sections_src[key]
+        title = ("Other" if key == "Other" else key) + " applicants"
+        if "Internal / External" not in sh.headers:
+            section(title, key, [("No applicants", None, False)])
             continue
         io = sh.col("Internal / External")
-        items = [("Total applicants", "=COUNTA(%s!$%s:$%s)-1" % (sh.ws.title, io, io), False),
-                 ("Internal (SU number)", ci(sh.ws.title, io, "Internal"), True),
-                 ("External", ci(sh.ws.title, io, "External"), True)]
-        if "Eligibility Status" in df.columns:
+        items = [("Total applicants", [(io, "?*"), (io, "<>Internal / External")], False),
+                 ("Internal (SU number)", [(io, "Internal")], True),
+                 ("External", [(io, "External")], True)]
+        if "Eligibility Status" in sh.headers:
             ec = sh.col("Eligibility Status")
-            vals = sorted({str(v) for v in df["Eligibility Status"] if clean(v) is not None})
+            vals = sorted({str(c.value) for c in sh.ws[ec][1:] if clean(c.value) is not None})
             if vals:
                 items.append(("By Program Eligibility Status", None, False))
-                items += [(v, ci(sh.ws.title, ec, v), True) for v in vals]
+                items += [(v, [(ec, v)], True) for v in vals]
             else:
                 items.append(("No Program Eligibility Status in the report", None, False))
-        section(title + " applicants", items)
+        section(title, key, items)
     ws["A1"].font = Font(bold=True, size=14)
 
 
@@ -1013,21 +1087,31 @@ def main():
     from openpyxl import Workbook
     wb = Workbook()
     wb.remove(wb.active)
-    write_bdatsci(wb, bd_students, rows_by_su)
-    write_honours(wb, applied, rows_by_su)
-    pg = {}
+    progs_of = lambda sh, h: sorted({str(c.value) for c in sh.ws[sh.col(h)][1:] if clean(c.value)}) \
+        if h in sh.headers else []
+    src, pg = {}, {}
+    sh = write_bdatsci(wb, bd_students, rows_by_su)
+    src["BDatSci"] = (sh, "Programme", progs_of(sh, "Programme"))
+    sh = write_honours(wb, applied, rows_by_su, current_programmes(enrol, grades))
+    # Applicants with several Honours programmes: offer each programme on its own
+    hp = sorted({p.strip() for v in progs_of(sh, "Programme applied for") for p in v.split(";")})
+    src["Honours"] = (sh, "Programme applied for", hp)
     for level in ("Masters", "PhD"):
         df = build_pg(apps, level, attempts)
-        pg[level] = (write_frame(wb, level, df), df)
+        sh = write_frame(wb, level, df)
+        pg[level] = df
+        src[level] = (sh, "Programme applied for", sorted({p.strip() for v in progs_of(sh, "Programme applied for")
+                                                          for p in v.split(";")}))
     other = apps[apps.level == "Other"] if not apps.empty else apps
     if not other.empty:
         df = build_pg(other, "Other", attempts)
-        pg["Other"] = (write_frame(wb, "Other applications", df), df)
+        sh = write_frame(wb, "Other applications", df)
+        src["Other"] = (sh, "Programme applied for", progs_of(sh, "Programme applied for"))
     order = sorted(rows_by_su, key=lambda s: (s not in bd_set, names.get(s, "").lower()))
     write_modules(wb, [(su, names.get(su), "On: " + ", ".join(
         x for x, on in (("BDatSci", su in bd_set), ("Honours", su in hons_set)) if on), rows_by_su[su])
         for su in order])
-    write_overview(wb, year, pg)
+    write_overview(wb, year, src)
 
     notes = [("Generated", date.today().isoformat()),
              ("Current academic year", year),
@@ -1047,6 +1131,9 @@ def main():
                                   "%s attempt counts. All attempts are listed on the Modules tab." % REPEAT_ATTEMPT),
              ("Row order", "Rows are sorted when the report is generated; use the filter arrows to "
                            "re-sort after entering marks."),
+             ("Filtering by programme", "Overview: pick a programme in the yellow cell under each heading. "
+                                        "Tabs: use the Programme column's filter arrow, or click in the table "
+                                        "and choose Table Design > Insert Slicer > Programme."),
              ("", "")] + [("%s [%s]" % (f, s), res) for f, s, res in log]
     sh = Sheet(wb, "Notes", ["Item", "Value"])
     for item in notes:
@@ -1057,7 +1144,7 @@ def main():
     wb.save(args.output)
     print("Wrote %s" % args.output)
     print("  BDatSci students: %d, Honours applicants: %d, Masters: %d, PhD: %d, module rows: %d"
-          % (len(bd_students), len(applied), len(pg["Masters"][1]), len(pg["PhD"][1]),
+          % (len(bd_students), len(applied), len(pg["Masters"]), len(pg["PhD"]),
              sum(len(v) for v in rows_by_su.values())))
 
 
