@@ -13,7 +13,9 @@ Usage:
   python student_report.py INPUT [INPUT ...] [-o OUTPUT.xlsx] [--year 2026]
 
 INPUT can be .xlsx files or folders (every .xlsx inside is read).
-Writes one workbook with tabs: BDatSci, Honours, Masters, PhD, Notes.
+Writes one workbook with tabs: Overview, BDatSci, Honours, Masters, PhD,
+Modules, Notes. Marks typed into the yellow Mark cells on the Modules tab
+update every status, average and count (all formulas).
 
 Requires: pandas, openpyxl  (pip install pandas openpyxl)
 """
@@ -47,10 +49,10 @@ BDATSCI_ONLY_CANDIDATES = True
 # Honours
 OR3_PREFIX = "55336-3"
 OR2_PREFIX = "55336-2"
-HONOURS_THRESHOLD = 60.0
+HONOURS_THRESHOLD = 60.0                        # unweighted mean of OR3 modules
 # OR modules always shown as columns on the Honours tab (any other OR2/OR3
 # module found in an applicant's records gets a column too)
-HONOURS_OR_MODULES = ["55336-314", "55336-322", "55336-344", "55336-352", "55336-244"]                        # unweighted mean of OR3 modules
+HONOURS_OR_MODULES = ["55336-314", "55336-322", "55336-344", "55336-352", "55336-244"]
 # Which attempt of a repeated module counts towards averages: "latest" or "best"
 REPEAT_ATTEMPT = "latest"
 
@@ -362,66 +364,11 @@ def avg_for_prefix(mods, prefix):
     return avg, len(marks), pending
 
 
-RESULT_ORDER = {"Failed": 0, "Not taken (required)": 1, "Outstanding": 2,
-                "No grade recorded": 3, "Not taken": 4, "Passed": 5}
-
-
-def module_detail(mods, enrolled, current_year, required=(), keep=lambda code: True, prerequisite=True):
-    """`required` modules are listed even if never taken; prerequisite=False labels
-    them plain 'Not taken' (Honours) instead of a failed requirement (BDatSci)."""
-    """One dict per module for a student: result, counting mark, every attempt."""
-    rows = []
-    for code in sorted((set(mods) | set(enrolled) | set(required))):
-        if not keep(code):
-            continue
-        atts = sorted(mods.get(code, []), key=lambda a: (a["year"] or 0, a["order"]))
-        g = graded(atts)
-        enr_years = enrolled.get(code, {}).get("years", set())
-        pending_now = (current_year in enr_years and not graded([a for a in atts if a["year"] == current_year])) \
-            or any(a["mark"] is None and a["year"] == current_year for a in atts)
-        if any(a["mark"] >= PASS_MARK for a in g):
-            result = "Passed"
-        elif pending_now:
-            result = "Outstanding"
-        elif g:
-            result = "Failed"
-        elif code in required and not atts and not enr_years:
-            result = "Not taken (required)" if prerequisite else "Not taken"
-        else:
-            result = "No grade recorded"
-        name = enrolled.get(code, {}).get("name") or next((a["name"] for a in atts if a["name"]), None)
-        years = sorted({a["year"] for a in atts if a["year"]} | {y for y in enr_years if y})
-        rows.append({
-            "Module code": code,
-            "Module": name or (required.get(code) if isinstance(required, dict) else None)
-            or ("Operations Research " + code.split("-", 1)[1] if code.startswith("55336-") else None),
-            "Result": result,
-            "Mark": counting_mark(atts),
-            "Attempts": "; ".join("%s: %s" % (a["year"] or "?", fmt_mark(a["mark"]) if a["mark"] is not None
-                                               else "outstanding") for a in atts) or None,
-            "Year(s)": ", ".join(str(y) for y in years) or None,
-            "Required": "Yes" if prerequisite and code in required else None,
-            "Repeated": "Yes" if len(g) > 1 and (len({a["year"] for a in g}) > 1
-                                                 or any(a["mark"] < PASS_MARK for a in g)) else None,
-        })
-    rows.sort(key=lambda r: (RESULT_ORDER[r["Result"]], r["Module code"]))
-    return rows
-
-
-def grouped_detail(students):
-    """students: list of (header dict, [module dicts]) -> one frame with an _level column."""
-    out = []
-    for head, mods in students:
-        counts = {}
-        for m in mods:
-            counts[m["Result"]] = counts.get(m["Result"], 0) + 1
-        summary = ", ".join("%s %d" % (k, counts[k]) for k in RESULT_ORDER if k in counts)
-        out.append(dict(head, **{"Module": summary or "No module records", "_level": 0}))
-        for m in mods:
-            out.append(dict({"SU Number": head["SU Number"], "Student": head["Student"]}, **m, _level=1))
-    cols = ["SU Number", "Student", "Status", "Module code", "Module", "Result", "Mark",
-            "Attempts", "Year(s)", "Required", "Repeated", "_level"]
-    return pd.DataFrame(out, columns=cols)
+def is_dropped(row):
+    status = str(clean(row.get("Module Status")) or "").lower()
+    if any(w in status for w in DROPPED_STATUS_WORDS):
+        return True
+    return clean(row.get("Unenrolled Date")) is not None
 
 
 def enrolments_by_student(enrol):
@@ -442,125 +389,6 @@ def enrolments_by_student(enrol):
             d["years"].add(y)
     return res
 
-
-# ---------------------------------------------------------------------------
-# BDatSci
-# ---------------------------------------------------------------------------
-
-def is_dropped(row):
-    status = str(clean(row.get("Module Status")) or "").lower()
-    if any(w in status for w in DROPPED_STATUS_WORDS):
-        return True
-    return clean(row.get("Unenrolled Date")) is not None
-
-
-def build_bdatsci(enrol, attempts, current_year, enrolled_by):
-    if enrol.empty:
-        return pd.DataFrame(), pd.DataFrame(), current_year
-    e = enrol.copy()
-    e["su"] = e["SU Number"].map(su_number)
-    e["year"] = e["Academic Term"].map(year_of)
-    e["code"] = e["Module Code/Name"].map(module_code)
-    e["mname"] = e["Module Code/Name"].map(module_name)
-    e["prog"] = e["Program Code/Name"].map(clean).fillna("")
-    e = e[e.su.notna() & e.code.notna()]
-    e = e[~e.apply(is_dropped, axis=1)]
-    bd = e[e.prog.str.contains(BDATSCI_PROGRAMME_KEYWORD, case=False, regex=False)]
-    if current_year is None:
-        current_year = int(bd.year.max()) if bd.year.notna().any() else None
-    cur = bd[bd.year == current_year]
-
-    rows, details = [], {}
-    for su, grp in cur.groupby("su"):
-        mods = attempts.get(su, {})
-        enrolled_now = dict(zip(grp.code, grp.mname))
-        all_enrolled = set(e[e.su == su].code)
-        # Current-year modules = enrolled this year + anything graded this year
-        current_codes = set(enrolled_now)
-        for code, atts in mods.items():
-            if any(a["year"] == current_year for a in atts):
-                current_codes.add(code)
-
-        req_codes = set(BDATSCI_REQUIRED_MODULES)
-        if BDATSCI_ONLY_CANDIDATES and not (req_codes & (all_enrolled | set(mods))):
-            continue
-
-        failed, outstanding, missing = [], [], []
-        req_state = {}
-        for code in sorted(req_codes):
-            atts = mods.get(code, [])
-            passed = any(a["mark"] >= PASS_MARK for a in graded(atts))
-            if passed:
-                req_state[code] = "Passed (%s)" % fmt_mark(max(a["mark"] for a in graded(atts)))
-            elif code in current_codes and not graded([a for a in atts if a["year"] == current_year]):
-                req_state[code] = "Outstanding"
-                outstanding.append(code)
-            elif graded(atts):
-                req_state[code] = "Failed (%s)" % fmt_mark(counting_mark(atts))
-                failed.append(code)
-            else:
-                req_state[code] = "Not taken"
-                missing.append(code)
-
-        for code in sorted(current_codes - req_codes):
-            this_year = [a for a in mods.get(code, []) if a["year"] == current_year]
-            g = graded(this_year)
-            if not g:
-                outstanding.append(code)
-            elif not any(a["mark"] >= PASS_MARK for a in g):
-                failed.append(code)
-
-        if failed or missing:
-            status = "Not eligible"
-        elif outstanding:
-            status = "Provisionally eligible"
-        else:
-            status = "Eligible"
-
-        first = grp.iloc[0]
-        rep = repeated_codes(mods)
-        row = {
-            "Status": status,
-            "SU Number": su,
-            "Surname": clean(first.get("Surname")),
-            "Name": clean(first.get("Student Name")) or clean(first.get("Full Name")),
-            "Email": clean(first.get("Student Email ID")),
-            "Programme": clean(first.get("Program Code/Name")),
-            "Student Status": clean(first.get("Student Status")),
-        }
-        for code, label in BDATSCI_REQUIRED_MODULES.items():
-            row[label] = req_state[code]
-        row.update({
-            "Failed modules": ", ".join(sorted(set(failed))) or None,
-            "Not taken (required)": ", ".join(missing) or None,
-            "Outstanding grades": ", ".join(sorted(set(outstanding))) or None,
-            "Modules this year": len(current_codes),
-            "Repeated modules": ", ".join(rep) or None,
-            "Repeat flag": "Yes" if rep else None,
-        })
-        rows.append(row)
-        details[su] = module_detail(mods, enrolled_by.get(su, {}), current_year,
-                                    required=BDATSCI_REQUIRED_MODULES)
-
-    df = pd.DataFrame(rows)
-    detail = pd.DataFrame()
-    if not df.empty:
-        order = {"Eligible": 0, "Provisionally eligible": 1, "Not eligible": 2}
-        df = df.sort_values(["Status", "Surname", "Name"],
-                            key=lambda s: s.map(order) if s.name == "Status" else s.fillna("").str.lower())
-        detail = grouped_detail([
-            ({"SU Number": r["SU Number"], "Student": " ".join(x for x in (r["Name"], r["Surname"]) if x),
-              "Status": r["Status"]}, details[r["SU Number"]]) for _, r in df.iterrows()])
-    return df, detail, current_year
-
-
-def fmt_mark(m):
-    return ("%g" % m) if m is not None else "-"
-
-
-# ---------------------------------------------------------------------------
-# Applicants
-# ---------------------------------------------------------------------------
 
 def classify(programme):
     p = str(programme or "")
@@ -680,118 +508,6 @@ def applicant_base(r):
     return base
 
 
-def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
-    hons_apps = apps[apps.level == "Honours"] if not apps.empty else apps
-    applied = {}
-    for _, r in hons_apps.iterrows():
-        key = r.su or ("EXT:" + str(r.person))
-        applied.setdefault(key, []).append(r)
-
-    is_or = lambda c: c.startswith(OR2_PREFIX) or c.startswith(OR3_PREFIX)
-    # One column per OR2/OR3 module found in the applicants' records (or enrolments)
-    or_codes = set(HONOURS_OR_MODULES)
-    for key in applied:
-        if not str(key).startswith("EXT:"):
-            or_codes |= {c for c in attempts.get(key, {}) if is_or(c)}
-            or_codes |= {c for c in enrolled_by.get(key, {}) if is_or(c)}
-    or_codes = sorted(or_codes)
-
-    rows = []
-    for key, app_rows in applied.items():
-        su = None if str(key).startswith("EXT:") else key
-        row = person_record(app_rows)
-        row.pop("Applications", None)
-
-        mods = attempts.get(su, {}) if su else {}
-        or3, n3, pend3 = avg_for_prefix(mods, OR3_PREFIX)
-        or2, n2, _ = avg_for_prefix(mods, OR2_PREFIX)
-        both, nb, _ = avg_for_prefix({k: v for k, v in mods.items()
-                                      if k.startswith(OR2_PREFIX) or k.startswith(OR3_PREFIX)}, "")
-        rep = [c for c in repeated_codes(mods) if c.startswith(OR2_PREFIX) or c.startswith(OR3_PREFIX)]
-
-        if su is None:
-            status = "External applicant"
-        elif n3 == 0 and not pend3:
-            status = "No SU grade records"
-        elif n3 == 0:
-            status = "Grades outstanding"
-        elif or3 >= HONOURS_THRESHOLD:
-            status = "Qualifies (provisional)" if pend3 else "Qualifies"
-        else:
-            status = "Below %g%%" % HONOURS_THRESHOLD + (" (provisional)" if pend3 else "")
-
-        row.update({
-            "Status": status,
-            "OR3 average": or3,
-            "OR2 average": or2,
-            "OR2 + OR3 average": both,
-            "OR3 outstanding": ", ".join(pend3) or None,
-            "Repeat flag": "Yes" if rep else None,
-            "Repeated OR modules": ", ".join(rep) or None,
-        })
-        enr = enrolled_by.get(su, {}) if su else {}
-        for code in or_codes:
-            atts = mods.get(code, [])
-            m = counting_mark(atts)
-            if m is not None:
-                row[or_label(code, mods, enr)] = m
-            elif atts or enr.get(code, {}).get("years"):
-                row[or_label(code, mods, enr)] = "Outstanding"
-            else:
-                row[or_label(code, mods, enr)] = None
-        rows.append(row)
-
-    df = pd.DataFrame(rows)
-    if df.empty:
-        return df, pd.DataFrame()
-    order = {"Qualifies": 0, "Qualifies (provisional)": 1, "Grades outstanding": 3,
-             "No SU grade records": 4, "External applicant": 5}
-    df["_g"] = df.Status.map(lambda s: order.get(s, 2))
-    df["_avg"] = -df["OR3 average"].fillna(-1)
-    df = df.sort_values(["_g", "_avg", "Surname"], na_position="last").drop(columns=["_g", "_avg"])
-    df.insert(0, "Rank", range(1, len(df) + 1))
-    module_cols = [c for c in df.columns if c.startswith("OR ")]
-    module_cols.sort(key=lambda c: (not c.startswith("OR 3"), c))   # OR3 modules first
-    lead = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name",
-             "OR3 average"] + [c for c in module_cols if c.startswith("OR 3")] +
-            ["OR2 average"] + [c for c in module_cols if not c.startswith("OR 3")] +
-            ["OR2 + OR3 average", "OR3 outstanding", "Repeat flag", "Repeated OR modules"])
-    df = df[[c for c in lead if c in df.columns] + [c for c in df.columns if c not in lead]]
-    detail = grouped_detail([
-        ({"SU Number": r["SU Number"],
-          "Student": " ".join(str(x) for x in (r.get("First Name"), r.get("Surname")) if clean(x)),
-          "Status": r["Status"]},
-         module_detail(attempts.get(r["SU Number"], {}), enrolled_by.get(r["SU Number"], {}),
-                       current_year, required=HONOURS_OR_MODULES, keep=is_or,
-                       prerequisite=False))
-        for _, r in df.iterrows() if clean(r["SU Number"]) is not None])
-    return df, detail
-
-
-def or_label(code, mods, enrolled):
-    """'55336-314' -> 'OR 314 (55336-314)' for a column heading."""
-    return "OR %s (%s)" % (code.split("-", 1)[1], code)
-
-
-def people_lookup(enrol, grades_df):
-    """{su: {surname, name, email, programme}} from enrolment, else grade roster."""
-    out = {}
-    if not enrol.empty:
-        for _, r in enrol.iterrows():
-            su = su_number(r.get("SU Number"))
-            if su and su not in out:
-                out[su] = {"surname": clean(r.get("Surname")),
-                           "name": clean(r.get("Student Name")) or clean(r.get("Full Name")),
-                           "email": clean(r.get("Student Email ID")),
-                           "programme": clean(r.get("Program Code/Name"))}
-    if not grades_df.empty:
-        for r in grades_df.itertuples(index=False):
-            if r.su not in out:
-                out[r.su] = {"surname": None, "name": r.student_name, "email": None,
-                             "programme": r.programme}
-    return out
-
-
 def build_pg(apps, level, attempts):
     sub = apps[apps.level == level] if not apps.empty else apps
     people = {}
@@ -813,66 +529,455 @@ def build_pg(apps, level, attempts):
     return df
 
 
+def fmt_mark(m):
+    return ("%g" % m) if m is not None else "-"
+
+
 # ---------------------------------------------------------------------------
-# Output
+# Module rows (the editable "Modules" tab every status is calculated from)
 # ---------------------------------------------------------------------------
 
-FILLS = {
-    "Eligible": "C6EFCE", "Qualifies": "C6EFCE",
-    "Provisionally eligible": "FFEB9C", "Qualifies (provisional)": "FFEB9C", "Grades outstanding": "FFEB9C",
-    "Not eligible": "FFC7CE",
-    "No SU grade records": "EDEDED", "External applicant": "DDEBF7",
-    "Passed": "C6EFCE", "Failed": "FFC7CE", "Not taken (required)": "FFC7CE", "Outstanding": "FFEB9C",
-}
+RESULT_ORDER = {"Failed": 0, "Not taken (required)": 1, "Outstanding": 2, "No grade recorded": 3,
+                "Outstanding (year-end)": 4, "Not taken": 5, "Passed": 6}
 
 
-def write_workbook(path, sheets):
-    from openpyxl.styles import Alignment, Font, PatternFill
+def is_year_end(code):
+    """Second-last digit 4-9 (e.g. 55336-344): the mark is only due at year end."""
+    m = re.search(r"-\d(\d)\d$", code or "")
+    return bool(m) and int(m.group(1)) >= 4
+
+
+def is_or(code):
+    return code.startswith(OR2_PREFIX) or code.startswith(OR3_PREFIX)
+
+
+def result_of(mark, no_mark):
+    if mark is None:
+        return no_mark
+    return "Passed" if mark >= PASS_MARK else "Failed"
+
+
+def module_rows(mods, enrolled, current_year, bdatsci, honours):
+    """One row per module for a student. `mark` is the starting value of the
+    editable Mark cell; `no_mark` is the result shown while it is blank."""
+    req = set(BDATSCI_REQUIRED_MODULES) if bdatsci else set()
+    codes = set()
+    if bdatsci:
+        codes |= set(mods) | set(enrolled) | req
+    if honours:
+        codes |= {c for c in set(mods) | set(enrolled) if is_or(c)} | set(HONOURS_OR_MODULES)
+    rows = []
+    for code in codes:
+        atts = sorted(mods.get(code, []), key=lambda a: (a["year"] or 0, a["order"]))
+        enr_years = enrolled.get(code, {}).get("years", set())
+        current = current_year is not None and (
+            current_year in enr_years or any(a["year"] == current_year for a in atts))
+        if current:
+            # Taken this year: only this year's mark counts (an old fail stays in Attempts)
+            mark = counting_mark([a for a in atts if a["year"] == current_year])
+            no_mark = "Outstanding (year-end)" if is_year_end(code) else "Outstanding"
+        else:
+            mark = counting_mark(atts)
+            if atts or enr_years:
+                no_mark = "No grade recorded"
+            else:
+                no_mark = "Not taken (required)" if code in req else "Not taken"
+        g = graded(atts)
+        name = (enrolled.get(code, {}).get("name") or next((a["name"] for a in atts if a["name"]), None)
+                or BDATSCI_REQUIRED_MODULES.get(code)
+                or ("Operations Research " + code.split("-", 1)[1] if code.startswith("55336-") else None))
+        years = sorted({a["year"] for a in atts if a["year"]} | {y for y in enr_years if y})
+        rows.append({
+            "code": code, "name": name, "mark": mark, "no_mark": no_mark,
+            "result": result_of(mark, no_mark),
+            "year_end": "Yes" if is_year_end(code) else None,
+            "bdatsci": ("Required" if code in req else ("Yes" if current else None)) if bdatsci else None,
+            "attempts": "; ".join("%s: %s" % (a["year"] or "?", fmt_mark(a["mark"]) if a["mark"] is not None
+                                               else "outstanding") for a in atts) or None,
+            "years": ", ".join(str(y) for y in years) or None,
+            "repeated": "Yes" if len(g) > 1 and (len({a["year"] for a in g}) > 1
+                                                 or any(a["mark"] < PASS_MARK for a in g)) else None,
+        })
+    rows.sort(key=lambda r: (RESULT_ORDER[r["result"]], r["code"]))
+    return rows
+
+
+# Python versions of the sheet formulas, used only for the initial sort order
+
+def bdatsci_status(rows):
+    c = lambda res: sum(1 for r in rows if r["bdatsci"] and r["result"] == res)
+    if c("Failed") + c("Not taken (required)"):
+        return "Not eligible"
+    if c("Outstanding") + c("No grade recorded"):
+        return "Provisionally eligible (grades outstanding)"
+    if c("Outstanding (year-end)"):
+        return "Provisionally eligible (year-end grades)"
+    return "Eligible"
+
+
+def honours_stats(rows):
+    or3 = [r for r in rows if r["code"].startswith(OR3_PREFIX)]
+    marks = [r["mark"] for r in or3 if r["mark"] is not None]
+    ye = sum(1 for r in or3 if r["result"] == "Outstanding (year-end)")
+    other = sum(1 for r in or3 if r["result"] in ("Outstanding", "No grade recorded"))
+    avg = sum(marks) / len(marks) if marks else None
+    if avg is None:
+        status = "Grades outstanding" if ye + other else "No SU grade records"
+    else:
+        status = ("Qualifies" if avg >= HONOURS_THRESHOLD else "Below %g%%" % HONOURS_THRESHOLD) + \
+            (" (provisional: grades outstanding)" if other else " (provisional: year-end grades)" if ye else "")
+    return avg, status
+
+
+# ---------------------------------------------------------------------------
+# Selecting students
+# ---------------------------------------------------------------------------
+
+def bdatsci_students(enrol, attempts, current_year):
+    """[(su, info dict)] for current-year BDatSci students (final-year candidates)."""
+    if enrol.empty:
+        return [], current_year
+    e = enrol.copy()
+    e["su"] = e["SU Number"].map(su_number)
+    e["year"] = e["Academic Term"].map(year_of)
+    e["code"] = e["Module Code/Name"].map(module_code)
+    e["prog"] = e["Program Code/Name"].map(clean).fillna("")
+    e = e[e.su.notna() & e.code.notna()]
+    e = e[~e.apply(is_dropped, axis=1)]
+    bd = e[e.prog.str.contains(BDATSCI_PROGRAMME_KEYWORD, case=False, regex=False)]
+    if current_year is None:
+        current_year = int(bd.year.max()) if bd.year.notna().any() else None
+    out = []
+    req = set(BDATSCI_REQUIRED_MODULES)
+    for su, grp in bd[bd.year == current_year].groupby("su"):
+        if BDATSCI_ONLY_CANDIDATES and not (req & (set(e[e.su == su].code) | set(attempts.get(su, {})))):
+            continue
+        f = grp.iloc[0]
+        out.append((su, {"Surname": clean(f.get("Surname")),
+                         "Name": clean(f.get("Student Name")) or clean(f.get("Full Name")),
+                         "Email": clean(f.get("Student Email ID")),
+                         "Programme": clean(f.get("Program Code/Name")),
+                         "Student Status": clean(f.get("Student Status"))}))
+    return out, current_year
+
+
+def honours_applicants(apps):
+    """{key: [application rows]}; key is the SU Number, or EXT:<person> for externals."""
+    out = {}
+    if apps.empty:
+        return out
+    for _, r in apps[apps.level == "Honours"].iterrows():
+        out.setdefault(r.su or "EXT:" + str(r.person), []).append(r)
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Workbook (formulas, so marks typed into the Modules tab update everything)
+# ---------------------------------------------------------------------------
+
+MOD = "Modules"
+MOD_COLS = ["SU Number", "Student", "Summary", "Module code", "Module", "Mark", "Result",
+            "Year-end module", "Counts for BDatSci", "Attempts", "Year(s)", "Repeated",
+            "Changed by hand", "Key", "If no mark", "Original mark"]
+# Modules column letters
+M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY = "A", "D", "F", "G", "I", "M", "N"
+
+GREEN, YELLOW, RED, GREY, BLUE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7"
+# First match wins (case-insensitive "contains")
+COLOUR_RULES = [("not eligible", RED), ("failed", RED), ("not taken (required)", RED), ("below", RED),
+                ("provisional", YELLOW), ("outstanding", YELLOW), ("no grade recorded", YELLOW),
+                ("no su grade", GREY), ("not taken", GREY), ("external", BLUE),
+                ("eligible", GREEN), ("qualifies", GREEN), ("passed", GREEN)]
+
+
+def su_cell(su):
+    return int(su) if isinstance(su, str) and su.isdigit() else su
+
+
+def mref(col):
+    return "%s!$%s:$%s" % (MOD, col, col)
+
+
+def lookup(key_expr, col):
+    return "INDEX(%s,MATCH(%s,%s,0))" % (mref(col), key_expr, mref(M_KEY))
+
+
+def cnt(su_ref, *crit):
+    parts = [mref(M_SU), su_ref]
+    for col, val in crit:
+        parts += [mref(col), '"%s"' % val]
+    return "COUNTIFS(%s)" % ",".join(parts)
+
+
+class Sheet:
+    def __init__(self, wb, title, headers):
+        from openpyxl.styles import Alignment, Font, PatternFill
+        self.ws = wb.create_sheet(title)
+        self.headers = list(headers)
+        self.ws.append(self.headers)
+        for c in self.ws[1]:
+            c.font = Font(bold=True, color="FFFFFF")
+            c.fill = PatternFill("solid", fgColor="365B52")
+            c.alignment = Alignment(wrap_text=True, vertical="top")
+        self.ws.freeze_panes = "A2"
+
+    def col(self, header):
+        from openpyxl.utils import get_column_letter
+        return get_column_letter(self.headers.index(header) + 1)
+
+    @property
+    def next_row(self):
+        return self.ws.max_row + 1
+
+    def add(self, values):
+        self.ws.append([values.get(h) for h in self.headers] if isinstance(values, dict) else values)
+
+    def finish(self, colour_cols=(), hide=(), widths=None, filter_=True):
+        from openpyxl.formatting.rule import FormulaRule
+        from openpyxl.styles import PatternFill
+        from openpyxl.utils import get_column_letter
+        ws = self.ws
+        last = max(ws.max_row, 2)
+        for i, h in enumerate(self.headers, start=1):
+            letter = get_column_letter(i)
+            vals = [len(str(c.value)) for c in ws[letter][1:400]
+                    if c.value is not None and not str(c.value).startswith("=")]
+            w = (widths or {}).get(h) or min(max([len(h)] + vals) + 2, 45)
+            ws.column_dimensions[letter].width = max(w, 9)
+            if h in hide:
+                ws.column_dimensions[letter].hidden = True
+        for h in colour_cols:
+            letter = self.col(h)
+            rng = "%s2:%s%d" % (letter, letter, last)
+            for text, colour in COLOUR_RULES:
+                ws.conditional_formatting.add(rng, FormulaRule(
+                    formula=['ISNUMBER(SEARCH("%s",%s2))' % (text, letter)], stopIfTrue=True,
+                    fill=PatternFill("solid", fgColor=colour, bgColor=colour)))
+            ws.conditional_formatting.add(rng, FormulaRule(
+                formula=["AND(ISNUMBER(%s2),%s2<%g)" % (letter, letter, PASS_MARK)], stopIfTrue=True,
+                fill=PatternFill("solid", fgColor=RED, bgColor=RED)))
+        if filter_:
+            ws.auto_filter.ref = "A1:%s%d" % (get_column_letter(len(self.headers)), last)
+
+
+def write_modules(wb, students):
+    """students: [(su, name, lists text, rows)]. Returns nothing; formulas elsewhere use it."""
+    from openpyxl.styles import Font, PatternFill
+    from openpyxl.worksheet.datavalidation import DataValidation
+    sh = Sheet(wb, MOD, MOD_COLS)
+    ws = sh.ws
+    ws.sheet_properties.outlinePr.summaryBelow = False
+    input_fill = PatternFill("solid", fgColor="FFF8DC")
+    head_fill = PatternFill("solid", fgColor="E7EEEC")
+    dv = DataValidation(type="decimal", operator="between", formula1="0", formula2="100", allow_blank=True,
+                        showErrorMessage=True, errorTitle="Mark",
+                        error="Enter a percentage from 0 to 100, or leave blank.")
+    ws.add_data_validation(dv)
+    for su, name, lists, rows in students:
+        r = sh.next_row
+        a = "$A%d" % r
+        sh.add({"SU Number": su_cell(su), "Student": name, "Module": lists,
+                "Summary": '="Passed "&%s&", failed "&%s&", outstanding "&%s' % (
+                    cnt(a, (M_RES, "Passed")), cnt(a, (M_RES, "Failed")), cnt(a, (M_RES, "Outstanding*")))})
+        for c in ws[r]:
+            c.font = Font(bold=True)
+            c.fill = head_fill
+        for m in rows:
+            r = sh.next_row
+            sh.add({"SU Number": su_cell(su), "Student": name, "Module code": m["code"], "Module": m["name"],
+                    "Mark": m["mark"],
+                    "Result": '=IF(ISNUMBER(F{r}),IF(F{r}>={p},"Passed","Failed"),O{r})'.format(r=r, p=PASS_MARK),
+                    "Year-end module": m["year_end"], "Counts for BDatSci": m["bdatsci"],
+                    "Attempts": m["attempts"], "Year(s)": m["years"], "Repeated": m["repeated"],
+                    "Changed by hand": '=IF(F{r}&""=P{r}&"","","Yes")'.format(r=r),
+                    "Key": "%s|%s" % (su, m["code"]), "If no mark": m["no_mark"], "Original mark": m["mark"]})
+            ws.row_dimensions[r].outline_level = 1
+            ws["F%d" % r].fill = input_fill
+            dv.add("F%d" % r)
+    sh.finish(colour_cols=["Result"], hide=["Key", "If no mark", "Original mark"],
+              widths={"Summary": 34, "Module": 30})
+
+
+def write_bdatsci(wb, students, rows_by_su):
+    req = list(BDATSCI_REQUIRED_MODULES.items())
+    headers = (["Status", "SU Number", "Surname", "Name", "Email", "Programme", "Student Status"]
+               + [label for _, label in req]
+               + ["Failed", "Required not taken", "Outstanding (year-end)", "Outstanding (other)",
+                  "Marks changed by hand", "Repeated modules"])
+    sh = Sheet(wb, "BDatSci", headers)
+    order = {"Eligible": 0, "Provisionally eligible (year-end grades)": 1,
+             "Provisionally eligible (grades outstanding)": 2, "Not eligible": 3}
+    students = sorted(students, key=lambda s: (order[bdatsci_status(rows_by_su[s[0]])],
+                                               (s[1]["Surname"] or "").lower(), (s[1]["Name"] or "").lower()))
+    L = {h: sh.col(h) for h in headers}
+    for su, info in students:
+        r = sh.next_row
+        su_ref = "$B%d" % r
+        row = dict(info, **{"SU Number": su_cell(su)})
+        for code, label in req:
+            k = '%s&"|%s"' % (su_ref, code)
+            row[label] = '=IFERROR(%s&IF(ISNUMBER(%s)," ("&%s&")",""),"Not taken")' % (
+                lookup(k, M_RES), lookup(k, M_MARK), lookup(k, M_MARK))
+        row["Failed"] = "=" + cnt(su_ref, (M_BD, "<>"), (M_RES, "Failed"))
+        row["Required not taken"] = "=" + cnt(su_ref, (M_RES, "Not taken (required)"))
+        row["Outstanding (year-end)"] = "=" + cnt(su_ref, (M_BD, "<>"), (M_RES, "Outstanding (year-end)"))
+        row["Outstanding (other)"] = "=%s+%s" % (cnt(su_ref, (M_BD, "<>"), (M_RES, "Outstanding")),
+                                                 cnt(su_ref, (M_BD, "<>"), (M_RES, "No grade recorded")))
+        row["Marks changed by hand"] = "=" + cnt(su_ref, (M_HAND, "Yes"))
+        rep = [m["code"] for m in rows_by_su[su] if m["repeated"]]
+        row["Repeated modules"] = ", ".join(rep) or None
+        row["Status"] = ('=IF({f}{r}+{n}{r}>0,"Not eligible",IF({o}{r}>0,"Provisionally eligible (grades '
+                         'outstanding)",IF({y}{r}>0,"Provisionally eligible (year-end grades)","Eligible")))'
+                         ).format(f=L["Failed"], n=L["Required not taken"], o=L["Outstanding (other)"],
+                                  y=L["Outstanding (year-end)"], r=r)
+        sh.add(row)
+    sh.finish(colour_cols=["Status"] + [label for _, label in req],
+              widths={"Status": 40, "Programme": 30})
+
+
+def write_honours(wb, applied, rows_by_su):
     from openpyxl.utils import get_column_letter
+    codes = set(HONOURS_OR_MODULES)
+    for key in applied:
+        codes |= {m["code"] for m in rows_by_su.get(key, []) if is_or(m["code"])}
+    or3 = sorted(c for c in codes if c.startswith(OR3_PREFIX))
+    or2 = sorted(c for c in codes if c.startswith(OR2_PREFIX))
+    label = lambda c: "OR %s (%s)" % (c.split("-", 1)[1], c)
+    built = []
+    for key, app_rows in applied.items():
+        su = None if str(key).startswith("EXT:") else key
+        info = person_record(app_rows)
+        info.pop("Applications", None)
+        if su:
+            avg, status = honours_stats(rows_by_su[su])
+        else:
+            avg, status = None, "External applicant"
+        built.append((su, info, avg, status))
+    group = lambda s: (0 if s.startswith("Qualifies") else 1 if s.startswith("Below") else
+                       2 if s == "Grades outstanding" else 3 if s.startswith("No SU") else 4)
+    built.sort(key=lambda b: (group(b[3]), -(b[2] or 0), (b[1].get("Surname") or "").lower()))
 
-    with pd.ExcelWriter(path, engine="openpyxl") as xw:
-        for name, df in sheets.items():
-            if df is None or df.empty:
-                df = pd.DataFrame({"Info": ["No records found for this tab."]})
-            levels = None
-            if "_level" in df.columns:
-                levels = list(df["_level"])
-                df = df.drop(columns="_level")
-            if "SU Number" in df.columns:
-                df = df.copy()
-                df["SU Number"] = [int(v) if isinstance(v, str) and v.isdigit() else v
-                                   for v in df["SU Number"]]
-            df.to_excel(xw, sheet_name=name, index=False)
-            ws = xw.sheets[name]
-            ws.freeze_panes = "A2"
-            ws.auto_filter.ref = ws.dimensions
-            for c in ws[1]:
-                c.font = Font(bold=True, color="FFFFFF")
-                c.fill = PatternFill("solid", fgColor="365B52")
-                c.alignment = Alignment(wrap_text=True, vertical="top")
-            for i, col in enumerate(df.columns, start=1):
-                width = max([len(str(col))] + [len(str(v)) for v in df[col].head(500) if v is not None])
-                ws.column_dimensions[get_column_letter(i)].width = min(max(width + 2, 8), 60)
-            if levels:
-                # Student line in bold, its module lines grouped under it (+/- to collapse)
-                ws.sheet_properties.outlinePr.summaryBelow = False
-                for i, lvl in enumerate(levels, start=2):
-                    if lvl:
-                        ws.row_dimensions[i].outline_level = 1
-                    else:
-                        for c in ws[i]:
-                            c.font = Font(bold=True)
-                            c.fill = PatternFill("solid", fgColor="E7EEEC")
-            for col_name in ("Status", "Result"):
-                if col_name not in df.columns:
-                    continue
-                sc = list(df.columns).index(col_name) + 1
-                for row in ws.iter_rows(min_row=2, min_col=sc, max_col=sc):
-                    for c in row:
-                        key = "Below" if str(c.value).startswith("Below") else c.value
-                        color = FILLS.get(key, "FFC7CE" if key == "Below" else None)
-                        if color:
-                            c.fill = PatternFill("solid", fgColor=color)
+    info_cols = [c for c in (built[0][1].keys() if built else []) if c not in
+                 ("Internal / External", "SU Number", "Surname", "First Name")]
+    headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name", "OR3 average"]
+               + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
+               + ["OR2 + OR3 average", "Repeated OR modules"] + info_cols
+               + ["_or3_graded", "_or3_yearend", "_or3_other"])
+    sh = Sheet(wb, "Honours", headers)
+    L = {h: sh.col(h) for h in headers}
+    for su, info, _, status in built:
+        r = sh.next_row
+        row = dict(info, **{"SU Number": su_cell(su)})
+        if su:
+            s = "$D%d" % r
+            for c in or3 + or2:
+                k = '%s&"|%s"' % (s, c)
+                row[label(c)] = '=IFERROR(IF(ISNUMBER(%s),%s,%s),"")' % (
+                    lookup(k, M_MARK), lookup(k, M_MARK), lookup(k, M_RES))
+            avg = lambda p: 'IFERROR(AVERAGEIFS(%s,%s,%s,%s,"%s*"),"")' % (
+                mref(M_MARK), mref(M_SU), s, mref(M_CODE), p)
+            sm = lambda p: 'SUMIFS(%s,%s,%s,%s,"%s*")' % (mref(M_MARK), mref(M_SU), s, mref(M_CODE), p)
+            n = lambda p: cnt(s, (M_CODE, p + "*"), (M_MARK, ">=0"))
+            row["OR3 average"] = "=" + avg(OR3_PREFIX)
+            row["OR2 average"] = "=" + avg(OR2_PREFIX)
+            row["OR2 + OR3 average"] = '=IFERROR((%s+%s)/(%s+%s),"")' % (
+                sm(OR2_PREFIX), sm(OR3_PREFIX), n(OR2_PREFIX), n(OR3_PREFIX))
+            row["_or3_graded"] = "=" + n(OR3_PREFIX)
+            row["_or3_yearend"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Outstanding (year-end)"))
+            row["_or3_other"] = "=%s+%s" % (cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Outstanding")),
+                                            cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "No grade recorded")))
+            g, ye, ot, av = (L["_or3_graded"] + str(r), L["_or3_yearend"] + str(r),
+                             L["_or3_other"] + str(r), L["OR3 average"] + str(r))
+            row["Status"] = ('=IF({g}=0,IF({ye}+{ot}>0,"Grades outstanding","No SU grade records"),'
+                             'IF({av}>={t},"Qualifies","Below {t:g}%")&IF({ot}>0," (provisional: grades '
+                             'outstanding)",IF({ye}>0," (provisional: year-end grades)","")))'
+                             ).format(g=g, ye=ye, ot=ot, av=av, t=HONOURS_THRESHOLD)
+            row["Rank"] = '=IF(ISNUMBER({a}),COUNTIF(${c}:${c},">"&{a})+1,"")'.format(
+                a=av, c=L["OR3 average"])
+            rep = [m["code"] for m in rows_by_su[su] if m["repeated"] and is_or(m["code"])]
+            row["Repeated OR modules"] = ", ".join(rep) or None
+        else:
+            row["Status"] = status
+        sh.add(row)
+    for h in headers:
+        if h.endswith("average"):
+            for cell in sh.ws[L[h]][1:]:
+                cell.number_format = "0.00"
+    sh.finish(colour_cols=["Status"] + [label(c) for c in or3 + or2],
+              hide=["_or3_graded", "_or3_yearend", "_or3_other"], widths={"Status": 44})
+
+
+def write_frame(wb, title, df):
+    if df is None or df.empty:
+        df = pd.DataFrame({"Info": ["No records found for this tab."]})
+    sh = Sheet(wb, title, list(df.columns))
+    for rec in df.to_dict("records"):
+        sh.add({k: (su_cell(v) if k == "SU Number" else (None if v is None or (isinstance(v, float)
+                                                                                and pd.isna(v)) else v))
+                for k, v in rec.items()})
+    sh.finish()
+    return sh
+
+
+def write_overview(wb, year, pg_sheets):
+    from openpyxl.styles import Font, PatternFill
+    ws = wb.create_sheet("Overview", 0)
+    ws.column_dimensions["A"].width = 52
+    ws.column_dimensions["B"].width = 12
+    ws.append(["Student report overview", None])
+    ws["A1"].font = Font(bold=True, size=14)
+    ws.append(["Academic year %s. Counts update when marks are entered on the Modules tab." % year])
+    ws["A2"].font = Font(italic=True, color="666666")
+
+    def section(title, items):
+        ws.append([])
+        ws.append([title, "Count"])
+        for c in ws[ws.max_row]:
+            c.font = Font(bold=True, color="FFFFFF")
+            c.fill = PatternFill("solid", fgColor="365B52")
+        for label, formula, indent in items:
+            ws.append([("    " if indent else "") + label, formula])
+            if not indent:
+                ws.cell(ws.max_row, 1).font = Font(bold=True)
+
+    ci = lambda sheet, col, val: '=COUNTIF(%s!$%s:$%s,"%s")' % (sheet, col, col, val)
+    section("BDatSci: continuing to final year", [
+        ("Eligible", ci("BDatSci", "A", "Eligible"), False),
+        ("Provisionally eligible", '=COUNTIF(BDatSci!$A:$A,"Provisionally*")', False),
+        ("year-end grades outstanding only", ci("BDatSci", "A", "Provisionally eligible (year-end grades)"), True),
+        ("other grades outstanding", ci("BDatSci", "A", "Provisionally eligible (grades outstanding)"), True),
+        ("Not eligible", ci("BDatSci", "A", "Not eligible"), False),
+        ("Total listed", "=COUNTA(BDatSci!$B:$B)-1", False)])
+    q = lambda v: ci("Honours", "B", v)
+    section("Honours applicants (OR3 average >= %g%%)" % HONOURS_THRESHOLD, [
+        ("Qualify", '=COUNTIF(Honours!$B:$B,"Qualifies*")', False),
+        ("confirmed", q("Qualifies"), True),
+        ("provisional: year-end grades outstanding", q("Qualifies (provisional: year-end grades)"), True),
+        ("provisional: other grades outstanding", q("Qualifies (provisional: grades outstanding)"), True),
+        ("Below %g%%" % HONOURS_THRESHOLD, '=COUNTIF(Honours!$B:$B,"Below*")', False),
+        ("of which provisional", '=COUNTIF(Honours!$B:$B,"Below*provisional*")', True),
+        ("All OR3 grades outstanding", q("Grades outstanding"), False),
+        ("Internal, no SU grade records", q("No SU grade records"), False),
+        ("External applicants", q("External applicant"), False),
+        ("Total applicants", "=COUNTA(Honours!$B:$B)-1", False)])
+    for title, (sh, df) in pg_sheets.items():
+        if df is None or df.empty:
+            section(title + " applicants", [("Total applicants", 0, False)])
+            continue
+        io = sh.col("Internal / External")
+        items = [("Total applicants", "=COUNTA(%s!$%s:$%s)-1" % (sh.ws.title, io, io), False),
+                 ("Internal (SU number)", ci(sh.ws.title, io, "Internal"), True),
+                 ("External", ci(sh.ws.title, io, "External"), True)]
+        if "Eligibility Status" in df.columns:
+            ec = sh.col("Eligibility Status")
+            vals = sorted({str(v) for v in df["Eligibility Status"] if clean(v) is not None})
+            if vals:
+                items.append(("By Program Eligibility Status", None, False))
+                items += [(v, ci(sh.ws.title, ec, v), True) for v in vals]
+            else:
+                items.append(("No Program Eligibility Status in the report", None, False))
+        section(title + " applicants", items)
+    ws["A1"].font = Font(bold=True, size=14)
 
 
 def main():
@@ -889,48 +994,71 @@ def main():
     grades = normalise_grades(grades_raw)
     attempts = attempts_by_student(grades)
     enrolled_by = enrolments_by_student(enrol)
-    bdat, bdat_detail, year = build_bdatsci(enrol, attempts, args.year, enrolled_by)
+    bd_students, year = bdatsci_students(enrol, attempts, args.year)
     if year is None and not grades.empty and grades.year.notna().any():
         year = int(grades.year.max())
     apps = prepare_applicants(apps_raw)
-    hons, hons_detail = build_honours(apps, attempts, grades, year, people_lookup(enrol, grades), enrolled_by)
-    masters = build_pg(apps, "Masters", attempts)
-    phd = build_pg(apps, "PhD", attempts)
+    applied = honours_applicants(apps)
 
+    # Every student on the BDatSci or Honours tab gets one block on the Modules tab
+    bd_set = {su for su, _ in bd_students}
+    hons_set = {k for k in applied if not str(k).startswith("EXT:")}
+    names = {su: " ".join(x for x in (i["Name"], i["Surname"]) if x) for su, i in bd_students}
+    for su in hons_set:
+        r = applied[su][-1]
+        names.setdefault(su, " ".join(str(x) for x in (clean(r.get("First Name")), clean(r.get("Surname"))) if x))
+    rows_by_su = {su: module_rows(attempts.get(su, {}), enrolled_by.get(su, {}), year,
+                                  su in bd_set, su in hons_set) for su in bd_set | hons_set}
+
+    from openpyxl import Workbook
+    wb = Workbook()
+    wb.remove(wb.active)
+    write_bdatsci(wb, bd_students, rows_by_su)
+    write_honours(wb, applied, rows_by_su)
+    pg = {}
+    for level in ("Masters", "PhD"):
+        df = build_pg(apps, level, attempts)
+        pg[level] = (write_frame(wb, level, df), df)
     other = apps[apps.level == "Other"] if not apps.empty else apps
+    if not other.empty:
+        df = build_pg(other, "Other", attempts)
+        pg["Other"] = (write_frame(wb, "Other applications", df), df)
+    order = sorted(rows_by_su, key=lambda s: (s not in bd_set, names.get(s, "").lower()))
+    write_modules(wb, [(su, names.get(su), "On: " + ", ".join(
+        x for x, on in (("BDatSci", su in bd_set), ("Honours", su in hons_set)) if on), rows_by_su[su])
+        for su in order])
+    write_overview(wb, year, pg)
+
     notes = [("Generated", date.today().isoformat()),
              ("Current academic year", year),
+             ("Entering marks", "Type a mark (0-100) in the yellow Mark cells on the Modules tab. Results, "
+                                "statuses, averages and the Overview update automatically. 'Changed by hand' "
+                                "marks every mark that differs from the export."),
              ("Pass mark", PASS_MARK),
-             ("BDatSci required modules", ", ".join("%s (%s)" % kv for kv in BDATSCI_REQUIRED_MODULES.items())),
-             ("BDatSci rule", "Required modules passed (any year) or enrolled now with grade outstanding; "
-                              "every other module this year passed. Outstanding grades -> Provisionally eligible."),
-             ("Honours rule", "Unweighted mean of %s* modules >= %g%%. Repeated module counts its %s attempt."
-              % (OR3_PREFIX, HONOURS_THRESHOLD, REPEAT_ATTEMPT)),
-             ("Honours list", "Honours applicants only, ranked by OR3 average; no-record and external "
-                              "applicants at the bottom. One column per OR module (mark that counts, "
-                              "or 'Outstanding')."),
-             ("Repeat flag", "Module graded more than once (across years, or after a fail)."),
-             ("Module tabs", "One bold line per student, then every module with its result, counting "
-                             "mark and all attempts. Use the +/- in the margin to collapse a student."),
-             ("Applications", "Rows split over several lines (merged cells) are combined; one row per "
-                              "person per tab, with every programme applied for listed."),
-             ("Unclassified applications", len(other))]
-    notes_df = pd.DataFrame(notes, columns=["Item", "Value"])
-    files_df = pd.DataFrame(log, columns=["File", "Sheet", "Result"])
-    notes_df = pd.concat([notes_df, pd.DataFrame([("", "")], columns=["Item", "Value"]),
-                          files_df.rename(columns={"File": "Item", "Result": "Value"})[["Item", "Value"]]
-                          .assign(Item=files_df.File + " [" + files_df.Sheet.astype(str) + "]")],
-                         ignore_index=True)
+             ("Year-end modules", "Module codes whose second-last digit is 4-9 (e.g. 55336-344). A missing "
+                                  "mark there is expected: 'Outstanding (year-end)', counted as provisional."),
+             ("BDatSci rule", "OR 314, 344 and 352 passed (any year) or taken this year with the mark "
+                              "outstanding; every other module this year passed. Provisional when marks "
+                              "are outstanding (year-end only, or other)."),
+             ("Honours rule", "Honours applicants only. Unweighted mean of all %s* modules >= %g%%. "
+                              "Columns always shown: %s." % (OR3_PREFIX, HONOURS_THRESHOLD,
+                                                             ", ".join(HONOURS_OR_MODULES))),
+             ("Repeated modules", "A module enrolled this year counts only this year's mark; otherwise the "
+                                  "%s attempt counts. All attempts are listed on the Modules tab." % REPEAT_ATTEMPT),
+             ("Row order", "Rows are sorted when the report is generated; use the filter arrows to "
+                           "re-sort after entering marks."),
+             ("", "")] + [("%s [%s]" % (f, s), res) for f, s, res in log]
+    sh = Sheet(wb, "Notes", ["Item", "Value"])
+    for item in notes:
+        sh.add(list(item))
+    sh.finish(widths={"Item": 40, "Value": 100}, filter_=False)
 
-    sheets = {"BDatSci": bdat, "BDatSci modules": bdat_detail, "Honours": hons,
-              "Honours OR modules": hons_detail, "Masters": masters, "PhD": phd, "Notes": notes_df}
-    if not other.empty:
-        sheets["Other applications"] = build_pg(other.assign(level="Other"), "Other", attempts)
-    write_workbook(args.output, sheets)
-
+    wb.calculation.fullCalcOnLoad = True
+    wb.save(args.output)
     print("Wrote %s" % args.output)
-    for name, df in sheets.items():
-        print("  %-20s %d rows" % (name, 0 if df is None else len(df)))
+    print("  BDatSci students: %d, Honours applicants: %d, Masters: %d, PhD: %d, module rows: %d"
+          % (len(bd_students), len(applied), len(pg["Masters"][1]), len(pg["PhD"][1]),
+             sum(len(v) for v in rows_by_su.values())))
 
 
 if __name__ == "__main__":
