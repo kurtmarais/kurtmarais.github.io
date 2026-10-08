@@ -81,10 +81,11 @@ BDATSCI_REQUIRED_MODULES = {                    # must be passed (any year) or
 # records (enrolled or graded). False = list every BDatSci student registered
 # in the current year, including first/second years.
 BDATSCI_ONLY_CANDIDATES = True
-# Students already in their final year are left out: this year's enrolment is in
-# this semester of study or later ("Semester 7", "Semester 8"). Without semester
-# information, mostly level-4 modules (e.g. 55336-4xx) this year counts instead.
-FINAL_YEAR_FIRST_SEMESTER = 7
+# Students already in their final year are left out: most of this year's modules
+# are at this level (first digit of the module number, e.g. 55336-414 is level 4).
+# The enrolment 'Semester' is not used: it counts semesters since first
+# registration, so a student who repeated a year shows a final-year semester.
+FINAL_YEAR_MODULE_LEVEL = 4
 
 # Honours
 OR3_PREFIX = "55336-3"
@@ -854,17 +855,17 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
     cur_e = bd[bd.year == current_year] if len(bd) else bd
     for su in list(info):
         rows_ = cur_e[cur_e.su == su] if len(cur_e) else cur_e
-        sems = [x for x in (rows_["Semester"].map(sem_num) if len(rows_) and "Semester" in rows_ else []) if x]
-        if sems:
-            is_final = max(sems) >= FINAL_YEAR_FIRST_SEMESTER
-        else:
-            lv = [int(c.split("-")[1][0]) for c in (rows_.code if len(rows_) else []) if re.match(r"\d+-\d{3}$", c)]
-            is_final = bool(lv) and sum(1 for x in lv if x == 4) > sum(1 for x in lv if x == 3)
-        if is_final:
-            final.add(su)
+        codes_ = set(rows_.code) if len(rows_) else set()
+        lv = [int(c.split("-")[1][0]) for c in codes_ if re.match(r"\d+-\d{3}$", c)]
+        top = sum(1 for x in lv if x == FINAL_YEAR_MODULE_LEVEL)
+        below = sum(1 for x in lv if x == FINAL_YEAR_MODULE_LEVEL - 1)
+        if top > below:
+            final.add((su, top, below))
             del info[su]
-    diag.append("Left out as already in their final year (Semester %d+ this year): %d"
-                % (FINAL_YEAR_FIRST_SEMESTER, len(final)))
+    diag.append("Left out as already in their final year (more level-%d than level-%d modules this "
+                "year): %d" % (FINAL_YEAR_MODULE_LEVEL, FINAL_YEAR_MODULE_LEVEL - 1, len(final)))
+    if final:
+        diag.append("  Left out: " + ", ".join("%s (%d vs %d)" % f for f in sorted(final)))
 
     req = set(BDATSCI_REQUIRED_MODULES)
     out = []
@@ -1379,8 +1380,8 @@ def main():
                                   "Both are highlighted yellow and don't affect eligibility."),
              ("BDatSci rule", "Eligible = no failed module and OR 314, 344 and 352 passed or being taken. "
                               "Outstanding marks don't change eligibility; they are highlighted yellow. "
-                              "Students already in their final year (Semester %d+) are left out."
-                              % FINAL_YEAR_FIRST_SEMESTER),
+                              "Students already in their final year (mostly level-%d modules this "
+                              "year) are left out." % FINAL_YEAR_MODULE_LEVEL),
              ("Honours rule", "Honours applicants only; OR modules only. Qualifies unless an OR module "
                               "is failed or the unweighted mean of the %s* marks so far is below %g%% "
                               "(no marks yet still qualifies; outstanding marks are highlighted). "
