@@ -681,28 +681,20 @@ def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
         key = r.su or ("EXT:" + str(r.person))
         applied.setdefault(key, []).append(r)
 
-    # Internal students with OR3 activity this year, applied or not. BDatSci
-    # students are left out unless they applied (they go on to the final year).
-    candidates = set()
-    if not grades_df.empty and current_year is not None:
-        cur = grades_df[(grades_df.year == current_year) & grades_df.code.str.startswith(OR3_PREFIX)]
-        cur = cur[~cur.programme.fillna("").str.contains(BDATSCI_PROGRAMME_KEYWORD, case=False, regex=False)]
-        candidates = set(cur.su)
-    keys = set(applied) | candidates
+    is_or = lambda c: c.startswith(OR2_PREFIX) or c.startswith(OR3_PREFIX)
+    # One column per OR2/OR3 module found in the applicants' records (or enrolments)
+    or_codes = set()
+    for key in applied:
+        if not str(key).startswith("EXT:"):
+            or_codes |= {c for c in attempts.get(key, {}) if is_or(c)}
+            or_codes |= {c for c in enrolled_by.get(key, {}) if is_or(c)}
+    or_codes = sorted(or_codes)
 
     rows = []
-    for key in keys:
-        app_rows = applied.get(key, [])
-        r = app_rows[-1] if app_rows else None
+    for key, app_rows in applied.items():
         su = None if str(key).startswith("EXT:") else key
-        if r is not None:
-            row = person_record(app_rows)
-        else:
-            p = people.get(su, {})
-            row = {"Internal / External": "Internal", "SU Number": su,
-                   "Surname": p.get("surname"), "First Name": p.get("name"),
-                   "Email": p.get("email"), "Current programme": p.get("programme")}
-        row["Applied for Honours"] = "Yes" if app_rows else "No"
+        row = person_record(app_rows)
+        row.pop("Applications", None)
 
         mods = attempts.get(su, {}) if su else {}
         or3, n3, pend3 = avg_for_prefix(mods, OR3_PREFIX)
@@ -724,13 +716,23 @@ def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
 
         row.update({
             "Status": status,
-            "OR3 average": or3, "OR3 modules graded": n3,
-            "OR3 outstanding": ", ".join(pend3) or None,
-            "OR2 average": or2, "OR2 modules graded": n2,
+            "OR3 average": or3,
+            "OR2 average": or2,
             "OR2 + OR3 average": both,
-            "Repeated OR modules": ", ".join(rep) or None,
+            "OR3 outstanding": ", ".join(pend3) or None,
             "Repeat flag": "Yes" if rep else None,
+            "Repeated OR modules": ", ".join(rep) or None,
         })
+        enr = enrolled_by.get(su, {}) if su else {}
+        for code in or_codes:
+            atts = mods.get(code, [])
+            m = counting_mark(atts)
+            if m is not None:
+                row[or_label(code, mods, enr)] = m
+            elif atts or enr.get(code, {}).get("years"):
+                row[or_label(code, mods, enr)] = "Outstanding"
+            else:
+                row[or_label(code, mods, enr)] = None
         rows.append(row)
 
     df = pd.DataFrame(rows)
@@ -739,23 +741,29 @@ def build_honours(apps, attempts, grades_df, current_year, people, enrolled_by):
     order = {"Qualifies": 0, "Qualifies (provisional)": 1, "Grades outstanding": 3,
              "No SU grade records": 4, "External applicant": 5}
     df["_g"] = df.Status.map(lambda s: order.get(s, 2))
-    df["_a"] = df["Applied for Honours"].map({"Yes": 0, "No": 1})
     df["_avg"] = -df["OR3 average"].fillna(-1)
-    df = df.sort_values(["_g", "_avg", "_a", "Surname"], na_position="last").drop(columns=["_g", "_a", "_avg"])
+    df = df.sort_values(["_g", "_avg", "Surname"], na_position="last").drop(columns=["_g", "_avg"])
     df.insert(0, "Rank", range(1, len(df) + 1))
-    lead = ["Rank", "Status", "Applied for Honours", "Internal / External", "SU Number", "Surname",
-            "First Name", "OR3 average", "OR3 modules graded", "OR3 outstanding", "OR2 average",
-            "OR2 modules graded", "OR2 + OR3 average", "Repeat flag", "Repeated OR modules"]
+    module_cols = [c for c in df.columns if c.startswith("OR ")]
+    module_cols.sort(key=lambda c: (not c.startswith("OR 3"), c))   # OR3 modules first
+    lead = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name",
+             "OR3 average"] + [c for c in module_cols if c.startswith("OR 3")] +
+            ["OR2 average"] + [c for c in module_cols if not c.startswith("OR 3")] +
+            ["OR2 + OR3 average", "OR3 outstanding", "Repeat flag", "Repeated OR modules"])
     df = df[[c for c in lead if c in df.columns] + [c for c in df.columns if c not in lead]]
-    is_or = lambda c: c.startswith(OR2_PREFIX) or c.startswith(OR3_PREFIX)
     detail = grouped_detail([
         ({"SU Number": r["SU Number"],
           "Student": " ".join(str(x) for x in (r.get("First Name"), r.get("Surname")) if clean(x)),
           "Status": r["Status"]},
          module_detail(attempts.get(r["SU Number"], {}), enrolled_by.get(r["SU Number"], {}),
                        current_year, keep=is_or))
-        for _, r in df.iterrows() if r["SU Number"]])
+        for _, r in df.iterrows() if clean(r["SU Number"]) is not None])
     return df, detail
+
+
+def or_label(code, mods, enrolled):
+    """'55336-314' -> 'OR 314 (55336-314)' for a column heading."""
+    return "OR %s (%s)" % (code.split("-", 1)[1], code)
 
 
 def people_lookup(enrol, grades_df):
@@ -891,8 +899,9 @@ def main():
                               "every other module this year passed. Outstanding grades -> Provisionally eligible."),
              ("Honours rule", "Unweighted mean of %s* modules >= %g%%. Repeated module counts its %s attempt."
               % (OR3_PREFIX, HONOURS_THRESHOLD, REPEAT_ATTEMPT)),
-             ("Honours list", "Honours applicants plus internal students with %s* modules in %s; "
-                              "no-record and external applicants at the bottom." % (OR3_PREFIX, year)),
+             ("Honours list", "Honours applicants only, ranked by OR3 average; no-record and external "
+                              "applicants at the bottom. One column per OR module (mark that counts, "
+                              "or 'Outstanding')."),
              ("Repeat flag", "Module graded more than once (across years, or after a fail)."),
              ("Module tabs", "One bold line per student, then every module with its result, counting "
                              "mark and all attempts. Use the +/- in the margin to collapse a student."),
