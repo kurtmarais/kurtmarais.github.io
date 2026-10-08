@@ -174,6 +174,23 @@ def year_of(v):
     return int(m.group(0)) if m else None
 
 
+def sem_num(v):
+    """'Semester 5' -> 5 (the Grade Roster 'Period' and enrolment 'Semester' are
+    semesters of study, not calendar years)."""
+    v = clean(v)
+    if v is None:
+        return None
+    if isinstance(v, (int, float)):
+        return int(v) if 0 < v < 30 else None
+    m = re.search(r"sem\w*\.?\s*(\d{1,2})\b", str(v), flags=re.I) or re.fullmatch(r"\s*(\d{1,2})\s*", str(v))
+    return int(m.group(1)) if m else None
+
+
+def att_key(a):
+    """Chronological order of attempts: year, then semester of study, then row order."""
+    return (a["year"] or 0, a.get("sem") or 0, a["order"])
+
+
 def to_number(v):
     v = clean(v)
     if v is None:
@@ -422,7 +439,8 @@ def attempts_by_student(gr):
             atts[:] = [a for a in atts if not (a["mark"] is None and a["period"] == r.period)]
         elif any(a["period"] == r.period for a in atts):
             continue
-        atts.append({"year": r.year, "mark": mark, "period": r.period, "order": r.order, "name": r.name})
+        atts.append({"year": r.year, "mark": mark, "period": r.period, "sem": sem_num(r.period),
+                     "order": r.order, "name": r.name})
     return res
 
 
@@ -436,7 +454,7 @@ def counting_mark(attempts):
         return None
     if REPEAT_ATTEMPT == "best":
         return max(a["mark"] for a in g)
-    return sorted(g, key=lambda a: (a["year"] or 0, a["order"]))[-1]["mark"]
+    return sorted(g, key=att_key)[-1]["mark"]
 
 
 def repeated_codes(mods):
@@ -444,7 +462,7 @@ def repeated_codes(mods):
     out = []
     for code, atts in mods.items():
         g = graded(atts)
-        years = {a["year"] for a in g}
+        years = {(a["year"], a.get("sem")) for a in g}
         if len(g) > 1 and (len(years) > 1 or any(a["mark"] < PASS_MARK for a in g)):
             out.append(code)
     return sorted(out)
@@ -498,10 +516,13 @@ def enrolments_by_student(enrol):
         if not su or not code:
             continue
         d = res.setdefault(su, {}).setdefault(code, {"name": module_name(r.get("Module Code/Name")),
-                                                     "years": set()})
+                                                     "years": set(), "sems": {}})
         y = year_of(r.get("Academic Term"))
         if y:
             d["years"].add(y)
+            sem = sem_num(r.get("Semester"))
+            if sem:
+                d["sems"].setdefault(y, set()).add(sem)
     return res
 
 
@@ -683,13 +704,18 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
         codes |= {c for c in set(mods) | set(enrolled) if is_or(c)} | set(HONOURS_OR_MODULES)
     rows = []
     for code in codes:
-        atts = sorted(mods.get(code, []), key=lambda a: (a["year"] or 0, a["order"]))
+        atts = sorted(mods.get(code, []), key=att_key)
         enr_years = enrolled.get(code, {}).get("years", set())
+        cur_sems = enrolled.get(code, {}).get("sems", {}).get(current_year, set())
         current = current_year is not None and (
             current_year in enr_years or any(a["year"] == current_year for a in atts))
         if current:
             # Taken this year: only this year's mark counts (an old fail stays in Attempts)
-            mark = counting_mark([a for a in atts if a["year"] == current_year or not a["year"]])
+            # Grades carry a semester of study, not a year: a grade is this year's when its
+            # semester matches this year's enrolment (an older fail is a different semester)
+            this_year = [a for a in atts if a["year"] == current_year or
+                         (not a["year"] and (a["sem"] in cur_sems if cur_sems and a["sem"] else True))]
+            mark = counting_mark(this_year)
             no_mark = "Outstanding (year-end)" if is_year_end(code) else "Outstanding"
         else:
             mark = counting_mark(atts)
@@ -707,10 +733,11 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
             "result": result_of(mark, no_mark),
             "year_end": "Yes" if is_year_end(code) else None,
             "bdatsci": ("Required" if code in req else ("Yes" if current else None)) if bdatsci else None,
-            "attempts": "; ".join("%s: %s" % (a["year"] or "?", fmt_mark(a["mark"]) if a["mark"] is not None
+            "attempts": "; ".join("%s: %s" % (a["year"] or a["period"] or "?",
+                                               fmt_mark(a["mark"]) if a["mark"] is not None
                                                else "outstanding") for a in atts) or None,
             "years": ", ".join(str(y) for y in years) or None,
-            "repeated": "Yes" if len(g) > 1 and (len({a["year"] for a in g}) > 1
+            "repeated": "Yes" if len(g) > 1 and (len({(a["year"], a["sem"]) for a in g}) > 1
                                                  or any(a["mark"] < PASS_MARK for a in g)) else None,
         })
     rows.sort(key=lambda r: (RESULT_ORDER[r["result"]], r["code"]))
@@ -797,8 +824,8 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
         no_year = grades_df[grades_df.year.isna()]
         if len(no_year):
             ex = no_year.period.astype(str).value_counts().head(3)
-            diag.append("Grade rows whose Period has no year: %d (e.g. %s); a mark like this for a module "
-                        "enrolled this year is treated as this year's" % (len(no_year), "; ".join(ex.index)))
+            diag.append("Grade rows whose Period has no year: %d (e.g. %s); matched to this year's "
+                        "enrolment by semester" % (len(no_year), "; ".join(ex.index)))
 
     info = {}
     for _, f in (bd[bd.year == current_year].iterrows() if len(bd) else []):
@@ -811,6 +838,16 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
     for r in (g[g.year == current_year].itertuples(index=False) if len(g) else []):
         info.setdefault(r.su, {"Surname": None, "Name": r.student_name, "Email": None,
                                "Programme": r.programme, "Student Status": None})
+    if len(bd) and "Semester" in bd.columns and not grades_df.empty:
+        cur = bd[bd.year == current_year]
+        sems = cur["Semester"].map(sem_num)
+        graded_keys = {(r.su, r.code, sem_num(r.period)) for r in grades_df.itertuples(index=False)
+                       if r.mark is not None and not pd.isna(r.mark)}
+        hit = sum(1 for su, code, sm in zip(cur.su, cur.code, sems) if sm and (su, code, sm) in graded_keys)
+        ex = cur["Semester"].astype(str).value_counts().head(3)
+        diag.append("This year's BDatSci enrolments: %d; semester read for %d (e.g. %s); %d already have a "
+                    "mark in the grade roster for that semester" % (len(cur), int(sems.notna().sum()),
+                                                                     "; ".join(ex.index), hit))
     diag.append("BDatSci students in %s: %d (%d from enrolments, %d only in the grade roster)"
                 % (current_year, len(info), n_enrol, len(info) - n_enrol))
 
