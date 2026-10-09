@@ -114,6 +114,35 @@
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "World Mental Health Day 2026: Understanding how emotions spread through social media"
+  type: "media"
+  year: 2026
+  media_format: "video"
+  featured: true
+  publication: "Stellenbosch University"
+  start_date: "2026-10-10"
+  end_date: "2026-10-10"
+  image: "/assets/img/engagements/su_thumbnail.png"
+  url: "/videos/world-mental-health-day-2026/"
+  description: "Can online interactions reinforce negative emotions? Dr Kurt Marais discusses his research into depression-related content on Reddit and simulated interactions on Twitter (now X), shared for Mental Health Awareness Month and World Mental Health Day."
+  abstract: |   # shown above the video on its page (Markdown)
+    Can online interactions reinforce negative emotions? And how can we better measure the relationship between social media and mental health?
+
+    Dr Kurt Marais, a lecturer in the Department of Logistics who recently earned his doctorate in operations research at Stellenbosch University, investigated these questions through research into depression-related content on Reddit and simulated interactions on Twitter (now X).
+
+    His study produced a depression-specific sentiment lexicon, designed to identify language associated with depression more accurately than general sentiment analysis tools. Using an agent-based simulation model, he also explored how repeated exposure to similar negative emotions can reinforce and intensify these feelings over time, particularly among people experiencing depression.
+
+    The findings highlight the importance of understanding emotional dynamics in digital spaces, and provide insights that could help researchers, mental health practitioners and platform developers promote online well-being.
+
+    Shared for Mental Health Awareness Month in South Africa and World Mental Health Day (10 October).
+  embed_url: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7514319500067000320?compact=1"
+  embed_width: 504
+  embed_height: 399
+  source_url: "https://www.linkedin.com/feed/update/urn:li:activity:7514320484583395329/"
+  source_name: "LinkedIn"
+  keywords: ["social media", "mental health awareness", "depression", "sentiment analysis", "agent-based simulation"]
+  tags: ["mental health", "linkedin", "video", "world mental health day", "reddit", "twitter", "lexicon"]
+
 - title: "Spektrum op RSG met Suzanne Paxton"   # placeholder: replace
   type: "media"
   year: 2026

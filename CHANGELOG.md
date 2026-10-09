@@ -4,6 +4,18 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-09
+
+### Added
+- Video pages (`/videos/<slug>/`), built like the poster pages: the video's
+  description and keywords, then the embedded video (LinkedIn's "Embed this
+  post" frame) and a link to the original post.
+- Mental Health Awareness Month / World Mental Health Day video
+  ("World Mental Health Day 2026: Understanding how emotions spread through
+  social media", Stellenbosch University on LinkedIn, 10 October 2026) as a featured media engagement
+  linking to its video page, with the post's text as the description. The
+  thumbnail goes in `assets/img/engagements/su_thumbnail.png`.
+
 ## 2026-10-05 (2)
 
 ### Changed

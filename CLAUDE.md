@@ -130,6 +130,22 @@ both the stub and engagements.yml) was rejected as redundant maintenance.
 toolbar/zoom) sized to that poster's own aspect ratio via inline
 `style="aspect-ratio: {{ poster_data.pdf_width }} / {{ poster_data.pdf_height }};"`.
 
+## Video pages: same pattern as posters
+
+`_videos/*.md` are two-line stubs (`layout: video`), filename = slug,
+collection `videos` (`permalink: /videos/:slug/`). `_layouts/video.html`
+looks up its `engagements.yml` entry by URL and shows title, publication ·
+date, `abstract` (Markdown, falls back to `description`), keywords, then
+the platform's embed iframe from `embed_url` (`embed_width` /
+`embed_height`, default 504 × 399 = LinkedIn's compact embed; capped at
+that width, 100% below it, fixed height because LinkedIn's frame doesn't
+scale), `loading="lazy"`, and an "Open on `source_name` →" link to
+`source_url`. The entry uses `media_format: video` + `url:
+"/videos/<slug>/"`, so its card gets the play overlay and "Watch video →".
+For LinkedIn, `embed_url` is the `src` from the post's "Embed this post"
+code (a `urn:li:ugcPost:` / `share:` ID, not the `activity:` ID in the
+post's address).
+
 ## Homepage card text width (`fit-to-title.js`)
 
 The hero intro is capped at the rendered width of the title's longest
