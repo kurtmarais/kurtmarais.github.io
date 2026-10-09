@@ -137,9 +137,11 @@ collection `videos` (`permalink: /videos/:slug/`). `_layouts/video.html`
 looks up its `engagements.yml` entry by URL and shows title, publication ·
 date, `abstract` (Markdown, falls back to `description`), keywords, then
 the platform's embed iframe from `embed_url` (`embed_width` /
-`embed_height`, default 504 × 399 = LinkedIn's compact embed; capped at
-that width, 100% below it, fixed height because LinkedIn's frame doesn't
-scale), `loading="lazy"`, and an "Open on `source_name` →" link to
+`embed_height`, default 504 × 399 = LinkedIn's compact embed). The frame
+is full content width on phones and capped at 800px, centred, on wider
+screens; it keeps the embed's proportions via inline `aspect-ratio` with
+`min-height` = the native height, so narrow screens don't squash the
+post's fixed-height header. `loading="lazy"`, and an "Open on `source_name` →" link to
 `source_url`. The entry uses `media_format: video` + `url:
 "/videos/<slug>/"`, so its card gets the play overlay and "Watch video →".
 For LinkedIn, `embed_url` is the `src` from the post's "Embed this post"

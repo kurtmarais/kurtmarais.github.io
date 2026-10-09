@@ -1193,15 +1193,21 @@ body.dark-mode .engagement-type-pill svg {
 
 /* VIDEO EMBED (individual video pages, _layouts/video.html) */
 
-// Width is capped inline at the platform's embed width; the height stays
-// at the embed's own (fixed) height, as LinkedIn's frame doesn't scale.
+// Full content width on phones (to the page margins), capped and centred
+// on wider screens. The iframe keeps the embed's proportions via inline
+// aspect-ratio, with its native height as a floor (min-height) so narrow
+// screens don't squash the post header.
 .video-embed-wrap {
   width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .video-embed {
   display: block;
   width: 100%;
+  height: auto;
   border: 1px solid #d9d9d1;
   border-radius: 4px;
   background: #ffffff;

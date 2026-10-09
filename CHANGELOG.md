@@ -4,6 +4,15 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-09 (2)
+
+### Changed
+- Video pages: the embedded video is larger and centred, filling the
+  content width on phones and up to 800px on wider screens, keeping its
+  proportions.
+- World Mental Health Day 2026 video: new thumbnail (Stellenbosch
+  University image).
+
 ## 2026-10-09
 
 ### Added
