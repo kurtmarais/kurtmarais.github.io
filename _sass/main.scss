@@ -1193,15 +1193,21 @@ body.dark-mode .engagement-type-pill svg {
 
 /* VIDEO EMBED (individual video pages, _layouts/video.html) */
 
-// Width is capped inline at the platform's embed width; the height stays
-// at the embed's own (fixed) height, as LinkedIn's frame doesn't scale.
+// Full content width on phones (to the page margins), capped and centred
+// on wider screens. The iframe keeps the embed's proportions via inline
+// aspect-ratio, with its native height as a floor (min-height) so narrow
+// screens don't squash the post header.
 .video-embed-wrap {
   width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .video-embed {
   display: block;
   width: 100%;
+  height: auto;
   border: 1px solid #d9d9d1;
   border-radius: 4px;
   background: #ffffff;
@@ -2457,6 +2463,121 @@ body.dark-mode .back-to-top:hover {
   color: $linkColor;
 }
 
+
+
+/* AWARENESS BUTTON (_includes/awareness-button.html, awareness-button.js) */
+
+// Round icon button fixed just below the header: top left, top right on
+// phones. The text is
+// always in the DOM (screen readers get it) but collapsed to zero width
+// until the button is open: intro (.is-open), hover, or keyboard focus.
+// Below the sticky phone header (z-index 50) so the mobile menu covers it.
+.awareness-btn {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  height: 2.25rem;
+  max-width: calc(100vw - 1.5rem);
+  border-radius: 999px;
+  background: #1f352f; // hero card green, darker than $linkColor
+  color: #f7f6f1;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(32, 36, 33, 0.22);
+}
+
+.awareness-btn[hidden] {
+  display: none;
+}
+
+.awareness-btn:hover,
+.awareness-btn:focus-visible {
+  color: #f7f6f1;
+  text-decoration: none;
+}
+
+.awareness-btn:focus-visible {
+  outline: 2px solid #1f352f;
+  outline-offset: 2px;
+}
+
+.awareness-btn-icon {
+  flex: 0 0 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.awareness-btn-icon i,
+.awareness-btn-icon svg {
+  font-size: 0.85rem;
+}
+
+.awareness-btn-text {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0;
+  transition: max-width 0.45s ease, opacity 0.3s ease, padding-right 0.45s ease;
+}
+
+.awareness-btn.is-open .awareness-btn-text,
+.awareness-btn:focus-visible .awareness-btn-text {
+  max-width: 26rem;
+  opacity: 1;
+  padding-right: 1rem;
+}
+
+// Hover only where hovering exists, so a tap on a phone doesn't leave it stuck open.
+@media (hover: hover) {
+  .awareness-btn:hover .awareness-btn-text {
+    max-width: 26rem;
+    opacity: 1;
+    padding-right: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .awareness-btn-text { transition: none; }
+}
+
+// Phones: pinned to the right (the JS sets `right`), icon on the right end,
+// text opening leftwards.
+@media (max-width: 767px) {
+  .awareness-btn {
+    left: auto;
+    flex-direction: row-reverse;
+  }
+
+  .awareness-btn.is-open .awareness-btn-text,
+  .awareness-btn:focus-visible .awareness-btn-text {
+    padding-right: 0;
+    padding-left: 1rem;
+  }
+}
+
+body.dark-mode .awareness-btn,
+body.dark-mode .awareness-btn:hover,
+body.dark-mode .awareness-btn:focus-visible {
+  background: #9ab8aa;
+  color: #202421;
+}
+
+body.dark-mode .awareness-btn:focus-visible {
+  outline-color: #9ab8aa;
+}
+
+@media print {
+  .awareness-btn { display: none !important; }
+}
 
 
 /* MOBILE NAVIGATION */

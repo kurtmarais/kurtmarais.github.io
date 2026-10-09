@@ -118,11 +118,11 @@
   type: "media"
   year: 2026
   media_format: "video"
-  featured: true
+  featured: false   # promoted by the floating awareness button instead (_config.yml)
   publication: "Stellenbosch University"
   start_date: "2026-10-10"
   end_date: "2026-10-10"
-  image: "/assets/img/engagements/su_thumbnail.png"
+  image: "https://d1yqwmn8pjyrsu.cloudfront.net/varsity/logos/WnkSviMxm1Clkv5cE57Woj87Pw6T3Q5RYtLUZJHe.jpg"
   url: "/videos/world-mental-health-day-2026/"
   description: "Can online interactions reinforce negative emotions? Dr Kurt Marais discusses his research into depression-related content on Reddit and simulated interactions on Twitter (now X), shared for Mental Health Awareness Month and World Mental Health Day."
   abstract: |   # shown above the video on its page (Markdown)
