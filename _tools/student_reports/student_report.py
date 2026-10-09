@@ -92,6 +92,12 @@ BDATSCI_PREREQUISITES = [
 ]
 # Filled in at run time from BDATSCI_PREREQUISITES: {code: name}
 BDATSCI_REQUIRED_MODULES = {}
+# Renamed modules: an old (historic) code counts as its current equivalent everywhere.
+# The BDatSci/Honours tabs note when a student took the historic version.
+MODULE_EQUIVALENTS = {
+    "55336-326": "55336-352",
+    "55336-354": "55336-322",
+}
 # BDatSci students are listed when they have at least one of these in their records
 BDATSCI_LISTING_MODULES = ["55336-314", "55336-344", "55336-352"]
 # Only list BDatSci students with at least one required module in their
@@ -197,6 +203,11 @@ def year_of(v):
         return v.year
     m = re.search(r"(19|20)\d{2}", str(v))
     return int(m.group(0)) if m else None
+
+
+def current_code(code):
+    """Historic module code -> its current equivalent (MODULE_EQUIVALENTS)."""
+    return MODULE_EQUIVALENTS.get(code, code)
 
 
 def sem_num(v):
@@ -432,7 +443,8 @@ def normalise_grades(g):
         "student_name": g.get("Student Name").map(clean),
         "student_status": g.get("Student Status").map(clean) if "Student Status" in g else None,
         "programme": g.get("Program Code / Name").map(clean),
-        "code": g.get("Module Code / Name").map(module_code),
+        "orig_code": g.get("Module Code / Name").map(module_code),
+        "code": g.get("Module Code / Name").map(lambda v: current_code(module_code(v))),
         "name": g.get("Module Code / Name").map(module_name),
         "year": g.get("Period").map(year_of),
         "period": g.get("Period").map(clean),
@@ -466,6 +478,7 @@ def attempts_by_student(gr):
         elif any(a["period"] == r.period for a in atts):
             continue
         atts.append({"year": r.year, "mark": mark, "period": r.period, "sem": sem_num(r.period),
+                     "orig": r.orig_code,
                      "order": r.order, "name": r.name})
     return res
 
@@ -538,11 +551,15 @@ def enrolments_by_student(enrol):
     for _, r in enrol.iterrows():
         if is_dropped(r):
             continue
-        su, code = su_number(r.get("SU Number")), module_code(r.get("Module Code/Name"))
-        if not su or not code:
+        su, orig = su_number(r.get("SU Number")), module_code(r.get("Module Code/Name"))
+        if not su or not orig:
             continue
-        d = res.setdefault(su, {}).setdefault(code, {"name": module_name(r.get("Module Code/Name")),
-                                                     "years": set(), "sems": {}})
+        code = current_code(orig)
+        d = res.setdefault(su, {}).setdefault(code, {"name": None, "years": set(), "sems": {}, "orig": set()})
+        if orig == code:
+            d["name"] = d["name"] or module_name(r.get("Module Code/Name"))
+        else:
+            d["orig"].add(orig)
         y = year_of(r.get("Academic Term"))
         if y:
             d["years"].add(y)
@@ -752,7 +769,10 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
             else:
                 no_mark = "Not enrolled (required)" if code in req else "Not taken"
         g = graded(atts)
-        name = (enrolled.get(code, {}).get("name") or next((a["name"] for a in atts if a["name"]), None)
+        historic = sorted({a["orig"] for a in atts if a.get("orig") and a["orig"] != code}
+                          | enrolled.get(code, {}).get("orig", set()))
+        name = (enrolled.get(code, {}).get("name")
+                or next((a["name"] for a in atts if a["name"] and a.get("orig", code) == code), None)
                 or BDATSCI_REQUIRED_MODULES.get(code)
                 or ("Operations Research " + code.split("-", 1)[1] if code.startswith("55336-") else None))
         years = sorted({a["year"] for a in atts if a["year"]} | {y for y in enr_years if y})
@@ -760,10 +780,12 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
             "code": code, "name": name, "mark": mark, "no_mark": no_mark,
             "result": result_of(mark, no_mark),
             "improvement": improvement,
+            "historic": historic,
             "bdatsci": "Required" if code in req else None,
-            "attempts": "; ".join("%s: %s" % (a["year"] or a["period"] or "?",
-                                               fmt_mark(a["mark"]) if a["mark"] is not None
-                                               else "outstanding") for a in atts) or None,
+            "attempts": "; ".join("%s: %s%s" % (a["year"] or a["period"] or "?",
+                                                 fmt_mark(a["mark"]) if a["mark"] is not None else "outstanding",
+                                                 " [as %s]" % a["orig"] if a.get("orig") and a["orig"] != code
+                                                 else "") for a in atts) or None,
             "years": ", ".join(str(y) for y in years) or None,
             "repeated": "Yes" if len(g) > 1 and (len({(a["year"], a["sem"]) for a in g}) > 1
                                                  or any(a["mark"] < PASS_MARK for a in g)) else None,
@@ -857,7 +879,8 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
         e = enrol.copy()
         e["su"] = e["SU Number"].map(su_number) if "SU Number" in e else None
         e["year"] = e["Academic Term"].map(year_of) if "Academic Term" in e else None
-        e["code"] = e["Module Code/Name"].map(module_code) if "Module Code/Name" in e else None
+        e["code"] = e["Module Code/Name"].map(lambda v: current_code(module_code(v))) \
+            if "Module Code/Name" in e else None
         e["prog"] = e["Program Code/Name"].map(clean).fillna("") if "Program Code/Name" in e else ""
         e = e[e.su.notna() & e.code.notna()]
     diag.append("Enrolment rows with an SU Number and module: %d" % len(e))
@@ -1128,13 +1151,19 @@ def write_modules(wb, students):
               widths={"Summary": 34, "Module": 30, "Failed modules": 45})
 
 
+def historic_note(rows):
+    """'55336-326 (counted as 55336-352)' for modules taken under an old code."""
+    return "; ".join("%s (counted as %s)" % (old, m["code"]) for m in rows for old in m.get("historic", [])) \
+        or None
+
+
 def write_bdatsci(wb, students, rows_by_su):
     req = list(BDATSCI_REQUIRED_MODULES.items())
     headers = (["Status", "SU Number", "Surname", "Name", "Email", "Programme", "Student Status",
                 "Highest module level this year", "Level-4 modules this year"]
                + [label for _, label in req]
                + ["Failed modules (below %g)" % PASS_MARK, "Failed", "Required not enrolled",
-                  "Outstanding marks", "Marks changed by hand", "Repeated modules"])
+                  "Outstanding marks", "Marks changed by hand", "Repeated modules", "Historic module versions"])
     sh = Sheet(wb, "BDatSci", headers)
     order = {"Eligible": 0, "Not eligible": 1}
     students = sorted(students, key=lambda s: (order[bdatsci_status(rows_by_su[s[0]])],
@@ -1155,6 +1184,7 @@ def write_bdatsci(wb, students, rows_by_su):
         row["Marks changed by hand"] = "=" + cnt(su_ref, (M_HAND, "Yes"))
         rep = [m["code"] for m in rows_by_su[su] if m["repeated"]]
         row["Repeated modules"] = ", ".join(rep) or None
+        row["Historic module versions"] = historic_note(rows_by_su[su])
         # Eligible = nothing failed (outstanding marks don't change that; they're highlighted)
         row["Status"] = '=IF({f}{r}+{n}{r}>0,"Not eligible","Eligible")'.format(
             f=L["Failed"], n=L["Required not enrolled"], r=r)
@@ -1196,7 +1226,8 @@ def write_honours(wb, applied, rows_by_su, current_prog):
     headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name",
                 "OR3 modules taken", "OR3 average"]
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
-               + ["OR2 + OR3 average", "Mark improvement (earlier mark)", "Repeated OR modules"]
+               + ["OR2 + OR3 average", "Mark improvement (earlier mark)", "Repeated OR modules",
+                  "Historic module versions"]
                + info_cols + ["Current programme"]
                + ["_or3_graded", "_or3_outstanding", "_failed"])
     sh = Sheet(wb, "Honours", headers)
@@ -1240,6 +1271,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
                 r=r, a=av, c=L["OR3 average"])
             rep = [m["code"] for m in rows_by_su[su] if m["repeated"] and is_or(m["code"])]
             row["Repeated OR modules"] = ", ".join(rep) or None
+            row["Historic module versions"] = historic_note(rows_by_su[su])
         else:
             row["Status"] = status
         sh.add(row)
@@ -1482,6 +1514,9 @@ def main():
              ("Pass mark", PASS_MARK),
              ("Outstanding marks", "A module with no mark yet is 'Outstanding' (yellow). It doesn't affect "
                                    "eligibility."),
+             ("Historic module codes", "Counted as their current equivalent: %s. Shown in the "
+                                       "'Historic module versions' column and as [as <old code>] in Attempts."
+              % ", ".join("%s = %s" % kv for kv in MODULE_EQUIVALENTS.items())),
              ("Mark improvement", "A module graded before and enrolled again this year. The earlier mark is "
                                   "shown; this year's mark (or 'Outstanding') counts."),
              ("Skipped applicant rows", "%d row(s) not Honours/Masters/PhD (e.g. the export's footer)" % n_other),
