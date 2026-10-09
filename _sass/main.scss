@@ -2573,6 +2573,12 @@ $sdg3-green: #4c9f38;
   transform: scale(1);
 }
 
+// The ribbon is a narrow glyph, so it's drawn 25% larger than the video icon.
+.awareness-ico-closed i,
+.awareness-ico-closed svg {
+  font-size: calc(var(--ab-icon) * 1.25);
+}
+
 .awareness-btn.is-open .awareness-ico-open,
 .awareness-btn:focus-visible .awareness-ico-open {
   opacity: 1;
