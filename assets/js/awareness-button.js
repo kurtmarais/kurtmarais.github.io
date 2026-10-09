@@ -3,14 +3,15 @@
 // - Only shown between data-start and data-end (inclusive), using the
 //   visitor's local date, so it switches on and off without a rebuild.
 // - Sits just below the header's bottom border, lined up with the header's
-//   left edge (right edge on phones, where it opens leftwards).
-//   On phones the header is sticky, so the button stays under it;
+//   right edge, opening leftwards. On phones the header is sticky, so the
+//   button stays under it;
 //   elsewhere it follows the header up as the page scrolls and then stays
 //   MIN_TOP px from the top of the screen.
-// - On the first page of a visit it opens with the full text, then shrinks
-//   to the round icon after INTRO_MS (sessionStorage remembers this for the
-//   rest of the visit). Hover / keyboard focus open it again (CSS). A tap on
-//   a phone goes straight to the video page.
+// - It opens with the full text, then shrinks to the round icon after
+//   INTRO_MS. With a mouse this happens on the first page of a visit only
+//   (sessionStorage), since hover / keyboard focus open it again (CSS).
+//   On touch screens (no hover) it happens on every page, as that's the only
+//   time the text can be seen there; a tap goes straight to the video page.
 (function () {
   var btn = document.querySelector(".awareness-btn");
   if (!btn) return;
@@ -28,21 +29,14 @@
   if ((start && today < start) || (end && today > end)) return;
 
   var header = document.querySelector(".site-header");
-  var phone = window.matchMedia("(max-width: 767px)");
   var ticking = false;
   function place() {
     ticking = false;
     var r = header ? header.getBoundingClientRect() : null;
     var top = r ? Math.max(MIN_TOP, r.bottom + BELOW_HEADER) : MIN_TOP;
+    var right = r ? Math.max(8, document.documentElement.clientWidth - r.right) : 16;
     btn.style.top = Math.round(top) + "px";
-    if (phone.matches) {
-      var right = r ? Math.max(8, document.documentElement.clientWidth - r.right) : 16;
-      btn.style.left = "";
-      btn.style.right = Math.round(right) + "px";
-    } else {
-      btn.style.right = "";
-      btn.style.left = Math.round(r ? Math.max(8, r.left) : 16) + "px";
-    }
+    btn.style.right = Math.round(right) + "px";
   }
   function queue() {
     if (!ticking) { ticking = true; requestAnimationFrame(place); }
@@ -55,9 +49,13 @@
   if (window.ResizeObserver && header) new ResizeObserver(queue).observe(header);
 
   var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (still) return;
+  var touchOnly = window.matchMedia && window.matchMedia("(hover: none)").matches;
   var seen = false;
-  try { seen = sessionStorage.getItem(SEEN_KEY) === "1"; } catch (e) {}
-  if (seen || still) return;
+  if (!touchOnly) {
+    try { seen = sessionStorage.getItem(SEEN_KEY) === "1"; } catch (e) {}
+  }
+  if (seen) return;
   try { sessionStorage.setItem(SEEN_KEY, "1"); } catch (e) {}
   btn.classList.add("is-open");
   setTimeout(function () { btn.classList.remove("is-open"); }, INTRO_MS);
