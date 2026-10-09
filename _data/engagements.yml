@@ -125,7 +125,7 @@
   image: "https://d1yqwmn8pjyrsu.cloudfront.net/varsity/logos/WnkSviMxm1Clkv5cE57Woj87Pw6T3Q5RYtLUZJHe.jpg"
   url: "/videos/world-mental-health-day-2026/"
   description: "Can online interactions reinforce negative emotions? Dr Kurt Marais discusses his research into depression-related content on Reddit and simulated interactions on Twitter (now X), shared for Mental Health Awareness Month and World Mental Health Day."
-  abstract: |   # shown above the video on its page (Markdown)
+  page_text: |   # shown above the video on its page only (Markdown); not an `abstract`, so the Engagements card has no Abstract toggle
     Can online interactions reinforce negative emotions? And how can we better measure the relationship between social media and mental health?
 
     Dr Kurt Marais, a lecturer in the Department of Logistics who recently earned his doctorate in operations research at Stellenbosch University, investigated these questions through research into depression-related content on Reddit and simulated interactions on Twitter (now X).
