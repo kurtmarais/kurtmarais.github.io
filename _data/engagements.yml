@@ -114,14 +114,14 @@
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
-- title: "Understanding how emotions spread through social media"
+- title: "World Mental Health Day 2026: Understanding how emotions spread through social media"
   type: "media"
   year: 2026
   media_format: "video"
   featured: true
   publication: "Stellenbosch University"
-  start_date: "2026-10-09"
-  end_date: "2026-10-09"
+  start_date: "2026-10-10"
+  end_date: "2026-10-10"
   image: "/assets/img/engagements/su_thumbnail.png"
   url: "/videos/world-mental-health-day-2026/"
   description: "Can online interactions reinforce negative emotions? Dr Kurt Marais discusses his research into depression-related content on Reddit and simulated interactions on Twitter (now X), shared for Mental Health Awareness Month and World Mental Health Day."
