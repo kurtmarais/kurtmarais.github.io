@@ -78,11 +78,22 @@ BDATSCI_PROGRAMME_KEYWORDS = ["BDatSci"]
 BDATSCI_FOCAL_AREAS = ["Analytics and Optimisation"]
 # Students whose highest module level this year is below this are left out
 BDATSCI_MIN_LEVEL = 3
-BDATSCI_REQUIRED_MODULES = {                    # must be passed (any year) or
-    "55336-314": "Operations Research 314",     # enrolled now with mark outstanding
-    "55336-344": "Operations Research 344",
-    "55336-352": "Operations Research 352",
-}
+# Prerequisite modules for the final year. Eligible only if EVERY one is either
+# enrolled this year, or was enrolled before and passed. (Being enrolled implies
+# the module's own prerequisites were met, e.g. Mathematical Statistics 246 for
+# Mathematical Statistics 312, so those are not checked.)
+# Each entry: (module code, or None to find it by name in the reports, [names]).
+BDATSCI_PREREQUISITES = [
+    ("55336-314", ["Operations Research 314"]),
+    ("55336-344", ["Operations Research 344"]),
+    ("55336-352", ["Operations Research 352"]),
+    (None, ["Mathematical Statistics 312", "Wiskundige Statistiek 312"]),
+    (None, ["Data Science 346", "Datawetenskap 346"]),
+]
+# Filled in at run time from BDATSCI_PREREQUISITES: {code: name}
+BDATSCI_REQUIRED_MODULES = {}
+# BDatSci students are listed when they have at least one of these in their records
+BDATSCI_LISTING_MODULES = ["55336-314", "55336-344", "55336-352"]
 # Only list BDatSci students with at least one required module in their
 # records (enrolled or graded). False = list every BDatSci student registered
 # in the current year, including first/second years.
@@ -733,7 +744,10 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
         else:
             mark = counting_mark(atts)
             improvement = None
-            if atts or enr_years:
+            if code in req:
+                # A prerequisite not taken this year must already be passed
+                no_mark = "Not enrolled (required)"
+            elif atts or enr_years:
                 no_mark = "Outstanding"
             else:
                 no_mark = "Not enrolled (required)" if code in req else "Not taken"
@@ -792,6 +806,45 @@ def honours_stats(rows):
 def is_bdatsci(programme):
     p = str(programme or "").lower()
     return any(k.lower() in p for k in BDATSCI_PROGRAMME_KEYWORDS)
+
+
+def resolve_prerequisites(enrol, grades_df):
+    """Fill BDATSCI_REQUIRED_MODULES; modules without a code are found by name in
+    the enrolment and grade reports. Returns diagnostic lines."""
+    seen = {}   # normalised name -> {code: count}
+    norm = lambda x: re.sub(r"\s+", " ", str(x or "")).strip().lower()
+    if not enrol.empty and "Module Code/Name" in enrol:
+        for v in enrol["Module Code/Name"]:
+            c, n = module_code(v), module_name(v)
+            if c and n:
+                seen.setdefault(norm(n), {}).setdefault(c, 0)
+                seen[norm(n)][c] += 1
+    if not grades_df.empty:
+        for c, n in zip(grades_df.code, grades_df.name):
+            if c and n:
+                seen.setdefault(norm(n), {}).setdefault(c, 0)
+                seen[norm(n)][c] += 1
+    BDATSCI_REQUIRED_MODULES.clear()
+    diag = []
+    for code, names in BDATSCI_PREREQUISITES:
+        if code:
+            BDATSCI_REQUIRED_MODULES[code] = names[0]
+            continue
+        found = {}
+        for n in names:
+            for c, k in seen.get(norm(n), {}).items():
+                found[c] = found.get(c, 0) + k
+        if found:
+            best = max(found, key=found.get)
+            BDATSCI_REQUIRED_MODULES[best] = names[0]
+            extra = [c for c in found if c != best]
+            diag.append("Prerequisite %s = module %s%s" % (names[0], best,
+                        " (also seen under: %s; set the code in BDATSCI_PREREQUISITES if wrong)"
+                        % ", ".join(extra) if extra else ""))
+        else:
+            diag.append("Prerequisite %s NOT FOUND by name in the reports; put its module code in "
+                        "BDATSCI_PREREQUISITES. Until then it is not checked." % names[0])
+    return diag
 
 
 def bdatsci_students(enrol, grades_df, attempts, current_year):
@@ -909,7 +962,7 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
         len(other_focal), "; ".join("%s (%d)" % kv for kv in seen_focal.items()) or "none"))
     diag.append("Left out with highest module level this year below %d: %d" % (BDATSCI_MIN_LEVEL, len(low)))
 
-    req = set(BDATSCI_REQUIRED_MODULES)
+    req = set(BDATSCI_LISTING_MODULES)
     out = []
     for su, i in info.items():
         taken = set(e[e.su == su].code) if len(e) else set()
@@ -917,7 +970,7 @@ def bdatsci_students(enrol, grades_df, attempts, current_year):
             continue
         out.append((su, i))
     if BDATSCI_ONLY_CANDIDATES:
-        diag.append("With OR 314, 344 or 352 in their records (listed): %d" % len(out))
+        diag.append("With %s in their records (listed): %d" % (" / ".join(BDATSCI_LISTING_MODULES), len(out)))
     out.sort(key=lambda x: ((x[1]["Surname"] or "").lower(), (x[1]["Name"] or "").lower()))
     return out, current_year, diag
 
@@ -1294,7 +1347,7 @@ def write_overview(wb, year, sections_src):
             ("Eligible", [(a, "Eligible")], False),
             ("all marks in", [(a, "Eligible"), (ot, "0")], True),
             ("marks outstanding", [(a, "Eligible"), (ot, ">0")], True),
-            ("Not eligible (failed, or not enrolled for OR 314/344/352)", [(a, "Not eligible")], False),
+            ("Not eligible (failed, or a prerequisite module not enrolled/passed)", [(a, "Not eligible")], False),
             ("Total listed", [(a, "?*"), (a, "<>Status")], False)])
     if "Honours" in sections_src:
         b = sections_src["Honours"][0].col("Status")
@@ -1374,7 +1427,9 @@ def main():
     grades = normalise_grades(grades_raw)
     attempts = attempts_by_student(grades)
     enrolled_by = enrolments_by_student(enrol)
+    pre_diag = resolve_prerequisites(enrol, grades)
     bd_students, year, bd_diag = bdatsci_students(enrol, grades, attempts, args.year)
+    bd_diag = pre_diag + bd_diag
     print("BDatSci check:")
     for line in bd_diag:
         print("  " + line)
@@ -1430,7 +1485,8 @@ def main():
              ("Mark improvement", "A module graded before and enrolled again this year. The earlier mark is "
                                   "shown; this year's mark (or 'Outstanding') counts."),
              ("Skipped applicant rows", "%d row(s) not Honours/Masters/PhD (e.g. the export's footer)" % n_other),
-             ("BDatSci rule", "Eligible = no failed module and OR 314, 344 and 352 passed or being taken. "
+             ("BDatSci rule", "Eligible = no failed module and every prerequisite (%s) enrolled this year "
+                              "or passed before. " % ", ".join(BDATSCI_REQUIRED_MODULES.values()) +
                               "Outstanding marks don't change eligibility; they are highlighted yellow. "
                               "Left out: Student Status '%s'; focal area other than %s (or none); "
                               "highest module level this year below %d." % (
