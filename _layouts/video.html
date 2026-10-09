@@ -6,12 +6,12 @@ layout: default
   Video page: everything comes from the matching engagements.yml entry
   (looked up by URL, same as poster.html). The embed iframe loads lazily
   and scales with the column: full width on phones, capped at 800px and
-  centred on wider screens, keeping the embed's own proportions (never
-  shorter than its native height, so the post header isn't cut off).
+  centred on wider screens, at a 16:9 frame.
 {% endcomment %}
 {% assign video_data = site.data.engagements | where: "url", page.url | first %}
-{% assign embed_w = video_data.embed_width | default: 504 %}
-{% assign embed_h = video_data.embed_height | default: 399 %}
+{% comment %} Frame proportions: 16:9 unless the entry sets embed_width / embed_height (a ratio). {% endcomment %}
+{% assign embed_w = video_data.embed_width | default: 16 %}
+{% assign embed_h = video_data.embed_height | default: 9 %}
 
 <article class="row g-5 mb-5">
   <div class="col-md-12 publication-page">
@@ -44,9 +44,9 @@ layout: default
         <iframe
           src="{{ video_data.embed_url }}"
           class="video-embed"
-          width="{{ embed_w }}"
-          height="{{ embed_h }}"
-          style="aspect-ratio: {{ embed_w }} / {{ embed_h }}; min-height: {{ embed_h }}px;"
+          width="800"
+          height="450"
+          style="aspect-ratio: {{ embed_w }} / {{ embed_h }};"
           frameborder="0"
           allowfullscreen
           loading="lazy"
