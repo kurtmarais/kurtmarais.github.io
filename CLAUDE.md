@@ -159,7 +159,10 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 
 - Dates are checked in the visitor's browser (local date, inclusive), so it
   switches on/off without a rebuild. Remove the config block to drop it.
-- `position: fixed`, left = header's left edge, top = 6px below the
+- Light mode `#1f352f` (hero card green, darker than the link colour).
+- `position: fixed`, left = header's left edge (phones, <= 767px: right =
+  header's right edge, `row-reverse` so the icon is on the right and the
+  text opens leftwards), top = 6px below the
   header's bottom border, re-measured on scroll/resize (rAF). Phones: the
   header is sticky, so it stays just under it. Wider: it follows the header
   up and then holds `MIN_TOP` (16px). z-index 40, below the sticky phone

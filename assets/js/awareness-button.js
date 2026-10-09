@@ -3,7 +3,8 @@
 // - Only shown between data-start and data-end (inclusive), using the
 //   visitor's local date, so it switches on and off without a rebuild.
 // - Sits just below the header's bottom border, lined up with the header's
-//   left edge. On phones the header is sticky, so the button stays under it;
+//   left edge (right edge on phones, where it opens leftwards).
+//   On phones the header is sticky, so the button stays under it;
 //   elsewhere it follows the header up as the page scrolls and then stays
 //   MIN_TOP px from the top of the screen.
 // - On the first page of a visit it opens with the full text, then shrinks
@@ -27,17 +28,21 @@
   if ((start && today < start) || (end && today > end)) return;
 
   var header = document.querySelector(".site-header");
+  var phone = window.matchMedia("(max-width: 767px)");
   var ticking = false;
   function place() {
     ticking = false;
-    var left = 16, top = MIN_TOP;
-    if (header) {
-      var r = header.getBoundingClientRect();
-      left = Math.max(8, r.left);
-      top = Math.max(MIN_TOP, r.bottom + BELOW_HEADER);
-    }
-    btn.style.left = Math.round(left) + "px";
+    var r = header ? header.getBoundingClientRect() : null;
+    var top = r ? Math.max(MIN_TOP, r.bottom + BELOW_HEADER) : MIN_TOP;
     btn.style.top = Math.round(top) + "px";
+    if (phone.matches) {
+      var right = r ? Math.max(8, document.documentElement.clientWidth - r.right) : 16;
+      btn.style.left = "";
+      btn.style.right = Math.round(right) + "px";
+    } else {
+      btn.style.right = "";
+      btn.style.left = Math.round(r ? Math.max(8, r.left) : 16) + "px";
+    }
   }
   function queue() {
     if (!ticking) { ticking = true; requestAnimationFrame(place); }

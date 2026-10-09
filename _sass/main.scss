@@ -2467,7 +2467,8 @@ body.dark-mode .back-to-top:hover {
 
 /* AWARENESS BUTTON (_includes/awareness-button.html, awareness-button.js) */
 
-// Round icon button fixed just below the header, top left. The text is
+// Round icon button fixed just below the header: top left, top right on
+// phones. The text is
 // always in the DOM (screen readers get it) but collapsed to zero width
 // until the button is open: intro (.is-open), hover, or keyboard focus.
 // Below the sticky phone header (z-index 50) so the mobile menu covers it.
@@ -2481,7 +2482,7 @@ body.dark-mode .back-to-top:hover {
   height: 2.25rem;
   max-width: calc(100vw - 1.5rem);
   border-radius: 999px;
-  background: $linkColor;
+  background: #1f352f; // hero card green, darker than $linkColor
   color: #f7f6f1;
   font-size: 0.8rem;
   font-weight: 600;
@@ -2503,7 +2504,7 @@ body.dark-mode .back-to-top:hover {
 }
 
 .awareness-btn:focus-visible {
-  outline: 2px solid $linkColor;
+  outline: 2px solid #1f352f;
   outline-offset: 2px;
 }
 
@@ -2546,6 +2547,21 @@ body.dark-mode .back-to-top:hover {
 
 @media (prefers-reduced-motion: reduce) {
   .awareness-btn-text { transition: none; }
+}
+
+// Phones: pinned to the right (the JS sets `right`), icon on the right end,
+// text opening leftwards.
+@media (max-width: 767px) {
+  .awareness-btn {
+    left: auto;
+    flex-direction: row-reverse;
+  }
+
+  .awareness-btn.is-open .awareness-btn-text,
+  .awareness-btn:focus-visible .awareness-btn-text {
+    padding-right: 0;
+    padding-left: 1rem;
+  }
 }
 
 body.dark-mode .awareness-btn,

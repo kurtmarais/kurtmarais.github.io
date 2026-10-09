@@ -12,6 +12,8 @@ is the baseline. Add new entries at the top.
   the first page of a visit it shows its full text, then shrinks to a
   round video icon; hovering (or keyboard focus) opens the text again, and
   a tap on a phone goes straight to the video.
+  On phones it sits on the right, opening leftwards. Dark green in light
+  mode, mint in dark mode.
 
 ### Changed
 - Video pages: the embedded video is larger and centred, filling the
