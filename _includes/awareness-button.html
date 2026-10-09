@@ -1,0 +1,18 @@
+{% comment %}
+  Floating awareness button (top left, every page). Settings live in
+  _config.yml under `awareness_button`. Rendered hidden; awareness-button.js
+  shows it only between data-start and data-end (the visitor's local date)
+  and positions it just below the header. Not rendered on the page it links to.
+{% endcomment %}
+{% assign ab = site.awareness_button %}
+{% if ab and ab.url and page.url != ab.url %}
+<a class="awareness-btn"
+   href="{{ ab.url | relative_url }}"
+   data-start="{{ ab.start }}"
+   data-end="{{ ab.end }}"
+   aria-label="{{ ab.label | escape }}"
+   hidden>
+  <span class="awareness-btn-icon" aria-hidden="true"><i class="fas {{ ab.icon | default: 'fa-video' }}"></i></span>
+  <span class="awareness-btn-text">{{ ab.label }}</span>
+</a>
+{% endif %}

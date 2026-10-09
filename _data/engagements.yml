@@ -118,7 +118,7 @@
   type: "media"
   year: 2026
   media_format: "video"
-  featured: true
+  featured: false   # promoted by the floating awareness button instead (_config.yml)
   publication: "Stellenbosch University"
   start_date: "2026-10-10"
   end_date: "2026-10-10"

@@ -6,12 +6,20 @@ is the baseline. Add new entries at the top.
 
 ## 2026-10-09 (2)
 
+### Added
+- Floating World Mental Health Day 2026 button on every page, top left
+  below the header, shown 1–31 October and linking to the video page. On
+  the first page of a visit it shows its full text, then shrinks to a
+  round video icon; hovering (or keyboard focus) opens the text again, and
+  a tap on a phone goes straight to the video.
+
 ### Changed
 - Video pages: the embedded video is larger and centred, filling the
   content width on phones and up to 800px on wider screens, keeping its
   proportions.
 - World Mental Health Day 2026 video: new thumbnail (Stellenbosch
-  University image).
+  University image), and no longer featured in the homepage "In the
+  Media" card (the floating button promotes it instead).
 
 ## 2026-10-09
 

@@ -148,6 +148,31 @@ For LinkedIn, `embed_url` is the `src` from the post's "Embed this post"
 code (a `urn:li:ugcPost:` / `share:` ID, not the `activity:` ID in the
 post's address).
 
+## Floating awareness button (every page, `awareness-button.js`)
+
+Settings in `_config.yml` → `awareness_button` (`start`, `end`, `url`,
+`label`, `icon`); markup `_includes/awareness-button.html` (in
+`default.html`, rendered `hidden`, not on the page it links to); styles
+under `AWARENESS BUTTON` in `main.scss`. Currently World Mental Health
+Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
+`featured: false`, so it's not in "In the Media" as well).
+
+- Dates are checked in the visitor's browser (local date, inclusive), so it
+  switches on/off without a rebuild. Remove the config block to drop it.
+- `position: fixed`, left = header's left edge, top = 6px below the
+  header's bottom border, re-measured on scroll/resize (rAF). Phones: the
+  header is sticky, so it stays just under it. Wider: it follows the header
+  up and then holds `MIN_TOP` (16px). z-index 40, below the sticky phone
+  header (50) so the mobile menu covers it.
+- First page of a visit: opens with the full label (`.is-open`), shrinks
+  to the round icon after `INTRO_MS` (4s); `sessionStorage`
+  `awarenessIntroSeen` stops it repeating that visit. Hover (only under
+  `@media (hover: hover)`, so taps don't stick it open) and
+  `:focus-visible` open it. A tap goes straight to the link. Reduced
+  motion: no intro, no transition.
+- The label stays in the DOM (max-width 0 when closed) and is also the
+  `aria-label`. Hidden in print. Dark mode: mint background, dark text.
+
 ## Homepage card text width (`fit-to-title.js`)
 
 The hero intro is capped at the rendered width of the title's longest

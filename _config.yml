@@ -30,6 +30,17 @@ exclude:
   - "**/README.md"
 show_media: true
 
+# Floating awareness button (top left, every page): shown only between
+# `start` and `end` (inclusive, checked in the visitor's browser, so it
+# switches on and off without a rebuild). Hidden on the page it links to.
+# Delete or comment out this block to remove the button entirely.
+awareness_button:
+  start: "2026-10-01"
+  end: "2026-10-31"
+  url: "/videos/world-mental-health-day-2026/"
+  label: "World Mental Health Day 2026 · Watch the video"
+  icon: "fa-video"
+
 # Google Analytics — set to your GA4 Measurement ID to enable tracking,
 # or comment out / delete this line to disable it site-wide without
 # touching head.html.
