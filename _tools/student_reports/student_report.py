@@ -1239,7 +1239,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             s = "$D%d" % r
             for c in or3 + or2:
                 k = '%s&"|%s"' % (s, c)
-                row[label(c)] = '=IFERROR(IF(ISNUMBER(%s),%s,%s),"")' % (
+                row[label(c)] = '=IFERROR(IF(ISNUMBER(%s),%s,%s),"Not taken")' % (
                     lookup(k, M_MARK), lookup(k, M_MARK), lookup(k, M_RES))
             avg = lambda p: 'IFERROR(AVERAGEIFS(%s,%s,%s,%s,"%s*"),"")' % (
                 mref(M_MARK), mref(M_SU), s, mref(M_CODE), p)
