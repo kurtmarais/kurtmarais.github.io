@@ -157,6 +157,10 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 
 - Dates are checked in the visitor's browser (local date, inclusive), so it
   switches on/off without a rebuild. Remove the config block to drop it.
+- Icons: `icon` (video) while the text is open, `closed_icon` (`fa-ribbon`,
+  the awareness ribbon) once it shrinks; both are stacked in
+  `.awareness-btn-icon` and cross-fade (`.awareness-ico-open` /
+  `-closed`), following the same open states as the text.
 - Colour: SDG Goal 3 "Good health and well-being" green `#4C9F38`
   (`$sdg3-green`), white text, same in light and dark mode. White on it is
   3.3:1, below the 4.5:1 normally wanted for small text.

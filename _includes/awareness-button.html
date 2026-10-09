@@ -12,7 +12,10 @@
    data-end="{{ ab.end }}"
    aria-label="{{ ab.label | escape }}"
    hidden>
-  <span class="awareness-btn-icon" aria-hidden="true"><i class="fas {{ ab.icon | default: 'fa-video' }}"></i></span>
+  <span class="awareness-btn-icon" aria-hidden="true">
+    <span class="awareness-ico awareness-ico-open"><i class="fas {{ ab.icon | default: 'fa-video' }}"></i></span>
+    <span class="awareness-ico awareness-ico-closed"><i class="fas {{ ab.closed_icon | default: ab.icon | default: 'fa-video' }}"></i></span>
+  </span>
   <span class="awareness-btn-text">{{ ab.label }}</span>
 </a>
 {% endif %}

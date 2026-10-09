@@ -2539,19 +2539,50 @@ $sdg3-green: #4c9f38;
 }
 
 .awareness-btn-icon {
+  position: relative;
   flex: 0 0 var(--ab-size);
   width: var(--ab-size);
   min-width: var(--ab-size);
   height: var(--ab-size);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .awareness-btn-icon i,
 .awareness-btn-icon svg {
   flex-shrink: 0;
   font-size: var(--ab-icon);
+}
+
+// Two icons stacked in the circle: the video icon while the text is open,
+// the awareness ribbon once it shrinks. They cross-fade.
+.awareness-ico {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.awareness-ico-open {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+.awareness-ico-closed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.awareness-btn.is-open .awareness-ico-open,
+.awareness-btn:focus-visible .awareness-ico-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.awareness-btn.is-open .awareness-ico-closed,
+.awareness-btn:focus-visible .awareness-ico-closed {
+  opacity: 0;
+  transform: scale(0.7);
 }
 
 .awareness-btn-text {
@@ -2579,10 +2610,21 @@ $sdg3-green: #4c9f38;
     opacity: 1;
     padding-left: var(--ab-gap);
   }
+
+  .awareness-btn:hover .awareness-ico-open {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .awareness-btn:hover .awareness-ico-closed {
+    opacity: 0;
+    transform: scale(0.7);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .awareness-btn-text { transition: none; }
+  .awareness-btn-text,
+  .awareness-ico { transition: none; }
 }
 
 @media print {

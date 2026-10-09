@@ -11,6 +11,8 @@ is the baseline. Add new entries at the top.
 - World Mental Health Day button: SDG Goal 3 green (Good health and
   well-being) with white text, and 1.5 times larger on tablets and
   desktops. It floats over the page, so page spacing is unchanged.
+  When it shrinks to a circle, its icon changes from the video camera to
+  a white awareness ribbon (back to the camera when it opens).
 
 ## 2026-10-09 (3)
 
