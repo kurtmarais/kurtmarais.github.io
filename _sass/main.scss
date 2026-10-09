@@ -2467,20 +2467,31 @@ body.dark-mode .back-to-top:hover {
 
 /* AWARENESS BUTTON (_includes/awareness-button.html, awareness-button.js) */
 
-// Round icon button fixed just below the header: top left, top right on
-// phones. The text is
-// always in the DOM (screen readers get it) but collapsed to zero width
-// until the button is open: intro (.is-open), hover, or keyboard focus.
-// Below the sticky phone header (z-index 50) so the mobile menu covers it.
+// Round icon button fixed just below the header, top right (the JS sets
+// `top` and `right` from the header). Icon on the right end, text opening
+// leftwards. The text is always in the DOM (screen readers get it) but
+// collapsed to zero width until the button is open: intro (.is-open),
+// hover, or keyboard focus. Below the sticky phone header (z-index 50) so
+// the mobile menu covers it.
+//
+// Sizes are explicit (button min-width, icon width/height, flex-shrink 0)
+// rather than left to flex sizing, which squashed the closed circle
+// narrower than the icon in some phone browsers.
+$awareness-size: 2.5rem;
+
 .awareness-btn {
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   z-index: 40;
   display: inline-flex;
+  flex-direction: row-reverse;
   align-items: center;
-  height: 2.25rem;
+  box-sizing: border-box;
+  height: $awareness-size;
+  min-width: $awareness-size;
   max-width: calc(100vw - 1.5rem);
+  padding: 0;
   border-radius: 999px;
   background: #1f352f; // hero card green, darker than $linkColor
   color: #f7f6f1;
@@ -2509,7 +2520,10 @@ body.dark-mode .back-to-top:hover {
 }
 
 .awareness-btn-icon {
-  flex: 0 0 2.25rem;
+  flex: 0 0 $awareness-size;
+  width: $awareness-size;
+  min-width: $awareness-size;
+  height: $awareness-size;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2517,23 +2531,26 @@ body.dark-mode .back-to-top:hover {
 
 .awareness-btn-icon i,
 .awareness-btn-icon svg {
-  font-size: 0.85rem;
+  flex-shrink: 0;
+  font-size: 0.95rem;
 }
 
 .awareness-btn-text {
+  flex: 0 1 auto;
+  min-width: 0;
   max-width: 0;
   opacity: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-right: 0;
-  transition: max-width 0.45s ease, opacity 0.3s ease, padding-right 0.45s ease;
+  padding-left: 0;
+  transition: max-width 0.45s ease, opacity 0.3s ease, padding-left 0.45s ease;
 }
 
 .awareness-btn.is-open .awareness-btn-text,
 .awareness-btn:focus-visible .awareness-btn-text {
   max-width: 26rem;
   opacity: 1;
-  padding-right: 1rem;
+  padding-left: 1rem;
 }
 
 // Hover only where hovering exists, so a tap on a phone doesn't leave it stuck open.
@@ -2541,27 +2558,12 @@ body.dark-mode .back-to-top:hover {
   .awareness-btn:hover .awareness-btn-text {
     max-width: 26rem;
     opacity: 1;
-    padding-right: 1rem;
+    padding-left: 1rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .awareness-btn-text { transition: none; }
-}
-
-// Phones: pinned to the right (the JS sets `right`), icon on the right end,
-// text opening leftwards.
-@media (max-width: 767px) {
-  .awareness-btn {
-    left: auto;
-    flex-direction: row-reverse;
-  }
-
-  .awareness-btn.is-open .awareness-btn-text,
-  .awareness-btn:focus-visible .awareness-btn-text {
-    padding-right: 0;
-    padding-left: 1rem;
-  }
 }
 
 body.dark-mode .awareness-btn,

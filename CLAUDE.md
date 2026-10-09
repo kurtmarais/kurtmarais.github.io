@@ -160,19 +160,24 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 - Dates are checked in the visitor's browser (local date, inclusive), so it
   switches on/off without a rebuild. Remove the config block to drop it.
 - Light mode `#1f352f` (hero card green, darker than the link colour).
-- `position: fixed`, left = header's left edge (phones, <= 767px: right =
-  header's right edge, `row-reverse` so the icon is on the right and the
-  text opens leftwards), top = 6px below the
+- `position: fixed`, right = header's right edge on every screen size
+  (`row-reverse`, so the icon is on the right and the text opens
+  leftwards), top = 6px below the
   header's bottom border, re-measured on scroll/resize (rAF). Phones: the
   header is sticky, so it stays just under it. Wider: it follows the header
   up and then holds `MIN_TOP` (16px). z-index 40, below the sticky phone
   header (50) so the mobile menu covers it.
-- First page of a visit: opens with the full label (`.is-open`), shrinks
-  to the round icon after `INTRO_MS` (4s); `sessionStorage`
-  `awarenessIntroSeen` stops it repeating that visit. Hover (only under
+- Opens with the full label (`.is-open`), shrinks to the round icon after
+  `INTRO_MS` (4s). Mouse devices: first page of a visit only
+  (`sessionStorage` `awarenessIntroSeen`). Touch screens (`(hover: none)`):
+  every page, since there's no hover to show the text again. Hover (only under
   `@media (hover: hover)`, so taps don't stick it open) and
   `:focus-visible` open it. A tap goes straight to the link. Reduced
   motion: no intro, no transition.
+- Size 2.5rem (`$awareness-size`), set explicitly on the button
+  (`min-width`) and the icon (`width`/`min-width`/`height`, no shrink):
+  left to flex sizing, the closed circle squashed narrower than the icon on
+  phones.
 - The label stays in the DOM (max-width 0 when closed) and is also the
   `aria-label`. Hidden in print. Dark mode: mint background, dark text.
 

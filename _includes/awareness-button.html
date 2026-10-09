@@ -2,7 +2,7 @@
   Floating awareness button (top left, every page). Settings live in
   _config.yml under `awareness_button`. Rendered hidden; awareness-button.js
   shows it only between data-start and data-end (the visitor's local date)
-  and positions it just below the header. Not rendered on the page it links to.
+  and positions it just below the header, at its right edge. Not rendered on the page it links to.
 {% endcomment %}
 {% assign ab = site.awareness_button %}
 {% if ab and ab.url and page.url != ab.url %}
