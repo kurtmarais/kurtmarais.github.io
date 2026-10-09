@@ -39,7 +39,8 @@ awareness_button:
   end: "2026-10-31"
   url: "/videos/world-mental-health-day-2026/"
   label: "World Mental Health Day 2026 · Watch the video"
-  icon: "fa-video"
+  icon: "fa-video"          # shown while the text is open
+  closed_icon: "fa-ribbon"  # shown when it shrinks to the round button
 
 # Google Analytics — set to your GA4 Measurement ID to enable tracking,
 # or comment out / delete this line to disable it site-wide without

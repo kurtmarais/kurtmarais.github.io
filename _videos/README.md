@@ -8,8 +8,8 @@ Same pattern as `_posters/`: each `.md` here is a near-empty stub
 - `title`, `publication`, `start_date`, `keywords` (header)
 - `abstract` (Markdown, shown above the video; falls back to `description`)
 - `embed_url` (the `src` of the platform's embed iframe, e.g. LinkedIn's
-  "Embed this post" code), with optional `embed_width` / `embed_height`
-  (default 504 × 399, LinkedIn's compact embed)
+  "Embed this post" code). The frame is 16:9; optional `embed_width` /
+  `embed_height` set a different ratio (e.g. 9 and 16 for a vertical video)
 - `source_url` (the original post, for the "Open on ..." link) and
   `source_name` (e.g. "LinkedIn")
 

@@ -136,12 +136,10 @@ toolbar/zoom) sized to that poster's own aspect ratio via inline
 collection `videos` (`permalink: /videos/:slug/`). `_layouts/video.html`
 looks up its `engagements.yml` entry by URL and shows title, publication ·
 date, `abstract` (Markdown, falls back to `description`), keywords, then
-the platform's embed iframe from `embed_url` (`embed_width` /
-`embed_height`, default 504 × 399 = LinkedIn's compact embed). The frame
-is full content width on phones and capped at 800px, centred, on wider
-screens; it keeps the embed's proportions via inline `aspect-ratio` with
-`min-height` = the native height, so narrow screens don't squash the
-post's fixed-height header. `loading="lazy"`, and an "Open on `source_name` →" link to
+the platform's embed iframe from `embed_url`, in a 16:9 frame (inline
+`aspect-ratio`; an entry can override the ratio with `embed_width` /
+`embed_height`). The frame is full content width on phones and capped at
+800px, centred, on wider screens. `loading="lazy"`, and an "Open on `source_name` →" link to
 `source_url`. The entry uses `media_format: video` + `url:
 "/videos/<slug>/"`, so its card gets the play overlay and "Watch video →".
 For LinkedIn, `embed_url` is the `src` from the post's "Embed this post"
@@ -159,7 +157,14 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 
 - Dates are checked in the visitor's browser (local date, inclusive), so it
   switches on/off without a rebuild. Remove the config block to drop it.
-- Light mode `#1f352f` (hero card green, darker than the link colour).
+- Icons: `icon` (video) while the text is open, `closed_icon` (`fa-ribbon`,
+  the awareness ribbon) once it shrinks; both are stacked in
+  `.awareness-btn-icon` and cross-fade (`.awareness-ico-open` /
+  `-closed`), following the same open states as the text. The ribbon is
+  drawn at 1.25x `--ab-icon` (it's a narrow glyph).
+- Colour: SDG Goal 3 "Good health and well-being" green `#4C9F38`
+  (`$sdg3-green`), white text, same in light and dark mode. White on it is
+  3.3:1, below the 4.5:1 normally wanted for small text.
 - `position: fixed`, right = header's right edge on every screen size
   (`row-reverse`, so the icon is on the right and the text opens
   leftwards), top = 6px below the
@@ -174,12 +179,15 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
   `@media (hover: hover)`, so taps don't stick it open) and
   `:focus-visible` open it. A tap goes straight to the link. Reduced
   motion: no intro, no transition.
-- Size 2.5rem (`$awareness-size`), set explicitly on the button
+- Fixed position: it overlays the page and never changes its spacing
+  (checked: element positions identical with and without it).
+- Size via `--ab-*` custom properties: phones 2.5rem; from 768px 1.5x
+  (3.75rem circle, 1.2rem text, 1.425rem icon). Set explicitly on the button
   (`min-width`) and the icon (`width`/`min-width`/`height`, no shrink):
   left to flex sizing, the closed circle squashed narrower than the icon on
   phones.
 - The label stays in the DOM (max-width 0 when closed) and is also the
-  `aria-label`. Hidden in print. Dark mode: mint background, dark text.
+  `aria-label`. Hidden in print.
 
 ## Homepage card text width (`fit-to-title.js`)
 

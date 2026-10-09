@@ -1194,9 +1194,8 @@ body.dark-mode .engagement-type-pill svg {
 /* VIDEO EMBED (individual video pages, _layouts/video.html) */
 
 // Full content width on phones (to the page margins), capped and centred
-// on wider screens. The iframe keeps the embed's proportions via inline
-// aspect-ratio, with its native height as a floor (min-height) so narrow
-// screens don't squash the post header.
+// on wider screens. The iframe's proportions come from the inline
+// aspect-ratio (16:9 by default).
 .video-embed-wrap {
   width: 100%;
   max-width: 800px;
@@ -2471,15 +2470,25 @@ body.dark-mode .back-to-top:hover {
 // `top` and `right` from the header). Icon on the right end, text opening
 // leftwards. The text is always in the DOM (screen readers get it) but
 // collapsed to zero width until the button is open: intro (.is-open),
-// hover, or keyboard focus. Below the sticky phone header (z-index 50) so
+// hover, or keyboard focus. Fixed position, so it overlays the page and
+// never changes its spacing. Below the sticky phone header (z-index 50) so
 // the mobile menu covers it.
 //
 // Sizes are explicit (button min-width, icon width/height, flex-shrink 0)
 // rather than left to flex sizing, which squashed the closed circle
-// narrower than the icon in some phone browsers.
-$awareness-size: 2.5rem;
+// narrower than the icon in some phone browsers. Phones 2.5rem; from 768px
+// everything is 1.5x (--ab-* custom properties).
+// Colour: SDG Goal 3 "Good health and well-being" green (#4C9F38, the UN's
+// official SDG colour), the same in light and dark mode.
+$sdg3-green: #4c9f38;
 
 .awareness-btn {
+  --ab-size: 2.5rem;
+  --ab-font: 0.8rem;
+  --ab-icon: 0.95rem;
+  --ab-gap: 1rem;
+  --ab-open: 26rem;
+
   position: fixed;
   top: 0;
   right: 0;
@@ -2488,14 +2497,14 @@ $awareness-size: 2.5rem;
   flex-direction: row-reverse;
   align-items: center;
   box-sizing: border-box;
-  height: $awareness-size;
-  min-width: $awareness-size;
+  height: var(--ab-size);
+  min-width: var(--ab-size);
   max-width: calc(100vw - 1.5rem);
   padding: 0;
   border-radius: 999px;
-  background: #1f352f; // hero card green, darker than $linkColor
-  color: #f7f6f1;
-  font-size: 0.8rem;
+  background: $sdg3-green;
+  color: #ffffff;
+  font-size: var(--ab-font);
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
@@ -2504,35 +2513,82 @@ $awareness-size: 2.5rem;
   box-shadow: 0 2px 8px rgba(32, 36, 33, 0.22);
 }
 
+@media (min-width: 768px) {
+  .awareness-btn {
+    --ab-size: 3.75rem;
+    --ab-font: 1.2rem;
+    --ab-icon: 1.425rem;
+    --ab-gap: 1.5rem;
+    --ab-open: 39rem;
+  }
+}
+
 .awareness-btn[hidden] {
   display: none;
 }
 
 .awareness-btn:hover,
 .awareness-btn:focus-visible {
-  color: #f7f6f1;
+  color: #ffffff;
   text-decoration: none;
 }
 
 .awareness-btn:focus-visible {
-  outline: 2px solid #1f352f;
+  outline: 2px solid $sdg3-green;
   outline-offset: 2px;
 }
 
 .awareness-btn-icon {
-  flex: 0 0 $awareness-size;
-  width: $awareness-size;
-  min-width: $awareness-size;
-  height: $awareness-size;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative;
+  flex: 0 0 var(--ab-size);
+  width: var(--ab-size);
+  min-width: var(--ab-size);
+  height: var(--ab-size);
 }
 
 .awareness-btn-icon i,
 .awareness-btn-icon svg {
   flex-shrink: 0;
-  font-size: 0.95rem;
+  font-size: var(--ab-icon);
+}
+
+// Two icons stacked in the circle: the video icon while the text is open,
+// the awareness ribbon once it shrinks. They cross-fade.
+.awareness-ico {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.awareness-ico-open {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+.awareness-ico-closed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+// The ribbon is a narrow glyph, so it's drawn 25% larger than the video icon.
+.awareness-ico-closed i,
+.awareness-ico-closed svg {
+  font-size: calc(var(--ab-icon) * 1.25);
+}
+
+.awareness-btn.is-open .awareness-ico-open,
+.awareness-btn:focus-visible .awareness-ico-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.awareness-btn.is-open .awareness-ico-closed,
+.awareness-btn:focus-visible .awareness-ico-closed {
+  opacity: 0;
+  transform: scale(0.7);
 }
 
 .awareness-btn-text {
@@ -2548,33 +2604,33 @@ $awareness-size: 2.5rem;
 
 .awareness-btn.is-open .awareness-btn-text,
 .awareness-btn:focus-visible .awareness-btn-text {
-  max-width: 26rem;
+  max-width: var(--ab-open);
   opacity: 1;
-  padding-left: 1rem;
+  padding-left: var(--ab-gap);
 }
 
 // Hover only where hovering exists, so a tap on a phone doesn't leave it stuck open.
 @media (hover: hover) {
   .awareness-btn:hover .awareness-btn-text {
-    max-width: 26rem;
+    max-width: var(--ab-open);
     opacity: 1;
-    padding-left: 1rem;
+    padding-left: var(--ab-gap);
+  }
+
+  .awareness-btn:hover .awareness-ico-open {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .awareness-btn:hover .awareness-ico-closed {
+    opacity: 0;
+    transform: scale(0.7);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .awareness-btn-text { transition: none; }
-}
-
-body.dark-mode .awareness-btn,
-body.dark-mode .awareness-btn:hover,
-body.dark-mode .awareness-btn:focus-visible {
-  background: #9ab8aa;
-  color: #202421;
-}
-
-body.dark-mode .awareness-btn:focus-visible {
-  outline-color: #9ab8aa;
+  .awareness-btn-text,
+  .awareness-ico { transition: none; }
 }
 
 @media print {
