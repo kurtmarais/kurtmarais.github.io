@@ -1191,6 +1191,26 @@ body.dark-mode .engagement-type-pill svg {
   margin-bottom: 0;
 }
 
+/* VIDEO EMBED (individual video pages, _layouts/video.html) */
+
+// Width is capped inline at the platform's embed width; the height stays
+// at the embed's own (fixed) height, as LinkedIn's frame doesn't scale.
+.video-embed-wrap {
+  width: 100%;
+}
+
+.video-embed {
+  display: block;
+  width: 100%;
+  border: 1px solid #d9d9d1;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+body.dark-mode .video-embed {
+  border-color: #444943;
+}
+
 /* POSTER EMBED (individual poster pages) */
 
 .poster-embed-wrap {

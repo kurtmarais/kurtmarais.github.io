@@ -1,0 +1,62 @@
+---
+layout: default
+---
+
+{% comment %}
+  Video page: everything comes from the matching engagements.yml entry
+  (looked up by URL, same as poster.html). The embed iframe loads lazily
+  and is capped at the platform's own embed width.
+{% endcomment %}
+{% assign video_data = site.data.engagements | where: "url", page.url | first %}
+{% assign embed_w = video_data.embed_width | default: 504 %}
+{% assign embed_h = video_data.embed_height | default: 399 %}
+
+<article class="row g-5 mb-5">
+  <div class="col-md-12 publication-page">
+
+    <p class="eyebrow">
+      Video{% if video_data.featured %} · Featured{% endif %}
+    </p>
+
+    <h1 class="fw-bold mb-3">{{ video_data.title }}</h1>
+
+    <p class="publication-byline text-muted">
+      {{ video_data.publication }}{% if video_data.start_date %} · {{ video_data.start_date | date: "%-d %B %Y" }}{% endif %}
+    </p>
+
+    {% assign video_text = video_data.abstract | default: video_data.description %}
+    {% if video_text %}
+      <div class="publication-abstract">{{ video_text | markdownify }}</div>
+    {% endif %}
+
+    {% if video_data.keywords %}
+      <div class="publication-keywords-row mt-3">
+        {% for keyword in video_data.keywords %}
+          <span class="publication-keyword-badge">{{ keyword }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if video_data.embed_url %}
+      <div class="video-embed-wrap mt-4" style="max-width: {{ embed_w }}px;">
+        <iframe
+          src="{{ video_data.embed_url }}"
+          class="video-embed"
+          width="{{ embed_w }}"
+          height="{{ embed_h }}"
+          frameborder="0"
+          allowfullscreen
+          loading="lazy"
+          title="{{ video_data.title | escape }}"
+        ></iframe>
+      </div>
+    {% endif %}
+
+    {% if video_data.source_url %}
+      <p class="mt-3">
+        <a class="text-link" href="{{ video_data.source_url }}" target="_blank" rel="noopener noreferrer">Open on {{ video_data.source_name | default: "the original site" }} →</a>
+      </p>
+    {% endif %}
+
+  </div>
+</article>

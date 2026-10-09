@@ -12,6 +12,9 @@ collections:
   posters:
     output: true
     permalink: /posters/:slug/
+  videos:
+    output: true
+    permalink: /videos/:slug/
 plugins:
   - jekyll-feed
   - jekyll-sitemap

@@ -133,6 +133,9 @@ Setting `media_format` switches an entry to the media-card layout
 - `podcast` → play-icon overlay (same as video), "Listen to episode →" (with
   `type: media`, the podcast icon and "Podcast" label come from here, and the
   entry can appear in the homepage "In the Media" strip when `featured`)
+- `video` with `url: "/videos/<slug>/"` → links to a video page on this
+  site that embeds the video (e.g. a LinkedIn post); see `_videos/README.md`
+  for the `embed_url` / `source_url` fields
 - `poster` → wide thumbnail crop, "View poster →", links to the poster page
 
 So a recorded seminar can be `type: seminar` + `media_format: video` — it

@@ -114,6 +114,29 @@
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "Mental Health Awareness Month: how emotions spread online"   # placeholder: replace with your title
+  type: "media"
+  year: 2026
+  media_format: "video"
+  featured: true
+  publication: "Stellenbosch University"   # placeholder: confirm who posted/produced the video
+  start_date: "2026-10-09"
+  end_date: "2026-10-09"
+  image: "/assets/img/engagements/su_thumbnail.png"
+  url: "/videos/world-mental-health-day-2026/"
+  description: "For Mental Health Awareness Month in South Africa and World Mental Health Day (10 October), Dr Kurt Marais discusses how emotions spread through online social networks, and why negative sentiment can be reinforced among people living with depression."   # placeholder: adapt from the LinkedIn post
+  abstract: |   # placeholder: adapt from the LinkedIn post. Shown above the video on its page.
+    October is Mental Health Awareness Month in South Africa, and 10 October is World Mental Health Day.
+
+    In this short video, Dr Kurt Marais of Stellenbosch University's Department of Logistics talks about his research on how emotional content spreads through online social networks. His work found that negative sentiment can be reinforced when connected users share the same emotional state, an effect that is particularly pronounced among people living with depression.
+  embed_url: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7514319500067000320?compact=1"
+  embed_width: 504
+  embed_height: 399
+  source_url: "https://www.linkedin.com/feed/update/urn:li:activity:7514320484583395329/"
+  source_name: "LinkedIn"
+  keywords: ["mental health awareness", "world mental health day", "social media", "depression"]
+  tags: ["mental health", "linkedin", "video"]
+
 - title: "Spektrum op RSG met Suzanne Paxton"   # placeholder: replace
   type: "media"
   year: 2026
