@@ -135,7 +135,9 @@ toolbar/zoom) sized to that poster's own aspect ratio via inline
 `_videos/*.md` are two-line stubs (`layout: video`), filename = slug,
 collection `videos` (`permalink: /videos/:slug/`). `_layouts/video.html`
 looks up its `engagements.yml` entry by URL and shows title, publication ·
-date, `abstract` (Markdown, falls back to `description`), keywords, then
+date, `page_text` (Markdown, video page only; falls back to `abstract`,
+then `description`; use `page_text`, as an `abstract` also adds the
+Abstract toggle to the Engagements card and stretches its thumbnail), keywords, then
 the platform's embed iframe from `embed_url`, in a 16:9 frame (inline
 `aspect-ratio`; an entry can override the ratio with `embed_width` /
 `embed_height`). The frame is full content width on phones and capped at

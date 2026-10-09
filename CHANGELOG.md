@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-09 (5)
+
+### Changed
+- World Mental Health Day 2026 video: no Abstract toggle on its Engagements
+  card (it stretched the card and distorted the thumbnail). The full post
+  text still shows on the video page (`page_text` instead of `abstract`).
+
 ## 2026-10-09 (4)
 
 ### Changed

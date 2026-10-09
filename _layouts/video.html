@@ -26,7 +26,7 @@ layout: default
       {{ video_data.publication }}{% if video_data.start_date %} · {{ video_data.start_date | date: "%-d %B %Y" }}{% endif %}
     </p>
 
-    {% assign video_text = video_data.abstract | default: video_data.description %}
+    {% assign video_text = video_data.page_text | default: video_data.abstract | default: video_data.description %}
     {% if video_text %}
       <div class="publication-abstract">{{ video_text | markdownify }}</div>
     {% endif %}

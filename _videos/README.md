@@ -6,7 +6,10 @@ Same pattern as `_posters/`: each `.md` here is a near-empty stub
 `_data/engagements.yml` entry, found by `url`:
 
 - `title`, `publication`, `start_date`, `keywords` (header)
-- `abstract` (Markdown, shown above the video; falls back to `description`)
+- `page_text` (Markdown, shown above the video on its page only; falls
+  back to `abstract`, then `description`). Prefer `page_text` over
+  `abstract`: an `abstract` also adds a collapsible Abstract toggle to the
+  Engagements card, which stretches the card and distorts its thumbnail.
 - `embed_url` (the `src` of the platform's embed iframe, e.g. LinkedIn's
   "Embed this post" code). The frame is 16:9; optional `embed_width` /
   `embed_height` set a different ratio (e.g. 9 and 16 for a vertical video)
