@@ -165,7 +165,9 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
   `-closed`), following the same open states as the text. The ribbon is
   drawn at 1.25x `--ab-icon` (it's a narrow glyph).
 - Colour: SDG Goal 3 "Good health and well-being" green `#4C9F38`
-  (`$sdg3-green`), white text, same in light and dark mode. White on it is
+  (`$sdg3-green`), white text and icons, same in light and dark mode
+  (dark mode needs an explicit `body.dark-mode .awareness-btn { color }`:
+  the site-wide `body.dark-mode a` mint rule outranks `.awareness-btn`). White on it is
   3.3:1, below the 4.5:1 normally wanted for small text.
 - `position: fixed`, right = header's right edge on every screen size
   (`row-reverse`, so the icon is on the right and the text opens

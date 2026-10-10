@@ -2533,6 +2533,14 @@ $sdg3-green: #4c9f38;
   text-decoration: none;
 }
 
+// The site-wide `body.dark-mode a` rule (mint) outranks `.awareness-btn`,
+// so dark mode needs its own white, or the ribbon and text turn mint.
+body.dark-mode .awareness-btn,
+body.dark-mode .awareness-btn:hover,
+body.dark-mode .awareness-btn:focus-visible {
+  color: #ffffff;
+}
+
 .awareness-btn:focus-visible {
   outline: 2px solid $sdg3-green;
   outline-offset: 2px;
