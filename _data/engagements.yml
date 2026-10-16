@@ -64,6 +64,24 @@
   #keywords: ["depression", "emotional reinforcement"]   # hidden, search-only on media cards
   #tags: ["mental health", "media coverage"]               # hidden, search-only
 
+- title: "Get to know the members of ORSSA: Kurt Marais"
+  media_format: article
+  url: "https://www.orssa.org.za/post/get-to-know-the-members-of-orssa-kurt-marais"
+  image: "https://static.wixstatic.com/media/cdd995_3dbe2d43d7e84d78a103b0e37539eea4~mv2.jpg/v1/fill/w_1000,h_929,al_c,q_85,usm_0.66_1.00_0.01/cdd995_3dbe2d43d7e84d78a103b0e37539eea4~mv2.jpg"
+  publication: "Operations Research Society of South Africa (ORSSA)"
+  start_date: "2026-10-16"
+  end_date: "2026-10-16"
+  year: 2026
+  type: "blog_post"
+  featured: false
+  description: "A short interview in ORSSA's Get to Know the Members series: what drew Kurt to operations research, how his research applies optimisation thinking to mental health and online behaviour, and why curiosity matters most for early-career OR practitioners."
+  keywords:
+    - operations research
+    - ORSSA
+    - mental health
+    - natural language processing
+  tags: ["interview", "orssa", "member profile", "optimisation", "stellenbosch university"]
+
 - title: "Extracting Bluesky posts with Python in 2026"
   media_format: article
   url: "https://medium.com/@kurtmarais/e7d80a001947?source=friends_link&sk=3e4ff1f02cb1b253541664c9ce38182b"        # or wherever the post actually lives
