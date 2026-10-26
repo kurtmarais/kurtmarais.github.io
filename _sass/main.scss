@@ -2452,8 +2452,8 @@ body.dark-mode .back-to-top:hover {
 
 /* PUBLICATIONS LIST (_layouts/publications.html, _includes/publication-entry.html,
    publications-cite.js). One section per kind of output; each entry has a
-   numbered tile (J1, R1, D1...), bold own name, type/status badges, an
-   optional live journal impact badge, and Abstract / Cite panels. */
+   bold own name, type/status badges, an optional live journal impact
+   badge, and Abstract / Cite panels (not for papers under review). */
 
 .pub-section {
   margin-bottom: 1.25rem;
@@ -2479,28 +2479,7 @@ body.dark-mode .back-to-top:hover {
 }
 
 .pub-entry {
-  display: grid;
-  grid-template-columns: 2.6rem minmax(0, 1fr);
-  gap: 0 1rem;
   padding: 0.9rem 0;
-}
-
-.pub-num {
-  width: 2.6rem;
-  height: 2.6rem;
-  border-radius: 8px;
-  background: rgba(54, 91, 82, 0.1);
-  color: $linkColor;
-  font-size: 0.85rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pub-num.is-review {
-  background: rgba(201, 151, 40, 0.15);
-  color: #8a6414;
 }
 
 .pub-entry .publication-title {
@@ -2736,23 +2715,8 @@ body.dark-mode .back-to-top:hover {
   font-weight: 500;
 }
 
-@media (max-width: 767px) {
-  .pub-entry {
-    grid-template-columns: 2.2rem minmax(0, 1fr);
-    gap: 0 0.75rem;
-  }
-
-  .pub-num {
-    width: 2.2rem;
-    height: 2.2rem;
-    font-size: 0.78rem;
-  }
-}
-
 body.dark-mode .pub-section-label { color: #aeb3ae; }
 body.dark-mode .pub-section-label::after { background: #3a403b; }
-body.dark-mode .pub-num { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
-body.dark-mode .pub-num.is-review { background: rgba(214, 178, 92, 0.16); color: #d9b95e; }
 body.dark-mode .pub-entry .publication-title a,
 body.dark-mode .pub-me { color: #f2f2ee; }
 body.dark-mode .pub-entry .publication-title a:hover { color: #9ab8aa; }

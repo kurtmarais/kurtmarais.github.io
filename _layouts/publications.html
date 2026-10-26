@@ -78,14 +78,13 @@ layout: default
 </div>
 
 {% comment %}
-  Publications list: one section per kind of output, newest first, each
-  entry numbered within its section (J1, J2… oldest = 1). Items with
+  Publications list: one section per kind of output, newest first. Items with
   `status: under-review` or `status: revise-resubmit` go in "Under review"
   (filter type "under-review"); `status: accepted` stays in its type's
   section with an Accepted badge. Entry markup: _includes/publication-entry.html.
 {% endcomment %}
 {% assign pubs_sorted = site.publications | sort: "year" | reverse %}
-{% assign pub_sections = "journal-article|Journal articles|J;conference-paper|Conference papers|C;book-chapter|Book chapters|B;under-review|Under review|R;dataset|Datasets|D;theses|Theses|T" | split: ";" %}
+{% assign pub_sections = "journal-article|Journal articles;conference-paper|Conference papers;book-chapter|Book chapters;under-review|Under review;dataset|Datasets;theses|Theses" | split: ";" %}
 
 <div class="publications-list">
 
@@ -105,16 +104,13 @@ layout: default
       <section class="pub-section" data-section="{{ sec_key }}">
         <h4 class="pub-section-label">{{ sec_parts[1] }}</h4>
         <div class="pub-section-list">
-          {% assign n = sec_count %}
           {% for item in pubs_sorted %}
             {% assign cat = item.type %}
             {% assign in_review = false %}
             {% if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign cat = "under-review" %}{% assign in_review = true %}{% endif %}
             {% if cat == "thesis" or cat == "dissertation" %}{% assign cat = "theses" %}{% endif %}
             {% if cat == sec_key %}
-              {% capture entry_num %}{{ sec_parts[2] }}{{ n }}{% endcapture %}
-              {% include publication-entry.html item=item num=entry_num review=in_review %}
-              {% assign n = n | minus: 1 %}
+              {% include publication-entry.html item=item review=in_review %}
             {% endif %}
           {% endfor %}
         </div>

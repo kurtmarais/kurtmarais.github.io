@@ -81,13 +81,15 @@ Things worth knowing:
 ## Publications list layout
 
 - Sections, in this order: Journal articles, Conference papers, Book
-  chapters, Under review, Datasets, Theses (thesis + dissertation). A
-  section only appears if it has entries. Each entry is numbered within its
-  section, oldest = 1 (J1, J2...; R for under review, D datasets, T theses).
+  chapters, Under review, Datasets, Theses (thesis + dissertation), newest
+  first. A section only appears if it has entries. No numbering or tiles.
 - `status: under-review` or `revise-resubmit` moves an item into "Under
-  review" (filter type "Under review", amber number, status badge). Such
-  items get **no** Google Scholar / schema.org tags on their own page, and
-  that page says "Under review". `status: accepted` keeps the item in its
+  review" (filter type "Under review"). On the list it shows only the
+  title, authors and the status badge: no journal name, abstract, Cite or
+  links. Its own page shows "Under review" and "Manuscript under review"
+  with no journal, abstract or Google Scholar / schema.org tags, and
+  llms.txt lists it without venue or abstract. `journal` and `abstract` can
+  stay in the file ready for publication; they're just not shown. `status: accepted` keeps the item in its
   type's section with an "Accepted" badge. Remove `status` once published.
 - Authors containing `publication_author` from `_config.yml` ("Marais, K")
   are bold.

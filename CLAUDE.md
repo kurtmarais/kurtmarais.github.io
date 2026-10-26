@@ -197,14 +197,16 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 
 Full notes in `_publications/README.md`. Sections by output kind (journal
 articles, conference papers, book chapters, under review, datasets, theses),
-entries numbered within a section (J1 = oldest). Markup in
+newest first, no numbering or tiles (both rejected). Markup in
 `_includes/publication-entry.html`; panels, citation formats and the live
 journal impact badge in `assets/js/publications-cite.js`; sorting runs within
 each `.pub-section-list` and empty sections hide (`publications-filters.js`).
 The original Filters (type, sort, search) are the only filter UI; the title
 link still opens the item's own page in a new tab. `status: under-review` /
 `revise-resubmit` puts an item in "Under review" (filter value
-`under-review`) and drops its Scholar / schema.org tags. Own name bold via
+`under-review`): title, authors and status badge only (no journal,
+abstract, Cite or links, on the list or its own page), and no Scholar /
+schema.org tags. Own name bold via
 `publication_author` in `_config.yml`. No citation counts, "New" badges or
 publication counts by design. The impact badge is OpenAlex 2-year mean
 citedness (live, cached a week, hidden when unknown); `impact_factor` in an
