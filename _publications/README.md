@@ -6,7 +6,7 @@ truth for the Publications page; there is no `_data/publications.yml`.
 
 Each file feeds three places:
 - `_layouts/publications.html` — the full `/publications/` list, grouped by
-  year, with filter/sort/search.
+  type (or by year when sorted by date), with filter/sort/search.
 - `_layouts/publication.html` — the individual page for that item
   (`permalink: /publications/:slug/`, from `_config.yml`), including the
   Google Scholar Highwire meta tags (`citation_*`) and schema.org JSON-LD
@@ -84,6 +84,9 @@ Things worth knowing:
 - Sections, in this order: Journal articles, Conference papers, Book
   chapters, Under review, Datasets, Theses (thesis + dissertation), newest
   first. A section only appears if it has entries. No numbering or tiles.
+- Sort: "By type" (default) shows those sections; "Newest first" /
+  "Oldest first" regroup the list by year; A-Z / Z-A show one list
+  (`assets/js/list-grouping.js`).
 - `status: under-review` or `revise-resubmit` moves an item into "Under
   review" (filter type "Under review"). On the list it shows only the
   title, authors and the status badge: no journal name, abstract, Cite or

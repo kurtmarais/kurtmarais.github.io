@@ -1,0 +1,61 @@
+{% comment %}
+  One entry on the Engagements list (_layouts/engagements.html), in the
+  Publications list style: title, venue · location · date, keywords line,
+  badges, then links and Summary / Abstract panels.
+  Params: item, order (position in the default, newest-first order).
+  - Thumbnail: the entry's `image`, else its type icon in a grey tile. The
+    icon tile only shows when sorted by date or title (so every entry in a
+    mixed list lines up); in the type sections, entries without an image
+    have no thumbnail.
+  - Inside the "In the media" grid (.eng-grid) the same markup is styled as
+    a card: picture, type line, title, outlet and date; the whole card links.
+  - The type badge only shows outside the type sections (main.scss).
+{% endcomment %}
+{% assign item = include.item %}
+{% include engagement-type.html item=item %}
+{% assign href = item.url %}
+{% if item.url %}{% unless item.url contains "://" %}{% assign href = item.url | relative_url %}{% endunless %}{% endif %}
+{% assign panel_id = item.title | append: "-" | append: include.order | slugify %}
+{% assign show_abstract = false %}
+{% if item.abstract and item.media_format != "poster" %}{% assign show_abstract = true %}{% endif %}
+<div class="eng-wrap">
+  <article class="pub-entry eng-entry{% if item.image %} has-image{% endif %}"
+           data-year="{{ item.year }}"
+           data-type="{{ item.type }}"
+           data-sort-date="{{ item.start_date | default: item.sort_date }}">
+
+    {% if item.image %}
+      <a class="eng-thumb{% if item.media_format == 'poster' %} is-poster{% endif %}" {% if href %}href="{{ href }}" target="_blank" rel="noopener noreferrer"{% endif %} tabindex="-1" aria-hidden="true">
+        <img src="{% if item.image contains '://' %}{{ item.image }}{% else %}{{ item.image | relative_url }}{% endif %}" alt="" loading="lazy">
+        {% if item.media_format == "video" or item.media_format == "podcast" %}<span class="eng-play"><i class="fas fa-play"></i></span>{% endif %}
+      </a>
+    {% else %}
+      <span class="eng-thumb is-icon" aria-hidden="true">{% if type_icon != "" %}<i class="fas {{ type_icon }}"></i>{% endif %}</span>
+    {% endif %}
+
+    <div class="eng-body">
+      <span class="eng-card-type">{{ type_label }}{% if item.featured %} · Featured{% endif %}</span>
+      <strong class="publication-title eng-title">{% if href %}<a href="{{ href }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}</strong>
+      <div class="pub-venue eng-venue"><em>{{ item.publication | default: item.venue }}</em>{% if item.location and item.publication == nil %} · {{ item.location }}{% endif %}{% if item.start_date or item.date %}{% include engagement-date.html item=item %}{% else %} · {{ item.year }}{% endif %}</div>
+
+      {% if item.keywords and item.keywords.size > 0 %}
+      <div class="pub-keywords">{% for keyword in item.keywords %}<span class="pub-kw">{{ keyword }}</span>{% unless forloop.last %}<span class="pub-kw-sep" aria-hidden="true"> · </span>{% endunless %}{% endfor %}</div>
+      {% endif %}
+
+      <div class="pub-badges{% unless item.featured %} is-type-only{% endunless %}">{% if type_icon != "" %}<span class="pub-badge is-type"><i class="fas {{ type_icon }}" aria-hidden="true"></i>{{ type_label }}</span>{% endif %}{% if item.featured %}<span class="pub-badge is-metric">Featured</span>{% endif %}</div>
+
+      {% if href or item.description or show_abstract %}
+      <div class="pub-actions">
+        {% if href %}<a href="{{ href }}" target="_blank" rel="noopener noreferrer">{% case item.media_format %}{% when "video" %}Watch video{% when "podcast" %}Listen to episode{% when "poster" %}View poster{% else %}Read article{% endcase %} →</a>{% endif %}
+        {% if item.description %}<button type="button" class="pub-toggle" aria-expanded="false" aria-controls="sum-{{ panel_id }}">Summary</button>{% endif %}
+        {% if show_abstract %}<button type="button" class="pub-toggle" aria-expanded="false" aria-controls="abs-{{ panel_id }}">Abstract</button>{% endif %}
+      </div>
+      {% endif %}
+
+      {% if item.description %}<div class="pub-panel pub-abstract" id="sum-{{ panel_id }}" hidden><p>{{ item.description }}</p></div>{% endif %}
+      {% if show_abstract %}<div class="pub-panel pub-abstract" id="abs-{{ panel_id }}" hidden><p>{{ item.abstract }}</p></div>{% endif %}
+
+      {% if item.tags %}<span class="engagement-tags" hidden>{{ item.tags | join: ", " }}</span>{% endif %}
+    </div>
+  </article>
+</div>

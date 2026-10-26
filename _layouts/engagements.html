@@ -65,10 +65,11 @@ layout: default
           <div class="filter-control" data-filter="sort">
             <span class="filter-mobile-label">Sort</span>
             <button type="button" class="filter-toggle" aria-expanded="false">
-              <span class="filter-value">Newest first</span>
+              <span class="filter-value">By type</span>
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
             <div class="filter-dropdown" hidden>
+              <button type="button" class="filter-option" data-value="type">By type</button>
               <button type="button" class="filter-option" data-value="newest">Newest first</button>
               <button type="button" class="filter-option" data-value="oldest">Oldest first</button>
               <button type="button" class="filter-option" data-value="az">Sort A-Z</button>
@@ -91,105 +92,48 @@ layout: default
 
     <div class="ecm-shell" id="ecm-shell">
     <div class="ecm-content">
-    <div class="engagements-list">
+    {% comment %}
+      Engagements list, in the Publications list style: one section per kind
+      (In the media as a picture grid, then conference presentations,
+      posters, seminars and panels, blog posts), newest first within each.
+      Sort "Newest first" / "Oldest first" regroups it by year and A-Z / Z-A
+      makes one list (assets/js/list-grouping.js). Entry markup:
+      _includes/engagement-entry.html.
+      Default order: by year, newest first; within a year, entries with a
+      start_date by date (newest first), then undated ones in file order.
+    {% endcomment %}
+    {% assign eng_years = site.data.engagements | group_by: "year" | sort: "name" | reverse %}
+    {% assign eng_all = "" | split: "" %}
+    {% for yg in eng_years %}
+      {% assign eng_dated = yg.items | where_exp: "e", "e.start_date" | sort: "start_date" | reverse %}
+      {% assign eng_undated = yg.items | where_exp: "e", "e.start_date == nil" %}
+      {% assign eng_all = eng_all | concat: eng_dated | concat: eng_undated %}
+    {% endfor %}
+    {% assign eng_sections = "media|In the media;conference|Conference presentations;poster|Posters;talk|Seminars and panels;blog|Blog posts;other|Other engagements" | split: ";" %}
 
-      {% assign grouped_engagements = site.data.engagements | group_by: "year" | sort: "name" | reverse %}
-      {% assign engagement_order = 0 %}
-      {% for group in grouped_engagements %}
-        <section class="engagement-year-group" data-year="{{ group.name }}">
+    <div class="engagements-list is-by-type">
 
-          <h3 class="engagement-year-heading fw-bold pb-3 mb-4">{{ group.name }}</h3>
-
-          {% for item in group.items %}
-
-            {% assign engagement_order = engagement_order | plus: 1 %}
-            {% include engagement-type.html item=item %}
-
-            <div class="engagement-entry-wrap">
-
-              <article
-                class="engagement-entry{% if item.media_format %} engagement-media-entry{% endif %}"
-                data-year="{{ item.year }}"
-                data-type="{{ item.type }}"
-                data-order="{{ engagement_order }}"
-                data-sort-date="{% if item.start_date %}{{ item.start_date }}{% else %}{{ item.sort_date }}{% endif %}"
-              >
-                {% if item.media_format %}
-                  <a
-                    href="{{ item.url }}"
-                    class="engagement-media-thumb{% if item.media_format == "poster" %} poster-media-thumb{% endif %}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="{{ item.title }}"
-                  >
-                    <img
-                      src="{% if item.image contains '://' %}{{ item.image }}{% else %}{{ item.image | relative_url }}{% endif %}"
-                      alt="{{ item.title }}"
-                    >
-                    {% if item.media_format == "video" or item.media_format == "podcast" %}
-                      <span class="engagement-media-play-icon">
-                        <i class="fas fa-play"></i>
-                      </span>
-                    {% endif %}
-                  </a>
-                {% endif %}
-
-                <div class="engagement-content">
-                  <div class="engagement-meta">
-                    {% if type_icon != "" %}<span class="engagement-type-pill is-{{ type_icon }}"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{% endif %}
-                    <span class="meta-text">{% if type_icon != "" %}{{ type_label }} · {% endif %}
-                    {% if item.publication %}{{ item.publication }}{% else %}{{ item.venue }}{% if item.location %} · {{ item.location }}{% endif %}{% endif %}
-                    {% include engagement-date.html item=item %}
-                    {% if item.featured %}<span class="engagement-featured-badge">Featured</span>{% endif %}</span>
-                  </div>
-
-                  <h4 class="engagement-title">{{ item.title }}</h4>
-
-                  {% if item.description %}
-                    <p class="engagement-description">{{ item.description }}</p>
-                  {% endif %}
-
-                  {% if item.abstract and item.media_format != "poster" %}
-                    <details class="abstract-block">
-                      <br>
-                      <summary>Abstract</summary>
-                      <p>{{ item.abstract }}</p>
-                      <br>
-                    </details>
-                  {% endif %}
-
-                  {% if item.keywords %}
-                    <div class="engagement-keywords-row">
-                      {% for keyword in item.keywords %}
-                        <span class="engagement-keyword-badge">{{ keyword }}</span>
-                      {% endfor %}
-                    </div>
-                  {% endif %}
-
-                  {% if item.tags %}
-                    <span class="engagement-tags" hidden>{{ item.tags | join: ", " }}</span>
-                  {% endif %}
-
-                  {% if item.media_format %}
-                    <a
-                      href="{{ item.url }}"
-                      class="engagement-media-link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {% if item.media_format == "video" %}Watch video →{% elsif item.media_format == "podcast" %}Listen to episode →{% elsif item.media_format == "poster" %}View poster →{% else %}Read article →{% endif %}
-                    </a>
-                  {% endif %}
-                </div>
-              </article>
-
-              <br><br>
-
-            </div>
-
+      {% for sec in eng_sections %}
+        {% assign sec_parts = sec | split: "|" %}
+        {% capture sec_html %}
+          {% for item in eng_all %}
+            {% case item.type %}
+              {% when "media", "video", "podcast", "newspaper", "interview", "radio" %}{% assign cat = "media" %}
+              {% when "conference" %}{% assign cat = "conference" %}
+              {% when "poster" %}{% assign cat = "poster" %}
+              {% when "seminar", "panel" %}{% assign cat = "talk" %}
+              {% when "blog_post" %}{% assign cat = "blog" %}
+              {% else %}{% assign cat = "other" %}
+            {% endcase %}
+            {% if cat == sec_parts[0] %}{% include engagement-entry.html item=item order=forloop.index %}{% endif %}
           {% endfor %}
-
+        {% endcapture %}
+        {% if sec_html contains "eng-wrap" %}
+        <section class="pub-section" data-section="{{ sec_parts[0] }}">
+          <h4 class="pub-section-label">{{ sec_parts[1] }}</h4>
+          <div class="pub-section-list{% if sec_parts[0] == 'media' %} eng-grid{% endif %}">{{ sec_html }}</div>
         </section>
+        {% endif %}
       {% endfor %}
 
       <p class="empty-state" hidden>No engagements match your filters.</p>
@@ -206,5 +150,6 @@ layout: default
 
   </div>
 
+<script src="{{ '/assets/js/list-grouping.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/engagements-filters.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/conference-map.js' | relative_url }}"></script>

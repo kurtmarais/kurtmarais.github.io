@@ -7,19 +7,15 @@
   var mobileToggle = document.querySelector(".filters-toggle");
   var filterControls = document.querySelectorAll(".filter-control");
   var list = document.querySelector(".engagements-list");
-  var yearGroups = document.querySelectorAll(".engagement-year-group");
   var emptyState = document.querySelector(".empty-state");
   var topicsInput = document.querySelector(".filter-search-input");
 
   var state = {
     types: new Set(),      // empty set = "all types"
-    sort: "newest",        // "newest" | "oldest"
+    years: new Set(),      // empty set = "all years"
+    sort: "type",          // "type" | "newest" | "oldest" | "az" | "za"
     topics: ""              // lowercase search string
   };
-
-  function hasActiveFilters() {
-    return state.types.size > 0 || state.topics.length > 0;
-  }
 
   /* ---------- Mobile "Filters" panel toggle ---------- */
 
@@ -120,6 +116,29 @@
     }
   }
 
+  /* ---------- Years: multi-select ---------- */
+
+  var yearControl = document.querySelector('.filter-control[data-filter="years"]');
+  if (yearControl) {
+    var yearValueLabel = yearControl.querySelector(".filter-value");
+    var yearCheckboxes = yearControl.querySelectorAll('input[type="checkbox"]');
+
+    yearCheckboxes.forEach(function (checkbox) {
+      checkbox.addEventListener("change", function () {
+        if (checkbox.checked) {
+          state.years.add(checkbox.value);
+        } else {
+          state.years.delete(checkbox.value);
+        }
+        var picked = Array.from(yearCheckboxes)
+          .filter(function (cb) { return cb.checked; })
+          .map(function (cb) { return cb.value; });
+        yearValueLabel.textContent = picked.length ? picked.join(", ") : "All years";
+        applyFilters();
+      });
+    });
+  }
+
   /* ---------- Sort: single-select ---------- */
 
   var sortControl = document.querySelector('.filter-control[data-filter="sort"]');
@@ -148,18 +167,32 @@
     });
   }
 
+  /* ---------- Summary / Abstract panels ---------- */
+
+  if (list) {
+    list.addEventListener("click", function (event) {
+      var btn = event.target.closest(".pub-toggle");
+      if (!btn) return;
+      var panel = document.getElementById(btn.getAttribute("aria-controls"));
+      if (!panel) return;
+      var open = btn.getAttribute("aria-expanded") !== "true";
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      panel.hidden = !open;
+    });
+  }
+
   /* ---------- Filtering ---------- */
 
   function entryMatches(entry) {
     var typeMatches = state.types.size === 0 || state.types.has(entry.getAttribute("data-type"));
+    var yearMatches = state.years.size === 0 || state.years.has(entry.getAttribute("data-year"));
     var topicMatches = true;
     if (state.topics) {
       var searchableSelectors = [
-        ".engagement-title",
-        ".engagement-meta",
-        ".engagement-description",
-        ".abstract-block p",
-        ".engagement-keywords-row",
+        ".eng-title",
+        ".eng-venue",
+        ".pub-keywords",
+        ".pub-badges",
         ".engagement-tags"
       ];
 
@@ -168,40 +201,34 @@
           var el = entry.querySelector(selector);
           return el ? el.textContent.toLowerCase() : "";
         })
+        .concat(Array.from(entry.querySelectorAll(".pub-panel")).map(function (el) {
+          return el.textContent.toLowerCase();
+        }))
         .join(" ");
 
       topicMatches = searchableText.indexOf(state.topics) !== -1;
     }
 
-    return typeMatches && topicMatches;
+    return typeMatches && yearMatches && topicMatches;
   }
 
   function applyFilters() {
-    var filtersActive = hasActiveFilters();
-
-    var allWraps = list ? list.querySelectorAll(".engagement-entry-wrap") : [];
+    var allWraps = list ? list.querySelectorAll(".eng-wrap") : [];
     var totalVisible = 0;
 
     allWraps.forEach(function (wrap) {
-      var entry = wrap.querySelector(".engagement-entry");
+      var entry = wrap.querySelector(".eng-entry");
       var matches = entry ? entryMatches(entry) : false;
-      wrap.hidden = !matches; // hide the wrapper (article + its trailing <br><br>) together, so no orphaned gaps remain
+      wrap.hidden = !matches;
       if (matches) totalVisible += 1;
     });
 
-    // works whether entries currently sit inside their year-group section (newest/oldest sort)
-    // or have been flattened directly under .engagements-list (A-Z/Z-A sort) — a group's own
-    // visible count naturally comes out to 0 once flattened, which hides it and its heading too.
-    yearGroups.forEach(function (group) {
-      var heading = group.querySelector(".engagement-year-heading");
-      var visibleInGroup = group.querySelectorAll(".engagement-entry-wrap:not([hidden])").length;
-
-      // headings disappear as soon as any filter is active, not only once a group is empty
-      if (heading) {
-        heading.hidden = filtersActive || visibleInGroup === 0;
-      }
-      group.hidden = visibleInGroup === 0;
-    });
+    // A section (type or year) hides when filters leave it with no entries.
+    if (list) {
+      list.querySelectorAll(".pub-section").forEach(function (section) {
+        section.hidden = !section.querySelector(".eng-wrap:not([hidden])");
+      });
+    }
 
     if (emptyState) {
       emptyState.hidden = totalVisible > 0;
@@ -210,97 +237,28 @@
 
   /* ---------- Sorting ---------- */
 
-  function applySort() {
-    if (!list) return;
-
-    if (state.sort === "az" || state.sort === "za") {
-      flattenAlphabetically();
-    } else {
-      regroupByYear();
+  // "By type" keeps the type sections; newest / oldest regroup the list by
+  // year; A-Z / Z-A make one list (assets/js/list-grouping.js).
+  var group = list && window.ListGrouping ? window.ListGrouping(list, {
+    wrap: ".eng-wrap",
+    year: function (wrap) {
+      var entry = wrap.querySelector(".eng-entry");
+      return entry ? parseInt(entry.getAttribute("data-year"), 10) || 0 : 0;
+    },
+    date: function (wrap) {
+      var entry = wrap.querySelector(".eng-entry");
+      return entry ? entry.getAttribute("data-sort-date") || "" : "";
+    },
+    title: function (wrap) {
+      var titleEl = wrap.querySelector(".eng-title");
+      return titleEl ? titleEl.textContent.trim().toLowerCase() : "";
     }
+  }) : null;
 
-    applyFilters(); // group membership / heading visibility may have just changed
+  function applySort() {
+    if (group) group(state.sort);
+    applyFilters();
   }
 
-  function getEntryTitle(wrap) {
-    var titleEl = wrap.querySelector(".engagement-title");
-    return titleEl ? titleEl.textContent.trim().toLowerCase() : "";
-  }
-
-  // sorts by title regardless of year — pulls every entry out of its year-group section and
-  // into one flat sequence directly under .engagements-list, since a title-based order chopped
-  // into year buckets wouldn't actually read as alphabetical.
-  function flattenAlphabetically() {
-    var wraps = Array.from(list.querySelectorAll(".engagement-entry-wrap"));
-
-    wraps.sort(function (a, b) {
-      var comparison = getEntryTitle(a).localeCompare(getEntryTitle(b));
-      return state.sort === "za" ? -comparison : comparison;
-    });
-
-    wraps.forEach(function (wrap) {
-      list.appendChild(wrap); // moves the wrap out of its section, directly under .engagements-list
-    });
-  }
-
-  // moves every entry back into the section matching its year, then orders the sections themselves
-  function regroupByYear() {
-    var wraps = Array.from(list.querySelectorAll(".engagement-entry-wrap"));
-
-    wraps.forEach(function (wrap) {
-      var entry = wrap.querySelector(".engagement-entry");
-      var year = entry ? entry.getAttribute("data-year") : null;
-      var targetGroup = list.querySelector('.engagement-year-group[data-year="' + year + '"]');
-      if (targetGroup) {
-        targetGroup.appendChild(wrap);
-      }
-    });
-
-    // restore a deterministic order within each year group, regardless of any A-Z/Z-A sort that
-    // ran previously — sort_date (if the entry has one) respects the newest/oldest direction;
-    // entries without one fall back to their fixed original position in engagements.yml.
-    yearGroups.forEach(function (group) {
-      var groupWraps = Array.from(group.querySelectorAll(".engagement-entry-wrap"));
-
-      groupWraps.sort(function (a, b) {
-        var entryA = a.querySelector(".engagement-entry");
-        var entryB = b.querySelector(".engagement-entry");
-        var dateA = entryA ? entryA.getAttribute("data-sort-date") : "";
-        var dateB = entryB ? entryB.getAttribute("data-sort-date") : "";
-
-        if (dateA && dateB && dateA !== dateB) {
-          return state.sort === "oldest"
-            ? (dateA < dateB ? -1 : 1)
-            : (dateA < dateB ? 1 : -1);
-        }
-        if (dateA && !dateB) return -1; // entries with a precise date sort before undated ones in the same year
-        if (!dateA && dateB) return 1;
-
-        var orderA = entryA ? parseInt(entryA.getAttribute("data-order"), 10) || 0 : 0;
-        var orderB = entryB ? parseInt(entryB.getAttribute("data-order"), 10) || 0 : 0;
-        return orderA - orderB; // fixed at render time — never affected by prior sorting
-      });
-
-      groupWraps.forEach(function (wrap) {
-        group.appendChild(wrap);
-      });
-    });
-
-    var groups = Array.from(list.querySelectorAll(".engagement-year-group"));
-    groups.sort(function (a, b) {
-      var yearA = parseInt(a.getAttribute("data-year"), 10) || 0;
-      var yearB = parseInt(b.getAttribute("data-year"), 10) || 0;
-      return state.sort === "newest" ? yearB - yearA : yearA - yearB;
-    });
-
-    groups.forEach(function (group) {
-      list.appendChild(group);
-    });
-  }
-
-  // Apply the default sort once on load — without this, the dropdown's
-  // "Newest first" label was cosmetic only, and entries just rendered in
-  // whatever order they happened to sit in the underlying YAML file until
-  // a user manually touched the Sort control.
   applySort();
 })();

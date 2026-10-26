@@ -12,7 +12,7 @@
 
   var state = {
     types: new Set(),
-    sort: "newest",
+    sort: "type",
     topics: ""
   };
 
@@ -198,49 +198,25 @@
 
   /* ---------- Sorting ---------- */
 
+  // "By type" keeps the type sections; newest / oldest regroup the list by
+  // year; A-Z / Z-A make one list (assets/js/list-grouping.js).
+  var group = list && window.ListGrouping ? window.ListGrouping(list, {
+    wrap: ".publication-entry-wrap",
+    year: function (wrap) {
+      var entry = wrap.querySelector(".publication-entry");
+      return entry ? parseInt(entry.getAttribute("data-year"), 10) || 0 : 0;
+    },
+    date: function () { return ""; },
+    title: function (wrap) {
+      var titleEl = wrap.querySelector(".publication-title");
+      return titleEl ? titleEl.textContent.trim().toLowerCase() : "";
+    }
+  }) : null;
+
   function applySort() {
-    if (!list) return;
-
-    // Entries are sorted within their own section (journal articles,
-    // under review, datasets...), so the sections keep their order.
-    var containers = list.querySelectorAll(".pub-section-list");
-    if (containers.length === 0) containers = [list];
-
-    Array.prototype.forEach.call(containers, function (container) {
-      sortWraps(container);
-    });
-
+    if (group) group(state.sort);
     applyFilters();
   }
 
-  function sortWraps(container) {
-    var wraps = Array.from(container.querySelectorAll(".publication-entry-wrap"));
-
-    wraps.sort(function (a, b) {
-      if (state.sort === "az" || state.sort === "za") {
-        var titleA = getEntryTitle(a);
-        var titleB = getEntryTitle(b);
-        var comparison = titleA.localeCompare(titleB);
-        return state.sort === "za" ? -comparison : comparison;
-      }
-
-      var yearA = getEntryYear(a);
-      var yearB = getEntryYear(b);
-      return state.sort === "newest" ? yearB - yearA : yearA - yearB;
-    });
-
-    wraps.forEach(function (wrap) {
-      container.appendChild(wrap);
-    });
-  }
-
-  function getEntryTitle(wrap) {
-    var titleEl = wrap.querySelector(".publication-title");
-    return titleEl ? titleEl.textContent.trim().toLowerCase() : "";
-  }
-
-  function getEntryYear(wrap) {
-    var entry = wrap.querySelector(".publication-entry");
-    return entry ? parseInt(entry.getAttribute("data-year"), 10) || 0 : 0;
-  }
+  applySort();
 })();

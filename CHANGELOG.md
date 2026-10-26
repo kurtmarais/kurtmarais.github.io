@@ -4,6 +4,21 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-30
+
+### Changed
+- Engagements page: rebuilt in the Publications page's style. Entries are
+  grouped by kind (In the media, Conference presentations, Posters,
+  Seminars and panels, Blog posts), each with title, venue and date,
+  keywords, and links, with summaries and abstracts behind toggles. "In the
+  media" is a picture grid; posters and blog posts show their thumbnails.
+- Engagements and Publications: the Sort menu starts on "By type". Choosing
+  "Newest first" or "Oldest first" regroups the list by year; A-Z / Z-A
+  show one list.
+
+### Fixed
+- Engagements: the Years filter now filters the list (it had no effect).
+
 ## 2026-10-29
 
 ### Added
