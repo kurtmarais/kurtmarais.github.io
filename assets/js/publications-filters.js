@@ -146,6 +146,7 @@
         ".publication-byline",
         ".publication-description",
         ".abstract-block",
+        ".pub-abstract",
         ".publication-keywords",
         ".publication-tags"
       ];
@@ -174,6 +175,15 @@
       if (matches) totalVisible += 1;
     });
 
+    // A section heading hides when filters leave it with no entries.
+    if (list) {
+      list.querySelectorAll(".pub-section").forEach(function (section) {
+        var anyVisible = Array.from(section.querySelectorAll(".publication-entry-wrap"))
+          .some(function (wrap) { return !wrap.hidden; });
+        section.hidden = !anyVisible;
+      });
+    }
+
     if (emptyState) {
       emptyState.hidden = totalVisible > 0;
     }
@@ -184,7 +194,20 @@
   function applySort() {
     if (!list) return;
 
-    var wraps = Array.from(list.querySelectorAll(".publication-entry-wrap"));
+    // Entries are sorted within their own section (journal articles,
+    // under review, datasets...), so the sections keep their order.
+    var containers = list.querySelectorAll(".pub-section-list");
+    if (containers.length === 0) containers = [list];
+
+    Array.prototype.forEach.call(containers, function (container) {
+      sortWraps(container);
+    });
+
+    applyFilters();
+  }
+
+  function sortWraps(container) {
+    var wraps = Array.from(container.querySelectorAll(".publication-entry-wrap"));
 
     wraps.sort(function (a, b) {
       if (state.sort === "az" || state.sort === "za") {
@@ -200,10 +223,8 @@
     });
 
     wraps.forEach(function (wrap) {
-      list.appendChild(wrap);
+      container.appendChild(wrap);
     });
-
-    applyFilters();
   }
 
   function getEntryTitle(wrap) {

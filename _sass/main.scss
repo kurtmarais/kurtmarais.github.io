@@ -775,12 +775,6 @@ body.dark-mode .publication-keyword-badge {
   color: #9ab8aa;
 }
 
-/* Same overlap issue as .publication-entry .abstract-block: the shared
-   -1rem margin-top is tuned for supervision's context, not this one. */
-.publication-entry .abstract-block {
-  margin-top: 0.75rem !important;
-}
-
 /* Keyword bubbles — engagements page */
 .engagement-keywords-row {
   display: flex;
@@ -1237,14 +1231,6 @@ body.dark-mode .poster-embed {
   border-color: #444943;
 }
 
-/* The shared .abstract-block negative margin-top (above) is tuned for
-   supervision/engagements' context; on the publications list it sits
-   right after a single <br>, so that same negative margin pulls it
-   into the byline text above instead of the details/CV entries it
-   was designed for. Override with a real positive gap here instead. */
-.publication-entry .abstract-block {
-  margin-top: 0.75rem !important;
-}
 
 
 .abstract-spacing {
@@ -2462,6 +2448,297 @@ body.dark-mode .back-to-top:hover {
   color: $linkColor;
 }
 
+
+
+/* PUBLICATIONS LIST (_layouts/publications.html, _includes/publication-entry.html,
+   publications-cite.js). One section per kind of output; each entry has a
+   bold own name, type/status badges, an optional live journal impact
+   badge, and Abstract / Cite panels (not for papers under review). */
+
+.pub-section {
+  margin-bottom: 1.25rem;
+}
+
+.pub-section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #69706b;
+}
+
+.pub-section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e2da;
+}
+
+.pub-entry {
+  padding: 0.9rem 0;
+}
+
+.pub-entry .publication-title {
+  display: block;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.pub-entry .publication-title a {
+  color: $bodyColor;
+  text-decoration: none;
+}
+
+.pub-entry .publication-title a:hover {
+  color: $linkColor;
+  text-decoration: underline;
+}
+
+.pub-authors {
+  margin-top: 0.2rem;
+  font-size: 0.92rem;
+  color: #4a514c;
+}
+
+.pub-me {
+  font-weight: 700;
+  color: $bodyColor;
+}
+
+.pub-venue {
+  font-size: 0.9rem;
+  color: #69706b;
+}
+
+.pub-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+}
+
+.pub-badges:empty {
+  display: none;
+}
+
+.pub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: rgba(54, 91, 82, 0.1);
+  color: $linkColor;
+}
+
+.pub-badge[hidden] {
+  display: none;
+}
+
+.pub-badge i,
+.pub-badge svg {
+  font-size: 0.7rem;
+}
+
+// Type bubbles use the site's translucent badge green (as keyword badges)
+// rather than solid green, so they sit lighter on the page.
+.pub-badge.is-type {
+  background: rgba(54, 91, 82, 0.15);
+  color: $linkColor;
+}
+
+.pub-badge.is-review {
+  background: rgba(201, 151, 40, 0.16);
+  color: #8a6414;
+}
+
+.pub-badge.is-rr {
+  background: rgba(66, 120, 190, 0.14);
+  color: #2c5c96;
+}
+
+.pub-badge.is-accepted {
+  background: rgba(76, 159, 56, 0.16);
+  color: #3a7a2a;
+}
+
+.pub-badge.is-metric {
+  background: transparent;
+  border: 1px solid #cfd6d2;
+  color: #4a514c;
+}
+
+.pub-live {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4c9f38;
+  box-shadow: 0 0 0 2px rgba(76, 159, 56, 0.2);
+}
+
+.pub-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 1.1rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.pub-actions a,
+.pub-toggle {
+  color: $linkColor;
+  text-decoration: none;
+}
+
+.pub-actions a:hover,
+.pub-toggle:hover {
+  text-decoration: underline;
+}
+
+.pub-toggle {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.pub-toggle[aria-expanded="true"] {
+  text-decoration: underline;
+}
+
+.pub-panel {
+  margin-top: 0.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  background: rgba(54, 91, 82, 0.05);
+  font-size: 0.9rem;
+}
+
+.pub-panel[hidden] {
+  display: none;
+}
+
+.pub-abstract p {
+  margin: 0;
+  color: #4a514c;
+  white-space: pre-line;
+}
+
+.pub-cite-formats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+
+.pub-cite-formats button {
+  padding: 0.2rem 0.7rem;
+  border: 1px solid #cfd6d2;
+  border-radius: 999px;
+  background: transparent;
+  color: $linkColor;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pub-cite-formats button.is-on {
+  background: $linkColor;
+  border-color: $linkColor;
+  color: #ffffff;
+}
+
+.pub-cite-text {
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #e2e2da;
+  border-radius: 8px;
+  background: #ffffff;
+  color: $bodyColor;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.pub-cite-text pre {
+  margin: 0;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.pub-cite-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.pub-cite-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.8rem;
+  border: 0;
+  border-radius: 999px;
+  background: $linkColor;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pub-cite-copy i,
+.pub-cite-copy svg {
+  font-size: 0.75rem;
+}
+
+.pub-cite-download {
+  color: $linkColor;
+}
+
+.pub-cite-download[hidden] {
+  display: none;
+}
+
+.pub-cite-status {
+  color: #69706b;
+  font-weight: 500;
+}
+
+body.dark-mode .pub-section-label { color: #aeb3ae; }
+body.dark-mode .pub-section-label::after { background: #3a403b; }
+body.dark-mode .pub-entry .publication-title a,
+body.dark-mode .pub-me { color: #f2f2ee; }
+body.dark-mode .pub-entry .publication-title a:hover { color: #9ab8aa; }
+body.dark-mode .pub-authors,
+body.dark-mode .pub-abstract p { color: #c9cdc8; }
+body.dark-mode .pub-venue { color: #aeb3ae; }
+body.dark-mode .pub-badge { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
+body.dark-mode .pub-badge.is-type { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
+body.dark-mode .pub-badge.is-review { background: rgba(214, 178, 92, 0.16); color: #d9b95e; }
+body.dark-mode .pub-badge.is-rr { background: rgba(120, 165, 225, 0.16); color: #9cc0ee; }
+body.dark-mode .pub-badge.is-accepted { background: rgba(120, 190, 100, 0.16); color: #9fd38c; }
+body.dark-mode .pub-badge.is-metric { border-color: #444943; color: #c9cdc8; }
+body.dark-mode .pub-actions a,
+body.dark-mode .pub-toggle,
+body.dark-mode .pub-cite-download { color: #9ab8aa; }
+body.dark-mode .pub-panel { background: rgba(154, 184, 170, 0.07); }
+body.dark-mode .pub-cite-formats button { border-color: #444943; color: #9ab8aa; }
+body.dark-mode .pub-cite-formats button.is-on,
+body.dark-mode .pub-cite-copy { background: #9ab8aa; border-color: #9ab8aa; color: #202421; }
+body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; color: #e8e9e5; }
 
 
 /* AWARENESS BUTTON (_includes/awareness-button.html, awareness-button.js) */

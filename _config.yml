@@ -30,6 +30,10 @@ exclude:
   - "**/README.md"
 show_media: true
 
+# Publications list: authors containing this text are shown in bold
+# (so your name stands out in co-authored papers).
+publication_author: "Marais, K"
+
 # Floating awareness button (top left, every page): shown only between
 # `start` and `end` (inclusive, checked in the visitor's browser, so it
 # switches on and off without a rebuild). Hidden on the page it links to.

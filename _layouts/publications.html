@@ -27,12 +27,23 @@ layout: default
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
             <div class="filter-dropdown" hidden>
-              {% assign publication_types = site.publications | map: "type" | uniq | sort %}
+              {% comment %} Types present, plus "Under review" when any item has a review status. {% endcomment %}
+              {% assign type_list = "" %}
+              {% for item in site.publications %}
+                {% if item.status == "under-review" or item.status == "revise-resubmit" %}
+                  {% assign type_list = type_list | append: "under-review;" %}
+                {% else %}
+                  {% assign type_list = type_list | append: item.type | append: ";" %}
+                {% endif %}
+              {% endfor %}
+              {% assign publication_types = type_list | split: ";" | uniq | sort %}
               {% for type in publication_types %}
+                {% if type != "" %}
                 <label class="filter-option">
                   <input type="checkbox" value="{{ type }}">
                   {{ type | replace: "-", " " | capitalize }}
                 </label>
+                {% endif %}
               {% endfor %}
             </div>
           </div>
@@ -66,91 +77,45 @@ layout: default
 
 </div>
 
+{% comment %}
+  Publications list: one section per kind of output, newest first. Items with
+  `status: under-review` or `status: revise-resubmit` go in "Under review"
+  (filter type "under-review"); `status: accepted` stays in its type's
+  section with an Accepted badge. Entry markup: _includes/publication-entry.html.
+{% endcomment %}
+{% assign pubs_sorted = site.publications | sort: "year" | reverse %}
+{% assign pub_sections = "journal-article|Journal articles;conference-paper|Conference papers;book-chapter|Book chapters;under-review|Under review;dataset|Datasets;theses|Theses" | split: ";" %}
+
 <div class="publications-list">
 
-  {% assign grouped_publications = site.publications | group_by: "year" | sort: "name" | reverse %}
-  {% assign publication_order = 0 %}
+  {% for sec in pub_sections %}
+    {% assign sec_parts = sec | split: "|" %}
+    {% assign sec_key = sec_parts[0] %}
 
-  {% for group in grouped_publications %}
-    <section class="publication-year-group" data-year="{{ group.name }}">
+    {% assign sec_count = 0 %}
+    {% for item in pubs_sorted %}
+      {% assign cat = item.type %}
+      {% if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign cat = "under-review" %}{% endif %}
+      {% if cat == "thesis" or cat == "dissertation" %}{% assign cat = "theses" %}{% endif %}
+      {% if cat == sec_key %}{% assign sec_count = sec_count | plus: 1 %}{% endif %}
+    {% endfor %}
 
-      {% for item in group.items %}
-
-        {% assign publication_order = publication_order | plus: 1 %}
-
-        <div class="publication-entry-wrap">
-
-          <article
-            class="publication-entry"
-            data-type="{{ item.type }}"
-            data-year="{{ item.year }}"
-            data-order="{{ publication_order }}"
-          >
-            <strong class="publication-title"><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></strong>
-            <br>
-
-            <span class="publication-byline">
-              {{ item.authors | join: ", " }} ({{ item.year }}).
-              {% if item.type == "journal-article" %}
-                <em>{{ item.journal }}</em>{% if item.volume %}, {{ item.volume }}{% if item.issue %}({{ item.issue }}){% endif %}{% endif %}{% if item.pages %}, {{ item.pages }}{% endif %}.
-                {% if item.doi %}
-                  DOI:
-                  <a href="{{ item.doi }}">
-                    {{ item.doi | remove: "https://doi.org/" }}
-                  </a>.
-                {% endif %}
-              {% elsif item.type == "dataset" %}
-                Dataset.{% if item.doi %} DOI:
-                  <a href="{{ item.doi }}">
-                    {{ item.doi | remove: "https://doi.org/" }}
-                  </a>.
-                {% endif %}
-              {% elsif item.type == "thesis" %}
-                Master's thesis, {{ item.institution }}.{% if item.doi %} DOI:
-                  <a href="{{ item.doi }}">
-                    {{ item.doi | remove: "https://doi.org/" }}
-                  </a>.
-                {% endif %}
-              {% elsif item.type == "dissertation" %}
-                Doctoral dissertation, {{ item.institution }}.{% if item.doi %} DOI:
-                  <a href="{{ item.doi }}">
-                    {{ item.doi | remove: "https://doi.org/" }}
-                  </a>.
-                {% endif %}
-              {% endif %}
-            </span><br>
-
-            {% if item.abstract %}
-              <details class="abstract-block">
-                <br>
-                <summary>Abstract</summary>
-                <p>{{ item.abstract }}</p>
-                {% if item.keywords %}
-                  <div class="publication-keywords-row mt-3 mb-2">
-                    {% for keyword in item.keywords %}
-                      <span class="publication-keyword-badge">{{ keyword }}</span>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-                <br>
-              </details>
-            {% elsif item.description %}
-              <span class="publication-description">{{ item.description | truncatewords: 32 }}</span><br>
+    {% if sec_count > 0 %}
+      <section class="pub-section" data-section="{{ sec_key }}">
+        <h4 class="pub-section-label">{{ sec_parts[1] }}</h4>
+        <div class="pub-section-list">
+          {% for item in pubs_sorted %}
+            {% assign cat = item.type %}
+            {% assign in_review = false %}
+            {% if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign cat = "under-review" %}{% assign in_review = true %}{% endif %}
+            {% if cat == "thesis" or cat == "dissertation" %}{% assign cat = "theses" %}{% endif %}
+            {% if cat == sec_key %}
+              {% include publication-entry.html item=item review=in_review %}
             {% endif %}
-
-            {% if item.tags %}
-              <span class="publication-tags" hidden>{{ item.tags | join: ", " }}</span>
-            {% endif %}
-
-          </article>
-
-          <br><br>
-
+          {% endfor %}
         </div>
-
-      {% endfor %}
-
-    </section>
+      </section>
+    {% endif %}
   {% endfor %}
 
   <p class="empty-state" hidden>No publications match your filters.</p>
@@ -172,3 +137,4 @@ layout: default
 </div>
 
 <script src="{{ '/assets/js/publications-filters.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/publications-cite.js' | relative_url }}"></script>
