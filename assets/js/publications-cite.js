@@ -1,4 +1,4 @@
-// Publications list: keyword search links and the Abstract / Cite panels.
+// Publications list: Abstract / Cite panels.
 //
 // - Abstract and Cite are toggle buttons (aria-expanded / aria-controls) that
 //   show a panel under the entry.
@@ -11,35 +11,6 @@
 
   var list = document.querySelector(".publications-list");
   if (!list) return;
-
-  /* ---------- Keywords: clicking one searches for it ---------- */
-
-  var searchInput = document.querySelector(".filter-search-input");
-
-  function markActiveKeywords() {
-    var q = searchInput ? searchInput.value.trim().toLowerCase() : "";
-    list.querySelectorAll(".pub-kw").forEach(function (b) {
-      var on = q !== "" && b.getAttribute("data-kw").toLowerCase() === q;
-      b.classList.toggle("is-on", on);
-      b.setAttribute("aria-pressed", on ? "true" : "false");
-    });
-  }
-
-  list.addEventListener("click", function (event) {
-    var kw = event.target.closest(".pub-kw");
-    if (!kw || !searchInput) return;
-    var value = kw.getAttribute("data-kw");
-    // Clicking the active keyword again clears the search.
-    searchInput.value = searchInput.value.trim().toLowerCase() === value.toLowerCase() ? "" : value;
-    searchInput.dataset.keyword = searchInput.value;
-    searchInput.dispatchEvent(new Event("input", { bubbles: true }));
-    markActiveKeywords();
-    // On phones the search box sits in the collapsed Filters panel; keep the
-    // clicked entry in view rather than jumping to the top.
-    kw.closest(".publication-entry-wrap").scrollIntoView({ block: "nearest" });
-  });
-
-  if (searchInput) searchInput.addEventListener("input", markActiveKeywords);
 
   /* ---------- Toggles ---------- */
 

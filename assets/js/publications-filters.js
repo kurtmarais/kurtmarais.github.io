@@ -140,14 +140,7 @@
     var typeMatches = state.types.size === 0 || state.types.has(entry.getAttribute("data-type"));
 
     var topicMatches = true;
-    // A keyword clicked on an entry (publications-cite.js sets data-keyword on
-    // the search box) matches that keyword exactly, not any text containing it.
-    var clickedKeyword = topicsInput && topicsInput.dataset.keyword;
-    if (state.topics && clickedKeyword && clickedKeyword.toLowerCase() === state.topics) {
-      var kwEl = entry.querySelector(".publication-keywords");
-      var kws = kwEl ? kwEl.textContent.toLowerCase().split(",").map(function (k) { return k.trim(); }) : [];
-      topicMatches = kws.indexOf(state.topics) !== -1;
-    } else if (state.topics) {
+    if (state.topics) {
       var searchableSelectors = [
         ".publication-title",
         ".publication-byline",

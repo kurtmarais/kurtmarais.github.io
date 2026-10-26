@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-30
+
+### Changed
+- Publications page: keywords keep their dotted underline but are no longer
+  clickable (they used to filter the list). The search box still finds
+  publications by keyword.
+
 ## 2026-10-29
 
 ### Added

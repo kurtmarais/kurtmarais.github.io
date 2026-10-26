@@ -198,8 +198,8 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 Full notes in `_publications/README.md`. Sections by output kind (journal
 articles, conference papers, book chapters, under review, datasets, theses),
 newest first, no numbering or tiles (both rejected). Markup in
-`_includes/publication-entry.html`; panels, citation formats and keyword
-clicks in `assets/js/publications-cite.js`; sorting runs within
+`_includes/publication-entry.html`; panels and citation formats in
+`assets/js/publications-cite.js`; sorting runs within
 each `.pub-section-list` and empty sections hide (`publications-filters.js`).
 The original Filters (type, sort, search) are the only filter UI; the title
 links to the source (`publication_url`, else DOI) in a new tab, not the
@@ -221,10 +221,10 @@ MLA/Chicago/BibTeX/RIS. No separate display field or verbatim journal line
 (both tried and dropped). No citation counts, "New" badges or
 publication counts by design. Keywords: a plain italic line under the
 venue (`.pub-keywords`, no pills; not shown for under-review items, and no
-longer repeated as pills in the list's Abstract panel). Clicking one puts it
-in the search box with `data-keyword` set, which makes the filter match that
-keyword exactly in `.publication-keywords` (typed searches stay full-text);
-clicking it again clears. Journal metric: an outlined "SJR **Q3** · 2025"
+longer repeated as pills in the list's Abstract panel). Each keyword is a
+plain `<span class="pub-kw">` with a dotted underline, deliberately not
+interactive (click-to-filter was built and removed at the owner's request);
+typed searches still match keywords. Journal metric: an outlined "SJR **Q3** · 2025"
 badge from `sjr_quartile` / `sjr_year`, entered by hand from scimagojr.com
 (best quartile; tooltip says so), none when unset (e.g. journals not in
 Scopus). Text sits in one inner `<span>` so the badge's flex gap doesn't

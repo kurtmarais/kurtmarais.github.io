@@ -2514,8 +2514,8 @@ body.dark-mode .back-to-top:hover {
   color: #69706b;
 }
 
-// Keywords: a plain italic line under the venue; each word is a quiet
-// button that fills the search box (dotted underline, solid when active).
+// Keywords: a plain italic line under the venue, each word with a dotted
+// underline. Not links.
 .pub-keywords {
   margin-top: 0.15rem;
   font-size: 0.82rem;
@@ -2524,25 +2524,7 @@ body.dark-mode .back-to-top:hover {
 }
 
 .pub-kw {
-  padding: 0;
-  border: 0;
   border-bottom: 1px dotted rgba(54, 91, 82, 0.45);
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-.pub-kw:hover,
-.pub-kw:focus-visible {
-  color: $linkColor;
-  border-bottom-style: solid;
-}
-
-.pub-kw.is-on {
-  color: $linkColor;
-  font-weight: 600;
-  border-bottom: 2px solid $linkColor;
 }
 
 .pub-kw-sep {
@@ -2760,9 +2742,6 @@ body.dark-mode .pub-abstract p { color: #c9cdc8; }
 body.dark-mode .pub-venue,
 body.dark-mode .pub-keywords { color: #aeb3ae; }
 body.dark-mode .pub-kw { border-bottom-color: rgba(154, 184, 170, 0.45); }
-body.dark-mode .pub-kw:hover,
-body.dark-mode .pub-kw:focus-visible,
-body.dark-mode .pub-kw.is-on { color: #9ab8aa; border-bottom-color: #9ab8aa; }
 body.dark-mode .pub-kw-sep { color: #5c635e; }
 body.dark-mode .pub-badge { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
 body.dark-mode .pub-badge.is-type { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }

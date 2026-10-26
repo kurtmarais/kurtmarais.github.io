@@ -105,9 +105,8 @@ Things worth knowing:
   Google Scholar indexes it (found via the sitemap), but the list doesn't
   link to it. Papers under review have no source, so their title is plain.
 - Keywords: shown as a plain text line under the venue (not for papers
-  under review). Clicking one filters the list to publications with exactly
-  that keyword (it fills the search box); clicking it again clears. Items
-  with no `keywords` show no line, so add keywords to every item.
+  under review), each word with a dotted underline. Not clickable; the
+  search box still searches them. Items with no `keywords` show no line.
 - Cite: APA 7, Harvard, MLA 9, Chicago (author-date), IEEE, BibTeX and RIS,
   built in the browser from the front matter (`assets/js/publications-cite.js`),
   with copy and (BibTeX/RIS) download.
