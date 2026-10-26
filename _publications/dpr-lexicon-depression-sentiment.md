@@ -4,7 +4,7 @@ title: "Sentiment lexicon for depression-specific social media texts (DPR lexico
 type: dataset
 featured: false
 authors:
-  - "Marais, K."
+  - "Kurt Marais"
 year: 2026
 doi: "https://doi.org/10.25413/sun.30455444"
 publisher: "Stellenbosch University"

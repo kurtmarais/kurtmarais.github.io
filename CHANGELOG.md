@@ -7,11 +7,12 @@ is the baseline. Add new entries at the top.
 ## 2026-10-28
 
 ### Changed
-- Publications: `authors` can be written once, exactly as the journal
-  prints the author list. It's shown unchanged (with your name in bold) on
-  the list, the publication's own page and the homepage, and the site
-  works out the individual names for Cite and Google Scholar. The old
-  one-name-per-line list still works.
+- Publications: authors are entered once, with full names. Author lines
+  on the publications list, each publication's page and the homepage read
+  "K Marais, JA Smith, T Ndlovu" (initials without full stops, your name in
+  bold). Cite uses initials for APA, Harvard and IEEE and full first names
+  for MLA, Chicago, BibTeX and RIS. Your publications now list you as
+  "Kurt Marais".
 
 ## 2026-10-27
 

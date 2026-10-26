@@ -61,21 +61,30 @@
 
   /* ---------- Author names ---------- */
 
-  // "Marais, K." -> { family: "Marais", initials: ["K."] }
+  // Names arrive as "Surname, Given" (author-parse.html), given names in
+  // full where they were entered ("Marais, Kurt") or as initials ("Marais, K.").
+  // -> { family: "Marais", given: "Kurt", initials: ["K."] }
   function parseAuthor(raw) {
     var parts = String(raw).split(",");
     var family = parts[0].trim();
     var given = (parts.slice(1).join(" ") || "").trim();
     var initials = given
-      .replace(/\./g, " ")
-      .split(/[\s-]+/)
+      .split(/\s+/)
       .filter(Boolean)
-      .map(function (g) { return g.charAt(0).toUpperCase() + "."; });
-    return { family: family, initials: initials };
+      .map(function (g) {
+        return g.split("-").map(function (h) {
+          return h.replace(/\./g, "").charAt(0).toUpperCase() + ".";
+        }).join("-");
+      });
+    return { family: family, given: given, initials: initials };
   }
 
+  // Initials (APA, Harvard, IEEE) ...
   function famInit(a) { return a.family + (a.initials.length ? ", " + a.initials.join(" ") : ""); }
   function initFam(a) { return (a.initials.length ? a.initials.join(" ") + " " : "") + a.family; }
+  // ... or given names as entered (MLA, Chicago, BibTeX, RIS).
+  function famGiven(a) { return a.family + (a.given ? ", " + a.given : ""); }
+  function givenFam(a) { return (a.given ? a.given + " " : "") + a.family; }
 
   function joinList(names, finalSep) {
     if (names.length <= 1) return names.join("");
@@ -161,8 +170,8 @@
   }
 
   function mla(d, A) {
-    var first = A[0] ? A[0].family + (A[0].initials.length ? ", " + A[0].initials.join(" ") : "") : "";
-    var names = A.length === 1 ? first : A.length === 2 ? first + ", and " + initFam(A[1]) : first + ", et al";
+    var first = A[0] ? famGiven(A[0]) : "";
+    var names = A.length === 1 ? first : A.length === 2 ? first + ", and " + givenFam(A[1]) : first + ", et al";
     var out = endDot(names) + " ";
     if (isReview(d)) return out + "“" + endDot(d.title) + "” Manuscript under review.";
     switch (d.type) {
@@ -190,8 +199,8 @@
   }
 
   function chicago(d, A) {
-    var names = A.length === 1 ? famInit(A[0])
-      : famInit(A[0]) + (A.length === 2 ? ", and " + initFam(A[1]) : ", " + A.slice(1, -1).map(initFam).join(", ") + ", and " + initFam(A[A.length - 1]));
+    var names = A.length === 1 ? famGiven(A[0])
+      : famGiven(A[0]) + (A.length === 2 ? ", and " + givenFam(A[1]) : ", " + A.slice(1, -1).map(givenFam).join(", ") + ", and " + givenFam(A[A.length - 1]));
     var out = endDot(names) + " " + (isReview(d) ? "Forthcoming" : d.year) + ". ";
     if (isReview(d)) return out + "“" + endDot(d.title) + "” Manuscript under review.";
     switch (d.type) {
@@ -260,7 +269,7 @@
     else if (d.type === "book-chapter") kind = "incollection";
     else if (d.type === "thesis") kind = "mastersthesis";
     else if (d.type === "dissertation") kind = "phdthesis";
-    var f = [["author", A.map(famInit).join(" and ")], ["title", "{" + d.title + "}"]];
+    var f = [["author", A.map(famGiven).join(" and ")], ["title", "{" + d.title + "}"]];
     if (kind === "article") f.push(["journal", d.journal]);
     if (kind === "inproceedings") f.push(["booktitle", d.journal]);
     if (kind === "incollection") f.push(["booktitle", d.book || d.journal]);
@@ -287,7 +296,7 @@
     else if (d.type === "thesis" || d.type === "dissertation") ty = "THES";
     else if (d.type === "dataset") ty = "DATA";
     var lines = ["TY  - " + ty];
-    A.forEach(function (a) { lines.push("AU  - " + famInit(a)); });
+    A.forEach(function (a) { lines.push("AU  - " + famGiven(a)); });
     lines.push("TI  - " + d.title);
     if (d.journal && ty !== "THES" && ty !== "DATA") lines.push((ty === "JOUR" ? "JO" : "T2") + "  - " + d.journal);
     if (!isReview(d) && d.year) lines.push("PY  - " + d.year);

@@ -1,29 +1,29 @@
 {% comment %}
-  Author line for a publication (list entry, its own page, homepage).
-  `authors` is written once, either
-  - as one line of text exactly as the journal prints it: shown verbatim,
-    with your name in bold wherever one of `site.publication_author_names`
-    appears in it; or
-  - as a list of "Surname, I." names: joined APA-style ("A, B, & C"),
-    bolding entries that contain `site.publication_author`.
-  Cite and the Google Scholar tags get individual names from
-  _includes/author-parse.html either way.
+  Author line for a publication (list entry, its own page, homepage):
+  initials without full stops, then surname, separated by commas —
+  "K Marais, JA Smith, T Ndlovu". Built from `authors` via
+  _includes/author-parse.html, so `authors` can be written with full
+  names (and is, so the Cite formats that use full first names can).
+  Your name is bold when its "Surname, Given" form contains
+  `site.publication_author` ("Marais, K").
   Usage: {% include author-line.html item=item %}
 {% endcomment %}
-{%- assign al_item = include.item -%}
-{%- if al_item.authors.first -%}
-  {%- assign al_me = site.publication_author | default: "Marais, K" -%}
-  {%- for author in al_item.authors -%}{%- if author contains al_me -%}<span class="pub-me">{{ author }}</span>{%- else -%}{{ author }}{%- endif -%}{%- unless forloop.last -%}{%- if forloop.rindex == 2 -%}, &amp; {% else %}, {% endif -%}{%- endunless -%}{%- endfor -%}
-{%- else -%}
-  {%- assign al_text = al_item.authors | append: "" | escape -%}
-  {%- for name in site.publication_author_names -%}
-    {%- capture al_token -%}@@AUTHOR{{ forloop.index }}@@{%- endcapture -%}
-    {%- assign al_text = al_text | replace: name, al_token -%}
+{%- include author-parse.html authors=include.item.authors -%}
+{%- assign al_me = site.publication_author | default: "Marais, K" -%}
+{%- for al_person in parsed_authors -%}
+  {%- assign al_parts = al_person | split: ", " -%}
+  {%- assign al_family = al_parts[0] -%}
+  {%- assign al_given = al_parts | shift | join: " " | replace: ".", " " -%}
+  {%- assign al_init = "" -%}
+  {%- assign al_words = al_given | split: " " -%}
+  {%- for al_w in al_words -%}
+    {%- if al_w contains "-" -%}
+      {%- assign al_h = al_w | split: "-" -%}
+      {%- for al_x in al_h -%}{%- assign al_c = al_x | slice: 0 | upcase -%}{%- assign al_init = al_init | append: al_c -%}{%- unless forloop.last -%}{%- assign al_init = al_init | append: "-" -%}{%- endunless -%}{%- endfor -%}
+    {%- else -%}
+      {%- assign al_c = al_w | slice: 0 | upcase -%}{%- assign al_init = al_init | append: al_c -%}
+    {%- endif -%}
   {%- endfor -%}
-  {%- for name in site.publication_author_names -%}
-    {%- capture al_token -%}@@AUTHOR{{ forloop.index }}@@{%- endcapture -%}
-    {%- capture al_bold -%}<span class="pub-me">{{ name }}</span>{%- endcapture -%}
-    {%- assign al_text = al_text | replace: al_token, al_bold -%}
-  {%- endfor -%}
-  {{- al_text -}}
-{%- endif -%}
+  {%- capture al_short -%}{% if al_init != "" %}{{ al_init }} {% endif %}{{ al_family }}{%- endcapture -%}
+  {%- if al_person contains al_me -%}<span class="pub-me">{{ al_short | escape }}</span>{%- else -%}{{ al_short | escape }}{%- endif -%}{%- unless forloop.last -%}, {% endunless -%}
+{%- endfor -%}

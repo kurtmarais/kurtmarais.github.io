@@ -4,7 +4,7 @@ title: "Simulating affective information diffusion using natural language in onl
 type: dissertation
 featured: false
 authors:
-  - "Marais, K."
+  - "Kurt Marais"
 year: 2026
 institution: "Stellenbosch University"
 publication_url: "https://scholar.sun.ac.za/items/0e580108-6db8-4b17-9619-e5e963df7be0"

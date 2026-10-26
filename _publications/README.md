@@ -26,7 +26,9 @@ title: "Article or item title"
 type: journal-article          # journal-article | conference-paper | book-chapter | dataset | thesis | dissertation
 status:                         # optional: under-review | revise-resubmit | accepted (leave out once published)
 featured: false                 # true = also shown on the homepage
-authors: "Smith, J. A., Marais, K., & Ndlovu, T."   # exactly as the journal prints it (or a list, see below)
+authors:                        # full names, in paper order (see "Author names")
+  - "Kurt Marais"
+  - "John A. Smith"
 year: 2026
 journal: "Journal name"         # journal-article only
 volume: "16"                    # journal-article only
@@ -107,22 +109,28 @@ Things worth knowing:
 
 ## Author names
 
-Write `authors` once, as one line, exactly as the journal prints the author
-list (copy and paste it). That line is shown unchanged on the Publications
-list, the item's own page and the homepage, with your name in bold wherever
-one of `publication_author_names` (in `_config.yml`) appears; add a
-spelling there if a journal uses a new one.
+Enter each author once, with full names where you have them, in paper
+order:
 
-The site works out the individual names itself (`_includes/author-parse.html`)
-for the Cite formats, the Google Scholar tags and schema.org data. It
-understands the common styles:
+```yaml
+authors:
+  - "John A. Smith"
+  - "Kurt Marais"
+  - "Thabo Ndlovu"
+```
 
-- APA: `Smith, J. A., Marais, K., & Ndlovu, T.`
-- Vancouver: `Smith JA, Marais K and Ndlovu T`
-- IEEE / first name first: `J. A. Smith, K. Marais, and T. Ndlovu`
-- Full names: `John A. Smith, Kurt Marais and Thabo Ndlovu`
-- MLA: `Smith, John A., Kurt Marais, and Thabo Ndlovu`
-- Surname particles (`van der Merwe, A.`), hyphenated names, "et al."
+"Surname, Given" works too ("Smith, John A."), as do initials ("Smith,
+J. A.") when that's all you have. Surname particles ("Johan van der
+Merwe") and hyphenated names ("Jean-Pierre Dupont") are handled. A single
+line copied from a journal also works
+(`authors: "Smith JA, Marais K and Ndlovu T"`): APA, Vancouver, IEEE, MLA
+and similar styles are split into people automatically.
 
-The older form, a list with one `"Surname, I."` per line, still works: it
-is then joined APA-style ("Marais, K., Smith, J. A., & Ndlovu, T.").
+From that one entry (`_includes/author-parse.html`):
+- The web page shows initials without full stops, then surname, separated
+  by commas: **K Marais**, JA Smith, T Ndlovu (your name bold, matched on
+  `publication_author: "Marais, K"` in `_config.yml`). Used on the list,
+  each publication's page and the homepage.
+- Cite uses initials for APA, Harvard and IEEE, and the full first names
+  you entered for MLA, Chicago, BibTeX and RIS.
+- Google Scholar and schema.org get "Surname, Given" names.

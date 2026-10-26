@@ -4,7 +4,7 @@ title: "An empirical content analysis of posts made to the r/depression subreddi
 type: journal-article
 featured: false
 authors:
-  - "Marais, K."
+  - "Kurt Marais"
 year: 2024
 journal: "Journal of the Digital Humanities Association of Southern Africa"
 volume: "5"

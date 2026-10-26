@@ -4,7 +4,7 @@ title: "Measuring efficiency in retail planning"
 type: thesis
 featured: false
 authors:
-  - "Marais, K."
+  - "Kurt Marais"
 year: 2019
 institution: "Stellenbosch University"
 publication_url: "https://scholar.sun.ac.za/items/50393f84-7115-48c0-aece-6065b9ecc420"
