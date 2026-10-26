@@ -326,7 +326,8 @@ search; Summary/Abstract toggles).
   newest first; within a year, dated entries by `start_date`, then undated
   ones in file order.
 - "In the media" is a picture grid (`.eng-grid`, 3 across, 2 on phones):
-  the same entry markup restyled as a card (picture, type line, title,
+  the same entry markup restyled as a card (picture, type line with the
+  homepage's `.engagement-type-pill` icon and hanging indent, title,
   outlet and date; keywords, badges and links hidden; the title link's
   `::after` makes the whole card clickable).
 - Thumbnails: entries with an `image` (posters show the top of the image,

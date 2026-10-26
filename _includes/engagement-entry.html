@@ -8,7 +8,8 @@
     mixed list lines up); in the type sections, entries without an image
     have no thumbnail.
   - Inside the "In the media" grid (.eng-grid) the same markup is styled as
-    a card: picture, type line, title, outlet and date; the whole card links.
+    a card: picture, type line (icon pill + type, as on the homepage strip),
+    title, outlet and date; the whole card links.
   - The type badge only shows outside the type sections (main.scss).
 {% endcomment %}
 {% assign item = include.item %}
@@ -34,7 +35,7 @@
     {% endif %}
 
     <div class="eng-body">
-      <span class="eng-card-type">{{ type_label }}{% if item.featured %} · Featured{% endif %}</span>
+      <span class="eng-card-type">{% if type_icon != "" %}<span class="engagement-type-pill is-{{ type_icon }}"><i class="fas {{ type_icon }}" aria-hidden="true"></i></span>{% endif %}<span class="eng-card-type-text">{{ type_label }}{% if item.featured %} · Featured{% endif %}</span></span>
       <strong class="publication-title eng-title">{% if href %}<a href="{{ href }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}</strong>
       <div class="pub-venue eng-venue"><em>{{ item.publication | default: item.venue }}</em>{% if item.location and item.publication == nil %} · {{ item.location }}{% endif %}{% if item.start_date or item.date %}{% include engagement-date.html item=item %}{% else %} · {{ item.year }}{% endif %}</div>
 

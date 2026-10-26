@@ -2717,8 +2717,11 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
   display: flex;
 }
 
+// Type line: the homepage strip's icon pill, then the type as text, with
+// the same hanging indent (wrapped text lines up after the pill).
 .eng-grid .eng-card-type {
-  display: block;
+  display: flex;
+  align-items: flex-start;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -2726,8 +2729,15 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
   color: #69706b;
 }
 
+.eng-card-type-text {
+  flex: 1;
+  min-width: 0;
+  line-height: 1.6;
+  padding-top: calc((1.5rem - 1.6em) / 2);
+}
+
 .eng-grid .eng-title {
-  margin: 0.15rem 0 0.2rem;
+  margin: 0.35rem 0 0.2rem;
   font-size: 0.98rem;
 }
 
