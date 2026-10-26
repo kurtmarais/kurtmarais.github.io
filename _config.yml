@@ -33,8 +33,8 @@ show_media: true
 # Publications list: authors containing this text are shown in bold
 # (so your name stands out in co-authored papers).
 publication_author: "Marais, K"
-# Spellings of your name to bold inside a publication's `authors_display`
-# (the author line copied as the journal prints it). Longest first.
+# Spellings of your name to bold when a publication's `authors` is written
+# as one line, exactly as the journal prints it. Longest first.
 publication_author_names:
   - "Kurt Marais"
   - "Marais, Kurt"

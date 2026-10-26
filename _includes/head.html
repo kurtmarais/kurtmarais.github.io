@@ -14,7 +14,8 @@
   {% if page.collection == "publications" and pub_in_review == false %}
     <!-- Google Scholar Highwire Press meta tags — see https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
     <meta name="citation_title" content="{{ page.title }}">
-    {% for author in page.authors %}
+    {% include author-parse.html authors=page.authors %}
+    {% for author in parsed_authors %}
     <meta name="citation_author" content="{{ author }}">
     {% endfor %}
     <meta name="citation_publication_date" content="{{ page.year }}">
@@ -50,7 +51,7 @@
       "@type": "{{ ld_type }}",
       "{% if ld_type == "ScholarlyArticle" %}headline{% else %}name{% endif %}": {{ page.title | jsonify }},
       "author": [
-        {% for author in page.authors %}
+        {% for author in parsed_authors %}
           {% if author contains "Marais" %}
           {
             "@type": "Person",

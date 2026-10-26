@@ -1,0 +1,123 @@
+{% comment %}
+  Turns a publication's `authors` into a list of "Surname, I. I." names,
+  for the Cite formats, the Google Scholar tags and schema.org data.
+  Sets `parsed_authors` (array) in the calling page.
+
+  `authors` can be either
+  - a list of names ("Marais, K." per line): used as is, or
+  - one line of text written exactly as the journal prints it, e.g.
+      "Smith, J. A., Marais, K., & Ndlovu, T."      (APA)
+      "Smith JA, Marais K and Ndlovu T"             (Vancouver)
+      "J. A. Smith, K. Marais, and T. Ndlovu"       (IEEE / first-last)
+      "Smith, John A., Kurt Marais, and Thabo Ndlovu" (MLA)
+    The line is split on commas, "and" and "&"; a bare surname or a run of
+    initials joins the name before it; each name then becomes
+    "Surname, I. I." (surname particles such as "van der" are kept).
+  Usage: {% include author-parse.html authors=item.authors %}
+{% endcomment %}
+{%- assign ap_src = include.authors -%}
+{%- if ap_src.first -%}
+  {%- assign parsed_authors = ap_src -%}
+{%- else -%}
+  {%- assign ap_text = ap_src | append: "" | replace: ", et al.", "" | replace: " et al.", "" | replace: ", and ", ", " | replace: ", & ", ", " | replace: " and ", ", " | replace: " & ", ", " | strip -%}
+  {%- assign ap_tokens = ap_text | split: ", " -%}
+
+  {%- comment -%} 1. Group tokens into people. {%- endcomment -%}
+  {%- assign ap_people = "" -%}
+  {%- assign ap_current = "" -%}
+  {%- for tok_raw in ap_tokens -%}
+    {%- assign tok = tok_raw | strip -%}
+    {%- if tok == "" -%}{%- continue -%}{%- endif -%}
+    {%- comment -%} Is every word in this token an initial (J. / JA / J.-P.)? {%- endcomment -%}
+    {%- assign ap_all_initials = true -%}
+    {%- assign ap_words = tok | split: " " -%}
+    {%- for w in ap_words -%}
+      {%- assign ap_bare = w | remove: "." | remove: "-" -%}
+      {%- assign ap_up = ap_bare | upcase -%}
+      {%- if ap_bare.size == 0 or ap_bare.size > 3 or ap_bare != ap_up -%}{%- assign ap_all_initials = false -%}{%- endif -%}
+    {%- endfor -%}
+    {%- assign ap_cur_words = ap_current | split: " " -%}
+    {%- if ap_current != "" and ap_current contains "," -%}
+      {%- assign ap_join = false -%}
+    {%- elsif ap_current != "" and ap_cur_words.size == 1 -%}
+      {%- assign ap_join = true -%}
+    {%- elsif ap_current != "" and ap_all_initials -%}
+      {%- assign ap_join = true -%}
+    {%- else -%}
+      {%- assign ap_join = false -%}
+    {%- endif -%}
+    {%- if ap_join -%}
+      {%- assign ap_current = ap_current | append: ", " | append: tok -%}
+    {%- else -%}
+      {%- if ap_current != "" -%}{%- assign ap_people = ap_people | append: ap_current | append: "||" -%}{%- endif -%}
+      {%- assign ap_current = tok -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if ap_current != "" -%}{%- assign ap_people = ap_people | append: ap_current -%}{%- endif -%}
+
+  {%- comment -%} 2. Each person -> "Surname, I. I.". {%- endcomment -%}
+  {%- assign ap_out = "" -%}
+  {%- assign ap_list = ap_people | split: "||" -%}
+  {%- for person_raw in ap_list -%}
+    {%- assign person = person_raw | strip -%}
+    {%- if person == "" -%}{%- continue -%}{%- endif -%}
+    {%- assign ap_family = "" -%}
+    {%- assign ap_given = "" -%}
+    {%- if person contains ", " -%}
+      {%- assign ap_parts = person | split: ", " -%}
+      {%- assign ap_family = ap_parts[0] -%}
+      {%- assign ap_given = ap_parts | shift | join: " " -%}
+    {%- else -%}
+      {%- assign ap_words = person | split: " " -%}
+      {%- assign ap_last = ap_words | last -%}
+      {%- assign ap_bare = ap_last | remove: "." | remove: "-" -%}
+      {%- assign ap_up = ap_bare | upcase -%}
+      {%- if ap_words.size > 1 and ap_bare.size > 0 and ap_bare.size <= 3 and ap_bare == ap_up -%}
+        {%- comment -%} Vancouver: "Smith JA" — initials last, run together. {%- endcomment -%}
+        {%- assign ap_n = ap_words.size | minus: 1 -%}
+        {%- assign ap_family = ap_words | slice: 0, ap_n | join: " " -%}
+        {%- assign ap_letters = ap_bare | split: "" -%}
+        {%- assign ap_given = ap_letters | join: ". " | append: "." -%}
+      {%- else -%}
+        {%- comment -%} "Kurt Marais" / "J. A. Smith" / "Johan van der Merwe": surname last, with lowercase particles. {%- endcomment -%}
+        {%- assign ap_n = ap_words.size | minus: 1 -%}
+        {%- assign ap_start = ap_n -%}
+        {%- for i in (1..ap_n) -%}
+          {%- assign ap_idx = ap_n | minus: i -%}
+          {%- if ap_idx < 1 -%}{%- break -%}{%- endif -%}
+          {%- assign ap_w = ap_words[ap_idx] -%}
+          {%- assign ap_low = ap_w | downcase -%}
+          {%- if ap_w == ap_low -%}{%- assign ap_start = ap_idx -%}{%- else -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
+        {%- assign ap_take = ap_words.size | minus: ap_start -%}
+        {%- assign ap_family = ap_words | slice: ap_start, ap_take | join: " " -%}
+        {%- assign ap_given = ap_words | slice: 0, ap_start | join: " " -%}
+      {%- endif -%}
+    {%- endif -%}
+    {%- comment -%} Given names / initials -> "J. A." (hyphenated names keep the hyphen: "J.-P."). {%- endcomment -%}
+    {%- assign ap_init = "" -%}
+    {%- assign ap_gwords = ap_given | replace: ".-", "-" | replace: ".", ". " | split: " " -%}
+    {%- for g_raw in ap_gwords -%}
+      {%- assign g = g_raw | remove: "." | strip -%}
+      {%- if g == "" -%}{%- continue -%}{%- endif -%}
+      {%- if g contains "-" -%}
+        {%- assign ap_h = g | split: "-" -%}
+        {%- assign ap_piece = "" -%}
+        {%- for h in ap_h -%}{%- assign ap_c = h | slice: 0 | upcase -%}{%- assign ap_piece = ap_piece | append: ap_c | append: "." -%}{%- unless forloop.last -%}{%- assign ap_piece = ap_piece | append: "-" -%}{%- endunless -%}{%- endfor -%}
+      {%- else -%}
+        {%- assign ap_bare = g | upcase -%}
+        {%- if g == ap_bare and g.size <= 3 -%}
+          {%- assign ap_letters = g | split: "" -%}
+          {%- assign ap_piece = ap_letters | join: ". " | append: "." -%}
+        {%- else -%}
+          {%- assign ap_c = g | slice: 0 | upcase -%}
+          {%- assign ap_piece = ap_c | append: "." -%}
+        {%- endif -%}
+      {%- endif -%}
+      {%- if ap_init == "" -%}{%- assign ap_init = ap_piece -%}{%- else -%}{%- assign ap_init = ap_init | append: " " | append: ap_piece -%}{%- endif -%}
+    {%- endfor -%}
+    {%- capture ap_name -%}{{ ap_family | strip }}{% if ap_init != "" %}, {{ ap_init }}{% endif %}{%- endcapture -%}
+    {%- assign ap_out = ap_out | append: ap_name | append: "||" -%}
+  {%- endfor -%}
+  {%- assign parsed_authors = ap_out | split: "||" -%}
+{%- endif -%}

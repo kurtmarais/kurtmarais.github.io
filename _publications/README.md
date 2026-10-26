@@ -26,9 +26,7 @@ title: "Article or item title"
 type: journal-article          # journal-article | conference-paper | book-chapter | dataset | thesis | dissertation
 status:                         # optional: under-review | revise-resubmit | accepted (leave out once published)
 featured: false                 # true = also shown on the homepage
-authors:                        # always "Surname, I." — Cite and Google Scholar use this list
-  - "Surname, I."
-authors_display: "Marais K, Smith JA, Ndlovu T"   # optional: author line exactly as the journal prints it
+authors: "Smith, J. A., Marais, K., & Ndlovu, T."   # exactly as the journal prints it (or a list, see below)
 year: 2026
 journal: "Journal name"         # journal-article only
 volume: "16"                    # journal-article only
@@ -109,14 +107,22 @@ Things worth knowing:
 
 ## Author names
 
-- `authors` is the structured list, always written `Surname, I.` (one per
-  line, in paper order). The Cite formats, Google Scholar tags and
-  schema.org data are built from it, so keep it in that form whatever the
-  journal does.
-- `authors_display` (optional) is shown instead on the list, the item's own
-  page and the homepage, exactly as typed: copy the journal's author line
-  (separators, initials, "and"/"&", et al.) as it appears. Your name is
-  bolded wherever one of `publication_author_names` (in `_config.yml`)
-  appears in it; add a spelling there if a journal uses a new one.
-- Without `authors_display`, the `authors` list is joined APA-style
-  ("Marais, K., Smith, J. A., & Ndlovu, T.").
+Write `authors` once, as one line, exactly as the journal prints the author
+list (copy and paste it). That line is shown unchanged on the Publications
+list, the item's own page and the homepage, with your name in bold wherever
+one of `publication_author_names` (in `_config.yml`) appears; add a
+spelling there if a journal uses a new one.
+
+The site works out the individual names itself (`_includes/author-parse.html`)
+for the Cite formats, the Google Scholar tags and schema.org data. It
+understands the common styles:
+
+- APA: `Smith, J. A., Marais, K., & Ndlovu, T.`
+- Vancouver: `Smith JA, Marais K and Ndlovu T`
+- IEEE / first name first: `J. A. Smith, K. Marais, and T. Ndlovu`
+- Full names: `John A. Smith, Kurt Marais and Thabo Ndlovu`
+- MLA: `Smith, John A., Kurt Marais, and Thabo Ndlovu`
+- Surname particles (`van der Merwe, A.`), hyphenated names, "et al."
+
+The older form, a list with one `"Surname, I."` per line, still works: it
+is then joined APA-style ("Marais, K., Smith, J. A., & Ndlovu, T.").

@@ -6,11 +6,12 @@ is the baseline. Add new entries at the top.
 
 ## 2026-10-28
 
-### Added
-- Publications: optional `authors_display` field. The author line is then
-  shown exactly as the journal prints it (on the list, the publication's
-  own page and the homepage), with your name in bold. The structured
-  `authors` list still drives Cite and Google Scholar.
+### Changed
+- Publications: `authors` can be written once, exactly as the journal
+  prints the author list. It's shown unchanged (with your name in bold) on
+  the list, the publication's own page and the homepage, and the site
+  works out the individual names for Cite and Google Scholar. The old
+  one-name-per-line list still works.
 
 ## 2026-10-27
 
