@@ -1,4 +1,4 @@
-// Publications list: Abstract / Cite panels and the live journal impact badge.
+// Publications list: keyword search links and the Abstract / Cite panels.
 //
 // - Abstract and Cite are toggle buttons (aria-expanded / aria-controls) that
 //   show a panel under the entry.
@@ -6,9 +6,6 @@
 //   JSON in APA 7, Harvard, MLA 9, Chicago (author-date), IEEE, BibTeX and RIS.
 //   "Copy" puts it on the clipboard (formatted where the browser allows);
 //   BibTeX and RIS can also be downloaded as files.
-// - Journal impact: for entries with a DOI, OpenAlex gives the paper's journal,
-//   then that journal's 2-year mean citedness (comparable to an impact factor).
-//   Cached in localStorage for a week; on any failure the badge stays hidden.
 (function () {
   "use strict";
 
@@ -417,57 +414,5 @@
     panel.appendChild(row);
     panel.dataset.built = "1";
     show(FORMATS[0]);
-  }
-
-  /* ---------- Live journal impact (OpenAlex) ---------- */
-
-  var API = "https://api.openalex.org";
-  var WEEK = 7 * 24 * 3600 * 1000;
-
-  function cacheGet(k) {
-    try {
-      var v = JSON.parse(localStorage.getItem(k));
-      if (v && Date.now() - v.t < WEEK) return v;
-    } catch (e) {}
-    return null;
-  }
-  function cacheSet(k, value) {
-    try { localStorage.setItem(k, JSON.stringify({ t: Date.now(), v: value })); } catch (e) {}
-  }
-
-  function getJson(url) {
-    return fetch(url).then(function (r) {
-      if (!r.ok) throw new Error(r.status);
-      return r.json();
-    });
-  }
-
-  function impactFor(doi) {
-    var k = "pubImpact:" + doi.toLowerCase();
-    var hit = cacheGet(k);
-    if (hit) return Promise.resolve(hit.v);
-    return getJson(API + "/works/doi:" + encodeURIComponent(doi) + "?select=primary_location")
-      .then(function (w) {
-        var src = w && w.primary_location && w.primary_location.source;
-        if (!src || !src.id) return null;
-        var id = String(src.id).split("/").pop();
-        return getJson(API + "/sources/" + id + "?select=summary_stats").then(function (s) {
-          var v = s && s.summary_stats ? s.summary_stats["2yr_mean_citedness"] : null;
-          return typeof v === "number" ? v : null;
-        });
-      })
-      .then(function (v) { cacheSet(k, v); return v; });
-  }
-
-  if (window.fetch) {
-    list.querySelectorAll("[data-openalex-doi]").forEach(function (badge) {
-      var doi = badge.getAttribute("data-openalex-doi");
-      if (!doi) return;
-      impactFor(doi).then(function (v) {
-        if (typeof v !== "number" || v <= 0) return;
-        badge.querySelector(".pub-impact-value").textContent = v.toFixed(2);
-        badge.hidden = false;
-      }).catch(function () { /* leave hidden */ });
-    });
   }
 })();

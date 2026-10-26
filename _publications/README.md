@@ -38,8 +38,8 @@ institution: "Stellenbosch University"   # thesis / dissertation only
 publisher: "Stellenbosch University"     # dataset (shown in the venue line) / book-chapter
 venue: "Conference name"        # conference-paper (or use `journal`)
 book: "Book title"              # book-chapter
-impact_factor: "2.4"            # optional: shows "Impact factor 2.4" instead of the live OpenAlex badge
-impact_factor_year: "2025"      # optional, shown with impact_factor
+sjr_quartile: "Q3"              # optional: journal's best SJR quartile (scimagojr.com), shows "SJR Q3 · 2025"
+sjr_year: 2025                  # optional, the Scimago year the quartile is from
 doi: "https://doi.org/..."
 publication_url: "https://doi.org/..."
 keywords:                       # optional — list of strings
@@ -94,11 +94,16 @@ Things worth knowing:
   type's section with an "Accepted" badge. Remove `status` once published.
 - Authors containing `publication_author` from `_config.yml` ("Marais, K")
   are bold.
-- Journal impact badge: for journal articles / conference papers with a DOI,
-  the visitor's browser asks OpenAlex for the journal's 2-year mean
-  citedness (an impact-factor equivalent; cached a week). Hidden if OpenAlex
-  has no journal for the DOI. Set `impact_factor` to show a fixed figure
-  instead. Citation counts are deliberately not shown.
+- SJR badge: "SJR Q3 · 2025", from `sjr_quartile` and `sjr_year`. Look the
+  journal up on scimagojr.com and use its best quartile (the strongest of
+  its subject categories; hovering the badge says so). Entered by hand and
+  updated once a year when Scimago publishes new data. Journals not in
+  Scimago (not Scopus-indexed) get no badge. Citation counts are
+  deliberately not shown.
+- The title opens the source (`publication_url`, or the DOI if there's no
+  URL) in a new tab. Each item's own page on this site still exists, as
+  Google Scholar indexes it (found via the sitemap), but the list doesn't
+  link to it. Papers under review have no source, so their title is plain.
 - Keywords: shown as a plain text line under the venue (not for papers
   under review). Clicking one filters the list to publications with exactly
   that keyword (it fills the search box); clicking it again clears. Items

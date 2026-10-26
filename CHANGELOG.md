@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-29
+
+### Changed
+- Publications page: clicking a title now opens the publication at its
+  source (the journal or repository, via its link or DOI) in a new tab,
+  instead of its page on this site. Papers under review aren't linked.
+- Publications page: the "Journal impact" figure is replaced by the
+  journal's Scimago quartile, shown as "SJR Q3 · 2025" (entered by hand
+  per paper; journals not in Scimago show no badge).
+
 ## 2026-10-28
 
 ### Changed

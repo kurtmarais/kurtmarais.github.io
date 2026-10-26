@@ -2612,12 +2612,9 @@ body.dark-mode .back-to-top:hover {
   color: #4a514c;
 }
 
-.pub-live {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #4c9f38;
-  box-shadow: 0 0 0 2px rgba(76, 159, 56, 0.2);
+
+.pub-badge.is-metric strong {
+  font-weight: 700;
 }
 
 .pub-actions {
