@@ -12,7 +12,7 @@ is the baseline. Add new entries at the top.
   Seminars and panels, Blog posts), each with title, venue and date,
   keywords, and links, with summaries and abstracts behind toggles. "In the
   media" is a picture grid; posters and blog posts show their thumbnails.
-- Engagements and Publications: the Sort menu starts on "Default" (grouped by type). Choosing
+- Engagements and Publications: the Sort menu starts on "By type". Choosing
   "Newest first" or "Oldest first" regroups the list by year; A-Z / Z-A
   show one list.
 

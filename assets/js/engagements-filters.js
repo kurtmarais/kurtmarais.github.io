@@ -13,7 +13,7 @@
   var state = {
     types: new Set(),      // empty set = "all types"
     years: new Set(),      // empty set = "all years"
-    sort: "default",       // "default" | "newest" | "oldest" | "az" | "za"
+    sort: "type",          // "type" | "newest" | "oldest" | "az" | "za"
     topics: ""              // lowercase search string
   };
 
@@ -237,7 +237,7 @@
 
   /* ---------- Sorting ---------- */
 
-  // "Default" keeps the type sections; newest / oldest regroup the list by
+  // "By type" keeps the type sections; newest / oldest regroup the list by
   // year; A-Z / Z-A make one list (assets/js/list-grouping.js).
   var group = list && window.ListGrouping ? window.ListGrouping(list, {
     wrap: ".eng-wrap",
