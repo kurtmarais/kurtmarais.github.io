@@ -33,6 +33,14 @@ show_media: true
 # Publications list: authors containing this text are shown in bold
 # (so your name stands out in co-authored papers).
 publication_author: "Marais, K"
+# Spellings of your name to bold inside a publication's `authors_display`
+# (the author line copied as the journal prints it). Longest first.
+publication_author_names:
+  - "Kurt Marais"
+  - "Marais, Kurt"
+  - "Marais, K."
+  - "K. Marais"
+  - "Marais K"
 
 # Floating awareness button (top left, every page): shown only between
 # `start` and `end` (inclusive, checked in the visitor's browser, so it

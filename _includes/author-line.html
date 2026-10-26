@@ -1,0 +1,28 @@
+{% comment %}
+  Author line for a publication (list entry, its own page, homepage).
+  - If the item has `authors_display`, that text is shown exactly as written
+    (copy it from the journal), with your name in bold wherever one of
+    `site.publication_author_names` appears in it.
+  - Otherwise the `authors` list is joined APA-style ("A, B, & C"), bolding
+    entries that contain `site.publication_author`.
+  `authors` is always kept as "Surname, I." entries: Cite and the Google
+  Scholar tags are built from it.
+  Usage: {% include author-line.html item=item %}
+{% endcomment %}
+{%- assign al_item = include.item -%}
+{%- if al_item.authors_display -%}
+  {%- assign al_text = al_item.authors_display | escape -%}
+  {%- for name in site.publication_author_names -%}
+    {%- capture al_token -%}@@AUTHOR{{ forloop.index }}@@{%- endcapture -%}
+    {%- assign al_text = al_text | replace: name, al_token -%}
+  {%- endfor -%}
+  {%- for name in site.publication_author_names -%}
+    {%- capture al_token -%}@@AUTHOR{{ forloop.index }}@@{%- endcapture -%}
+    {%- capture al_bold -%}<span class="pub-me">{{ name }}</span>{%- endcapture -%}
+    {%- assign al_text = al_text | replace: al_token, al_bold -%}
+  {%- endfor -%}
+  {{- al_text -}}
+{%- else -%}
+  {%- assign al_me = site.publication_author | default: "Marais, K" -%}
+  {%- for author in al_item.authors -%}{%- if author contains al_me -%}<span class="pub-me">{{ author }}</span>{%- else -%}{{ author }}{%- endif -%}{%- unless forloop.last -%}{%- if forloop.rindex == 2 -%}, &amp; {% else %}, {% endif -%}{%- endunless -%}{%- endfor -%}
+{%- endif -%}

@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-28
+
+### Added
+- Publications: optional `authors_display` field. The author line is then
+  shown exactly as the journal prints it (on the list, the publication's
+  own page and the homepage), with your name in bold. The structured
+  `authors` list still drives Cite and Google Scholar.
+
 ## 2026-10-27
 
 ### Changed

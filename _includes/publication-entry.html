@@ -22,7 +22,7 @@
       <strong class="publication-title"><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></strong>
 
       <div class="publication-byline">
-        <div class="pub-authors">{% for author in item.authors %}{% if author contains me %}<span class="pub-me">{{ author }}</span>{% else %}{{ author }}{% endif %}{% unless forloop.last %}{% if forloop.rindex == 2 %}, &amp; {% else %}, {% endif %}{% endunless %}{% endfor %}</div>
+        <div class="pub-authors">{% include author-line.html item=item %}</div>
         {% unless include.review %}
         <div class="pub-venue">
             {% case item.type %}

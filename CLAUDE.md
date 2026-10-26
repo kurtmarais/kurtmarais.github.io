@@ -206,8 +206,12 @@ link still opens the item's own page in a new tab. `status: under-review` /
 `revise-resubmit` puts an item in "Under review" (filter value
 `under-review`): title, authors and status badge only (no journal,
 abstract, Cite or links, on the list or its own page), and no Scholar /
-schema.org tags. Own name bold via
-`publication_author` in `_config.yml`. No citation counts, "New" badges or
+schema.org tags. Author line via `_includes/author-line.html` (list, own
+page, homepage): `authors_display` shown verbatim if set (journal's format;
+own name bolded via `publication_author_names`, replaced through
+`@@AUTHORn@@` tokens so overlapping spellings can't double-wrap), else the
+`authors` list joined APA-style with own name bold via `publication_author`.
+`authors` stays "Surname, I." always: Cite, Scholar and schema.org use it. No citation counts, "New" badges or
 publication counts by design. Keywords: a plain italic line under the
 venue (`.pub-keywords`, no pills; not shown for under-review items, and no
 longer repeated as pills in the list's Abstract panel). Clicking one puts it

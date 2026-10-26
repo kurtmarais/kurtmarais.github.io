@@ -26,8 +26,9 @@ title: "Article or item title"
 type: journal-article          # journal-article | conference-paper | book-chapter | dataset | thesis | dissertation
 status:                         # optional: under-review | revise-resubmit | accepted (leave out once published)
 featured: false                 # true = also shown on the homepage
-authors:
+authors:                        # always "Surname, I." — Cite and Google Scholar use this list
   - "Surname, I."
+authors_display: "Marais K, Smith JA, Ndlovu T"   # optional: author line exactly as the journal prints it
 year: 2026
 journal: "Journal name"         # journal-article only
 volume: "16"                    # journal-article only
@@ -105,3 +106,17 @@ Things worth knowing:
 - Cite: APA 7, Harvard, MLA 9, Chicago (author-date), IEEE, BibTeX and RIS,
   built in the browser from the front matter (`assets/js/publications-cite.js`),
   with copy and (BibTeX/RIS) download.
+
+## Author names
+
+- `authors` is the structured list, always written `Surname, I.` (one per
+  line, in paper order). The Cite formats, Google Scholar tags and
+  schema.org data are built from it, so keep it in that form whatever the
+  journal does.
+- `authors_display` (optional) is shown instead on the list, the item's own
+  page and the homepage, exactly as typed: copy the journal's author line
+  (separators, initials, "and"/"&", et al.) as it appears. Your name is
+  bolded wherever one of `publication_author_names` (in `_config.yml`)
+  appears in it; add a spelling there if a journal uses a new one.
+- Without `authors_display`, the `authors` list is joined APA-style
+  ("Marais, K., Smith, J. A., & Ndlovu, T.").
