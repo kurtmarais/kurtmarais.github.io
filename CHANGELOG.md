@@ -6,6 +6,13 @@ is the baseline. Add new entries at the top.
 
 ## 2026-10-29
 
+### Added
+- Publications: two sole-author journal articles under review, "A hybrid
+  approach to constructing a domain-specific sentiment lexicon for
+  depression-related social media text" (submitted 2025) and "Modeling
+  emotional contagion through sentiment diffusion dynamics in depressotypic
+  online social networks" (submitted 2026).
+
 ### Changed
 - Publications page: clicking a title now opens the publication at its
   source (the journal or repository, via its link or DOI) in a new tab,
