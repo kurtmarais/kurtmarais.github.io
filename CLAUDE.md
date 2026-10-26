@@ -44,9 +44,10 @@ must be checked for `scrollWidth > clientWidth` at phone and tablet widths.
 
 Lives in **one place**: `_includes/engagement-type.html` (sets `type_icon`
 and `type_label`), with the date part of the meta line in
-`_includes/engagement-date.html`. Both `engagements.html` and `home.html`'s
-"In the Media" strip call them with `{% include ... item=item %}` — edit the
-include, not the layouts.
+`_includes/engagement-date.html`. Both the Engagements list
+(`_includes/engagement-entry.html`) and `home.html`'s "In the Media" strip
+call them with `{% include ... item=item %}` — edit the include, not the
+layouts.
 
 Icon and label are assigned **together in one `case` statement**, never two
 separate lookups — keeps them from drifting out of sync:
@@ -70,7 +71,7 @@ the generic `type: media` with the real distinction living in
 Card extras by `media_format`: `video` = play overlay + "Watch video →",
 `podcast` = the same play overlay + "Listen to episode →" (overlay bubble
 `rgba(32,36,33,0.55)`, lighter so more thumbnail shows), `poster` = "View poster →", else "Read article →".
-Set in both `engagements.html` and `home.html`. The homepage "In the Media"
+Set in both `engagement-entry.html` and `home.html`. The homepage "In the Media"
 strip only lists `type: media` + `featured: true`, so a podcast meant for the
 homepage is `type: media` + `media_format: podcast`, not `type: podcast`.
 The strip is sorted newest first by `start_date` (`sort: "start_date",
@@ -79,13 +80,14 @@ The pill gets an `is-<icon>` class (e.g. `is-fa-podcast`); the podcast
 glyph is 0.85rem instead of 0.7rem because its detail blurs at the
 smaller size.
 
-Icon renders inside `.engagement-type-pill` (icon-only colored pill), with
+Homepage strip only (the Engagements list uses the Publications badges,
+see below): icon renders inside `.engagement-type-pill` (icon-only colored pill), with
 the type name as **plain text beside it, not inside the pill** — deliberate,
 so it doesn't visually collide with keyword badges, which do have text
 inside their pill.
 
 Meta line format: `[pill+icon] Type · Venue/Publication · Date`. The pill is
-a hanging bullet: `.engagement-meta` / `.media-meta` are flex rows and
+a hanging bullet: `.media-meta` is a flex row and
 everything after the pill sits in `<span class="meta-text">`, so wrapped
 lines align under the first line's text, not under the pill. The span's top
 padding (`(1.5rem - 1.6em) / 2`) centres its first line on the pill.
@@ -201,7 +203,8 @@ newest first, no numbering or tiles (both rejected). Markup in
 `_includes/publication-entry.html`; panels, citation formats and keyword
 clicks in `assets/js/publications-cite.js`; sorting runs within
 each `.pub-section-list` and empty sections hide (`publications-filters.js`).
-The original Filters (type, sort, search) are the only filter UI; the title
+The original Filters (type, sort, search) are the only filter UI (sort
+groups by type or year, see "Sort and grouping"); the title
 links to the source (`publication_url`, else DOI) in a new tab, not the
 item's own page (those pages still exist for Google Scholar, reached via
 the sitemap and the homepage); under-review titles aren't links. `status: under-review` /
@@ -306,14 +309,43 @@ padding drops to 0.5rem so "Research profile" / "Google Scholar" fit.
 `show_cv_links` — each gates one optional CV section. New sections should
 follow the same pattern.
 
-## Engagements search (`engagements-filters.js`)
+## Engagements list (`/engagements/`)
 
-Keyword badges are visible for **every** entry type now (plain and media
-alike) via `.engagement-keywords-row` — the topic search selector list reads
-that class, not the old hidden `.engagement-keywords` span (removed). Sort
-now runs once automatically on page load (`applySort()` called at the end of
-the IIFE), so "Newest first" is genuinely true on first render, not only
-after the dropdown is touched.
+Same entry style as the Publications list (reuses the `.pub-*` classes):
+title (links to `url`, new tab), italic venue/publication · location · date
+(year if no date), dotted keyword line, badges, then green links ("Watch
+video →" etc.) and Summary (`description`) / Abstract (not for posters)
+panels. Markup `_includes/engagement-entry.html`, layout
+`_layouts/engagements.html`, styles under `ENGAGEMENTS LIST` in `main.scss`
+(`eng-` prefix), behaviour `engagements-filters.js` (Type, Years, Sort,
+search; Summary/Abstract toggles).
+
+- Type sections: In the media (`type` media/video/podcast/newspaper/
+  interview/radio), Conference presentations, Posters, Seminars and panels
+  (seminar + panel), Blog posts, Other engagements. Default order: year
+  newest first; within a year, dated entries by `start_date`, then undated
+  ones in file order.
+- "In the media" is a picture grid (`.eng-grid`, 3 across, 2 on phones):
+  the same entry markup restyled as a card (picture, type line, title,
+  outlet and date; keywords, badges and links hidden; the title link's
+  `::after` makes the whole card clickable).
+- Thumbnails: entries with an `image` (posters show the top of the image,
+  blog posts) get a 128px (88px on phones) 16:10 thumbnail; play overlay
+  for video/podcast. Entries without one get an icon tile only when sorted
+  by date or title, so mixed lists line up. The type badge is hidden in the
+  type sections (the heading says it).
+- `.row > .ecm-shell` cancels part of the row gutter so the first section
+  heading sits the same distance under the title row as on Publications.
+
+## Sort and grouping (both lists, `assets/js/list-grouping.js`)
+
+Sort options: By type (default), Newest first, Oldest first, A-Z, Z-A. By
+type = the Jekyll-rendered type sections. Newest / Oldest regroup into one
+section per year (same `.pub-section-label` heading) in that order; within
+a year, dated entries first by date, then the original order. A-Z / Z-A =
+one list without headings. Entries are moved, not copied, so open panels
+and handlers survive; the list gets `is-by-type` / `is-by-year` /
+`is-flat`. Filtering hides any section (type or year) left empty.
 
 ## Reinforcement demo (`reinforcement-demo.html`, `/reinforcement-demo/`)
 

@@ -51,10 +51,11 @@ layout: default
           <div class="filter-control" data-filter="sort">
             <span class="filter-mobile-label">Sort</span>
             <button type="button" class="filter-toggle" aria-expanded="false">
-              <span class="filter-value">Newest first</span>
+              <span class="filter-value">By type</span>
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
             <div class="filter-dropdown" hidden>
+              <button type="button" class="filter-option" data-value="type">By type</button>
               <button type="button" class="filter-option" data-value="newest">Newest first</button>
               <button type="button" class="filter-option" data-value="oldest">Oldest first</button>
               <button type="button" class="filter-option" data-value="az">Sort A-Z</button>
@@ -86,7 +87,7 @@ layout: default
 {% assign pubs_sorted = site.publications | sort: "year" | reverse %}
 {% assign pub_sections = "journal-article|Journal articles;conference-paper|Conference papers;book-chapter|Book chapters;under-review|Under review;dataset|Datasets;theses|Theses" | split: ";" %}
 
-<div class="publications-list">
+<div class="publications-list is-by-type">
 
   {% for sec in pub_sections %}
     {% assign sec_parts = sec | split: "|" %}
@@ -136,5 +137,6 @@ layout: default
   </div>
 </div>
 
+<script src="{{ '/assets/js/list-grouping.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/publications-filters.js' | relative_url }}"></script>
 <script src="{{ '/assets/js/publications-cite.js' | relative_url }}"></script>

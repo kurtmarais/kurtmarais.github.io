@@ -733,25 +733,6 @@ body.dark-mode .publication-featured-badge {
   color: #9ab8aa;
 }
 
-.engagement-featured-badge {
-  display: inline-block;
-  margin-left: 0.45rem;
-  padding: 0.1rem 0.5rem;
-  border-radius: 1rem;
-  background: rgba(54, 91, 82, 0.1);
-  color: $linkColor;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  vertical-align: middle;
-}
-
-body.dark-mode .engagement-featured-badge {
-  background: rgba(154, 184, 170, 0.15);
-  color: #9ab8aa;
-}
-
 /* Keyword bubbles — publication individual page + listing dropdown */
 .publication-keywords-row {
   display: flex;
@@ -773,34 +754,6 @@ body.dark-mode .engagement-featured-badge {
 body.dark-mode .publication-keyword-badge {
   background: rgba(154, 184, 170, 0.15);
   color: #9ab8aa;
-}
-
-/* Keyword bubbles — engagements page */
-.engagement-keywords-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin: 0.3rem 0 0.5rem;
-}
-
-.engagement-keyword-badge {
-  display: inline-block;
-  padding: 0.15rem 0.65rem;
-  border-radius: 1rem;
-  background: rgba(54, 91, 82, 0.1);
-  color: $linkColor;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-body.dark-mode .engagement-keyword-badge {
-  background: rgba(154, 184, 170, 0.15);
-  color: #9ab8aa;
-}
-
-.engagement-entry .abstract-block {
-  margin-top: 0.75rem !important;
 }
 
 /* MEDIA STRIP — card treatment, colorway inverted relative to the hero card */
@@ -930,76 +883,6 @@ body.dark-mode .engagement-keyword-badge {
   overflow: hidden;
 }
 
-/* ENGAGEMENTS — INLINE MEDIA CARD (visually similar to the homepage media strip, but
-   shorter — this sits inline in a year-grouped list, not a hero carousel) */
-
-.engagement-entry {
-  display: flex;
-  align-items: stretch;
-  gap: 1.25rem;
-}
-
-.engagement-media-thumb {
-  position: relative;
-  flex: 0 0 140px;
-  aspect-ratio: 4 / 3; // shorter than the homepage's 16/9-at-25%-width layout
-  border-radius: 0.25rem;
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-}
-
-.engagement-media-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-// Poster thumbnails are a full-width crop of a document's title band —
-// a much wider, shorter shape than the 4:3 video/article thumbnails.
-// This ratio is fixed and shared by every poster (not set per-entry),
-// specifically so different posters have visual parity with each other
-// on the Engagements list — object-fit: cover (above) handles cropping
-// each individual source image to fit this same shape.
-.engagement-media-thumb.poster-media-thumb {
-  aspect-ratio: 2.5 / 1;
-  flex-basis: 260px;
-}
-
-.engagement-media-play-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(32, 36, 33, 0.55);
-  color: #f7f6f1;
-  font-size: 0.7rem;
-}
-
-.engagement-content {
-  flex: 1;
-  padding: 0;
-}
-
-// Shared meta line (icon, venue/publication, date, featured badge) —
-// used identically whether or not the entry has a thumbnail, so a talk
-// and an article read the same way at a glance.
-.engagement-meta {
-  color: #69706b;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 0.35rem;
-}
-
 // Icon-only pill for engagement type — deliberately icon-only (no text
 // inside) so it doesn't visually duplicate the keyword/featured badges,
 // which always carry text. The type name itself sits as plain text
@@ -1020,12 +903,10 @@ body.dark-mode .engagement-keyword-badge {
 // column like a bullet, and wrapped lines line up under the first line's
 // text instead of running back under the pill. The text's top padding
 // centres its first line on the pill (pill height minus one line, halved).
-.engagement-meta,
 .media-meta {
   display: flex;
   align-items: flex-start;
 }
-.engagement-meta .meta-text,
 .media-meta .meta-text {
   flex: 1;
   min-width: 0;
@@ -1052,55 +933,6 @@ body.dark-mode .engagement-type-pill {
 body.dark-mode .engagement-type-pill i,
 body.dark-mode .engagement-type-pill svg {
   color: #9ab8aa;
-}
-
-.engagement-title {
-  font-size: 1.05rem; // smaller than the homepage card's 1.2rem
-  line-height: 1.25;
-  margin-bottom: 0.3rem;
-}
-
-.engagement-description {
-  display: block;
-  color: #69706b;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  margin-bottom: 0.3rem;
-}
-
-.engagement-media-link {
-  color: $linkColor;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.engagement-media-link:hover {
-  color: $bodyColor;
-  text-decoration: underline;
-}
-
-@media (max-width: 767px) {
-  .engagement-entry {
-    display: block; // matches the homepage media strip's own mobile breakpoint exactly
-  }
-
-  .engagement-media-thumb {
-    display: block;
-    width: 100%;
-    aspect-ratio: 3 / 1; // short banner, same ratio as the homepage strip on mobile — the previous 4/3 carried over from desktop and rendered far taller than intended
-    overflow: hidden;
-  }
-
-  .engagement-content {
-    display: block;
-    padding: 0.75rem 0 0; // slightly tighter than the homepage's 1rem, keeping this card shorter overall as intended
-  }
-
-  .engagement-title {
-    font-size: 1rem;
-    margin-bottom: 0.3rem;
-  }
 }
 
 /* VIDEO / PODCAST PLAY ICON */
@@ -1750,6 +1582,12 @@ body.dark-mode .poster-embed {
   flex-direction: column;
   gap: 2.5rem;
 }
+// The row gutter above the shell plus the first section heading's margin
+// left a bigger gap under the title row than on Publications; this evens
+// them up.
+.row > .ecm-shell {
+  margin-top: calc(var(--bs-gutter-y) - 1.5rem);
+}
 .ecm-content {
   min-width: 0;
 }
@@ -2177,22 +2015,6 @@ body.dark-mode .media-link {
 }
 
 body.dark-mode .media-link:hover {
-  color: #ffffff;
-}
-
-body.dark-mode .engagement-meta {
-  color: #aeb3ae;
-}
-
-body.dark-mode .engagement-description {
-  color: #aeb3ae;
-}
-
-body.dark-mode .engagement-media-link {
-  color: #9ab8aa;
-}
-
-body.dark-mode .engagement-media-link:hover {
   color: #ffffff;
 }
 
@@ -2779,6 +2601,175 @@ body.dark-mode .pub-cite-formats button.is-on,
 body.dark-mode .pub-cite-copy { background: #9ab8aa; border-color: #9ab8aa; color: #202421; }
 body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; color: #e8e9e5; }
 
+
+/* ENGAGEMENTS LIST (_layouts/engagements.html, _includes/engagement-entry.html)
+   Same entry style as the Publications list (.pub-* rules above), plus
+   thumbnails and the "In the media" picture grid. The list carries
+   is-by-type / is-by-year / is-flat from the Sort control
+   (list-grouping.js). */
+
+.eng-entry {
+  position: relative;
+}
+
+// Thumbnail column: entries with an image always; every entry when sorted
+// by date or title, so a mixed list lines up (the others get an icon tile).
+.eng-entry.has-image,
+.engagements-list:not(.is-by-type) .eng-entry {
+  display: grid;
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 1.1rem;
+  align-items: start;
+}
+
+.eng-thumb {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-top: 0.2rem;
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(54, 91, 82, 0.08);
+}
+
+.eng-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+// Posters: show the top of the poster (its title band).
+.eng-thumb.is-poster img {
+  object-position: top;
+}
+
+.eng-thumb.is-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(54, 91, 82, 0.5);
+}
+
+.eng-thumb.is-icon i,
+.eng-thumb.is-icon svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.engagements-list.is-by-type .eng-thumb.is-icon {
+  display: none;
+}
+
+.eng-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(32, 36, 33, 0.55);
+  color: #f7f6f1;
+  transform: translate(-50%, -50%);
+}
+
+.eng-play i,
+.eng-play svg {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+// Type badge only outside the type sections (the section heading says it).
+.engagements-list.is-by-type .eng-entry .pub-badge.is-type,
+.engagements-list.is-by-type .eng-entry .pub-badges.is-type-only {
+  display: none;
+}
+
+.eng-card-type {
+  display: none;
+}
+
+// "In the media": the same entries as picture cards. The title link's
+// ::after covers the card, so the whole card is clickable.
+.eng-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem 1.25rem;
+  padding: 0.9rem 0;
+}
+
+.eng-grid .eng-entry {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+}
+
+.eng-grid .eng-thumb {
+  margin: 0 0 0.6rem;
+}
+
+.eng-grid .eng-thumb.is-icon {
+  display: flex;
+}
+
+.eng-grid .eng-card-type {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #69706b;
+}
+
+.eng-grid .eng-title {
+  margin: 0.15rem 0 0.2rem;
+  font-size: 0.98rem;
+}
+
+.eng-grid .eng-title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.eng-grid .eng-entry:hover .eng-title a {
+  color: $linkColor;
+  text-decoration: underline;
+}
+
+.eng-grid .eng-venue {
+  font-size: 0.85rem;
+}
+
+.eng-grid .pub-keywords,
+.eng-grid .pub-badges,
+.eng-grid .pub-actions,
+.eng-grid .pub-panel {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .eng-entry.has-image,
+  .engagements-list:not(.is-by-type) .eng-entry {
+    grid-template-columns: 88px minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .eng-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1rem;
+  }
+}
+
+body.dark-mode .eng-thumb { background: rgba(154, 184, 170, 0.1); }
+body.dark-mode .eng-thumb.is-icon { color: rgba(154, 184, 170, 0.55); }
+body.dark-mode .eng-grid .eng-card-type { color: #aeb3ae; }
+body.dark-mode .eng-grid .eng-entry:hover .eng-title a { color: #9ab8aa; }
 
 /* AWARENESS BUTTON (_includes/awareness-button.html, awareness-button.js) */
 
