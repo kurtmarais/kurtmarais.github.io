@@ -198,8 +198,8 @@ Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
 Full notes in `_publications/README.md`. Sections by output kind (journal
 articles, conference papers, book chapters, under review, datasets, theses),
 newest first, no numbering or tiles (both rejected). Markup in
-`_includes/publication-entry.html`; panels, citation formats and the live
-journal impact badge in `assets/js/publications-cite.js`; sorting runs within
+`_includes/publication-entry.html`; panels, citation formats and keyword
+clicks in `assets/js/publications-cite.js`; sorting runs within
 each `.pub-section-list` and empty sections hide (`publications-filters.js`).
 The original Filters (type, sort, search) are the only filter UI; the title
 links to the source (`publication_url`, else DOI) in a new tab, not the
@@ -224,9 +224,12 @@ venue (`.pub-keywords`, no pills; not shown for under-review items, and no
 longer repeated as pills in the list's Abstract panel). Clicking one puts it
 in the search box with `data-keyword` set, which makes the filter match that
 keyword exactly in `.publication-keywords` (typed searches stay full-text);
-clicking it again clears. The impact badge is OpenAlex 2-year mean
-citedness (live, cached a week, hidden when unknown); `impact_factor` in an
-item overrides it with a fixed figure.
+clicking it again clears. Journal metric: an outlined "SJR **Q3** · 2025"
+badge from `sjr_quartile` / `sjr_year`, entered by hand from scimagojr.com
+(best quartile; tooltip says so), none when unset (e.g. journals not in
+Scopus). Text sits in one inner `<span>` so the badge's flex gap doesn't
+space it out. Replaced the live OpenAlex impact badge and `impact_factor`
+(both removed). Open access marking was considered and left out.
 
 ## Homepage card text width (`fit-to-title.js`)
 

@@ -4,8 +4,8 @@
   - Title link: the source (publication_url, else DOI) in a new tab; no link
     for papers under review.
   - Your name is bold wherever `site.publication_author` appears in `authors`.
-  - Journal impact badge: filled in the browser by publications-cite.js
-    (OpenAlex 2-year mean citedness), unless `impact_factor` is set by hand.
+  - SJR badge: "SJR Q3 · 2025" from `sjr_quartile` / `sjr_year`, entered by
+    hand from scimagojr.com (journal's best quartile). No badge without it.
   - Abstract / Cite panels: toggled by the action buttons (publications-cite.js).
   - Under review: title, authors and status badge only (no journal name,
     abstract, cite or links), since the paper isn't out yet.
@@ -64,12 +64,8 @@
             {% when "dissertation" %}<span class="pub-badge is-type"><i class="fas fa-graduation-cap" aria-hidden="true"></i>PhD dissertation</span>
           {% endcase %}
           {% if item.status == "accepted" %}<span class="pub-badge is-accepted"><i class="fas fa-check" aria-hidden="true"></i>Accepted</span>{% endif %}
-          {% if item.impact_factor %}
-            <span class="pub-badge is-metric" title="Journal Impact Factor{% if item.impact_factor_year %} ({{ item.impact_factor_year }}){% endif %}">Impact factor {{ item.impact_factor }}{% if item.impact_factor_year %} ({{ item.impact_factor_year }}){% endif %}</span>
-          {% elsif item.doi %}
-            {% if item.type == "journal-article" or item.type == "conference-paper" %}
-              <span class="pub-badge is-metric" data-openalex-doi="{{ item.doi | remove: 'https://doi.org/' }}" title="The journal's 2-year mean citedness from OpenAlex, comparable to an impact factor. Updated live." hidden><span class="pub-live" aria-hidden="true"></span>Journal impact <span class="pub-impact-value"></span></span>
-            {% endif %}
+          {% if item.sjr_quartile %}
+            <span class="pub-badge is-metric" title="Scimago Journal Rank{% if item.sjr_year %} {{ item.sjr_year }}{% endif %}: best quartile {{ item.sjr_quartile }}"><span>SJR <strong>{{ item.sjr_quartile }}</strong>{% if item.sjr_year %} · {{ item.sjr_year }}{% endif %}</span></span>
           {% endif %}
         {% endif %}
       </div>

@@ -10,6 +10,8 @@ journal: "The International Journal of Health, Wellness, and Society"
 volume: "16"
 issue: "2"
 pages: "153-178"
+sjr_quartile: "Q3"
+sjr_year: 2025
 doi: "https://doi.org/10.18848/2156-8960/CGP/A454"
 publication_url: "https://doi.org/10.18848/2156-8960/CGP/A454"
 keywords: ["thematic analysis", "topic modeling", "natural language processing", "depression", "reddit"]
