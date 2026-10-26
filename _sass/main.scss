@@ -2548,9 +2548,11 @@ body.dark-mode .back-to-top:hover {
   font-size: 0.7rem;
 }
 
+// Type bubbles use the site's translucent badge green (as keyword badges)
+// rather than solid green, so they sit lighter on the page.
 .pub-badge.is-type {
-  background: $linkColor;
-  color: #ffffff;
+  background: rgba(54, 91, 82, 0.15);
+  color: $linkColor;
 }
 
 .pub-badge.is-review {
@@ -2724,7 +2726,7 @@ body.dark-mode .pub-authors,
 body.dark-mode .pub-abstract p { color: #c9cdc8; }
 body.dark-mode .pub-venue { color: #aeb3ae; }
 body.dark-mode .pub-badge { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
-body.dark-mode .pub-badge.is-type { background: #9ab8aa; color: #202421; }
+body.dark-mode .pub-badge.is-type { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
 body.dark-mode .pub-badge.is-review { background: rgba(214, 178, 92, 0.16); color: #d9b95e; }
 body.dark-mode .pub-badge.is-rr { background: rgba(120, 165, 225, 0.16); color: #9cc0ee; }
 body.dark-mode .pub-badge.is-accepted { background: rgba(120, 190, 100, 0.16); color: #9fd38c; }
