@@ -77,7 +77,8 @@ He brings expertise in affective information diffusion, depression-specific sent
 
 ### {{ item.title }}
 
-- {{ kind }} · {{ item.authors | join: ", " }} ({{ item.year }}).{% if venue != "" %} {{ venue }}.{% endif %}
+{%- include author-parse.html authors=item.authors %}
+- {{ kind }} · {{ parsed_authors | join: "; " }} ({{ item.year }}).{% if venue != "" %} {{ venue }}.{% endif %}
 {%- if item.doi %}
 - DOI: {{ item.doi }}
 {%- elsif item.publication_url %}

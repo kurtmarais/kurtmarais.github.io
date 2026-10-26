@@ -14,7 +14,7 @@ layout: default
     <h1 class="fw-bold mb-3">{{ page.title }}</h1>
 
     <p class="publication-byline text-muted">
-      {{ page.authors | join: ", " }}{% if pub_in_review %}. Manuscript under review.{% else %} ({{ page.year }}).{% endif %}
+      {% include author-line.html item=page %}{% if pub_in_review %}. Manuscript under review.{% else %} ({{ page.year }}).{% endif %}
       {% if pub_in_review %}
       {% elsif page.type == "journal-article" %}
         <em>{{ page.journal }}</em>{% if page.volume %}, {{ page.volume }}{% if page.issue %}({{ page.issue }}){% endif %}{% endif %}{% if page.pages %}, {{ page.pages }}{% endif %}.

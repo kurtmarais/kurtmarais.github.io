@@ -26,8 +26,9 @@ title: "Article or item title"
 type: journal-article          # journal-article | conference-paper | book-chapter | dataset | thesis | dissertation
 status:                         # optional: under-review | revise-resubmit | accepted (leave out once published)
 featured: false                 # true = also shown on the homepage
-authors:
-  - "Surname, I."
+authors:                        # full names, in paper order (see "Author names")
+  - "Kurt Marais"
+  - "John A. Smith"
 year: 2026
 journal: "Journal name"         # journal-article only
 volume: "16"                    # journal-article only
@@ -105,3 +106,31 @@ Things worth knowing:
 - Cite: APA 7, Harvard, MLA 9, Chicago (author-date), IEEE, BibTeX and RIS,
   built in the browser from the front matter (`assets/js/publications-cite.js`),
   with copy and (BibTeX/RIS) download.
+
+## Author names
+
+Enter each author once, with full names where you have them, in paper
+order:
+
+```yaml
+authors:
+  - "John A. Smith"
+  - "Kurt Marais"
+  - "Thabo Ndlovu"
+```
+
+"Surname, Given" works too ("Smith, John A."), as do initials ("Smith,
+J. A.") when that's all you have. Surname particles ("Johan van der
+Merwe") and hyphenated names ("Jean-Pierre Dupont") are handled. A single
+line copied from a journal also works
+(`authors: "Smith JA, Marais K and Ndlovu T"`): APA, Vancouver, IEEE, MLA
+and similar styles are split into people automatically.
+
+From that one entry (`_includes/author-parse.html`):
+- The web page shows initials without full stops, then surname, separated
+  by commas: **K Marais**, JA Smith, T Ndlovu (your name bold, matched on
+  `publication_author: "Marais, K"` in `_config.yml`). Used on the list,
+  each publication's page and the homepage.
+- Cite uses initials for APA, Harvard and IEEE, and the full first names
+  you entered for MLA, Chicago, BibTeX and RIS.
+- Google Scholar and schema.org get "Surname, Given" names.

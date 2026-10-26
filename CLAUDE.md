@@ -206,8 +206,17 @@ link still opens the item's own page in a new tab. `status: under-review` /
 `revise-resubmit` puts an item in "Under review" (filter value
 `under-review`): title, authors and status badge only (no journal,
 abstract, Cite or links, on the list or its own page), and no Scholar /
-schema.org tags. Own name bold via
-`publication_author` in `_config.yml`. No citation counts, "New" badges or
+schema.org tags. Author line via `_includes/author-line.html` (list, own
+page, homepage): always "K Marais, JA Smith, T Ndlovu" (initials, no
+full stops, commas only; own name bold when its "Surname, Given" contains
+`publication_author`). `authors` is entered once with full names (list,
+any of "Kurt Marais" / "Marais, Kurt" / "Marais, K.", or one journal-style
+line); `_includes/author-parse.html` turns it into "Surname, Given" names
+(`parsed_authors`; handles APA, Vancouver, IEEE/first-last, MLA, particles,
+hyphens, "et al."; never reassign a for-loop variable in Liquid, it doesn't
+stick). Cite: initials for APA/Harvard/IEEE, full given names for
+MLA/Chicago/BibTeX/RIS. No separate display field or verbatim journal line
+(both tried and dropped). No citation counts, "New" badges or
 publication counts by design. Keywords: a plain italic line under the
 venue (`.pub-keywords`, no pills; not shown for under-review items, and no
 longer repeated as pills in the list's Abstract panel). Clicking one puts it

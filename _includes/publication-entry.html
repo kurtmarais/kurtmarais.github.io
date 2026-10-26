@@ -22,7 +22,7 @@
       <strong class="publication-title"><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></strong>
 
       <div class="publication-byline">
-        <div class="pub-authors">{% for author in item.authors %}{% if author contains me %}<span class="pub-me">{{ author }}</span>{% else %}{{ author }}{% endif %}{% unless forloop.last %}{% if forloop.rindex == 2 %}, &amp; {% else %}, {% endif %}{% endunless %}{% endfor %}</div>
+        <div class="pub-authors">{% include author-line.html item=item %}</div>
         {% unless include.review %}
         <div class="pub-venue">
             {% case item.type %}
@@ -89,7 +89,8 @@
       {% endif %}
 
       <div class="pub-panel pub-cite" id="cite-{{ panel_id }}" hidden></div>
-      <script type="application/json" class="pub-cite-data">{"title": {{ item.title | jsonify }}, "authors": {{ item.authors | jsonify }}, "year": {{ item.year | jsonify }}, "type": {{ item.type | jsonify }}, "status": {{ item.status | jsonify }}, "journal": {{ item.journal | default: item.venue | jsonify }}, "volume": {{ item.volume | jsonify }}, "issue": {{ item.issue | jsonify }}, "pages": {{ item.pages | jsonify }}, "doi": {{ item.doi | jsonify }}, "url": {{ item.publication_url | jsonify }}, "institution": {{ item.institution | jsonify }}, "publisher": {{ item.publisher | jsonify }}, "book": {{ item.book | jsonify }}}</script>
+      {% include author-parse.html authors=item.authors %}
+      <script type="application/json" class="pub-cite-data">{"title": {{ item.title | jsonify }}, "authors": {{ parsed_authors | jsonify }}, "year": {{ item.year | jsonify }}, "type": {{ item.type | jsonify }}, "status": {{ item.status | jsonify }}, "journal": {{ item.journal | default: item.venue | jsonify }}, "volume": {{ item.volume | jsonify }}, "issue": {{ item.issue | jsonify }}, "pages": {{ item.pages | jsonify }}, "doi": {{ item.doi | jsonify }}, "url": {{ item.publication_url | jsonify }}, "institution": {{ item.institution | jsonify }}, "publisher": {{ item.publisher | jsonify }}, "book": {{ item.book | jsonify }}}</script>
 
       {% endunless %}
 

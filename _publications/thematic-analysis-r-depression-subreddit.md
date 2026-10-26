@@ -4,7 +4,7 @@ title: "Thematic Analysis of Posts from r/Depression Subreddit"
 type: journal-article
 featured: true
 authors:
-  - "Marais, K."
+  - "Kurt Marais"
 year: 2026
 journal: "The International Journal of Health, Wellness, and Society"
 volume: "16"

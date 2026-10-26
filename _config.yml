@@ -30,8 +30,8 @@ exclude:
   - "**/README.md"
 show_media: true
 
-# Publications list: authors containing this text are shown in bold
-# (so your name stands out in co-authored papers).
+# Publications: your name is bold in author lines. Matched against each
+# author as "Surname, Given", so "Marais, K" covers "Marais, Kurt" too.
 publication_author: "Marais, K"
 
 # Floating awareness button (top left, every page): shown only between

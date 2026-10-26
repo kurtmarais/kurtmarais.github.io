@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-28
+
+### Changed
+- Publications: authors are entered once, with full names. Author lines
+  on the publications list, each publication's page and the homepage read
+  "K Marais, JA Smith, T Ndlovu" (initials without full stops, your name in
+  bold). Cite uses initials for APA, Harvard and IEEE and full first names
+  for MLA, Chicago, BibTeX and RIS. Your publications now list you as
+  "Kurt Marais".
+
 ## 2026-10-27
 
 ### Changed
