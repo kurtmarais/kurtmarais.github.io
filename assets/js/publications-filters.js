@@ -12,7 +12,7 @@
 
   var state = {
     types: new Set(),
-    sort: "type",
+    sort: "default",
     topics: ""
   };
 
@@ -198,7 +198,7 @@
 
   /* ---------- Sorting ---------- */
 
-  // "By type" keeps the type sections; newest / oldest regroup the list by
+  // "Default" keeps the type sections; newest / oldest regroup the list by
   // year; A-Z / Z-A make one list (assets/js/list-grouping.js).
   var group = list && window.ListGrouping ? window.ListGrouping(list, {
     wrap: ".publication-entry-wrap",

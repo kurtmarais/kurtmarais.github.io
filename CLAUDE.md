@@ -339,8 +339,9 @@ search; Summary/Abstract toggles).
 
 ## Sort and grouping (both lists, `assets/js/list-grouping.js`)
 
-Sort options: By type (default), Newest first, Oldest first, A-Z, Z-A. By
-type = the Jekyll-rendered type sections. Newest / Oldest regroup into one
+Sort options: Default, Newest first, Oldest first, A-Z, Z-A. Default
+(value `default`, the page's starting view) = the Jekyll-rendered type
+sections. Newest / Oldest regroup into one
 section per year (same `.pub-section-label` heading) in that order; within
 a year, dated entries first by date, then the original order. A-Z / Z-A =
 one list without headings. Entries are moved, not copied, so open panels

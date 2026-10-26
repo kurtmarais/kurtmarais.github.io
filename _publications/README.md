@@ -84,7 +84,7 @@ Things worth knowing:
 - Sections, in this order: Journal articles, Conference papers, Book
   chapters, Under review, Datasets, Theses (thesis + dissertation), newest
   first. A section only appears if it has entries. No numbering or tiles.
-- Sort: "By type" (default) shows those sections; "Newest first" /
+- Sort: "Default" (the starting view) shows those sections; "Newest first" /
   "Oldest first" regroup the list by year; A-Z / Z-A show one list
   (`assets/js/list-grouping.js`).
 - `status: under-review` or `revise-resubmit` moves an item into "Under

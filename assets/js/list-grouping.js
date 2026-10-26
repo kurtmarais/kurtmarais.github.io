@@ -1,7 +1,7 @@
 // Section grouping for the Publications and Engagements lists, driven by
 // their Sort control.
 //
-// - "type" (the default, "By type"): the type sections rendered by Jekyll,
+// - "default" (shown as "Default"): the type sections rendered by Jekyll,
 //   in their original order (newest first within each).
 // - "newest" / "oldest": one section per year, in that order, with the same
 //   heading style ("2026 ———"). Within a year, entries with an exact date
@@ -60,10 +60,10 @@
 
     return function apply(mode) {
       restore();
-      list.classList.toggle("is-by-type", mode === "type");
+      list.classList.toggle("is-by-type", mode === "default");
       list.classList.toggle("is-by-year", mode === "newest" || mode === "oldest");
       list.classList.toggle("is-flat", mode === "az" || mode === "za");
-      if (mode === "type") return;
+      if (mode === "default") return;
 
       var sorted = wraps.slice();
 
