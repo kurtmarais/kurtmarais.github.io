@@ -1,7 +1,8 @@
 {% comment %}
   One entry on the Publications list (_layouts/publications.html).
   Params: item, review (true/false).
-  - Title link: unchanged from before (opens the item's own page in a new tab).
+  - Title link: the source (publication_url, else DOI) in a new tab; no link
+    for papers under review.
   - Your name is bold wherever `site.publication_author` appears in `authors`.
   - Journal impact badge: filled in the browser by publications-cite.js
     (OpenAlex 2-year mean citedness), unless `impact_factor` is set by hand.
@@ -19,7 +20,10 @@
            data-type="{{ data_type }}"
            data-year="{{ item.year }}">
     <div class="pub-body">
-      <strong class="publication-title"><a href="{{ item.url }}" target="_blank" rel="noopener">{{ item.title }}</a></strong>
+      {% comment %} Title opens the source (publisher / repository), in a new tab: publication_url, else the DOI. Papers under review have no source, so their title isn't a link. {% endcomment %}
+      {% assign title_href = item.publication_url | default: item.doi %}
+      {% if include.review %}{% assign title_href = nil %}{% endif %}
+      <strong class="publication-title">{% if title_href %}<a href="{{ title_href }}" target="_blank" rel="noopener noreferrer">{{ item.title }}</a>{% else %}{{ item.title }}{% endif %}</strong>
 
       <div class="publication-byline">
         <div class="pub-authors">{% include author-line.html item=item %}</div>

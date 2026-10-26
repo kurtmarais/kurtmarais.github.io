@@ -202,7 +202,9 @@ newest first, no numbering or tiles (both rejected). Markup in
 journal impact badge in `assets/js/publications-cite.js`; sorting runs within
 each `.pub-section-list` and empty sections hide (`publications-filters.js`).
 The original Filters (type, sort, search) are the only filter UI; the title
-link still opens the item's own page in a new tab. `status: under-review` /
+links to the source (`publication_url`, else DOI) in a new tab, not the
+item's own page (those pages still exist for Google Scholar, reached via
+the sitemap and the homepage); under-review titles aren't links. `status: under-review` /
 `revise-resubmit` puts an item in "Under review" (filter value
 `under-review`): title, authors and status badge only (no journal,
 abstract, Cite or links, on the list or its own page), and no Scholar /

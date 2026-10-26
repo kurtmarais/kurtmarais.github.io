@@ -99,6 +99,10 @@ Things worth knowing:
   citedness (an impact-factor equivalent; cached a week). Hidden if OpenAlex
   has no journal for the DOI. Set `impact_factor` to show a fixed figure
   instead. Citation counts are deliberately not shown.
+- The title opens the source (`publication_url`, or the DOI if there's no
+  URL) in a new tab. Each item's own page on this site still exists, as
+  Google Scholar indexes it (found via the sitemap), but the list doesn't
+  link to it. Papers under review have no source, so their title is plain.
 - Keywords: shown as a plain text line under the venue (not for papers
   under review). Clicking one filters the list to publications with exactly
   that keyword (it fills the search box); clicking it again clears. Items
