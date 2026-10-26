@@ -8,7 +8,10 @@
        card (site favicon "ribbon") instead of a large image card. -->
   <meta property="og:url" content="{{ page.url | absolute_url }}">
   <meta property="og:type" content="website">
-  {% if page.collection == "publications" %}
+  {% comment %} Papers under review get no Scholar / schema.org tags: they aren't published. {% endcomment %}
+  {% assign pub_in_review = false %}
+  {% if page.status == "under-review" or page.status == "revise-resubmit" %}{% assign pub_in_review = true %}{% endif %}
+  {% if page.collection == "publications" and pub_in_review == false %}
     <!-- Google Scholar Highwire Press meta tags — see https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
     <meta name="citation_title" content="{{ page.title }}">
     {% for author in page.authors %}

@@ -5,15 +5,18 @@ layout: default
 <article class="row g-5 mb-5">
   <div class="col-md-12 publication-page">
 
+    {% assign pub_in_review = false %}
+    {% if page.status == "under-review" or page.status == "revise-resubmit" %}{% assign pub_in_review = true %}{% endif %}
     <p class="eyebrow">
-      {{ page.type | replace: "-", " " | capitalize }}{% if page.featured %} · Featured{% endif %}
+      {% if pub_in_review %}{% if page.status == "revise-resubmit" %}Revise and resubmit{% else %}Under review{% endif %}{% else %}{{ page.type | replace: "-", " " | capitalize }}{% endif %}{% if page.featured %} · Featured{% endif %}
     </p>
 
     <h1 class="fw-bold mb-3">{{ page.title }}</h1>
 
     <p class="publication-byline text-muted">
-      {{ page.authors | join: ", " }} ({{ page.year }}).
-      {% if page.type == "journal-article" %}
+      {{ page.authors | join: ", " }}{% if pub_in_review %}. Manuscript under review{% if page.journal %} at <em>{{ page.journal }}</em>{% endif %}.{% else %} ({{ page.year }}).{% endif %}
+      {% if pub_in_review %}
+      {% elsif page.type == "journal-article" %}
         <em>{{ page.journal }}</em>{% if page.volume %}, {{ page.volume }}{% if page.issue %}({{ page.issue }}){% endif %}{% endif %}{% if page.pages %}, {{ page.pages }}{% endif %}.
       {% elsif page.type == "dataset" %}
         Dataset.

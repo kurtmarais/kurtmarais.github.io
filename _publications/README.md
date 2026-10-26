@@ -23,7 +23,8 @@ field list:
 ---
 layout: publication
 title: "Article or item title"
-type: journal-article          # journal-article | dataset | thesis | dissertation
+type: journal-article          # journal-article | conference-paper | book-chapter | dataset | thesis | dissertation
+status:                         # optional: under-review | revise-resubmit | accepted (leave out once published)
 featured: false                 # true = also shown on the homepage
 authors:
   - "Surname, I."
@@ -33,6 +34,11 @@ volume: "16"                    # journal-article only
 issue: "2"                      # journal-article only
 pages: "153-178"                # journal-article only
 institution: "Stellenbosch University"   # thesis / dissertation only
+publisher: "Stellenbosch University"     # dataset (shown in the venue line) / book-chapter
+venue: "Conference name"        # conference-paper (or use `journal`)
+book: "Book title"              # book-chapter
+impact_factor: "2.4"            # optional: shows "Impact factor 2.4" instead of the live OpenAlex badge
+impact_factor_year: "2025"      # optional, shown with impact_factor
 doi: "https://doi.org/..."
 publication_url: "https://doi.org/..."
 keywords:                       # optional — list of strings
@@ -71,3 +77,25 @@ Things worth knowing:
   `/publications/thematic-analysis-r-depression-subreddit/`. Keep slugs
   short and stable once published, since Scholar and any external links
   will point at that exact URL.
+
+## Publications list layout
+
+- Sections, in this order: Journal articles, Conference papers, Book
+  chapters, Under review, Datasets, Theses (thesis + dissertation). A
+  section only appears if it has entries. Each entry is numbered within its
+  section, oldest = 1 (J1, J2...; R for under review, D datasets, T theses).
+- `status: under-review` or `revise-resubmit` moves an item into "Under
+  review" (filter type "Under review", amber number, status badge). Such
+  items get **no** Google Scholar / schema.org tags on their own page, and
+  that page says "Under review". `status: accepted` keeps the item in its
+  type's section with an "Accepted" badge. Remove `status` once published.
+- Authors containing `publication_author` from `_config.yml` ("Marais, K")
+  are bold.
+- Journal impact badge: for journal articles / conference papers with a DOI,
+  the visitor's browser asks OpenAlex for the journal's 2-year mean
+  citedness (an impact-factor equivalent; cached a week). Hidden if OpenAlex
+  has no journal for the DOI. Set `impact_factor` to show a fixed figure
+  instead. Citation counts are deliberately not shown.
+- Cite: APA 7, Harvard, MLA 9, Chicago (author-date), IEEE, BibTeX and RIS,
+  built in the browser from the front matter (`assets/js/publications-cite.js`),
+  with copy and (BibTeX/RIS) download.

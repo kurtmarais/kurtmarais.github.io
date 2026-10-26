@@ -4,6 +4,19 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-10-26
+
+### Changed
+- Publications page: entries are grouped into sections (Journal articles,
+  Under review, Datasets, Theses; conference papers and book chapters when
+  added) and numbered within each (J1, J2, D1, T1...). Your name is bold in
+  the author list, each entry has a type badge, and journal articles show a
+  live journal impact figure from OpenAlex where available. View paper,
+  DOI, Abstract and a new Cite button sit under each entry; Cite gives APA,
+  Harvard, MLA, Chicago, IEEE, BibTeX and RIS, with copy and download. The
+  existing filters, sort and search are unchanged, and "Under review"
+  appears as a type when a paper has `status: under-review`.
+
 ## 2026-10-16
 
 ### Added

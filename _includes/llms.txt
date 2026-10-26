@@ -71,6 +71,7 @@ He brings expertise in affective information diffusion, depression-specific sent
   {%- when "dissertation" %}{% capture venue %}Doctoral dissertation, {{ item.institution }}{% endcapture %}{% assign kind = "Dissertation" %}
   {%- else %}{% assign venue = "" %}{% assign kind = item.type %}
 {%- endcase %}
+{%- if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign kind = "Manuscript under review" %}{% assign venue = "" %}{% endif %}
 {%- assign summary = item.abstract | default: item.description | strip_newlines | strip %}
 
 ### {{ item.title }}
