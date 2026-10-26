@@ -38,6 +38,11 @@
         {% endunless %}
       </div>
 
+      {% comment %} Keywords as a plain text line; each one fills the search box (publications-cite.js). {% endcomment %}
+      {% unless include.review %}{% if item.keywords and item.keywords.size > 0 and item.keywords[0] %}
+      <div class="pub-keywords">{% for keyword in item.keywords %}<button type="button" class="pub-kw" data-kw="{{ keyword | escape }}" title="Show publications on {{ keyword | escape }}">{{ keyword }}</button>{% unless forloop.last %}<span class="pub-kw-sep" aria-hidden="true"> · </span>{% endunless %}{% endfor %}</div>
+      {% endif %}{% endunless %}
+
       <div class="pub-badges">
         {% if include.review %}
           {% if item.status == "revise-resubmit" %}
@@ -80,13 +85,6 @@
       {% if item.abstract or item.description %}
         <div class="pub-panel pub-abstract" id="abs-{{ panel_id }}" hidden>
           <p>{{ item.abstract | default: item.description }}</p>
-          {% if item.keywords %}
-            <div class="publication-keywords-row mt-3">
-              {% for keyword in item.keywords %}
-                <span class="publication-keyword-badge">{{ keyword }}</span>
-              {% endfor %}
-            </div>
-          {% endif %}
         </div>
       {% endif %}
 

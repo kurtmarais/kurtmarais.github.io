@@ -208,7 +208,12 @@ link still opens the item's own page in a new tab. `status: under-review` /
 abstract, Cite or links, on the list or its own page), and no Scholar /
 schema.org tags. Own name bold via
 `publication_author` in `_config.yml`. No citation counts, "New" badges or
-publication counts by design. The impact badge is OpenAlex 2-year mean
+publication counts by design. Keywords: a plain italic line under the
+venue (`.pub-keywords`, no pills; not shown for under-review items, and no
+longer repeated as pills in the list's Abstract panel). Clicking one puts it
+in the search box with `data-keyword` set, which makes the filter match that
+keyword exactly in `.publication-keywords` (typed searches stay full-text);
+clicking it again clears. The impact badge is OpenAlex 2-year mean
 citedness (live, cached a week, hidden when unknown); `impact_factor` in an
 item overrides it with a fixed figure.
 
