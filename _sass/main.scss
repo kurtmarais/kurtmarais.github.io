@@ -1576,10 +1576,9 @@ body.dark-mode .poster-embed {
 }
 
 // Layout: list only by default; map above the list when open, at every
-// width. From 992px the panel spans the content width with the map on the
-// left and the details card and legend beside it, so the list below (and
-// the media grid's 5 across) keeps its full width. It used to be a 380px
-// sticky right-hand column, which squeezed the media grid to 3 across.
+// width. From 992px the panel spans the content width, so the list below
+// (and the media grid's 5 across) keeps its full width. It used to be a
+// 380px sticky right-hand column, which squeezed the media grid to 3.
 .ecm-shell {
   display: flex;
   flex-direction: column;
@@ -1602,21 +1601,69 @@ body.dark-mode .poster-embed {
   order: -1;
 }
 @media (min-width: 992px) {
-  // Map (600px, ~307px tall) on the left; hint or details card, then the
-  // legend, on the right. Not in the enlarged view, which moves the panel
-  // out of .ecm-col.
+  // Three columns: space | map (600px, ~307px tall) | details. With nothing
+  // picked the two outer columns are equal, so the map sits centred with the
+  // legend and hint under it. Picking a dot (.has-details, set by
+  // conference-map.js) animates the left column to 0fr: the map glides left
+  // and the details card fades in on the right. Unpicking reverses it. Not
+  // in the enlarged view, which moves the panel out of .ecm-col.
   .ecm-col .ecm-panel {
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
-    grid-template-rows: auto auto 1fr;
-    column-gap: 1.75rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 600px) minmax(0, 1fr);
+    grid-template-rows: auto auto auto auto;
     align-items: start;
+    transition: grid-template-columns 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .ecm-col .ecm-panel.has-details {
+    grid-template-columns: minmax(0, 0fr) minmax(0, 600px) minmax(0, 1fr);
   }
   .ecm-col .ecm-panel-head { grid-column: 1 / -1; }
-  .ecm-col .ecm-stage { grid-column: 1; grid-row: 2 / 4; }
-  .ecm-col .ecm-hint,
-  .ecm-col .ecm-card { grid-column: 2; grid-row: 2; margin-top: 0; }
-  .ecm-col .ecm-legend { grid-column: 2; grid-row: 3; align-self: start; }
+  .ecm-col .ecm-stage { grid-column: 2; grid-row: 2; }
+  .ecm-col .ecm-legend { grid-column: 2; grid-row: 3; justify-content: center; }
+  // The hint keeps its space while a card shows (the script sets
+  // display:none on it), so the panel's height, and the list below,
+  // don't jump on every hover.
+  .ecm-col .ecm-hint {
+    display: block !important;
+    grid-column: 2;
+    grid-row: 4;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    border: 0;
+  }
+  .ecm-col .ecm-panel.has-details .ecm-hint { visibility: hidden; }
+  // The card sits in the right column, absolutely positioned in its grid
+  // area so its height never changes the panel's (the map's rows decide
+  // it); it scrolls if a long one doesn't fit. Fades in once the glide is
+  // mostly done, and out straight away.
+  .ecm-col .ecm-card {
+    display: block;
+    position: absolute;
+    grid-column: 3;
+    grid-row: 2 / 5;
+    top: 0;
+    left: 1.75rem;
+    right: 1.1rem; // the panel's padding: for a positioned item the last grid line is the padding edge
+    max-height: 100%;
+    overflow-y: auto;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(12px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+  }
+  .ecm-col .ecm-card.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 0.3s ease 0.3s, transform 0.3s ease 0.3s, visibility 0s linear 0s;
+  }
+}
+@media (min-width: 992px) and (prefers-reduced-motion: reduce) {
+  .ecm-col .ecm-panel,
+  .ecm-col .ecm-card,
+  .ecm-col .ecm-card.is-visible { transition: none; }
 }
 
 .ecm-panel {
@@ -1689,6 +1736,9 @@ body.dark-mode .poster-embed {
 .ecm-zoom button:disabled { opacity: 0.35; cursor: default; }
 .ecm-zoom button i, .ecm-zoom button svg,
 .ecm-expand i, .ecm-expand svg { font-size: 0.72rem; color: $linkColor; }
+// Zoom buttons (order: out, in, reset) are larger than the enlarge button.
+.ecm-zoom button { width: 2.3rem; height: 2.3rem; }
+.ecm-zoom button i, .ecm-zoom button svg { font-size: 0.95rem; }
 .ecm-expand .ecm-icon-collapse,
 .ecm-panel.is-expanded .ecm-expand .ecm-icon-expand { display: none; }
 .ecm-panel.is-expanded .ecm-expand .ecm-icon-collapse { display: inline-block; }
@@ -1717,7 +1767,7 @@ body.dark-mode .poster-embed {
   box-shadow: 0 1.5rem 3rem rgba(32, 36, 33, 0.25);
 }
 .ecm-panel.is-expanded .ecm-zoom { left: 0.8rem; bottom: 0.8rem; }
-.ecm-panel.is-expanded .ecm-zoom button { width: 2.3rem; height: 2.3rem; }
+.ecm-panel.is-expanded .ecm-zoom button { width: 2.6rem; height: 2.6rem; }
 body.ecm-noscroll { overflow: hidden; }
 
 .ecm-dot { cursor: pointer; outline: none; }

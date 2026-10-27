@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-04
+
+### Changed
+- Engagements map, desktop: the map opens centred. Hovering a dot glides it
+  smoothly to the left and fades in the details beside it; clicking an
+  empty part of the map, or anywhere off it, glides it back to the centre.
+  Clicking off now also closes the details on mouse devices.
+- Engagements map: zoom out now comes before zoom in, and the zoom buttons
+  and their icons are larger.
+
 ## 2026-11-03
 
 ### Changed
