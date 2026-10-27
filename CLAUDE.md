@@ -326,8 +326,8 @@ search; Summary/Abstract toggles).
   newest first; within a year, dated entries by `start_date`, then undated
   ones in file order.
 - "Media engagements" (never "In the media", which is the homepage strip's
-  name) is a picture grid (`.eng-grid`): 5 across from 992px, 3 when the map
-  column is open beside it, 4 on tablets, 2 on phones:
+  name) is a picture grid (`.eng-grid`): 5 across from 992px (map open or
+  not), 4 on tablets, 2 on phones:
   the same entry markup restyled as a card (picture, type line with the
   homepage's `.engagement-type-pill` icon and hanging indent, title,
   outlet and date; keywords, badges and links hidden; the title link's
@@ -337,8 +337,7 @@ search; Summary/Abstract toggles).
   items and the tile, sized like a card ("+N more", "View all", "7 media
   engagements"), expands it in place; it then reads "Show fewer" / "Show
   the N most recent" with an up chevron. Shown: 4 on desktops (one row of
-  5), 2 with the map open, 3 on tablets and phones (phones: two rows of
-  2). Items past that get `.is-extra`, hidden while the grid has
+  5), 3 on tablets and phones (phones: two rows of 2). Items past that get `.is-extra`, hidden while the grid has
   `.is-collapsed`. No tile when it would hide only one item. While any
   filter or search is active the list has `.is-filtering`: every match
   shows and the tile hides. `order: 1` keeps the tile last after the sort
@@ -518,8 +517,12 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   need lat/lon. Never hand-place pixel coordinates.
 - The details card is docked below the map, never floating over it (a
   floating card collided with dots in the mockup's testing).
-- Desktop (>= 992px): map is a 380px sticky right column. Narrower: above
-  the list. Phones (< 768px): the toggle is an icon-only 1.5rem bubble
+- The map opens above the list at every width. Desktop (>= 992px): the
+  panel spans the content width as a grid, map 600px on the left (~307px
+  tall), hint/details card and legend on the right. It used to be a 380px
+  sticky right-hand column; dropped because it squeezed the Media
+  engagements grid from 5 across to 3 (the owner prefers the map resized
+  over the media cards). Phones (< 768px): the toggle is an icon-only 1.5rem bubble
   styled like `.engagement-type-pill`.
 - Touch: a tap focuses a dot *before* its click fires, so focus from a
   pointer is ignored (otherwise tap shows then immediately hides the card).

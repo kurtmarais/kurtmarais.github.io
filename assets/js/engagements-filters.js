@@ -184,19 +184,18 @@
   /* ---------- Media grid: "View all" ---------- */
 
   // The media grid shows its newest items plus a "View all" tile that
-  // expands it in place: 4 on desktops (2 while the map is open beside the
-  // list), 3 on tablets and phones (two rows of 2 on phones). Items past
+  // expands it in place: 4 on desktops (one row of 5; the map opens above
+  // the list, so it doesn't change this), 3 on tablets and phones (two rows
+  // of 2 on phones). Items past
   // that get .is-extra, hidden while the grid has .is-collapsed. No tile
   // when it would only hide one item. While filtering, every match shows
   // and the tile hides (main.scss, .is-filtering). Resets on each visit.
   var mediaGrid = list ? list.querySelector('[data-section="media"] .eng-grid') : null;
   var viewAll = mediaGrid ? mediaGrid.querySelector(".eng-viewall") : null;
-  var mapShell = document.getElementById("ecm-shell");
   var desktop = window.matchMedia("(min-width: 992px)");
 
   function mediaShown() {
-    if (!desktop.matches) return 3;
-    return mapShell && mapShell.classList.contains("is-open") ? 2 : 4;
+    return desktop.matches ? 4 : 3;
   }
 
   function updateViewAll() {
@@ -238,9 +237,6 @@
     });
 
     if (desktop.addEventListener) desktop.addEventListener("change", updateViewAll);
-    if (mapShell && window.MutationObserver) {
-      new MutationObserver(updateViewAll).observe(mapShell, { attributes: true, attributeFilter: ["class"] });
-    }
   }
 
   /* ---------- Filtering ---------- */
