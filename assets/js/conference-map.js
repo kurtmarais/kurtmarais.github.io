@@ -219,13 +219,23 @@
     });
     return best;
   }
+  // The dot under the mouse is highlighted (.is-hover, same look as the
+  // selected dot) whether or not the details are open.
+  var hovered = null;
+  function setHover(g) {
+    if (hovered === g) return;
+    if (hovered) hovered.classList.remove("is-hover");
+    hovered = g;
+    if (g) g.classList.add("is-hover");
+  }
   svg.addEventListener("pointermove", function (ev) {
     if (ev.pointerType !== "mouse" || drag) return;
     var d = nearestDot(ev.clientX, ev.clientY);
     svg.classList.toggle("is-over-dot", !!d);
+    setHover(d ? d.g : null);
     if (d && detailsOpen && active !== d.g) show(d.g, d.r);
   });
-  svg.addEventListener("pointerleave", function () { svg.classList.remove("is-over-dot"); });
+  svg.addEventListener("pointerleave", function () { svg.classList.remove("is-over-dot"); setHover(null); });
   svg.addEventListener("click", function (ev) {
     if (moved) return;   // the end of a drag, not a tap
     var d = nearestDot(ev.clientX, ev.clientY);

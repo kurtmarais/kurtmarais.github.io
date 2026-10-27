@@ -1825,8 +1825,12 @@ body.ecm-noscroll { overflow: hidden; }
   transform-box: fill-box;
   transform-origin: center;
 }
-.ecm-dot.is-active .ecm-dot-halo { transform: scale(1.3); opacity: 0.35; }
-.ecm-dot.is-active .ecm-dot-core { transform: scale(1.25); }
+// Selected (.is-active) and under the mouse pointer (.is-hover, set by the
+// JS's nearest-dot picking, details open or not) look the same.
+.ecm-dot.is-active .ecm-dot-halo,
+.ecm-dot.is-hover .ecm-dot-halo { transform: scale(1.3); opacity: 0.35; }
+.ecm-dot.is-active .ecm-dot-core,
+.ecm-dot.is-hover .ecm-dot-core { transform: scale(1.25); }
 .ecm-dot:focus-visible .ecm-dot-halo { stroke: $linkColor; stroke-width: 1.2; opacity: 0.5; vector-effect: non-scaling-stroke; }
 // Presented online: outlined gold ring (different colour and shape).
 .ecm-dot.is-online .ecm-dot-core { fill: #fff; stroke: #b08d1e; stroke-width: 1.8; }

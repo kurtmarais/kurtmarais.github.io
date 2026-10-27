@@ -568,7 +568,10 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   (Trondheim/Malmö are ~18 map units apart) split the space instead of one
   blocking the other. The card stays on the last dot picked; there's no
   hide on mouse-out (that caused flicker). Hover only switches an open
-  card (above). Keyboard focus still works per dot.
+  card (above), but always highlights: the dot under the mouse gets
+  `.is-hover` (same halo and enlarged core as the selected `.is-active`),
+  details open or not, cleared on pointer leave. Keyboard focus still
+  works per dot.
 - Zoom animates (`animateTo`, ~260ms ease-out, size changes geometrically
   around the fixed point so the zoom anchor stays put). Rapid clicks/wheel
   steps build on `goal()` (the target view), so they accumulate; dragging
