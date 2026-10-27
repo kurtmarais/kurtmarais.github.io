@@ -4,6 +4,12 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-06
+
+### Changed
+- Engagements map, desktop: dots light up when the mouse is over them even
+  while the location details are closed (hovering still doesn't open them).
+
 ## 2026-11-05
 
 ### Changed
