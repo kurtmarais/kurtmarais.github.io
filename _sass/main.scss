@@ -1759,11 +1759,20 @@ body.dark-mode .poster-embed {
 .ecm-expand i, .ecm-expand svg,
 .ecm-details-btn i, .ecm-details-btn svg { font-size: 0.72rem; color: $linkColor; }
 // Details toggle: maximise icon while hidden, minimise while shown.
+// Details toggle icon: two diagonal corners (inline SVG), pointing out while
+// the details are hidden (show), folded in while shown (hide).
+.ecm-details-btn svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
 .ecm-details-btn .ecm-icon-hide,
 .ecm-details-btn[aria-pressed="true"] .ecm-icon-show { display: none; }
-.ecm-details-btn[aria-pressed="true"] .ecm-icon-hide { display: inline-block; }
-// The minimise glyph is drawn at the bottom of its box; lift it to the centre.
-.ecm-details-btn .ecm-icon-hide { transform: translateY(-0.3em); }
+.ecm-details-btn[aria-pressed="true"] .ecm-icon-hide { display: block; }
 // Zoom buttons (order: out, in, reset) are larger than the enlarge button.
 .ecm-zoom button { width: 2.3rem; height: 2.3rem; }
 .ecm-zoom button i, .ecm-zoom button svg { font-size: 0.95rem; }

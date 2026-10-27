@@ -26,8 +26,9 @@
       <i class="fas fa-down-left-and-up-right-to-center ecm-icon-collapse" aria-hidden="true"></i>
     </button>
     <button type="button" class="ecm-details-btn" id="ecm-details-btn" aria-pressed="false" aria-controls="ecm-card" aria-label="Show location details" title="Show location details">
-      <i class="fas fa-window-maximize ecm-icon-show" aria-hidden="true"></i>
-      <i class="fas fa-window-minimize ecm-icon-hide" aria-hidden="true"></i>
+      {% comment %} Two diagonal corners (top-left, bottom-right): pointing out = show details, folded in = hide. Inline SVG: Font Awesome Free has no two-corner icon. {% endcomment %}
+      <svg class="ecm-icon-show" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 6.5V2h4.5M14 9.5V14H9.5"/></svg>
+      <svg class="ecm-icon-hide" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 2v4.5H2M9.5 14V9.5H14"/></svg>
     </button>
   </div>
   <div class="ecm-stage" id="ecm-stage">

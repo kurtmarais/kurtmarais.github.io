@@ -538,8 +538,10 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   hovering (or keyboard focus on) another dot switches the card to that
   place. Clicking off the map or on empty map changes nothing (click-off
   dismissing was tried and found confusing). The only way to close them is
-  the details toggle (`#ecm-details-btn`, window-maximize / -minimize icon,
-  `aria-pressed`), which sits under the enlarge button in `.ecm-btns`,
+  the details toggle (`#ecm-details-btn`, `aria-pressed`; icon = two
+  diagonal corners, top-left and bottom-right, as inline SVG since Font
+  Awesome Free has none: pointing out while hidden, folded in while shown),
+  which sits under the enlarge button in `.ecm-btns`,
   absolutely positioned in the panel's top-right (the head has
   `padding-right` for it; on desktop the card's `right` also clears it;
   on phones, with no enlarge button, it takes the top spot). Opening with
