@@ -108,6 +108,9 @@
     }
     hint.style.display = "none";
     card.classList.add("is-visible");
+    // Desktop: the map glides from the centre to the left and the card fades
+    // in beside it (main.scss, .has-details).
+    panel.classList.add("has-details");
   }
 
   function hide() {
@@ -115,6 +118,7 @@
     active = null;
     card.classList.remove("is-visible");
     hint.style.display = "";
+    panel.classList.remove("has-details");
   }
 
   // ---------- dots ----------
@@ -181,7 +185,9 @@
   // Pointer input picks the nearest dot within PICK_PX of the pointer, so close
   // dots split the space between them instead of one covering the other, and
   // the target is much larger than the dot itself. The card stays on the last
-  // dot picked (no hide on mouse-out), so it doesn't flicker.
+  // dot picked (no hide on mouse-out), so it doesn't flicker. A click on an
+  // empty part of the map, or anywhere off the map except the card, hides it
+  // (and on desktop the map glides back to the centre).
   function nearestDot(clientX, clientY) {
     var rect = svg.getBoundingClientRect();
     if (!rect.width) return null;
@@ -201,11 +207,11 @@
   });
   svg.addEventListener("pointerleave", function () { svg.classList.remove("is-over-dot"); });
   svg.addEventListener("click", function (ev) {
+    ev.stopPropagation(); // never reaches the document's click-off handler
     if (moved) return;   // the end of a drag, not a tap
     var d = nearestDot(ev.clientX, ev.clientY);
-    ev.stopPropagation();
     if (d) { if (active === d.g && isTouch) hide(); else show(d.g, d.r); }
-    else if (isTouch) hide();
+    else hide();
   });
   if (window.ResizeObserver) new ResizeObserver(function () { sizeDots(); }).observe(svg);
 
@@ -355,8 +361,11 @@
   if (lo) lo.style.display = anyOnline ? "" : "none";
   if (lu) lu.style.display = anyUpcoming ? "" : "none";
 
-  // Tap anywhere else to dismiss (touch screens).
-  document.addEventListener("click", function () { if (isTouch && active) hide(); });
+  // A click or tap anywhere off the map dismisses the details (except on the
+  // card itself, so its text can be selected).
+  document.addEventListener("click", function (ev) {
+    if (active && !card.contains(ev.target)) hide();
+  });
 
   var labelEl = document.getElementById("ecm-toggle-label");
   toggle.addEventListener("click", function () {

@@ -518,11 +518,25 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
 - The details card is docked below the map, never floating over it (a
   floating card collided with dots in the mockup's testing).
 - The map opens above the list at every width. Desktop (>= 992px): the
-  panel spans the content width as a grid, map 600px on the left (~307px
-  tall), hint/details card and legend on the right. It used to be a 380px
-  sticky right-hand column; dropped because it squeezed the Media
-  engagements grid from 5 across to 3 (the owner prefers the map resized
-  over the media cards). Phones (< 768px): the toggle is an icon-only 1.5rem bubble
+  panel spans the content width as a 3-column grid `1fr | 600px map |
+  1fr`, so the map (~307px tall) opens centred with the legend and hint
+  under it. Picking a dot adds `.has-details` to the panel (show()/hide()
+  in the JS): `grid-template-columns` animates the left column to `0fr`
+  (0.6s), so the map glides left, and the details card fades in on the
+  right after a 0.3s delay. Hiding reverses it. The card is absolutely
+  positioned in its grid area (`right: 1.1rem`, since a positioned item's
+  last grid line is the padding edge) so it never changes the panel's
+  height; the hint keeps its space (visibility, not display) for the same
+  reason, so the list below never jumps. Reduced motion: no transitions.
+  It used to be a 380px sticky right-hand column; dropped because it
+  squeezed the Media engagements grid from 5 across to 3 (the owner
+  prefers the map resized over the media cards).
+- Dismissing: a click on an empty part of the map, or anywhere off the map
+  except the card, hides the details on every device (it used to be
+  touch-only). The map's own click handler stops propagation first, so the
+  click that ends a drag never reaches the page's click-off handler.
+- Zoom buttons: zoom out, zoom in, reset (in that order), 2.3rem with
+  0.95rem icons (2.6rem enlarged); larger than the enlarge button. Phones (< 768px): the toggle is an icon-only 1.5rem bubble
   styled like `.engagement-type-pill`.
 - Touch: a tap focuses a dot *before* its click fires, so focus from a
   pointer is ignored (otherwise tap shows then immediately hides the card).
@@ -541,8 +555,8 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   (22px) of the pointer, for mouse hover and taps, so close dots
   (Trondheim/Malmö are ~18 map units apart) split the space instead of one
   blocking the other. The card stays on the last dot picked; there's no
-  hide on mouse-out (that caused flicker). Keyboard focus still works per
-  dot.
+  hide on mouse-out (that caused flicker); a click off hides it (above).
+  Keyboard focus still works per dot.
 - Zoom animates (`animateTo`, ~260ms ease-out, size changes geometrically
   around the fixed point so the zoom anchor stays put). Rapid clicks/wheel
   steps build on `goal()` (the target view), so they accumulate; dragging
