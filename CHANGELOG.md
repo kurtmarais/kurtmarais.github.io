@@ -4,6 +4,15 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-05
+
+### Changed
+- Engagements map: the location details now open only when a dot is
+  clicked (or tapped), and stay open. While open, hovering another dot
+  switches to that place. Clicking off the map no longer closes them; a new
+  show / hide details button under the enlarge button does, and the map
+  glides back to the centre.
+
 ## 2026-11-04
 
 ### Changed

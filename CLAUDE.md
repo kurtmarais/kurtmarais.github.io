@@ -520,10 +520,11 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
 - The map opens above the list at every width. Desktop (>= 992px): the
   panel spans the content width as a 3-column grid `1fr | 600px map |
   1fr`, so the map (~307px tall) opens centred with the legend and hint
-  under it. Picking a dot adds `.has-details` to the panel (show()/hide()
-  in the JS): `grid-template-columns` animates the left column to `0fr`
-  (0.6s), so the map glides left, and the details card fades in on the
-  right after a 0.3s delay. Hiding reverses it. The card is absolutely
+  under it. Opening the details adds `.has-details` to the panel
+  (`setDetails()` in the JS): `grid-template-columns` animates the left
+  column to `0fr` (0.6s), so the map glides left, and the details card
+  fades in on the right after a 0.3s delay. Closing reverses it (the owner
+  wants this sliding kept). The card is absolutely
   positioned in its grid area (`right: 1.1rem`, since a positioned item's
   last grid line is the padding edge) so it never changes the panel's
   height; the hint keeps its space (visibility, not display) for the same
@@ -531,10 +532,19 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   It used to be a 380px sticky right-hand column; dropped because it
   squeezed the Media engagements grid from 5 across to 3 (the owner
   prefers the map resized over the media cards).
-- Dismissing: a click on an empty part of the map, or anywhere off the map
-  except the card, hides the details on every device (it used to be
-  touch-only). The map's own click handler stops propagation first, so the
-  click that ends a drag never reaches the page's click-off handler.
+- Details open/closed (`detailsOpen`), every width: the map opens with the
+  details closed (centred on desktop). Only a **click** (or tap, or
+  Enter/Space on a focused dot) opens them; hover never does. Once open,
+  hovering (or keyboard focus on) another dot switches the card to that
+  place. Clicking off the map or on empty map changes nothing (click-off
+  dismissing was tried and found confusing). The only way to close them is
+  the details toggle (`#ecm-details-btn`, window-maximize / -minimize icon,
+  `aria-pressed`), which sits under the enlarge button in `.ecm-btns`,
+  absolutely positioned in the panel's top-right (the head has
+  `padding-right` for it; on desktop the card's `right` also clears it;
+  on phones, with no enlarge button, it takes the top spot). Opening with
+  the toggle and nothing picked shows the last place picked, else the most
+  recent engagement on the map. Closing the map resets to closed.
 - Zoom buttons: zoom out, zoom in, reset (in that order), 2.3rem with
   0.95rem icons (2.6rem enlarged); larger than the enlarge button. Phones (< 768px): the toggle is an icon-only 1.5rem bubble
   styled like `.engagement-type-pill`.
@@ -555,8 +565,8 @@ styles under `CONFERENCE MAP` in `main.scss`. Everything prefixed `ecm-`.
   (22px) of the pointer, for mouse hover and taps, so close dots
   (Trondheim/Malmö are ~18 map units apart) split the space instead of one
   blocking the other. The card stays on the last dot picked; there's no
-  hide on mouse-out (that caused flicker); a click off hides it (above).
-  Keyboard focus still works per dot.
+  hide on mouse-out (that caused flicker). Hover only switches an open
+  card (above). Keyboard focus still works per dot.
 - Zoom animates (`animateTo`, ~260ms ease-out, size changes geometrically
   around the fixed point so the zoom anchor stays put). Rapid clicks/wheel
   steps build on `goal()` (the target view), so they accumulate; dragging

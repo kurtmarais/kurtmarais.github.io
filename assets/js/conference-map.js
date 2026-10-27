@@ -77,10 +77,21 @@
   }
   function status(e) { return isUpcoming(e) ? "upcoming" : (e.online ? "online" : ""); }
 
+  // The details card is open or closed (detailsOpen). It opens when a dot
+  // is clicked (or Enter/Space on a focused dot), or with the details toggle;
+  // only the toggle closes it. While open, hovering or focusing another dot
+  // switches the card to that place; while closed, hovering does nothing.
+  // Desktop: opening glides the map from the centre to the left and fades
+  // the card in beside it (main.scss, .has-details); closing glides it back.
+  var detailsOpen = false, lastPick = null;
+  var detailsBtn = document.getElementById("ecm-details-btn");
+
+  // Fill the card with a place (and mark its dot), without opening it.
   function show(g, r) {
     if (active && active !== g) active.classList.remove("is-active");
     g.classList.add("is-active");
     active = g;
+    lastPick = { g: g, r: r };
     place.textContent = r.latest.city + ", " + r.region;
     var when_ = isUpcoming(r.latest) ? "Upcoming, " + prettyDate(r.latest.date) : String(r.latest.year);
     meta.textContent = [typeLabel(r.latest), r.latest.online ? "Online" : "", r.latest.venue, when_].filter(Boolean).join(" · ");
@@ -106,19 +117,28 @@
     } else {
       earlier.style.display = "none";
     }
-    hint.style.display = "none";
-    card.classList.add("is-visible");
-    // Desktop: the map glides from the centre to the left and the card fades
-    // in beside it (main.scss, .has-details).
-    panel.classList.add("has-details");
   }
 
-  function hide() {
-    if (active) active.classList.remove("is-active");
-    active = null;
-    card.classList.remove("is-visible");
-    hint.style.display = "";
-    panel.classList.remove("has-details");
+  // Open or close the card. Opening with nothing picked yet shows the last
+  // place picked, else the most recent engagement on the map.
+  function setDetails(on) {
+    detailsOpen = on;
+    if (on && !active) {
+      var pick = lastPick || dotEls.slice().sort(function (a, b) {
+        return when(b.r.latest) < when(a.r.latest) ? -1 : when(b.r.latest) > when(a.r.latest) ? 1 : 0;
+      })[0];
+      if (pick) show(pick.g, pick.r);
+    }
+    if (!on && active) { active.classList.remove("is-active"); active = null; }
+    card.classList.toggle("is-visible", on);
+    hint.style.display = on ? "none" : "";
+    panel.classList.toggle("has-details", on);
+    if (detailsBtn) {
+      var text = on ? "Hide location details" : "Show location details";
+      detailsBtn.setAttribute("aria-pressed", on ? "true" : "false");
+      detailsBtn.setAttribute("aria-label", text);
+      detailsBtn.setAttribute("title", text);
+    }
   }
 
   // ---------- dots ----------
@@ -148,15 +168,15 @@
     dots.appendChild(g);
     dotEls.push({ g: g, r: r, hit: hit, halo: halo, core: core, nearest: nearest });
 
-    // Keyboard focus shows the card too. A tap or click also focuses the dot,
-    // so ignore focus that comes from a pointer (pointer input is handled by
-    // the nearest-dot logic below).
+    // Keyboard: focus switches an open card to this place (like hover);
+    // Enter or Space opens it (like a click). A tap or click also focuses the
+    // dot, so ignore focus that comes from a pointer (pointer input is handled
+    // by the nearest-dot logic below).
     var fromPointer = false;
     g.addEventListener("pointerdown", function () { fromPointer = true; });
-    g.addEventListener("focus", function () { if (!fromPointer) show(g, r); fromPointer = false; });
+    g.addEventListener("focus", function () { if (!fromPointer && detailsOpen) show(g, r); fromPointer = false; });
     g.addEventListener("keydown", function (ev) {
-      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); if (active === g) hide(); else show(g, r); }
-      if (ev.key === "Escape") { hide(); }
+      if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); show(g, r); setDetails(true); }
     });
   });
 
@@ -184,10 +204,10 @@
 
   // Pointer input picks the nearest dot within PICK_PX of the pointer, so close
   // dots split the space between them instead of one covering the other, and
-  // the target is much larger than the dot itself. The card stays on the last
-  // dot picked (no hide on mouse-out), so it doesn't flicker. A click on an
-  // empty part of the map, or anywhere off the map except the card, hides it
-  // (and on desktop the map glides back to the centre).
+  // the target is much larger than the dot itself. Hover only switches an
+  // open card to the dot under the pointer (no hide on mouse-out, so it
+  // doesn't flicker); a click on a dot opens the card. Clicks on empty map,
+  // or off the map, change nothing: only the details toggle closes it.
   function nearestDot(clientX, clientY) {
     var rect = svg.getBoundingClientRect();
     if (!rect.width) return null;
@@ -203,15 +223,13 @@
     if (ev.pointerType !== "mouse" || drag) return;
     var d = nearestDot(ev.clientX, ev.clientY);
     svg.classList.toggle("is-over-dot", !!d);
-    if (d && active !== d.g) show(d.g, d.r);
+    if (d && detailsOpen && active !== d.g) show(d.g, d.r);
   });
   svg.addEventListener("pointerleave", function () { svg.classList.remove("is-over-dot"); });
   svg.addEventListener("click", function (ev) {
-    ev.stopPropagation(); // never reaches the document's click-off handler
     if (moved) return;   // the end of a drag, not a tap
     var d = nearestDot(ev.clientX, ev.clientY);
-    if (d) { if (active === d.g && isTouch) hide(); else show(d.g, d.r); }
-    else hide();
+    if (d) { show(d.g, d.r); setDetails(true); }
   });
   if (window.ResizeObserver) new ResizeObserver(function () { sizeDots(); }).observe(svg);
 
@@ -361,11 +379,8 @@
   if (lo) lo.style.display = anyOnline ? "" : "none";
   if (lu) lu.style.display = anyUpcoming ? "" : "none";
 
-  // A click or tap anywhere off the map dismisses the details (except on the
-  // card itself, so its text can be selected).
-  document.addEventListener("click", function (ev) {
-    if (active && !card.contains(ev.target)) hide();
-  });
+  if (detailsBtn) detailsBtn.addEventListener("click", function () { setDetails(!detailsOpen); });
+  setDetails(false);
 
   var labelEl = document.getElementById("ecm-toggle-label");
   toggle.addEventListener("click", function () {
@@ -374,7 +389,8 @@
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
     toggle.setAttribute("aria-label", open ? "Hide map of places presented" : "Show map of places presented");
     if (labelEl) labelEl.textContent = open ? "Hide map" : "Map";
-    if (!open) { hide(); setExpanded(false); }
+    // Closing the map resets it: the next open starts centred, details closed.
+    if (!open) { setDetails(false); setExpanded(false); }
   });
 
   applyView();

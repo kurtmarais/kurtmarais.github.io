@@ -18,9 +18,16 @@
   <div class="ecm-panel-head">
     <h4>Where I've presented</h4>
     <span class="ecm-projection">Equal Earth projection</span>
+  </div>
+  {% comment %} Top-right buttons: enlarge, and under it the location details show / hide toggle (the only thing that hides the details). {% endcomment %}
+  <div class="ecm-btns">
     <button type="button" class="ecm-expand" id="ecm-expand" aria-pressed="false" aria-label="Enlarge map" title="Enlarge map">
       <i class="fas fa-up-right-and-down-left-from-center ecm-icon-expand" aria-hidden="true"></i>
       <i class="fas fa-down-left-and-up-right-to-center ecm-icon-collapse" aria-hidden="true"></i>
+    </button>
+    <button type="button" class="ecm-details-btn" id="ecm-details-btn" aria-pressed="false" aria-controls="ecm-card" aria-label="Show location details" title="Show location details">
+      <i class="fas fa-window-maximize ecm-icon-show" aria-hidden="true"></i>
+      <i class="fas fa-window-minimize ecm-icon-hide" aria-hidden="true"></i>
     </button>
   </div>
   <div class="ecm-stage" id="ecm-stage">
@@ -36,7 +43,7 @@
       <g id="ecm-dots"></g>
     </svg>
   </div>
-  <p class="ecm-hint" id="ecm-hint">Hover over a dot (or tap it on a phone) to see the most recent engagement there.</p>
+  <p class="ecm-hint" id="ecm-hint">Click (or tap) a dot to see the most recent engagement there.</p>
   <div class="ecm-card" id="ecm-card" aria-live="polite">
     <p class="ecm-card-place" id="ecm-card-place"></p>
     <p class="ecm-card-meta" id="ecm-card-meta"></p>
