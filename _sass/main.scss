@@ -1575,8 +1575,11 @@ body.dark-mode .poster-embed {
   }
 }
 
-// Layout: list only by default; map above the list when open, and a sticky
-// right-hand column from 992px up.
+// Layout: list only by default; map above the list when open, at every
+// width. From 992px the panel spans the content width with the map on the
+// left and the details card and legend beside it, so the list below (and
+// the media grid's 5 across) keeps its full width. It used to be a 380px
+// sticky right-hand column, which squeezed the media grid to 3 across.
 .ecm-shell {
   display: flex;
   flex-direction: column;
@@ -1599,20 +1602,21 @@ body.dark-mode .poster-embed {
   order: -1;
 }
 @media (min-width: 992px) {
-  .ecm-shell.is-open {
-    flex-direction: row;
-    align-items: flex-start;
+  // Map (600px, ~307px tall) on the left; hint or details card, then the
+  // legend, on the right. Not in the enlarged view, which moves the panel
+  // out of .ecm-col.
+  .ecm-col .ecm-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr;
+    column-gap: 1.75rem;
+    align-items: start;
   }
-  .ecm-shell.is-open .ecm-content {
-    flex: 1 1 auto;
-  }
-  .ecm-shell.is-open .ecm-col {
-    order: 0;
-    flex: 0 0 380px;
-    width: 380px;
-    position: sticky;
-    top: 1.5rem;
-  }
+  .ecm-col .ecm-panel-head { grid-column: 1 / -1; }
+  .ecm-col .ecm-stage { grid-column: 1; grid-row: 2 / 4; }
+  .ecm-col .ecm-hint,
+  .ecm-col .ecm-card { grid-column: 2; grid-row: 2; margin-top: 0; }
+  .ecm-col .ecm-legend { grid-column: 2; grid-row: 3; align-self: start; }
 }
 
 .ecm-panel {
@@ -1629,11 +1633,6 @@ body.dark-mode .poster-embed {
 }
 .ecm-projection { margin-left: auto; white-space: nowrap; }
 .ecm-panel-head h4 { white-space: nowrap; }
-// The 380px desktop column is too narrow for the projection note; it still
-// shows on phones/tablets and in the enlarged view (which lives outside .ecm-col).
-@media (min-width: 992px) {
-  .ecm-col .ecm-projection { visibility: hidden; }
-}
 .ecm-panel-head h4 {
   font-size: 0.95rem;
   margin: 0;
@@ -2695,8 +2694,8 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
 
 // "Media engagements": the same entries as picture cards. The title link's
 // ::after covers the card, so the whole card is clickable. Columns: 2 on
-// phones, 4 on tablets, 5 on desktops, 3 when the map column is open
-// beside the list (5 would leave ~110px cards).
+// phones, 4 on tablets, 5 on desktops (the map opens above the list, so
+// it never narrows the grid).
 .eng-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2707,10 +2706,6 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
 @media (min-width: 992px) {
   .eng-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .ecm-shell.is-open .eng-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -2777,7 +2772,7 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
 
 // "View all": the grid shows its newest items (engagements-filters.js
 // marks the rest .is-extra) and this tile, sized like a card, expands it.
-// Desktop: 4 + tile (one row of 5); map open: 2 + tile; tablets and
+// Desktop: 4 + tile (one row of 5, map open or not); tablets and
 // phones: 3 + tile (phones: two rows of 2). Never while filtering, so no
 // match is hidden behind it.
 .engagements-list:not(.is-filtering) .eng-grid.is-collapsed > .eng-wrap.is-extra {
