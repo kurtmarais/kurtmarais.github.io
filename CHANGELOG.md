@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-01
+
+### Changed
+- Engagements page: the media section is now headed "Media engagements"
+  ("In the media" stays on the homepage). Its cards are smaller: five
+  across on desktops (three while the map is open), four on tablets, two
+  on phones.
+
 ## 2026-10-31
 
 ### Changed
