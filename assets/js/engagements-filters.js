@@ -181,6 +181,68 @@
     });
   }
 
+  /* ---------- Media grid: "View all" ---------- */
+
+  // The media grid shows its newest items plus a "View all" tile that
+  // expands it in place: 4 on desktops (2 while the map is open beside the
+  // list), 3 on tablets and phones (two rows of 2 on phones). Items past
+  // that get .is-extra, hidden while the grid has .is-collapsed. No tile
+  // when it would only hide one item. While filtering, every match shows
+  // and the tile hides (main.scss, .is-filtering). Resets on each visit.
+  var mediaGrid = list ? list.querySelector('[data-section="media"] .eng-grid') : null;
+  var viewAll = mediaGrid ? mediaGrid.querySelector(".eng-viewall") : null;
+  var mapShell = document.getElementById("ecm-shell");
+  var desktop = window.matchMedia("(min-width: 992px)");
+
+  function mediaShown() {
+    if (!desktop.matches) return 3;
+    return mapShell && mapShell.classList.contains("is-open") ? 2 : 4;
+  }
+
+  function updateViewAll() {
+    if (!viewAll) return;
+    var wraps = Array.from(mediaGrid.children).filter(function (el) {
+      return el.classList.contains("eng-wrap");
+    });
+    var shown = mediaShown();
+    if (wraps.length <= shown + 1) shown = wraps.length;
+    var open = !mediaGrid.classList.contains("is-collapsed");
+
+    wraps.forEach(function (wrap, index) {
+      wrap.classList.toggle("is-extra", index >= shown);
+    });
+    viewAll.hidden = shown === wraps.length;
+
+    viewAll.querySelector(".eng-viewall-count").innerHTML = open
+      ? '<i class="fas fa-chevron-up" aria-hidden="true"></i>'
+      : "+" + (wraps.length - shown);
+    viewAll.querySelector(".eng-viewall-more").textContent = open ? "Show fewer" : "more";
+    viewAll.querySelector(".eng-viewall-title").textContent = open
+      ? "Show the " + shown + " most recent"
+      : "View all";
+    viewAll.querySelector(".eng-viewall-sub").textContent = wraps.length + " media engagements";
+    viewAll.querySelector(".eng-viewall-btn").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  if (viewAll) {
+    mediaGrid.classList.add("is-collapsed");
+
+    viewAll.querySelector(".eng-viewall-btn").addEventListener("click", function () {
+      mediaGrid.classList.toggle("is-collapsed");
+      updateViewAll();
+      // Collapsing from the bottom of a long grid can leave the tile above
+      // the screen; bring it back into view.
+      if (mediaGrid.classList.contains("is-collapsed")) {
+        viewAll.scrollIntoView({ block: "nearest" });
+      }
+    });
+
+    if (desktop.addEventListener) desktop.addEventListener("change", updateViewAll);
+    if (mapShell && window.MutationObserver) {
+      new MutationObserver(updateViewAll).observe(mapShell, { attributes: true, attributeFilter: ["class"] });
+    }
+  }
+
   /* ---------- Filtering ---------- */
 
   function entryMatches(entry) {
@@ -233,6 +295,11 @@
     if (emptyState) {
       emptyState.hidden = totalVisible > 0;
     }
+
+    if (list) {
+      list.classList.toggle("is-filtering", state.types.size > 0 || state.years.size > 0 || state.topics.length > 0);
+    }
+    updateViewAll();
   }
 
   /* ---------- Sorting ---------- */

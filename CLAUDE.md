@@ -332,6 +332,20 @@ search; Summary/Abstract toggles).
   homepage's `.engagement-type-pill` icon and hanging indent, title,
   outlet and date; keywords, badges and links hidden; the title link's
   `::after` makes the whole card clickable).
+- "View all" tile (`.eng-viewall`, markup in the layout, logic in
+  `engagements-filters.js`, styles in main.scss): the grid shows its newest
+  items and the tile, sized like a card ("+N more", "View all", "7 media
+  engagements"), expands it in place; it then reads "Show fewer" / "Show
+  the N most recent" with an up chevron. Shown: 4 on desktops (one row of
+  5), 2 with the map open, 3 on tablets and phones (phones: two rows of
+  2). Items past that get `.is-extra`, hidden while the grid has
+  `.is-collapsed`. No tile when it would hide only one item. While any
+  filter or search is active the list has `.is-filtering`: every match
+  shows and the tile hides. `order: 1` keeps the tile last after the sort
+  moves entries back. The count uses the body font (a serif "+3" was
+  rejected). The box's bottom margin adds the 1.1rem (phones 0.8rem) gap
+  cards keep from `.eng-entry.has-image`, so type lines sit level. Resets
+  on each visit; without JS the tile stays hidden and every item shows.
 - Thumbnails: entries with an `image` (posters show the top of the image,
   blog posts) get a 128px (88px on phones) 16:10 thumbnail; play overlay
   for video/podcast. Entries without one get an icon tile only when sorted

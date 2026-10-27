@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-02
+
+### Added
+- Engagements page: "Media engagements" shows only its newest items (four
+  on desktops, three on tablets and phones) plus a "View all" tile that
+  expands the rest in place and collapses them again. Searching or
+  filtering always shows every match.
+
 ## 2026-11-01
 
 ### Changed

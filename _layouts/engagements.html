@@ -131,7 +131,19 @@ layout: default
         {% if sec_html contains "eng-wrap" %}
         <section class="pub-section" data-section="{{ sec_parts[0] }}">
           <h4 class="pub-section-label">{{ sec_parts[1] }}</h4>
-          <div class="pub-section-list{% if sec_parts[0] == 'media' %} eng-grid{% endif %}">{{ sec_html }}</div>
+          <div class="pub-section-list{% if sec_parts[0] == 'media' %} eng-grid{% endif %}">{{ sec_html }}
+            {% if sec_parts[0] == "media" %}
+            {% comment %} "View all" tile (engagements-filters.js): the grid shows one row (phones: two) and this tile expands it. Hidden without JS, so every item shows. {% endcomment %}
+            <div class="eng-viewall" hidden>
+              <button type="button" class="eng-viewall-btn" aria-expanded="false">
+                <span class="eng-viewall-box"><span class="eng-viewall-count"></span><span class="eng-viewall-more"></span></span>
+                <span class="eng-card-type"><span class="engagement-type-pill"><i class="fas fa-grip" aria-hidden="true"></i></span><span class="eng-card-type-text">All media</span></span>
+                <span class="eng-viewall-title"></span>
+                <span class="eng-viewall-sub"></span>
+              </button>
+            </div>
+            {% endif %}
+          </div>
         </section>
         {% endif %}
       {% endfor %}

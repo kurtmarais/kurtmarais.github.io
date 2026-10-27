@@ -2775,6 +2775,103 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
   display: none;
 }
 
+// "View all": the grid shows its newest items (engagements-filters.js
+// marks the rest .is-extra) and this tile, sized like a card, expands it.
+// Desktop: 4 + tile (one row of 5); map open: 2 + tile; tablets and
+// phones: 3 + tile (phones: two rows of 2). Never while filtering, so no
+// match is hidden behind it.
+.engagements-list:not(.is-filtering) .eng-grid.is-collapsed > .eng-wrap.is-extra {
+  display: none;
+}
+
+.engagements-list.is-filtering .eng-viewall {
+  display: none;
+}
+
+.eng-viewall {
+  display: flex;
+  order: 1; // always last, even after the sort puts entries back
+}
+
+.eng-viewall[hidden] {
+  display: none;
+}
+
+.eng-viewall-btn {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+
+// Picture-sized box. Its bottom margin matches a card's thumbnail margin
+// plus the gap the card keeps from .eng-entry.has-image, so the type lines
+// sit level.
+.eng-viewall-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin: 0 0 calc(0.6rem + 1.1rem);
+  border: 1px dashed rgba(54, 91, 82, 0.45);
+  border-radius: 6px;
+  background: rgba(54, 91, 82, 0.06);
+  color: $linkColor;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.eng-viewall-btn:hover .eng-viewall-box,
+.eng-viewall-btn:focus-visible .eng-viewall-box {
+  border-style: solid;
+  background: rgba(54, 91, 82, 0.12);
+}
+
+.eng-viewall-count {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.eng-viewall-count i,
+.eng-viewall-count svg {
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+.eng-viewall-more {
+  margin-top: 0.3rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.eng-viewall-title {
+  margin: 0.35rem 0 0.2rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $bodyColor;
+}
+
+.eng-viewall-btn:hover .eng-viewall-title {
+  color: $linkColor;
+  text-decoration: underline;
+}
+
+.eng-viewall-sub {
+  font-size: 0.8rem;
+  color: #69706b;
+}
+
 @media (max-width: 767px) {
   .eng-entry.has-image,
   .engagements-list:not(.is-by-type) .eng-entry {
@@ -2786,12 +2883,22 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.25rem 1rem;
   }
+
+  .eng-viewall-box {
+    margin-bottom: calc(0.6rem + 0.8rem);
+  }
 }
 
 body.dark-mode .eng-thumb { background: rgba(154, 184, 170, 0.1); }
 body.dark-mode .eng-thumb.is-icon { color: rgba(154, 184, 170, 0.55); }
 body.dark-mode .eng-grid .eng-card-type { color: #aeb3ae; }
 body.dark-mode .eng-grid .eng-entry:hover .eng-title a { color: #9ab8aa; }
+body.dark-mode .eng-viewall-box { border-color: rgba(154, 184, 170, 0.45); background: rgba(154, 184, 170, 0.07); color: #9ab8aa; }
+body.dark-mode .eng-viewall-btn:hover .eng-viewall-box,
+body.dark-mode .eng-viewall-btn:focus-visible .eng-viewall-box { background: rgba(154, 184, 170, 0.13); }
+body.dark-mode .eng-viewall-title { color: #f2f2ee; }
+body.dark-mode .eng-viewall-btn:hover .eng-viewall-title { color: #9ab8aa; }
+body.dark-mode .eng-viewall-sub { color: #aeb3ae; }
 
 /* AWARENESS BUTTON (_includes/awareness-button.html, awareness-button.js) */
 
