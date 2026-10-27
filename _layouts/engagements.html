@@ -94,7 +94,7 @@ layout: default
     <div class="ecm-content">
     {% comment %}
       Engagements list, in the Publications list style: one section per kind
-      (In the media as a picture grid, then conference presentations,
+      (Media engagements as a picture grid, then conference presentations,
       posters, seminars and panels, blog posts), newest first within each.
       Sort "Newest first" / "Oldest first" regroups it by year and A-Z / Z-A
       makes one list (assets/js/list-grouping.js). Entry markup:
@@ -109,7 +109,7 @@ layout: default
       {% assign eng_undated = yg.items | where_exp: "e", "e.start_date == nil" %}
       {% assign eng_all = eng_all | concat: eng_dated | concat: eng_undated %}
     {% endfor %}
-    {% assign eng_sections = "media|In the media;conference|Conference presentations;poster|Posters;talk|Seminars and panels;blog|Blog posts;other|Other engagements" | split: ";" %}
+    {% assign eng_sections = "media|Media engagements;conference|Conference presentations;poster|Posters;talk|Seminars and panels;blog|Blog posts;other|Other engagements" | split: ";" %}
 
     <div class="engagements-list is-by-type">
 

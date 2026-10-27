@@ -320,12 +320,14 @@ panels. Markup `_includes/engagement-entry.html`, layout
 (`eng-` prefix), behaviour `engagements-filters.js` (Type, Years, Sort,
 search; Summary/Abstract toggles).
 
-- Type sections: In the media (`type` media/video/podcast/newspaper/
+- Type sections: Media engagements (`type` media/video/podcast/newspaper/
   interview/radio), Conference presentations, Posters, Seminars and panels
   (seminar + panel), Blog posts, Other engagements. Default order: year
   newest first; within a year, dated entries by `start_date`, then undated
   ones in file order.
-- "In the media" is a picture grid (`.eng-grid`, 3 across, 2 on phones):
+- "Media engagements" (never "In the media", which is the homepage strip's
+  name) is a picture grid (`.eng-grid`): 5 across from 992px, 3 when the map
+  column is open beside it, 4 on tablets, 2 on phones:
   the same entry markup restyled as a card (picture, type line with the
   homepage's `.engagement-type-pill` icon and hanging indent, title,
   outlet and date; keywords, badges and links hidden; the title link's
