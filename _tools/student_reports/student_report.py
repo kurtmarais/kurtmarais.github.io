@@ -600,12 +600,33 @@ def tertiary_summary(tert):
     }
 
 
+APPLICANT_DIAG = []
+
+
 def prepare_applicants(app):
     if app.empty:
         return app
     a = app.copy()
     # object dtype keeps None (pandas would otherwise store missing as NaN, which is truthy)
     a["su"] = pd.Series([su_number(x) for x in a.get("SU Number")], index=a.index, dtype=object)
+    # An SU Number on any of an applicant's rows applies to all of them (same
+    # Application Code, or same email address), so a number filled in on one
+    # application row also makes the applicant's other applications internal.
+    known = {}
+    for su, code, mail in zip(a.su, a.get("Application Code"), a.get("Email ID")):
+        if su:
+            for k in (("code", str(clean(code) or "")), ("mail", str(clean(mail) or "").lower())):
+                if k[1]:
+                    known.setdefault(k, su)
+    before = sum(1 for x in a.su if x)
+    a["su"] = pd.Series([su or known.get(("code", str(clean(code) or ""))) or
+                         known.get(("mail", str(clean(mail) or "").lower()))
+                         for su, code, mail in zip(a.su, a.get("Application Code"), a.get("Email ID"))],
+                        index=a.index, dtype=object)
+    APPLICANT_DIAG[:] = [
+        "Applicant rows read: %d; with an SU Number: %d; SU Number copied from the same applicant's "
+        "other rows (same Application Code or email): %d; without an SU Number (external): %d"
+        % (len(a), before, sum(1 for x in a.su if x) - before, sum(1 for x in a.su if not x))]
     a["person"] = [su or clean(code) or clean(mail) or "%s|%s" % (sn, fn) for su, code, mail, sn, fn in
                    zip(a.su, a.get("Application Code"), a.get("Email ID"), a.get("Surname"), a.get("First Name"))]
     # One record per person + programme: rows split over several lines are merged
@@ -1468,6 +1489,10 @@ def main():
     if year is None and not grades.empty and grades.year.notna().any():
         year = int(grades.year.max())
     apps = prepare_applicants(apps_raw)
+    print("Applicant check:")
+    for line in APPLICANT_DIAG:
+        print("  " + line)
+    bd_diag += APPLICANT_DIAG
     applied = honours_applicants(apps)
 
     # Every student on the BDatSci or Honours tab gets one block on the Modules tab
@@ -1541,7 +1566,7 @@ def main():
              ("Filtering by programme", "Overview: pick a programme in the yellow cell under each heading. "
                                         "Tabs: use the Programme column's filter arrow, or click in the table "
                                         "and choose Table Design > Insert Slicer > Programme."),
-             ("", "")] + [("BDatSci check", line) for line in bd_diag] + [("", "")] \
+             ("", "")] + [("Applicant check" if line.startswith("Applicant rows") else "BDatSci check", line) for line in bd_diag] + [("", "")] \
         + [("%s [%s]" % (f, s) if s else f, res) for f, s, res in log]
     sh = Sheet(wb, "Notes", ["Item", "Value"])
     for item in notes:
