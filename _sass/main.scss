@@ -2370,8 +2370,12 @@ body.dark-mode .back-to-top:hover {
    bold own name, type/status badges, an optional live journal impact
    badge, and Abstract / Cite panels (not for papers under review). */
 
+// The padding puts ~41px between a section's last entry and the next
+// heading, the same as between the title row and the first heading (it was
+// ~20px). Used by Publications and Engagements (type and year sections).
 .pub-section {
   margin-bottom: 1.25rem;
+  padding-bottom: 1.5rem;
 }
 
 .pub-section-label {
@@ -2794,7 +2798,7 @@ body.dark-mode .pub-cite-text { background: #262a26; border-color: #3a403b; colo
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1.25rem 1rem;
-  padding: 0.9rem 0;
+  padding: 0.9rem 0 0; // no bottom padding: .pub-section's spaces the next heading
 }
 
 @media (min-width: 992px) {

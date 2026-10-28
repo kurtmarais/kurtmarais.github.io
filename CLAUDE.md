@@ -362,6 +362,10 @@ a year, dated entries first by date, then the original order. A-Z / Z-A =
 one list without headings. Entries are moved, not copied, so open panels
 and handlers survive; the list gets `is-by-type` / `is-by-year` /
 `is-flat`. Filtering hides any section (type or year) left empty.
+Spacing: `.pub-section` has `padding-bottom: 1.5rem`, so every gap from a
+section's last entry to the next heading is ~41px, the same as from the
+title row to the first heading (both pages, both groupings). The media
+grid has no bottom padding of its own so it lands on the same 41px.
 
 ## Reinforcement demo (`reinforcement-demo.html`, `/reinforcement-demo/`)
 
