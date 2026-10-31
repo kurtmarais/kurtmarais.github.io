@@ -135,7 +135,7 @@
   type: "media"
   year: 2026
   media_format: "video"
-  featured: false   # promoted by the floating awareness button instead (_config.yml)
+  featured: false   # Engagements page only, not in the homepage's In the Media strip
   publication: "Stellenbosch University"
   start_date: "2026-10-10"
   end_date: "2026-10-10"
