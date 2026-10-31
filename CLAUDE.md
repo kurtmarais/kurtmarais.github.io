@@ -150,50 +150,16 @@ For LinkedIn, `embed_url` is the `src` from the post's "Embed this post"
 code (a `urn:li:ugcPost:` / `share:` ID, not the `activity:` ID in the
 post's address).
 
-## Floating awareness button (every page, `awareness-button.js`)
+## Floating awareness button (removed)
 
-Settings in `_config.yml` → `awareness_button` (`start`, `end`, `url`,
-`label`, `icon`); markup `_includes/awareness-button.html` (in
-`default.html`, rendered `hidden`, not on the page it links to); styles
-under `AWARENESS BUTTON` in `main.scss`. Currently World Mental Health
-Day 2026, 1–31 October, linking to the WMHD video page (whose entry is
-`featured: false`, so it's not in "In the Media" as well).
-
-- Dates are checked in the visitor's browser (local date, inclusive), so it
-  switches on/off without a rebuild. Remove the config block to drop it.
-- Icons: `icon` (video) while the text is open, `closed_icon` (`fa-ribbon`,
-  the awareness ribbon) once it shrinks; both are stacked in
-  `.awareness-btn-icon` and cross-fade (`.awareness-ico-open` /
-  `-closed`), following the same open states as the text. The ribbon is
-  drawn at 1.25x `--ab-icon` (it's a narrow glyph).
-- Colour: SDG Goal 3 "Good health and well-being" green `#4C9F38`
-  (`$sdg3-green`), white text and icons, same in light and dark mode
-  (dark mode needs an explicit `body.dark-mode .awareness-btn { color }`:
-  the site-wide `body.dark-mode a` mint rule outranks `.awareness-btn`). White on it is
-  3.3:1, below the 4.5:1 normally wanted for small text.
-- `position: fixed`, right = header's right edge on every screen size
-  (`row-reverse`, so the icon is on the right and the text opens
-  leftwards), top = 6px below the
-  header's bottom border, re-measured on scroll/resize (rAF). Phones: the
-  header is sticky, so it stays just under it. Wider: it follows the header
-  up and then holds `MIN_TOP` (16px). z-index 40, below the sticky phone
-  header (50) so the mobile menu covers it.
-- Opens with the full label (`.is-open`), shrinks to the round icon after
-  `INTRO_MS` (4s). Mouse devices: first page of a visit only
-  (`sessionStorage` `awarenessIntroSeen`). Touch screens (`(hover: none)`):
-  every page, since there's no hover to show the text again. Hover (only under
-  `@media (hover: hover)`, so taps don't stick it open) and
-  `:focus-visible` open it. A tap goes straight to the link. Reduced
-  motion: no intro, no transition.
-- Fixed position: it overlays the page and never changes its spacing
-  (checked: element positions identical with and without it).
-- Size via `--ab-*` custom properties: phones 2.5rem; from 768px 1.5x
-  (3.75rem circle, 1.2rem text, 1.425rem icon). Set explicitly on the button
-  (`min-width`) and the icon (`width`/`min-width`/`height`, no shrink):
-  left to flex sizing, the closed circle squashed narrower than the icon on
-  phones.
-- The label stays in the DOM (max-width 0 when closed) and is also the
-  `aria-label`. Hidden in print.
+A floating "World Mental Health Day 2026 · Watch the video" button (SDG 3
+green, top right of every page, 1-31 October 2026) was removed once the
+month ended: `_config.yml` `awareness_button`, `_includes/awareness-button.html`,
+`assets/js/awareness-button.js` and the `AWARENESS BUTTON` styles are gone.
+The WMHD video's engagements entry and its `/videos/` page stay (entry is
+`featured: false`, so it's on the Engagements page only). To run a similar
+campaign again, restore those files from git history (the commit that
+removed them is titled "Remove the World Mental Health Day awareness button").
 
 ## Publications list (`/publications/`)
 
@@ -362,6 +328,10 @@ a year, dated entries first by date, then the original order. A-Z / Z-A =
 one list without headings. Entries are moved, not copied, so open panels
 and handlers survive; the list gets `is-by-type` / `is-by-year` /
 `is-flat`. Filtering hides any section (type or year) left empty.
+Spacing: `.pub-section` has `padding-bottom: 1.5rem`, so every gap from a
+section's last entry to the next heading is ~41px, the same as from the
+title row to the first heading (both pages, both groupings). The media
+grid has no bottom padding of its own so it lands on the same 41px.
 
 ## Reinforcement demo (`reinforcement-demo.html`, `/reinforcement-demo/`)
 
