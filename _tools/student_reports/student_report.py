@@ -56,6 +56,9 @@ GRADE_FILES = r"""
 APPLICANT_FILES = r"""
 """     # PG Applicant Report(s), e.g. C:\Reports\Applicants\PG applicants.xlsx
 
+PRELIM_FILES = r"""
+"""     # Preliminary marks in the Prelim_template.xlsx layout, e.g. C:\Reports\Prelim_55336-344_Test2.xlsx
+
 # Where to save the report (full path ending in .xlsx). Blank = choose in a
 # pop-up window when files were chosen in pop-ups, else
 # Student_Report_<today>.xlsx next to this script.
@@ -141,6 +144,7 @@ DROPPED_STATUS_WORDS = ("unenrol", "withdraw", "cancel", "drop", "deregist")
 ENROL_KEY = "Module Enrollment Date"
 GRADE_KEY = "Obtained Marks/Grade"
 APPLICANT_KEY = "Application Code"
+PRELIM_KEY = "Preliminary Mark"
 
 APPLICANT_BASE_COLS = 22      # columns before the "Tertiary 1..6" blocks
 TERTIARY_BLOCK = 16           # columns per Tertiary block
@@ -291,7 +295,8 @@ def fill_continuations(df, key, cols):
     return pd.DataFrame(recs, columns=df.columns)
 
 
-KIND_LABELS = {"enrolment": "Enrolment", "grades": "Grades", "applicant": "Applicant"}
+KIND_LABELS = {"enrolment": "Enrolment", "grades": "Grades", "applicant": "Applicant",
+               "prelim": "Preliminary marks"}
 
 
 def path_lines(block):
@@ -320,7 +325,8 @@ def pick_files():
     entries = []
     for kind, label in (("enrolment", "Student Module Enrollment Report"),
                         ("grades", "Grade Roster Report"),
-                        ("applicant", "PG Applicant Report")):
+                        ("applicant", "PG Applicant Report"),
+                        ("prelim", "Preliminary marks (Prelim_template layout)")):
         chosen = filedialog.askopenfilenames(
             parent=root, title="Select %s file(s), Ctrl/Shift-click for several (Cancel = none)" % label,
             filetypes=[("Excel workbooks", "*.xlsx")])
@@ -359,7 +365,7 @@ def read_inputs(entries):
             if f.resolve() not in seen:
                 seen.add(f.resolve())
                 files.append((f, expected))
-    enrol, grades, applicants = [], [], []
+    enrol, grades, applicants, prelims = [], [], [], []
     for f, expected in files:
         try:
             sheets = load_sheets(f)
@@ -368,7 +374,8 @@ def read_inputs(entries):
             continue
         for sname, raw in sheets.items():
             kind = None
-            for key, k in ((APPLICANT_KEY, "applicant"), (GRADE_KEY, "grades"), (ENROL_KEY, "enrolment")):
+            for key, k in ((APPLICANT_KEY, "applicant"), (GRADE_KEY, "grades"), (ENROL_KEY, "enrolment"),
+                           (PRELIM_KEY, "prelim")):
                 h = find_header_row(raw, key)
                 if h is not None:
                     kind = k
@@ -380,6 +387,12 @@ def read_inputs(entries):
             body = body[body.apply(lambda r: any(clean(x) is not None for x in r), axis=1)]
             if kind == "applicant":
                 applicants.append(parse_applicants(raw.iloc[h].tolist(), body, f.name))
+            elif kind == "prelim":
+                df = body.copy()
+                df.columns = [str(c).strip() if clean(c) is not None else "col%d" % i
+                              for i, c in enumerate(raw.iloc[h].tolist())]
+                df["_source"] = f.name
+                prelims.append(df)
             else:
                 df = body.copy()
                 df.columns = [str(c).strip() if clean(c) is not None else "col%d" % i
@@ -395,7 +408,7 @@ def read_inputs(entries):
                     KIND_LABELS[expected], KIND_LABELS[kind], KIND_LABELS[kind])
             log.append((f.name, sname, note))
     cat = lambda xs: pd.concat(xs, ignore_index=True) if xs else pd.DataFrame()
-    return cat(enrol), cat(grades), cat(applicants), log
+    return cat(enrol), cat(grades), cat(applicants), cat(prelims), log
 
 
 def parse_applicants(header, body, source):
@@ -751,6 +764,72 @@ def result_of(mark, no_mark):
     return "Passed" if mark >= PASS_MARK else "Failed"
 
 
+def read_prelims(df):
+    """{(su, code): {"mark", "status", "text"}} from preliminary-mark files; the
+    latest Date wins when a student has several rows for one module."""
+    out = {}
+    if df is None or df.empty:
+        return out
+    for i, r in enumerate(df.to_dict("records")):
+        su = su_number(r.get("SU Number"))
+        code = module_code(r.get("Module Code"))
+        if not su or not code:
+            continue
+        code = current_code(code)
+        mark = to_number(r.get("Preliminary Mark"))
+        out_of = to_number(r.get("Out of"))
+        if mark is not None and out_of and out_of > 0 and out_of != 100:
+            mark = round(mark / out_of * 100, 2)
+        status = str(clean(r.get("Prelim Status")) or ("Captured" if mark is not None else "")).strip().lower()
+        when = clean(r.get("Date"))
+        key = (when.isoformat() if hasattr(when, "isoformat") else "", i)
+        prev = out.get((su, code))
+        if prev and prev["_key"] > key:
+            continue
+        what = " ".join(str(x) for x in (clean(r.get("Assessment")), clean(r.get("Comment"))) if x)
+        out[(su, code)] = {"mark": mark if status.startswith("capt") else None, "status": status,
+                           "detail": what or None, "_key": key}
+    return out
+
+
+def apply_prelims(rows_by_su, prelim_df):
+    """Attach preliminary marks to modules still without a final mark. They stay
+    'Outstanding' (shown as 'Outstanding (prelim 58)') and never change a status."""
+    pre = read_prelims(prelim_df)
+    if prelim_df is None or prelim_df.empty:
+        return []
+    applied = ignored = not_out = 0
+    matched = set()
+    for su, rows in rows_by_su.items():
+        for m in rows:
+            p = pre.get((su, m["code"]))
+            if not p:
+                continue
+            matched.add((su, m["code"]))
+            if m["mark"] is not None:
+                ignored += 1
+                continue
+            if m["no_mark"] != "Outstanding":     # e.g. not taken / not enrolled: nothing to add to
+                not_out += 1
+                continue
+            if p["mark"] is not None:
+                txt = "prelim %s" % fmt_mark(p["mark"])
+            elif p["status"].startswith("miss"):
+                txt = "missed prelim"
+            elif p["status"].startswith("excus"):
+                txt = "excused prelim"
+            else:
+                continue
+            m["prelim"] = p["mark"]
+            m["prelim_detail"] = p["detail"]
+            m["no_mark"] = m["result"] = "Outstanding (%s)" % txt
+            applied += 1
+    return ["Preliminary-mark rows read: %d; applied to modules still outstanding: %d; ignored because a "
+            "final mark exists: %d; ignored because the module is not outstanding (e.g. not taken): %d; "
+            "not matched to a student/module in this report: %d"
+            % (len(prelim_df), applied, ignored, not_out, len(set(pre) - matched))]
+
+
 def module_rows(mods, enrolled, current_year, bdatsci, honours):
     """One row per module for a student. `mark` is the starting value of the
     editable Mark cell; `no_mark` is the result shown while it is blank."""
@@ -1036,9 +1115,11 @@ def honours_applicants(apps):
 MOD = "Modules"
 MOD_COLS = ["SU Number", "Student", "Summary", "Module code", "Module", "Mark", "Result",
             "Mark improvement (earlier mark)", "BDatSci prerequisite", "Attempts", "Year(s)", "Repeated",
-            "Changed by hand", "Key", "If no mark", "Original mark", "Failed modules", "_failed"]
+            "Changed by hand", "Key", "If no mark", "Original mark", "Failed modules", "_failed",
+            "Preliminary mark", "Prelim details"]
 # Modules column letters
 M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY, M_FAILED = "A", "D", "F", "G", "I", "M", "N", "Q"
+M_PRELIM = "S"
 
 GREEN, YELLOW, RED, GREY, BLUE, ORANGE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7", "F8CBAD"
 # First match wins (case-insensitive "contains")
@@ -1164,7 +1245,8 @@ def write_modules(wb, students):
                     "Attempts": m["attempts"], "Year(s)": m["years"], "Repeated": m["repeated"],
                     "Changed by hand": '=IF(F{r}&""=P{r}&"","","Yes")'.format(r=r),
                     "Key": "%s|%s" % (su, m["code"]), "If no mark": m["no_mark"], "Original mark": m["mark"],
-                    "_failed": '=IF(G{r}="Failed",E{r}&" ("&F{r}&"), ","")'.format(r=r)})
+                    "_failed": '=IF(G{r}="Failed",E{r}&" ("&F{r}&"), ","")'.format(r=r),
+                    "Preliminary mark": m.get("prelim"), "Prelim details": m.get("prelim_detail")})
             ws.row_dimensions[r].outline_level = 1
             ws["F%d" % r].fill = input_fill
             dv.add("F%d" % r)
@@ -1201,7 +1283,7 @@ def write_bdatsci(wb, students, rows_by_su):
         row["Failed modules (below %g)" % PASS_MARK] = '=IFERROR(%s,"")' % lookup('%s&"|"' % su_ref, M_FAILED)
         row["Failed"] = "=" + cnt(su_ref, (M_RES, "Failed"))
         row["Required not enrolled"] = "=" + cnt(su_ref, (M_RES, "Not enrolled (required)"))
-        row["Outstanding marks"] = "=" + cnt(su_ref, (M_RES, "Outstanding"))
+        row["Outstanding marks"] = "=" + cnt(su_ref, (M_RES, "Outstanding*"))
         row["Marks changed by hand"] = "=" + cnt(su_ref, (M_HAND, "Yes"))
         rep = [m["code"] for m in rows_by_su[su] if m["repeated"]]
         row["Repeated modules"] = ", ".join(rep) or None
@@ -1245,7 +1327,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
     info_cols = [c for c in (built[0][1].keys() if built else []) if c not in
                  ("Internal / External", "SU Number", "Surname", "First Name")]
     headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name",
-                "OR3 modules taken", "OR3 average"]
+                "OR3 modules taken", "OR3 average", "OR3 average incl. prelims"]
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
                + ["OR2 + OR3 average", "Mark improvement (earlier mark)", "Repeated OR modules",
                   "Historic module versions"]
@@ -1267,6 +1349,12 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             sm = lambda p: 'SUMIFS(%s,%s,%s,%s,"%s*")' % (mref(M_MARK), mref(M_SU), s, mref(M_CODE), p)
             n = lambda p: cnt(s, (M_CODE, p + "*"), (M_MARK, ">=0"))
             row["OR3 average"] = "=" + avg(OR3_PREFIX)
+            # Final marks, plus preliminary marks where no final mark is in yet (information only)
+            o3 = '"%s*"' % OR3_PREFIX
+            row["OR3 average incl. prelims"] = (
+                '=IFERROR((SUMIFS({F},{A},{s},{D},{o3})+SUMIFS({S},{A},{s},{D},{o3},{F},""))/'
+                '(COUNTIFS({A},{s},{D},{o3},{F},">=0")+COUNTIFS({A},{s},{D},{o3},{F},"",{S},">=0")),"")'
+            ).format(F=mref(M_MARK), A=mref(M_SU), D=mref(M_CODE), S=mref(M_PRELIM), s=s, o3=o3)
             row["OR2 average"] = "=" + avg(OR2_PREFIX)
             row["OR2 + OR3 average"] = '=IFERROR((%s+%s)/(%s+%s),"")' % (
                 sm(OR2_PREFIX), sm(OR3_PREFIX), n(OR2_PREFIX), n(OR3_PREFIX))
@@ -1274,7 +1362,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             row["OR3 modules taken"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "<>Not taken"))
             row["_failed"] = "=%s+%s" % (cnt(s, (M_CODE, OR2_PREFIX + "*"), (M_RES, "Failed")),
                                          cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Failed")))
-            row["_or3_outstanding"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Outstanding"))
+            row["_or3_outstanding"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Outstanding*"))
             g, av, fl = L["_or3_graded"] + str(r), L["OR3 average"] + str(r), L["_failed"] + str(r)
             imp = [m for m in rows_by_su[su] if m["improvement"] is not None and is_or(m["code"])]
             row["Mark improvement (earlier mark)"] = "; ".join(
@@ -1297,7 +1385,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             row["Status"] = status
         sh.add(row)
     for h in headers:
-        if h.endswith("average"):
+        if "average" in h:
             for cell in sh.ws[L[h]][1:]:
                 cell.number_format = "0.00"
     sh.finish(colour_cols=["Status"] + [label(c) for c in or3 + or2],
@@ -1457,7 +1545,8 @@ def main():
     else:
         entries = ([(p, "enrolment") for p in path_lines(ENROLMENT_FILES)]
                    + [(p, "grades") for p in path_lines(GRADE_FILES)]
-                   + [(p, "applicant") for p in path_lines(APPLICANT_FILES)])
+                   + [(p, "applicant") for p in path_lines(APPLICANT_FILES)]
+                   + [(p, "prelim") for p in path_lines(PRELIM_FILES)])
         if not entries:
             picked = pick_files()
             if picked is None:
@@ -1470,7 +1559,7 @@ def main():
             args.output = args.output or chosen_out
     if not args.output:
         args.output = str(Path(__file__).resolve().parent / ("Student_Report_%s.xlsx" % date.today().isoformat()))
-    enrol, grades_raw, apps_raw, log = read_inputs(entries)
+    enrol, grades_raw, apps_raw, prelim_raw, log = read_inputs(entries)
     for name, _, msg in log:
         if msg.startswith("Not found") or "listed under" in msg:
             print("Note: %s: %s" % (name, msg))
@@ -1504,6 +1593,12 @@ def main():
         names.setdefault(su, " ".join(str(x) for x in (clean(r.get("First Name")), clean(r.get("Surname"))) if x))
     rows_by_su = {su: module_rows(attempts.get(su, {}), enrolled_by.get(su, {}), year,
                                   su in bd_set, su in hons_set) for su in bd_set | hons_set}
+    prelim_diag = apply_prelims(rows_by_su, prelim_raw)
+    if prelim_diag:
+        print("Preliminary marks check:")
+        for line in prelim_diag:
+            print("  " + line)
+        bd_diag += prelim_diag
 
     from openpyxl import Workbook
     wb = Workbook()
@@ -1542,6 +1637,10 @@ def main():
              ("Historic module codes", "Counted as their current equivalent: %s. Shown in the "
                                        "'Historic module versions' column and as [as <old code>] in Attempts."
               % ", ".join("%s = %s" % kv for kv in MODULE_EQUIVALENTS.items())),
+             ("Preliminary marks", "From files in the Prelim_template.xlsx layout. Shown as 'Outstanding "
+                                   "(prelim 58)', '(missed prelim)' or '(excused prelim)'; still outstanding, so "
+                                   "they never change a status or the official averages. 'OR3 average incl. "
+                                   "prelims' (Honours) adds them where no final mark is in yet."),
              ("Mark improvement", "A module graded before and enrolled again this year. The earlier mark is "
                                   "shown; this year's mark (or 'Outstanding') counts."),
              ("Skipped applicant rows", "%d row(s) not Honours/Masters/PhD (e.g. the export's footer)" % n_other),

@@ -2,3 +2,4 @@
 *.xlsx
 *.xls
 *.csv
+!Prelim_template.xlsx
