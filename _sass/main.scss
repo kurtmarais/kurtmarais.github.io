@@ -2292,6 +2292,19 @@ body.dark-mode .social-media-icons a:hover {
   }
 }
 
+// Theme credit under the footer row. Phones (stacked footer): centred like
+// everything above it, with a little more room under the icons.
+.footer-credit {
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .footer-credit {
+    margin-top: 2.25rem;
+    text-align: center;
+  }
+}
+
 @media (min-width: 768px) {
   .footer-row {
     display: grid;
