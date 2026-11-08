@@ -4,6 +4,18 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-11
+
+### Changed
+- Reinforcement demo wording revised to the site owner's academic writing
+  style: no colons in running prose, no sentences opening with How or When,
+  no text that has the demo, panel, simulation or arrows "doing" things,
+  digits for 12, and a fixed typo ("phenomenon"). Applies to the
+  disclaimer, the network and Relationship panel intros, three "How this
+  works" paragraphs and three interactive messages. Meaning is unchanged.
+- Supervision page, prospective students: "Master's" (was "Masters") and no
+  serial comma.
+
 ## 2026-11-10
 
 ### Changed
