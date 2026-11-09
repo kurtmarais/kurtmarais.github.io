@@ -760,6 +760,9 @@ def person_record(app_rows):
             else:
                 vals = [clean(x.get(src)) for x in app_rows]
                 row[out_col] = "; ".join("%s: %s" % (p, v) for p, v in zip(progs, vals) if v is not None) or None
+    codes = list(dict.fromkeys(str(clean(x.get("Application Code"))) for x in app_rows
+                               if clean(x.get("Application Code"))))
+    row["Application Code"] = "; ".join(codes) or None
     row["Applications"] = len(app_rows)
     row.update(tertiary_summary(merge_tertiary(x["_tertiary"] for x in app_rows)))
     return row
@@ -769,13 +772,13 @@ def applicant_base(r):
     base = {
         "Internal / External": "Internal" if r.su else "External",
         "SU Number": r.su,
+        "Application Code": clean(r.get("Application Code")),
         "Surname": clean(r.get("Surname")),
         "First Name": clean(r.get("First Name")),
         "Email": clean(r.get("Email ID")),
         "Mobile": clean(r.get("Mobile No")),
         "Nationality": clean(r.get("Nationality")),
         "Programme applied for": clean(r.get("Program Name")),
-        "Application Code": clean(r.get("Application Code")),
         "Intake Year": clean(r.get("IntakeYear")),
         "Application Status": clean(r.get("Program Application Status")),
         "Offer Status": clean(r.get("Program Offer STATUS")),
@@ -1496,8 +1499,8 @@ def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
     built.sort(key=lambda b: (group(b[3], b[2]), -b[4], -(b[2] or 0), (b[1].get("Surname") or "").lower()))
 
     info_cols = [c for c in (built[0][1].keys() if built else []) if c not in
-                 ("Internal / External", "SU Number", "Surname", "First Name")]
-    headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name"]
+                 ("Internal / External", "SU Number", "Application Code", "Surname", "First Name")]
+    headers = (["Rank", "Status", "Internal / External", "SU Number", "Application Code", "Surname", "First Name"]
                + (["Other programmes", "Other programme details"] if offers is not None else [])
                + ["OR3 modules taken", "OR3 average", "OR3 average incl. prelims"]
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
