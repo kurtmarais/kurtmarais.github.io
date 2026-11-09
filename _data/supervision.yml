@@ -21,7 +21,7 @@
   status: "current"
   start_year: 2026
   end_year: 2026
-  title: "Evaluating national happiness through the integration of media sentiment data and socio-economic indicators using machine learning"
+  title: "Predicting national happiness using machine learning and news data"
   keywords:
   abstract: 
 
@@ -34,7 +34,7 @@
   status: "current"
   start_year: 2026
   end_year: 2026
-  title: "Sequential emotion modelling in online interpersonal discourse"
+  title: "Probabilistic sequence modelling of emotion sequences in online discussion threads"
   keywords:
   abstract: 
 
