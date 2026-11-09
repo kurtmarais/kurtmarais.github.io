@@ -57,7 +57,11 @@ APPLICANT_FILES = r"""
 """     # PG Applicant Report(s), e.g. C:\Reports\Applicants\PG applicants.xlsx
 
 PRELIM_FILES = r"""
-"""     # Preliminary marks in the Prelim_template.xlsx layout, e.g. C:\Reports\Prelim_55336-344_Test2.xlsx
+"""     # Optional. Preliminary marks in the Prelim_template.xlsx layout, e.g. C:\Reports\Prelim_55336-344_Test2.xlsx
+
+OTHER_OFFER_FILES = r"""
+"""     # Optional. Applicant reports (same layout as the PG Applicant Report) used to check
+        # whether Honours applicants applied for, or accepted, other programmes
 
 # Where to save the report (full path ending in .xlsx). Blank = choose in a
 # pop-up window when files were chosen in pop-ups, else
@@ -133,6 +137,17 @@ PROGRAMME_PATTERNS = [
     ("Masters", r"\bm\.?\s?(com|sc|phil|eng|a)\b|master"),
     ("Honours", r"hons|honours"),
 ]
+
+# Other programmes' "Program Offer STATUS" -> what it means for an Honours applicant
+OFFER_STATUS_LABELS = {
+    "APPROVED": "Accepted elsewhere",
+    "OFFER_LETTER_DUE": "Offer received elsewhere",
+    "ACTIVE": "No decision elsewhere",
+    "PROVISIONAL_OFFER_REJECTED": "Rejected elsewhere",
+    "PROVISIONAL_OFFER_EXPIRED": "Rejected elsewhere",
+}
+# Most important first: the Honours tab shows the highest one an applicant has
+OFFER_PRIORITY = ["Accepted elsewhere", "Offer received elsewhere", "No decision elsewhere", "Rejected elsewhere"]
 
 # Module enrolments with these words in "Module Status" are ignored
 DROPPED_STATUS_WORDS = ("unenrol", "withdraw", "cancel", "drop", "deregist")
@@ -296,7 +311,7 @@ def fill_continuations(df, key, cols):
 
 
 KIND_LABELS = {"enrolment": "Enrolment", "grades": "Grades", "applicant": "Applicant",
-               "prelim": "Preliminary marks"}
+               "prelim": "Preliminary marks", "offers": "Other offers (applicant layout)"}
 
 
 def path_lines(block):
@@ -326,7 +341,8 @@ def pick_files():
     for kind, label in (("enrolment", "Student Module Enrollment Report"),
                         ("grades", "Grade Roster Report"),
                         ("applicant", "PG Applicant Report"),
-                        ("prelim", "Preliminary marks (Prelim_template layout)")):
+                        ("prelim", "Preliminary marks (Prelim_template layout)"),
+                        ("offers", "Other programmes' applicant report (offer statuses)")):
         chosen = filedialog.askopenfilenames(
             parent=root, title="Select %s file(s), Ctrl/Shift-click for several (Cancel = none)" % label,
             filetypes=[("Excel workbooks", "*.xlsx")])
@@ -362,10 +378,10 @@ def read_inputs(entries):
         if not found:
             log.append((str(entry), "", "Not found (no .xlsx files at this path)"))
         for f in found:
-            if f.resolve() not in seen:
-                seen.add(f.resolve())
+            if (f.resolve(), expected) not in seen:     # one file may be both applicants and offers
+                seen.add((f.resolve(), expected))
                 files.append((f, expected))
-    enrol, grades, applicants, prelims = [], [], [], []
+    enrol, grades, applicants, prelims, offers = [], [], [], [], []
     for f, expected in files:
         try:
             sheets = load_sheets(f)
@@ -385,7 +401,10 @@ def read_inputs(entries):
                 continue
             body = raw.iloc[h + 1:].reset_index(drop=True)
             body = body[body.apply(lambda r: any(clean(x) is not None for x in r), axis=1)]
-            if kind == "applicant":
+            if kind == "applicant" and expected == "offers":
+                kind = "offers"
+                offers.append(parse_applicants(raw.iloc[h].tolist(), body, f.name))
+            elif kind == "applicant":
                 applicants.append(parse_applicants(raw.iloc[h].tolist(), body, f.name))
             elif kind == "prelim":
                 df = body.copy()
@@ -408,7 +427,7 @@ def read_inputs(entries):
                     KIND_LABELS[expected], KIND_LABELS[kind], KIND_LABELS[kind])
             log.append((f.name, sname, note))
     cat = lambda xs: pd.concat(xs, ignore_index=True) if xs else pd.DataFrame()
-    return cat(enrol), cat(grades), cat(applicants), cat(prelims), log
+    return cat(enrol), cat(grades), cat(applicants), cat(prelims), cat(offers), log
 
 
 def parse_applicants(header, body, source):
@@ -1143,7 +1162,9 @@ M_PRELIM = "S"
 
 GREEN, YELLOW, RED, GREY, BLUE, ORANGE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7", "F8CBAD"
 # First match wins (case-insensitive "contains")
-COLOUR_RULES = [("provisionally accepted", GREEN), ("no supervisor yet", GREY), ("check eligibility", ORANGE), ("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
+COLOUR_RULES = [("accepted elsewhere", RED), ("offer received elsewhere", ORANGE),
+                ("no decision elsewhere", YELLOW), ("rejected elsewhere", GREY), ("none found", GREY),
+                ("provisionally accepted", GREEN), ("no supervisor yet", GREY), ("check eligibility", ORANGE), ("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
                 ("provisional", YELLOW), ("outstanding", YELLOW), ("no grade recorded", YELLOW),
                 ("no su grade", GREY), ("not taken", GREY), ("external", BLUE),
                 ("eligible", GREEN), ("qualifies", GREEN), ("passed", GREEN)]
@@ -1331,7 +1352,70 @@ def write_bdatsci(wb, students, rows_by_su):
     return sh
 
 
-def write_honours(wb, applied, rows_by_su, current_prog):
+def offer_label(status):
+    st = str(clean(status) or "").strip().upper()
+    return OFFER_STATUS_LABELS.get(st, st.title() + " elsewhere" if st else "No status elsewhere")
+
+
+def other_offers(applied, offers_raw):
+    """{honours key: [offer dicts]} for each Honours applicant's applications to OTHER
+    programmes, matched on SU Number, email address or Application Code."""
+    out = {}
+    if offers_raw is None or offers_raw.empty:
+        return out, []
+    norm = lambda v: str(clean(v) or "").strip().lower()
+    index = {}
+    for key, rows in applied.items():
+        ids = set()
+        for r in rows:
+            if r.su:
+                ids.add(("su", r.su))
+            for kind, col in (("mail", "Email ID"), ("code", "Application Code")):
+                if norm(r.get(col)):
+                    ids.add((kind, norm(r.get(col))))
+        for i in ids:
+            index.setdefault(i, set()).add(key)
+    hons_progs = {k: {norm(r.get("Program Name")) for r in rows} for k, rows in applied.items()}
+    seen, n_rows = set(), 0
+    for _, r in offers_raw.iterrows():
+        prog = clean(r.get("Program Name"))
+        if not prog:
+            continue          # footer / empty rows
+        n_rows += 1
+        ids = {("su", su_number(r.get("SU Number"))), ("mail", norm(r.get("Email ID"))),
+               ("code", norm(r.get("Application Code")))}
+        keys = set().union(*(index.get(i, set()) for i in ids if i[1]))
+        for key in keys:
+            if norm(prog) in hons_progs[key]:
+                continue      # the Honours application itself
+            d = r.get("Program Offer letter Issue Date")
+            d = clean(d)
+            rec = {"programme": prog, "label": offer_label(r.get("Program Offer STATUS")),
+                   "offer_status": clean(r.get("Program Offer STATUS")),
+                   "stage": clean(r.get("Program Stage Status")),
+                   "letter": d.strftime("%Y-%m-%d %H:%M") if hasattr(d, "strftime") else d,
+                   "app_status": clean(r.get("Program Application Status"))}
+            sig = (key, norm(prog), rec["offer_status"])
+            if sig not in seen:
+                seen.add(sig)
+                out.setdefault(key, []).append(rec)
+    diag = ["Other programmes: %d application rows read; %d Honours applicants have applications to other "
+            "programmes (matched on SU Number, email or Application Code)" % (n_rows, len(out))]
+    return out, diag
+
+
+def offer_summary(offers):
+    """(highest status, 'Programme (status, letter date); ...')"""
+    if not offers:
+        return "None found", None
+    rank = lambda o: OFFER_PRIORITY.index(o["label"]) if o["label"] in OFFER_PRIORITY else len(OFFER_PRIORITY)
+    offers = sorted(offers, key=rank)
+    text = "; ".join("%s (%s%s)" % (o["programme"], o["label"].replace(" elsewhere", ""),
+                                    ", offer letter %s" % o["letter"] if o["letter"] else "") for o in offers)
+    return offers[0]["label"], text
+
+
+def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
     from openpyxl.utils import get_column_letter
     codes = set(HONOURS_OR_MODULES)
     for key in applied:
@@ -1348,7 +1432,7 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             avg, status, taken = honours_stats(rows_by_su[su])
         else:
             avg, status, taken = None, "External applicant", 0
-        built.append((su, info, avg, status, taken))
+        built.append((su, info, avg, status, taken, key))
     group = lambda s, avg: (0 if s == "Qualifies" and avg is not None else 1 if s == "Qualifies" else
                             2 if s == "Check eligibility" else 3 if s.startswith("Below") else
                             4 if s.startswith("Not eligible (failed") else 5 if s.startswith("Not eligible")
@@ -1362,13 +1446,16 @@ def write_honours(wb, applied, rows_by_su, current_prog):
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
                + ["OR2 + OR3 average", "Mark improvement (earlier mark)", "Repeated OR modules",
                   "Historic module versions"]
+               + (["Other programmes", "Other programme details"] if offers is not None else [])
                + info_cols + ["Current programme"]
                + ["_or3_graded", "_or3_outstanding", "_failed"])
     sh = Sheet(wb, "Honours", headers)
     L = {h: sh.col(h) for h in headers}
-    for su, info, _, status, _ in built:
+    for su, info, _, status, _, key in built:
         r = sh.next_row
         row = dict(info, **{"SU Number": su_cell(su), "Current programme": current_prog.get(su) if su else None})
+        if offers is not None:
+            row["Other programmes"], row["Other programme details"] = offer_summary(offers.get(key, []))
         if su:
             s = "$D%d" % r
             for c in or3 + or2:
@@ -1419,9 +1506,11 @@ def write_honours(wb, applied, rows_by_su, current_prog):
         if "average" in h:
             for cell in sh.ws[L[h]][1:]:
                 cell.number_format = "0.00"
-    sh.finish(colour_cols=["Status"] + [label(c) for c in or3 + or2],
+    sh.finish(colour_cols=["Status"] + [label(c) for c in or3 + or2]
+              + (["Other programmes"] if offers is not None else []),
               hide=["_or3_graded", "_or3_outstanding", "_failed"],
-              widths={"Status": 30, "Mark improvement (earlier mark)": 30},
+              widths={"Status": 30, "Mark improvement (earlier mark)": 30, "Other programmes": 24,
+                      "Other programme details": 50},
               table="HonoursTable")
     return sh
 
@@ -1561,7 +1650,11 @@ def write_overview(wb, year, sections_src):
             ("Not eligible (failed an OR module)", [(b, "Not eligible (failed*")], False),
             ("Not eligible (fewer than %d OR3 modules)" % HONOURS_MIN_OR3, [(b, "Not eligible (fewer*")], False),
             ("External applicants", [(b, "External applicant")], False),
-            ("Total applicants", [(b, "?*"), (b, "<>Status")], False)])
+            ("Total applicants", [(b, "?*"), (b, "<>Status")], False)]
+            + ([("Applications to other programmes (highest status)", None, False)]
+               + [(lbl, [(hsh.col("Other programmes"), lbl)], True)
+                  for lbl in OFFER_PRIORITY + ["None found"]]
+               if "Other programmes" in hsh.headers else []))
     for key in ("Masters", "PhD"):
         if key not in sections_src:
             continue
@@ -1596,16 +1689,19 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("inputs", nargs="*", help=".xlsx files and/or folders (default: INPUT FILES in the script)")
     ap.add_argument("-o", "--output", default=OUTPUT_FILE.strip().strip('"') or None)
+    ap.add_argument("--offers", action="append", default=[],
+                    help="other programmes' applicant report (repeat for several)")
     ap.add_argument("--year", type=int, help="current academic year (default: latest BDatSci Academic Term)")
     args = ap.parse_args()
 
     if args.inputs:
-        entries = [(p, None) for p in args.inputs]
+        entries = [(p, None) for p in args.inputs] + [(p, "offers") for p in args.offers]
     else:
         entries = ([(p, "enrolment") for p in path_lines(ENROLMENT_FILES)]
                    + [(p, "grades") for p in path_lines(GRADE_FILES)]
                    + [(p, "applicant") for p in path_lines(APPLICANT_FILES)]
-                   + [(p, "prelim") for p in path_lines(PRELIM_FILES)])
+                   + [(p, "prelim") for p in path_lines(PRELIM_FILES)]
+                   + [(p, "offers") for p in path_lines(OTHER_OFFER_FILES)])
         if not entries:
             picked = pick_files()
             if picked is None:
@@ -1618,7 +1714,7 @@ def main():
             args.output = args.output or chosen_out
     if not args.output:
         args.output = str(Path(__file__).resolve().parent / ("Student_Report_%s.xlsx" % date.today().isoformat()))
-    enrol, grades_raw, apps_raw, prelim_raw, log = read_inputs(entries)
+    enrol, grades_raw, apps_raw, prelim_raw, offers_raw, log = read_inputs(entries)
     for name, _, msg in log:
         if msg.startswith("Not found") or "listed under" in msg:
             print("Note: %s: %s" % (name, msg))
@@ -1667,7 +1763,14 @@ def main():
     src, pg = {}, {}
     sh = write_bdatsci(wb, bd_students, rows_by_su)
     src["BDatSci"] = (sh, "Programme", progs_of(sh, "Programme"))
-    sh = write_honours(wb, applied, rows_by_su, current_programmes(enrol, grades))
+    offers, offer_diag = other_offers(applied, offers_raw)
+    if offer_diag:
+        print("Other programmes check:")
+        for line in offer_diag:
+            print("  " + line)
+        bd_diag += offer_diag
+    sh = write_honours(wb, applied, rows_by_su, current_programmes(enrol, grades),
+                       offers if not offers_raw.empty else None)
     # Applicants with several Honours programmes: offer each programme on its own
     hp = sorted({p.strip() for v in progs_of(sh, "Programme applied for") for p in v.split(";")})
     src["Honours"] = (sh, "Programme applied for", hp)
@@ -1703,6 +1806,10 @@ def main():
              ("Typing in", "Yellow cells can be filled in: Mark and Preliminary mark (Modules tab), and "
                            "Supervisor (Masters, PhD: any name there = Provisionally accepted, counted on the "
                            "Overview). Typed-in values live only in this file; a new run starts from the reports."),
+             ("Other programmes", "Only with OTHER_OFFER_FILES. Honours tab: the highest 'Program Offer "
+                                  "STATUS' of each applicant's applications to other programmes (APPROVED = "
+                                  "Accepted, OFFER_LETTER_DUE = Offer received, ACTIVE = No decision, "
+                                  "PROVISIONAL_OFFER_REJECTED/EXPIRED = Rejected), with every programme listed."),
              ("Mark improvement", "A module graded before and enrolled again this year. The earlier mark is "
                                   "shown; this year's mark (or 'Outstanding') counts."),
              ("Skipped applicant rows", "%d row(s) not Honours/Masters/PhD (e.g. the export's footer)" % n_other),
