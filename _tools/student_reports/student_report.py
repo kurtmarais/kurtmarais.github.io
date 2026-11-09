@@ -170,6 +170,19 @@ ENROL_KEY = "Module Enrollment Date"
 GRADE_KEY = "Obtained Marks/Grade"
 APPLICANT_KEY = "Application Code"
 PRELIM_KEY = "Preliminary Mark"
+# Accepted spellings of the prelim file's headings (compared ignoring case, extra
+# spaces, line breaks and non-breaking spaces)
+PRELIM_HEADER_ALIASES = {
+    "SU Number": ["su number", "su no", "su nr", "student number", "studentenommer", "us nommer"],
+    "Preliminary Mark": ["preliminary mark", "preliminary marks", "prelim mark", "prelim marks",
+                         "preliminary grade", "prelim grade", "mark"],
+    "Module Code": ["module code", "module", "module code/name", "module code / name"],
+    "Prelim Status": ["prelim status", "preliminary status", "status"],
+    "Out of": ["out of"],
+    "Assessment": ["assessment"],
+    "Date": ["date"],
+    "Comment": ["comment", "comments"],
+}
 
 APPLICANT_BASE_COLS = 22      # columns before the "Tertiary 1..6" blocks
 TERTIARY_BLOCK = 16           # columns per Tertiary block
@@ -270,10 +283,18 @@ def to_number(v):
     return float(m.group(0)) if m else None
 
 
+def norm_head(x):
+    """Heading text compared loosely: case, extra/non-breaking spaces, line breaks."""
+    return re.sub(r"\s+", " ", str(x).replace("\xa0", " ")).strip().lower()
+
+
 def find_header_row(raw, key):
+    keys = {norm_head(key)}
+    if key == PRELIM_KEY:
+        keys |= {a for a in PRELIM_HEADER_ALIASES["Preliminary Mark"] if a != "mark"}
     for i in range(min(len(raw), 15)):
-        row = [str(x).strip() for x in raw.iloc[i].tolist() if clean(x) is not None]
-        if key in row:
+        row = {norm_head(x) for x in raw.iloc[i].tolist() if clean(x) is not None}
+        if keys & row:
             return i
     return None
 
@@ -411,7 +432,11 @@ def read_inputs(entries):
                     kind = k
                     break
             if kind is None:
-                log.append((f.name, sname, "Skipped: not a recognised report"))
+                first = next((raw.iloc[i] for i in range(min(len(raw), 5))
+                              if sum(clean(x) is not None for x in raw.iloc[i]) >= 2), None)
+                seen_h = ", ".join(str(x) for x in (first.tolist() if first is not None else [])
+                                   if clean(x) is not None)[:200]
+                log.append((f.name, sname, "Skipped: not a recognised report (headings: %s)" % (seen_h or "none")))
                 continue
             body = raw.iloc[h + 1:].reset_index(drop=True)
             body = body[body.apply(lambda r: any(clean(x) is not None for x in r), axis=1)]
@@ -422,8 +447,15 @@ def read_inputs(entries):
                 applicants.append(parse_applicants(raw.iloc[h].tolist(), body, f.name))
             elif kind == "prelim":
                 df = body.copy()
-                df.columns = [str(c).strip() if clean(c) is not None else "col%d" % i
+                alias = {a: canon for canon, names in PRELIM_HEADER_ALIASES.items() for a in names}
+                df.columns = [alias.get(norm_head(c), str(c).strip()) if clean(c) is not None else "col%d" % i
                               for i, c in enumerate(raw.iloc[h].tolist())]
+                df = df.loc[:, ~df.columns.duplicated()]
+                missing = [c for c in ("SU Number", "Preliminary Mark", "Module Code") if c not in df.columns]
+                if missing:
+                    log.append((f.name, sname, "Preliminary marks: missing column(s) %s; headings found: %s"
+                                % (", ".join(missing), ", ".join(str(c) for c in raw.iloc[h].tolist()
+                                                                 if clean(c) is not None))))
                 df["_source"] = f.name
                 prelims.append(df)
             else:
@@ -1740,7 +1772,8 @@ def main():
         args.output = str(Path(__file__).resolve().parent / ("Student_Report_%s.xlsx" % date.today().isoformat()))
     enrol, grades_raw, apps_raw, prelim_raw, offers_raw, log = read_inputs(entries)
     for name, _, msg in log:
-        if msg.startswith("Not found") or "listed under" in msg:
+        if (msg.startswith(("Not found", "Skipped", "Preliminary marks: missing")) or "listed under" in msg) \
+                and _ != "How to fill in":
             print("Note: %s: %s" % (name, msg))
     if enrol.empty and grades_raw.empty and apps_raw.empty:
         sys.exit("No recognised reports found in: %s" % ", ".join(str(e) for e, _ in entries))
