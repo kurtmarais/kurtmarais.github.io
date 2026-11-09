@@ -3,6 +3,9 @@ $bodyColor: #202421;
 $bodyFont: Inter, -apple-system, BlinkMacSystemFont, "Gotham", Arial, Helvetica, sans-serif;
 $linkColor: #365b52;
 $serifFont: "Source Serif 4", Georgia, serif;
+// Corner of every pill that contains text (badges, keyword badges, Cite
+// tabs and Copy). Icon-only bubbles stay round.
+$textPillRadius: 6px;
 
 html {
   font-size: 85%;
@@ -718,7 +721,7 @@ h4 {
   display: inline-block;
   margin-left: 0.5rem;
   padding: 0.1rem 0.5rem;
-  border-radius: 1rem;
+  border-radius: $textPillRadius;
   background: rgba(54, 91, 82, 0.1);
   color: $linkColor;
   font-size: 0.7rem;
@@ -743,7 +746,7 @@ body.dark-mode .publication-featured-badge {
 .publication-keyword-badge {
   display: inline-block;
   padding: 0.15rem 0.65rem;
-  border-radius: 1rem;
+  border-radius: $textPillRadius;
   background: rgba(54, 91, 82, 0.1);
   color: $linkColor;
   font-size: 0.75rem;
@@ -2499,7 +2502,7 @@ body.dark-mode .back-to-top:hover {
   align-items: center;
   gap: 0.35rem;
   padding: 0.15rem 0.6rem;
-  border-radius: 999px;
+  border-radius: $textPillRadius;
   font-size: 0.75rem;
   font-weight: 600;
   white-space: nowrap;
@@ -2610,7 +2613,7 @@ body.dark-mode .back-to-top:hover {
 .pub-cite-formats button {
   padding: 0.2rem 0.7rem;
   border: 1px solid #cfd6d2;
-  border-radius: 999px;
+  border-radius: $textPillRadius;
   background: transparent;
   color: $linkColor;
   font-size: 0.78rem;
@@ -2657,7 +2660,7 @@ body.dark-mode .back-to-top:hover {
   gap: 0.35rem;
   padding: 0.25rem 0.8rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: $textPillRadius;
   background: $linkColor;
   color: #ffffff;
   font-weight: 600;

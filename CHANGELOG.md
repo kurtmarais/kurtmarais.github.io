@@ -4,6 +4,24 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-12
+
+### Changed
+- Every pill that contains text (publication badges, Featured, keyword
+  badges, the Cite tabs and Copy button, the demo's Beta label and state
+  pills) has 6px rounded corners instead of fully round ends.
+- iPhone/iPad home-screen icon: a forest-green square with the cream and
+  mint mark, named "Kurt Marais". The old icon was transparent, which iOS
+  shows on black, and was named after the page title.
+- Browser tab icon: the mark now fills the icon (about 15px of a 16px tab
+  icon, was about 11px), and on dark browser bars it switches to a cream
+  hub with light mint arms instead of a dark green hub that nearly
+  disappeared. The .ico fallback is regenerated to match.
+
+### Added
+- Android "Add to Home screen" support: a web manifest with 192px and
+  512px icons in the same forest-green style as the iPhone icon.
+
 ## 2026-11-11
 
 ### Changed

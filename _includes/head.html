@@ -91,8 +91,12 @@
     </script>
   {% endif %}
   <link rel="icon" href="{{ '/assets/img/favicon.svg' | relative_url }}" type="image/svg+xml">
-  <link rel="icon" href="{{ '/assets/img/favicon.ico' | relative_url }}" sizes="32x32 48x48" type="image/x-icon">
-  <link rel="apple-touch-icon" href="{{ '/assets/img/favicon-180.png' | relative_url }}">
+  <link rel="icon" href="{{ '/assets/img/favicon.ico' | relative_url }}" sizes="16x16 32x32 48x48" type="image/x-icon">
+  {% comment %} Home-screen icon (iPhone/iPad "Add to Home Screen"): opaque forest-green square, since iOS fills a transparent icon with black. Source: brand/svg/apple-touch-icon.svg. The title meta sets the name under the icon (otherwise the page title, cut short). {% endcomment %}
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/img/apple-touch-icon.png' | relative_url }}">
+  <meta name="apple-mobile-web-app-title" content="{{ site.title }}">
+  {% comment %} Android "Add to Home screen": name and 192/512px icons (same design as the Apple icon). {% endcomment %}
+  <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
   <title>{{ page.title }} | {{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/libs/bootstrap/bootstrap.min.css' | relative_url }}">
   <script defer src="{{ '/assets/libs/fontawesome/all.min.js' | relative_url }}"></script>
