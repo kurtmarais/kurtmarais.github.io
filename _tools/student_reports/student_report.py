@@ -822,7 +822,10 @@ def apply_prelims(rows_by_su, prelim_df):
                 continue
             m["prelim"] = p["mark"]
             m["prelim_detail"] = p["detail"]
-            m["no_mark"] = m["result"] = "Outstanding (%s)" % txt
+            # A captured mark sits in the editable Preliminary mark cell and the Result
+            # formula adds it; missed/excused is kept in the text shown while there's no mark
+            m["no_mark"] = "Outstanding" if p["mark"] is not None else "Outstanding (%s)" % txt
+            m["result"] = "Outstanding (%s)" % txt
             applied += 1
     return ["Preliminary-mark rows read: %d; applied to modules still outstanding: %d; ignored because a "
             "final mark exists: %d; ignored because the module is not outstanding (e.g. not taken): %d; "
@@ -1123,7 +1126,7 @@ M_PRELIM = "S"
 
 GREEN, YELLOW, RED, GREY, BLUE, ORANGE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7", "F8CBAD"
 # First match wins (case-insensitive "contains")
-COLOUR_RULES = [("check eligibility", ORANGE), ("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
+COLOUR_RULES = [("provisionally accepted", GREEN), ("no supervisor yet", GREY), ("check eligibility", ORANGE), ("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
                 ("provisional", YELLOW), ("outstanding", YELLOW), ("no grade recorded", YELLOW),
                 ("no su grade", GREY), ("not taken", GREY), ("external", BLUE),
                 ("eligible", GREEN), ("qualifies", GREEN), ("passed", GREEN)]
@@ -1240,7 +1243,9 @@ def write_modules(wb, students):
             r = sh.next_row
             sh.add({"SU Number": su_cell(su), "Student": name, "Module code": m["code"], "Module": m["name"],
                     "Mark": m["mark"],
-                    "Result": '=IF(ISNUMBER(F{r}),IF(F{r}>={p},"Passed","Failed"),O{r})'.format(r=r, p=PASS_MARK),
+                    "Result": ('=IF(ISNUMBER(F{r}),IF(F{r}>={p},"Passed","Failed"),IF(AND(ISNUMBER({s}{r}),'
+                               'LEFT(O{r},11)="Outstanding"),"Outstanding (prelim "&{s}{r}&")",O{r}))'
+                               ).format(r=r, p=PASS_MARK, s=M_PRELIM),
                     "Mark improvement (earlier mark)": m["improvement"], "BDatSci prerequisite": m["bdatsci"],
                     "Attempts": m["attempts"], "Year(s)": m["years"], "Repeated": m["repeated"],
                     "Changed by hand": '=IF(F{r}&""=P{r}&"","","Yes")'.format(r=r),
@@ -1250,6 +1255,8 @@ def write_modules(wb, students):
             ws.row_dimensions[r].outline_level = 1
             ws["F%d" % r].fill = input_fill
             dv.add("F%d" % r)
+            ws["%s%d" % (M_PRELIM, r)].fill = input_fill     # preliminary marks can be typed in too
+            dv.add("%s%d" % (M_PRELIM, r))
     sh.finish(colour_cols=["Result"], hide=["Key", "If no mark", "Original mark", "_failed"],
               widths={"Summary": 34, "Module": 30, "Failed modules": 45})
 
@@ -1352,9 +1359,9 @@ def write_honours(wb, applied, rows_by_su, current_prog):
             # Final marks, plus preliminary marks where no final mark is in yet (information only)
             o3 = '"%s*"' % OR3_PREFIX
             row["OR3 average incl. prelims"] = (
-                '=IFERROR((SUMIFS({F},{A},{s},{D},{o3})+SUMIFS({S},{A},{s},{D},{o3},{F},""))/'
-                '(COUNTIFS({A},{s},{D},{o3},{F},">=0")+COUNTIFS({A},{s},{D},{o3},{F},"",{S},">=0")),"")'
-            ).format(F=mref(M_MARK), A=mref(M_SU), D=mref(M_CODE), S=mref(M_PRELIM), s=s, o3=o3)
+                '=IFERROR((SUMIFS({F},{A},{s},{D},{o3})+SUMIFS({S},{A},{s},{D},{o3},{G},"Outstanding*"))/'
+                '(COUNTIFS({A},{s},{D},{o3},{F},">=0")+COUNTIFS({A},{s},{D},{o3},{G},"Outstanding*",{S},">=0")),"")'
+            ).format(F=mref(M_MARK), A=mref(M_SU), D=mref(M_CODE), S=mref(M_PRELIM), G=mref(M_RES), s=s, o3=o3)
             row["OR2 average"] = "=" + avg(OR2_PREFIX)
             row["OR2 + OR3 average"] = '=IFERROR((%s+%s)/(%s+%s),"")' % (
                 sm(OR2_PREFIX), sm(OR3_PREFIX), n(OR2_PREFIX), n(OR3_PREFIX))
@@ -1412,15 +1419,37 @@ def current_programmes(enrol, grades_df):
     return {su: p for su, (_, p) in best.items()}
 
 
-def write_frame(wb, title, df):
+SUPERVISOR_COL = "Supervisor (type name)"
+ACCEPT_COL = "Provisional acceptance"
+
+
+def write_frame(wb, title, df, supervisor=False):
+    """A plain data tab. supervisor=True adds a yellow 'Supervisor' input column and
+    'Provisional acceptance' (Provisionally accepted once a supervisor is typed in)."""
+    from openpyxl.styles import PatternFill
     if df is None or df.empty:
         df = pd.DataFrame({"Info": ["No records found for this tab."]})
+        supervisor = False
+    if supervisor:
+        df = df.copy()
+        at = list(df.columns).index("First Name") + 1 if "First Name" in df.columns else 0
+        df.insert(at, ACCEPT_COL, None)
+        df.insert(at + 1, SUPERVISOR_COL, None)
     sh = Sheet(wb, title, list(df.columns))
     for rec in df.to_dict("records"):
-        sh.add({k: (su_cell(v) if k == "SU Number" else (None if v is None or (isinstance(v, float)
-                                                                                and pd.isna(v)) else v))
-                for k, v in rec.items()})
-    sh.finish(table=re.sub(r"\W", "", title) + "Table")
+        r = sh.next_row
+        row = {k: (su_cell(v) if k == "SU Number" else (None if v is None or (isinstance(v, float)
+                                                                               and pd.isna(v)) else v))
+               for k, v in rec.items()}
+        if supervisor:
+            row[ACCEPT_COL] = '=IF(LEN(TRIM({c}{r}))>0,"Provisionally accepted","No supervisor yet")'.format(
+                c=sh.col(SUPERVISOR_COL), r=r)
+        sh.add(row)
+        if supervisor:
+            sh.ws["%s%d" % (sh.col(SUPERVISOR_COL), r)].fill = PatternFill("solid", fgColor="FFF8DC")
+    sh.finish(table=re.sub(r"\W", "", title) + "Table",
+              colour_cols=[ACCEPT_COL] if supervisor else (),
+              widths={SUPERVISOR_COL: 26, ACCEPT_COL: 24} if supervisor else None)
     return sh
 
 
@@ -1521,6 +1550,12 @@ def write_overview(wb, year, sections_src):
         items = [("Total applicants", [(io, "?*"), (io, "<>Internal / External")], False),
                  ("Internal (SU number)", [(io, "Internal")], True),
                  ("External", [(io, "External")], True)]
+        if ACCEPT_COL in sh.headers:
+            ac = sh.col(ACCEPT_COL)
+            items += [("Provisionally accepted (supervisor assigned)", [(ac, "Provisionally accepted")], False),
+                      ("Internal", [(ac, "Provisionally accepted"), (io, "Internal")], True),
+                      ("External", [(ac, "Provisionally accepted"), (io, "External")], True),
+                      ("No supervisor yet", [(ac, "No supervisor yet")], False)]
         if "Eligibility Status" in sh.headers:
             ec = sh.col("Eligibility Status")
             vals = sorted({str(c.value) for c in sh.ws[ec][1:] if clean(c.value) is not None})
@@ -1614,7 +1649,7 @@ def main():
     src["Honours"] = (sh, "Programme applied for", hp)
     for level in ("Masters", "PhD"):
         df = build_pg(apps, level, attempts)
-        sh = write_frame(wb, level, df)
+        sh = write_frame(wb, level, df, supervisor=True)
         pg[level] = df
         src[level] = (sh, "Programme applied for", sorted({p.strip() for v in progs_of(sh, "Programme applied for")
                                                           for p in v.split(";")}))
@@ -1641,6 +1676,9 @@ def main():
                                    "(prelim 58)', '(missed prelim)' or '(excused prelim)'; still outstanding, so "
                                    "they never change a status or the official averages. 'OR3 average incl. "
                                    "prelims' (Honours) adds them where no final mark is in yet."),
+             ("Typing in", "Yellow cells can be filled in: Mark and Preliminary mark (Modules tab), and "
+                           "Supervisor (Masters, PhD: any name there = Provisionally accepted, counted on the "
+                           "Overview). Typed-in values live only in this file; a new run starts from the reports."),
              ("Mark improvement", "A module graded before and enrolled again this year. The earlier mark is "
                                   "shown; this year's mark (or 'Outstanding') counts."),
              ("Skipped applicant rows", "%d row(s) not Honours/Masters/PhD (e.g. the export's footer)" % n_other),
