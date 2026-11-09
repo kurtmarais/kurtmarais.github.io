@@ -792,6 +792,16 @@ def read_prelims(df):
     return out
 
 
+def outstanding_text(m):
+    """Python copy of the Result formula's outstanding text (used for sorting only)."""
+    if m["no_mark"] != "Outstanding":
+        return m["no_mark"]
+    rep = "repeating, earlier %s" % fmt_mark(m["improvement"]) if m.get("improvement") is not None else ""
+    pre = "prelim %s" % fmt_mark(m["prelim"]) if m.get("prelim") is not None else (m.get("prelim_note") or "")
+    inner = "; ".join(x for x in (rep, pre) if x)
+    return "Outstanding (%s)" % inner if inner else "Outstanding"
+
+
 def apply_prelims(rows_by_su, prelim_df):
     """Attach preliminary marks to modules still without a final mark. They stay
     'Outstanding' (shown as 'Outstanding (prelim 58)') and never change a status."""
@@ -822,10 +832,10 @@ def apply_prelims(rows_by_su, prelim_df):
                 continue
             m["prelim"] = p["mark"]
             m["prelim_detail"] = p["detail"]
-            # A captured mark sits in the editable Preliminary mark cell and the Result
-            # formula adds it; missed/excused is kept in the text shown while there's no mark
-            m["no_mark"] = "Outstanding" if p["mark"] is not None else "Outstanding (%s)" % txt
-            m["result"] = "Outstanding (%s)" % txt
+            # The captured mark sits in the editable Preliminary mark cell; missed/excused is
+            # a note. The Result formula builds the text from both.
+            m["prelim_note"] = None if p["mark"] is not None else txt
+            m["result"] = outstanding_text(m)
             applied += 1
     return ["Preliminary-mark rows read: %d; applied to modules still outstanding: %d; ignored because a "
             "final mark exists: %d; ignored because the module is not outstanding (e.g. not taken): %d; "
@@ -893,7 +903,12 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
             "repeated": "Yes" if len(g) > 1 and (len({(a["year"], a["sem"]) for a in g}) > 1
                                                  or any(a["mark"] < PASS_MARK for a in g)) else None,
         })
-    rows.sort(key=lambda r: (RESULT_ORDER[r["result"]], r["code"]))
+    for r in rows:   # mirror the sheet: repeated module counts the better final mark
+        if r["mark"] is not None and r["improvement"] is not None:
+            r["result"] = result_of(max(r["mark"], r["improvement"]), r["no_mark"])
+        elif r["mark"] is None:
+            r["result"] = outstanding_text(r)
+    rows.sort(key=lambda r: (RESULT_ORDER.get(r["result"].split(" (")[0], 2), r["code"]))
     return rows
 
 
@@ -1119,9 +1134,11 @@ MOD = "Modules"
 MOD_COLS = ["SU Number", "Student", "Summary", "Module code", "Module", "Mark", "Result",
             "Mark improvement (earlier mark)", "BDatSci prerequisite", "Attempts", "Year(s)", "Repeated",
             "Changed by hand", "Key", "If no mark", "Original mark", "Failed modules", "_failed",
-            "Preliminary mark", "Prelim details"]
+            "Preliminary mark", "Prelim details", "Mark that counts", "_repeat_note", "_prelim_note"]
 # Modules column letters
-M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY, M_FAILED = "A", "D", "F", "G", "I", "M", "N", "Q"
+# M_MARK is the mark that counts (column U): the typed/exported Mark (F), or for a
+# module being repeated, the better of that and the earlier final mark (H)
+M_SU, M_CODE, M_MARK, M_RES, M_BD, M_HAND, M_KEY, M_FAILED = "A", "D", "U", "G", "I", "M", "N", "Q"
 M_PRELIM = "S"
 
 GREEN, YELLOW, RED, GREY, BLUE, ORANGE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7", "F8CBAD"
@@ -1243,21 +1260,28 @@ def write_modules(wb, students):
             r = sh.next_row
             sh.add({"SU Number": su_cell(su), "Student": name, "Module code": m["code"], "Module": m["name"],
                     "Mark": m["mark"],
-                    "Result": ('=IF(ISNUMBER(F{r}),IF(F{r}>={p},"Passed","Failed"),IF(AND(ISNUMBER({s}{r}),'
-                               'LEFT(O{r},11)="Outstanding"),"Outstanding (prelim "&{s}{r}&")",O{r}))'
-                               ).format(r=r, p=PASS_MARK, s=M_PRELIM),
+                    # Outstanding: add "(repeating, earlier 61; prelim 70)" / "(missed prelim)" notes
+                    "Result": ('=IF(ISNUMBER(U{r}),IF(U{r}>={p},"Passed","Failed"),IF(O{r}<>"Outstanding",O{r},'
+                               '"Outstanding"&IF(V{r}&W{r}&IF(ISNUMBER(S{r}),"x","")="",""," ("&V{r}'
+                               '&IF(AND(V{r}<>"",OR(W{r}<>"",ISNUMBER(S{r}))),"; ","")'
+                               '&IF(ISNUMBER(S{r}),"prelim "&S{r},W{r})&")")))').format(r=r, p=PASS_MARK),
                     "Mark improvement (earlier mark)": m["improvement"], "BDatSci prerequisite": m["bdatsci"],
                     "Attempts": m["attempts"], "Year(s)": m["years"], "Repeated": m["repeated"],
                     "Changed by hand": '=IF(F{r}&""=P{r}&"","","Yes")'.format(r=r),
                     "Key": "%s|%s" % (su, m["code"]), "If no mark": m["no_mark"], "Original mark": m["mark"],
-                    "_failed": '=IF(G{r}="Failed",E{r}&" ("&F{r}&"), ","")'.format(r=r),
+                    "_failed": '=IF(G{r}="Failed",E{r}&" ("&U{r}&"), ","")'.format(r=r),
+                    "Mark that counts": '=IF(ISNUMBER(F{r}),IF(ISNUMBER(H{r}),MAX(F{r},H{r}),F{r}),"")'.format(r=r),
+                    "_repeat_note": ("repeating, earlier %s" % fmt_mark(m["improvement"])
+                                     if m["improvement"] is not None else None),
+                    "_prelim_note": m.get("prelim_note"),
                     "Preliminary mark": m.get("prelim"), "Prelim details": m.get("prelim_detail")})
             ws.row_dimensions[r].outline_level = 1
             ws["F%d" % r].fill = input_fill
             dv.add("F%d" % r)
             ws["%s%d" % (M_PRELIM, r)].fill = input_fill     # preliminary marks can be typed in too
             dv.add("%s%d" % (M_PRELIM, r))
-    sh.finish(colour_cols=["Result"], hide=["Key", "If no mark", "Original mark", "_failed"],
+    sh.finish(colour_cols=["Result"], hide=["Key", "If no mark", "Original mark", "_failed", "_repeat_note",
+                                            "_prelim_note"],
               widths={"Summary": 34, "Module": 30, "Failed modules": 45})
 
 
