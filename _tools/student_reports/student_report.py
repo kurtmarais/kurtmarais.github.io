@@ -1445,12 +1445,12 @@ def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
 
     info_cols = [c for c in (built[0][1].keys() if built else []) if c not in
                  ("Internal / External", "SU Number", "Surname", "First Name")]
-    headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name",
-                "OR3 modules taken", "OR3 average", "OR3 average incl. prelims"]
+    headers = (["Rank", "Status", "Internal / External", "SU Number", "Surname", "First Name"]
+               + (["Other programmes", "Other programme details"] if offers is not None else [])
+               + ["OR3 modules taken", "OR3 average", "OR3 average incl. prelims"]
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
                + ["OR2 + OR3 average", "Mark improvement (earlier mark)", "Repeated OR modules",
                   "Historic module versions"]
-               + (["Other programmes", "Other programme details"] if offers is not None else [])
                + info_cols + ["Current programme"]
                + ["_or3_graded", "_or3_outstanding", "_failed"])
     sh = Sheet(wb, "Honours", headers)
