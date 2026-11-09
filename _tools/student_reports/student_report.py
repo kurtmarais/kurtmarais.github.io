@@ -138,16 +138,26 @@ PROGRAMME_PATTERNS = [
     ("Honours", r"hons|honours"),
 ]
 
-# Other programmes' "Program Offer STATUS" -> what it means for an Honours applicant
+# Applications to other programmes (OTHER_OFFER_FILES), classified per application:
+#   1. "Program Stage Status" REJECTED -> not chosen: Rejected elsewhere
+#   2. otherwise "Program Offer STATUS" decides when it is one of these
+#   3. otherwise Stage SELECTED -> Selected elsewhere; anything else (ACTIVE, APPROVED,
+#      blank, ...) says nothing about acceptance -> No decision elsewhere
+# Values are compared in capitals with spaces as underscores ("Offer letter accepted"
+# = OFFER_LETTER_ACCEPTED).
 OFFER_STATUS_LABELS = {
-    "APPROVED": "Accepted elsewhere",
+    "ADMITTED": "Accepted elsewhere",
+    "OFFER_LETTER_ACCEPTED": "Accepted elsewhere",
     "OFFER_LETTER_DUE": "Offer received elsewhere",
-    "ACTIVE": "No decision elsewhere",
+    "OFFER_LETTER_ISSUED": "Offer received elsewhere",
     "PROVISIONAL_OFFER_REJECTED": "Rejected elsewhere",
     "PROVISIONAL_OFFER_EXPIRED": "Rejected elsewhere",
 }
+STAGE_REJECTED = "REJECTED"
+STAGE_SELECTED = "SELECTED"
 # Most important first: the Honours tab shows the highest one an applicant has
-OFFER_PRIORITY = ["Accepted elsewhere", "Offer received elsewhere", "No decision elsewhere", "Rejected elsewhere"]
+OFFER_PRIORITY = ["Accepted elsewhere", "Offer received elsewhere", "Selected elsewhere",
+                  "No decision elsewhere", "Rejected elsewhere"]
 
 # Module enrolments with these words in "Module Status" are ignored
 DROPPED_STATUS_WORDS = ("unenrol", "withdraw", "cancel", "drop", "deregist")
@@ -1166,7 +1176,7 @@ M_PRELIM = "S"
 
 GREEN, YELLOW, RED, GREY, BLUE, ORANGE = "C6EFCE", "FFEB9C", "FFC7CE", "EDEDED", "DDEBF7", "F8CBAD"
 # First match wins (case-insensitive "contains")
-COLOUR_RULES = [("accepted elsewhere", RED), ("offer received elsewhere", ORANGE),
+COLOUR_RULES = [("accepted elsewhere", RED), ("offer received elsewhere", ORANGE), ("selected elsewhere", ORANGE),
                 ("no decision elsewhere", YELLOW), ("rejected elsewhere", GREY), ("none found", GREY),
                 ("provisionally accepted", GREEN), ("no supervisor yet", GREY), ("check eligibility", ORANGE), ("not eligible", RED), ("failed", RED), ("not enrolled", RED), ("below", RED),
                 ("provisional", YELLOW), ("outstanding", YELLOW), ("no grade recorded", YELLOW),
@@ -1356,9 +1366,16 @@ def write_bdatsci(wb, students, rows_by_su):
     return sh
 
 
-def offer_label(status):
-    st = str(clean(status) or "").strip().upper()
-    return OFFER_STATUS_LABELS.get(st, st.title() + " elsewhere" if st else "No status elsewhere")
+def offer_label(offer_status, stage_status):
+    key = lambda v: re.sub(r"[\s-]+", "_", str(clean(v) or "").strip().upper())
+    offer, stage = key(offer_status), key(stage_status)
+    if stage == STAGE_REJECTED:
+        return "Rejected elsewhere"
+    if offer in OFFER_STATUS_LABELS:
+        return OFFER_STATUS_LABELS[offer]
+    if stage == STAGE_SELECTED:
+        return "Selected elsewhere"
+    return "No decision elsewhere"
 
 
 def other_offers(applied, offers_raw):
@@ -1394,7 +1411,8 @@ def other_offers(applied, offers_raw):
                 continue      # the Honours application itself
             d = r.get("Program Offer letter Issue Date")
             d = clean(d)
-            rec = {"programme": prog, "label": offer_label(r.get("Program Offer STATUS")),
+            rec = {"programme": prog,
+                   "label": offer_label(r.get("Program Offer STATUS"), r.get("Program Stage Status")),
                    "offer_status": clean(r.get("Program Offer STATUS")),
                    "stage": clean(r.get("Program Stage Status")),
                    "letter": d.strftime("%Y-%m-%d %H:%M") if hasattr(d, "strftime") else d,
@@ -1414,8 +1432,10 @@ def offer_summary(offers):
         return "None found", None
     rank = lambda o: OFFER_PRIORITY.index(o["label"]) if o["label"] in OFFER_PRIORITY else len(OFFER_PRIORITY)
     offers = sorted(offers, key=rank)
-    text = "; ".join("%s (%s%s)" % (o["programme"], o["label"].replace(" elsewhere", ""),
-                                    ", offer letter %s" % o["letter"] if o["letter"] else "") for o in offers)
+    text = "; ".join("%s (%s [%s]%s)" % (o["programme"], o["label"].replace(" elsewhere", ""),
+                                         " / ".join(str(x) for x in (o["offer_status"], o["stage"]) if x) or "-",
+                                         ", offer letter %s" % o["letter"] if o["letter"] else "")
+                     for o in offers)
     return offers[0]["label"], text
 
 
@@ -1810,10 +1830,12 @@ def main():
              ("Typing in", "Yellow cells can be filled in: Mark and Preliminary mark (Modules tab), and "
                            "Supervisor (Masters, PhD: any name there = Provisionally accepted, counted on the "
                            "Overview). Typed-in values live only in this file; a new run starts from the reports."),
-             ("Other programmes", "Only with OTHER_OFFER_FILES. Honours tab: the highest 'Program Offer "
-                                  "STATUS' of each applicant's applications to other programmes (APPROVED = "
-                                  "Accepted, OFFER_LETTER_DUE = Offer received, ACTIVE = No decision, "
-                                  "PROVISIONAL_OFFER_REJECTED/EXPIRED = Rejected), with every programme listed."),
+             ("Other programmes", "Only with OTHER_OFFER_FILES. Per application elsewhere: Stage REJECTED = "
+                                  "Rejected; else Offer STATUS ADMITTED / OFFER_LETTER_ACCEPTED = Accepted, "
+                                  "OFFER_LETTER_DUE / OFFER_LETTER_ISSUED = Offer received, PROVISIONAL_OFFER_"
+                                  "REJECTED / EXPIRED = Rejected; else Stage SELECTED = Selected; anything else "
+                                  "(ACTIVE, APPROVED) = No decision. The Honours tab shows the highest, and "
+                                  "lists every programme with [offer status / stage]."),
              ("Mark improvement", "A module graded before and enrolled again this year. The earlier mark is "
                                   "shown; this year's mark (or 'Outstanding') counts."),
              ("Skipped applicant rows", "%d row(s) not Honours/Masters/PhD (e.g. the export's footer)" % n_other),
