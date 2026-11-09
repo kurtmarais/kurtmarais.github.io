@@ -258,7 +258,7 @@ padding drops to 0.5rem so "Research profile" / "Google Scholar" fit.
   sections (`show_cv_graduated_students`), which count directly from
   `supervision.yml` rather than storing a separate, redundant count anywhere.
 
-## Text pills and the home-screen icon
+## Text pills, favicons and home-screen icons
 
 - Every pill that contains text has 6px corners (`$textPillRadius` at the
   top of `main.scss`: `.pub-badge`, `.publication-featured-badge`,
@@ -273,6 +273,14 @@ padding drops to 0.5rem so "Research profile" / "Google Scholar" fit.
   black square). `<meta name="apple-mobile-web-app-title">` = site title,
   so the name under the icon is "Kurt Marais", not the cut-short page
   title.
+- Browser favicon: `assets/img/favicon.svg` = `brand/svg/favicon-adaptive.svg`
+  (v2): tight viewBox `7.5 9 46 46` so the mark fills ~95% of the tab icon,
+  light state forest/mint, dark state (system theme) cream hub with
+  #9ab8aa arms. `favicon.ico` = 16/32/48px PNG renders of the light state
+  (Safari and old browsers). Android: `/site.webmanifest` with
+  `icon-192.png` / `icon-512.png` (same design as the Apple icon,
+  `any maskable`). Regenerate rasters from the SVG sources, never edit the
+  PNGs by hand.
 
 ## Established color palette
 

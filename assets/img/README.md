@@ -3,7 +3,11 @@
 In use:
 
 - `headshot.jpg` — homepage hero photo (`.hero-photo` in `_layouts/home.html`).
-- `favicon.svg`, `favicon.ico` — favicons (`_includes/head.html`).
+- `favicon.svg`, `favicon.ico` — favicons (`_includes/head.html`). The SVG
+  is `brand/svg/favicon-adaptive.svg` (tight crop, light/dark colours); the
+  .ico holds 16/32/48px renders of its light state.
+- `icon-192.png`, `icon-512.png` — Android home-screen icons, listed in
+  `/site.webmanifest`.
 - `apple-touch-icon.png` — iPhone/iPad home-screen icon (180x180, opaque
   forest green; iOS fills a transparent icon with black). Source:
   `brand/svg/apple-touch-icon.svg`. Sources and other variants are in `brand/`.

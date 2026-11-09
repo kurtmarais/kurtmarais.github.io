@@ -1,20 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="7.5 9 46 46">
   <!--
-    Adaptive favicon — switches automatically based on the visitor's
-    OS/browser color scheme (prefers-color-scheme), no JavaScript.
+    Adaptive favicon, v2 (deployed as assets/img/favicon.svg).
+    Same favicon-weight geometry as logo-solid-favicon.svg, cropped tight:
+    the viewBox (7.5 9 46 46) leaves about 2 units around the mark, so it
+    fills ~95% of a browser tab icon instead of ~70% (at 16px the mark is
+    ~15px wide rather than ~11px).
 
-    Supported: Chrome, Firefox, Edge (browser re-evaluates the media
-    query against system theme).
-    NOT supported: Safari — always renders the light/default state
-    below, which is why a static favicon.ico fallback must still ship
-    alongside this file. See BRAND-GUIDELINES.md.
-
-    Important: this responds to the visitor's SYSTEM theme, not this
-    site's own manual dark-mode toggle — the two can be out of sync
-    (e.g. visitor's OS is light but they've flipped the site to dark).
-    There is no CSS-only way to bind this to the site's own toggle;
-    doing so would require JavaScript swapping the <link> tag, which
-    defeats the point of using this technique.
+    Colours switch with the visitor's OS/browser scheme (prefers-color-scheme;
+    Chrome, Firefox, Edge). Safari ignores the media query and shows the
+    light state, which is why favicon.ico still ships.
+      light: forest hub #365b52, mint arms/nodes #6ea491 (brand colours)
+      dark:  cream hub #f7f6f1, mint arms/nodes #9ab8aa (the site's dark-mode
+             link colour), so the hub stays the heaviest element and the
+             two-tone shape still reads on dark tab bars.
+    This follows the system theme, not the site's own dark-mode toggle.
   -->
   <style>
     .kn-arc  { fill: none; stroke: #6ea491; stroke-width: 5; stroke-linecap: round; }
@@ -23,10 +22,10 @@
     .kn-node { fill: #6ea491; }
 
     @media (prefers-color-scheme: dark) {
-      .kn-arc  { stroke: #f7f6f1; opacity: 0.55; }
-      .kn-arm  { stroke: #f7f6f1; }
+      .kn-arc  { stroke: #9ab8aa; }
+      .kn-arm  { stroke: #9ab8aa; }
       .kn-hub  { fill: #f7f6f1; }
-      .kn-node { fill: #f7f6f1; }
+      .kn-node { fill: #9ab8aa; }
     }
   </style>
   <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>

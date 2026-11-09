@@ -38,12 +38,19 @@ svg/
                              invisible. Don't use this as a general
                              favicon; use logo-solid-favicon or
                              logo-greyscale-favicon for that.
-  favicon-adaptive.svg      Switches color scheme automatically based on
+  favicon-adaptive.svg      THE DEPLOYED FAVICON (assets/img/favicon.svg).
+                             v2: same geometry as logo-solid-favicon, but
+                             cropped tight (viewBox 7.5 9 46 46), so the
+                             mark fills ~95% of a tab icon instead of ~70%
+                             (at 16px it is ~15px wide, not ~11px).
+                             Switches color scheme automatically based on
                              the visitor's OS/browser theme (embedded
                              prefers-color-scheme media query — no
-                             JavaScript). Light state matches
-                             logo-solid-favicon; dark state matches
-                             logo-mono-favicon. Supported in Chrome,
+                             JavaScript). Light state = brand colours
+                             (forest hub, mint arms); dark state = cream
+                             hub with the site's dark-mode mint #9ab8aa
+                             arms (v1 used a 55%-opacity cream arc that
+                             read as grey). Supported in Chrome,
                              Firefox, Edge; Safari ignores the media
                              query and always shows the light state,
                              which is why favicon.ico must still ship
@@ -73,6 +80,9 @@ png/
   favicon-180.png                 rather than an .ico (192 = Android/PWA).
   favicon-192.png                  favicon-180.png is transparent, so it is
                                    no longer the Apple touch icon (below).
+  android-icon-192.png,       Android home-screen icons (site.webmanifest),
+  android-icon-512.png        same design as apple-touch-icon; the mark
+                              sits inside the maskable safe zone.
   apple-touch-icon-180.png    iPhone/iPad home-screen icon: forest green
                               (#1f352f) square, cream hub, mint arms, from
                               svg/apple-touch-icon.svg. Opaque on purpose:
@@ -141,7 +151,8 @@ been added and nothing else has changed:
 1. **Copy the files that need to be served into `assets/img/`** —
    Jekyll only builds what's under `assets/`, not `brand/`:
    - `brand/svg/favicon-adaptive.svg` → `assets/img/favicon.svg`
-   - `brand/favicon/favicon.ico` → `assets/img/favicon.ico`
+   - `brand/favicon/favicon.ico` → `assets/img/favicon.ico` (16/32/48px, PNG-encoded, from the light state of favicon-adaptive.svg)
+   - `brand/png/android-icon-192.png` / `-512.png` → `assets/img/icon-192.png` / `icon-512.png`
    - `brand/png/apple-touch-icon-180.png` → `assets/img/apple-touch-icon.png`
    - `brand/png/logo-primary-512.png` → `assets/img/og-image.png`
      (for the `og:image` tag — see step 4)

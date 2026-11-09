@@ -13,6 +13,14 @@ is the baseline. Add new entries at the top.
 - iPhone/iPad home-screen icon: a forest-green square with the cream and
   mint mark, named "Kurt Marais". The old icon was transparent, which iOS
   shows on black, and was named after the page title.
+- Browser tab icon: the mark now fills the icon (about 15px of a 16px tab
+  icon, was about 11px), and on dark browser bars it switches to a cream
+  hub with light mint arms instead of a dark green hub that nearly
+  disappeared. The .ico fallback is regenerated to match.
+
+### Added
+- Android "Add to Home screen" support: a web manifest with 192px and
+  512px icons in the same forest-green style as the iPhone icon.
 
 ## 2026-11-11
 
