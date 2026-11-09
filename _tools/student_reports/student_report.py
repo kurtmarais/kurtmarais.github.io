@@ -166,11 +166,15 @@ TERTIARY_BLOCK = 16           # columns per Tertiary block
 
 
 def clean(v):
-    """Strip strings; turn NaN/None/blank into None."""
-    if v is None:
+    """Strip strings; turn NaN/NaT/None/blank into None."""
+    if v is None or v is pd.NaT:
         return None
-    if isinstance(v, float) and pd.isna(v):
-        return None
+    if not isinstance(v, (str, list, tuple, dict, set)):
+        try:
+            if pd.isna(v):          # NaN, NaT (empty date cells), pd.NA
+                return None
+        except (TypeError, ValueError):
+            pass
     if isinstance(v, str):
         v = v.strip()
         return v or None
