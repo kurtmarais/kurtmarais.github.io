@@ -4,6 +4,16 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-12
+
+### Changed
+- Every pill that contains text (publication badges, Featured, keyword
+  badges, the Cite tabs and Copy button, the demo's Beta label and state
+  pills) has 6px rounded corners instead of fully round ends.
+- iPhone/iPad home-screen icon: a forest-green square with the cream and
+  mint mark, named "Kurt Marais". The old icon was transparent, which iOS
+  shows on black, and was named after the page title.
+
 ## 2026-11-11
 
 ### Changed

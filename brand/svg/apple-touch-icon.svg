@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    iPhone / iPad home-screen icon (source for assets/img/apple-touch-icon.png,
+    exported at 180x180). Square and full-bleed: iOS rounds the corners itself.
+    Solid background on purpose: iOS fills any transparent area of an
+    apple-touch-icon with black, which is what the transparent favicon-180.png
+    looked like on a home screen.
+    Forest green (#1f352f, the hero card colour) with a cream hub (#f7f6f1)
+    and mint arms and nodes (#6ea491), using the favicon-weight geometry of
+    logo-solid-favicon.svg at 74% of the tile, centred.
+  -->
+  <style>
+    .kn-arc  { fill: none; stroke: #6ea491; stroke-width: 5; stroke-linecap: round; }
+    .kn-arm  { stroke: #6ea491; stroke-width: 5.5; stroke-linecap: round; }
+    .kn-hub  { fill: #f7f6f1; }
+    .kn-node { fill: #6ea491; }
+  </style>
+  <rect width="64" height="64" fill="#1f352f"/>
+  <g transform="translate(8.32 8.32) scale(0.74)">
+    <path class="kn-arc" d="M 46,46 A 20,20 0 1,1 46,18"/>
+    <line class="kn-arm" x1="32" y1="32" x2="46" y2="46"/>
+    <line class="kn-arm" x1="32" y1="32" x2="46" y2="18"/>
+    <circle class="kn-hub" cx="32" cy="32" r="10"/>
+    <circle class="kn-node" cx="46" cy="46" r="5.5"/>
+    <circle class="kn-node" cx="46" cy="18" r="5.5"/>
+    <circle class="kn-node" cx="18" cy="18" r="4.5"/>
+  </g>
+</svg>

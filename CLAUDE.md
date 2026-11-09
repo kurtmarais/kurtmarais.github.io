@@ -258,6 +258,22 @@ padding drops to 0.5rem so "Research profile" / "Google Scholar" fit.
   sections (`show_cv_graduated_students`), which count directly from
   `supervision.yml` rather than storing a separate, redundant count anywhere.
 
+## Text pills and the home-screen icon
+
+- Every pill that contains text has 6px corners (`$textPillRadius` at the
+  top of `main.scss`: `.pub-badge`, `.publication-featured-badge`,
+  `.publication-keyword-badge`, `.pub-cite-formats button`,
+  `.pub-cite-copy`; the demo's `.rfd-badge` and `.rfd-state-pill` set 6px
+  inline). Icon-only bubbles (`.engagement-type-pill`, map toggle, zoom
+  and details buttons) stay round. New text pills use the variable.
+- iPhone/iPad home-screen icon: `assets/img/apple-touch-icon.png` (180x180,
+  opaque), from `brand/svg/apple-touch-icon.svg`: forest #1f352f square,
+  cream hub, mint arms, mark at 74% of the tile. Never transparent: iOS
+  fills transparency with black (the old `favicon-180.png` showed as a
+  black square). `<meta name="apple-mobile-web-app-title">` = site title,
+  so the name under the icon is "Kurt Marais", not the cut-short page
+  title.
+
 ## Established color palette
 
 - Background: `#f7f6f1` light / `#202421` dark

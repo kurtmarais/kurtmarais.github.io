@@ -3,8 +3,12 @@
 In use:
 
 - `headshot.jpg` — homepage hero photo (`.hero-photo` in `_layouts/home.html`).
-- `favicon.svg`, `favicon.ico`, `favicon-180.png` — favicons / Apple touch
-  icon (`_includes/head.html`). Sources and other variants are in `brand/`.
+- `favicon.svg`, `favicon.ico` — favicons (`_includes/head.html`).
+- `apple-touch-icon.png` — iPhone/iPad home-screen icon (180x180, opaque
+  forest green; iOS fills a transparent icon with black). Source:
+  `brand/svg/apple-touch-icon.svg`. Sources and other variants are in `brand/`.
+- `favicon-180.png` — no longer linked (it was the touch icon, but it is
+  transparent); kept so any outside link to it still works.
 - `blogpost-usdp.jpg`, `bluesky_yohan-marion_unsplash.jpg`,
   `reddit_appshunter.io_unsplash.jpg` — thumbnails for blog-post entries in
   `_data/engagements.yml`.
