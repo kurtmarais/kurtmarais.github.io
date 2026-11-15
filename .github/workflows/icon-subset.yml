@@ -1,0 +1,52 @@
+# Keeps the Font Awesome subset (assets/libs/fontawesome/icons.min.js) and
+# its loader (assets/js/fa-loader.js) in step with the icons the site uses.
+# Runs on any push to main that could add, change or remove an icon, and
+# commits the regenerated files only when they changed. Until it has run,
+# pages that use a new icon load the full icon set, so nothing is missing.
+name: Update icon subset
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "_includes/**"
+      - "_layouts/**"
+      - "_data/**"
+      - "_posters/**"
+      - "_videos/**"
+      - "_publications/**"
+      - "assets/js/**"
+      - "*.html"
+      - "*.md"
+      - "assets/libs/fontawesome/all.min.js"
+      - "tools/fa-subset.js"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: icon-subset
+  cancel-in-progress: false
+
+jobs:
+  subset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Regenerate the icon subset
+        run: node tools/fa-subset.js
+      - name: Commit if anything changed
+        run: |
+          git add assets/libs/fontawesome/icons.min.js assets/js/fa-loader.js
+          if git diff --cached --quiet; then
+            echo "Icon subset already up to date."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Update icon subset"
+            git push
+          fi

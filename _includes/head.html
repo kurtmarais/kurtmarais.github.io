@@ -104,7 +104,9 @@
   <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
   <title>{{ page.title }} | {{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/libs/bootstrap/bootstrap.min.css' | relative_url }}">
-  <script defer src="{{ '/assets/libs/fontawesome/all.min.js' | relative_url }}"></script>
+  {% comment %} Icons: fa-loader.js loads the subset (icons.min.js, only the icons the site uses) or, if a page uses an icon not in it yet, the full set. Both are generated/kept by tools/fa-subset.js, run automatically by a GitHub Action. {% endcomment %}
+  <link rel="preload" href="{{ '/assets/libs/fontawesome/icons.min.js' | relative_url }}" as="script">
+  <script defer src="{{ '/assets/js/fa-loader.js' | relative_url }}" data-subset="{{ '/assets/libs/fontawesome/icons.min.js' | relative_url }}" data-full="{{ '/assets/libs/fontawesome/all.min.js' | relative_url }}"></script>
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
   <script defer src="{{ '/assets/js/dark-mode.js' | relative_url }}"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -28,6 +28,7 @@ exclude:
   - CHANGELOG.md
   - README.md
   - "**/README.md"
+  - tools
 show_media: true
 
 # Publications: your name is bold in author lines. Matched against each
