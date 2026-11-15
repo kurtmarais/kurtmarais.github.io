@@ -6,7 +6,12 @@
   <meta property="og:description" content="{{ site.description }}">
   <!-- og:image intentionally omitted: keeps link previews to a simple title/description
        card (site favicon "ribbon") instead of a large image card. -->
-  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  {% assign canonical_path = page.url | remove: "index.html" %}
+  <link rel="canonical" href="{{ canonical_path | absolute_url }}">
+  {% comment %} Browser bar colour and native controls/scrollbars follow the site theme; the inline script at the top of <body> switches both to dark when the dark theme is on. {% endcomment %}
+  <meta name="theme-color" content="#f7f6f1">
+  <meta name="color-scheme" content="light dark">
+  <meta property="og:url" content="{{ canonical_path | absolute_url }}">
   <meta property="og:type" content="website">
   {% comment %} Papers under review get no Scholar / schema.org tags: they aren't published. {% endcomment %}
   {% assign pub_in_review = false %}

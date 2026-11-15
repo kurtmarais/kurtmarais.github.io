@@ -4,6 +4,27 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-15
+
+### Changed
+- The three blog-post thumbnails on the Engagements page are resized from
+  full camera size to 640px wide (6.7 MB down to 91 KB). The page now
+  loads about 2 MB instead of about 9 MB.
+- The site follows the device's light/dark setting until the visitor
+  picks a theme with the toggle, and changes with it live (e.g. a phone
+  switching to dark at sunset). A choice made with the toggle still wins.
+  The theme is applied before the page first appears, so dark-mode
+  visitors no longer see the light page flash first.
+- Inner-page titles (Publications, Engagements, CV, Supervision, About,
+  Research, Teaching) are now each page's main heading for screen readers
+  and search engines; they look the same.
+
+### Added
+- "Skip to content" link for keyboard users (appears on the first Tab
+  press) and a `<main>` region around each page's content.
+- Canonical link on every page, a browser-bar colour that matches the
+  site theme, and dark scrollbars and form controls in dark mode.
+
 ## 2026-11-12
 
 ### Changed

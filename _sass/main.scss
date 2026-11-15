@@ -207,6 +207,43 @@ h4 {
   font-size: 1.05rem;
 }
 
+// Inner-page titles are the page's h1 (one per page, for screen readers and
+// search engines) but keep the size the old h3 titles had.
+h1.page-title {
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
+/* SKIP LINK (first focusable element; hidden until keyboard focus) */
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 2000;
+  padding: 0.5rem 0.9rem;
+  border-radius: $textPillRadius;
+  background: $linkColor;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 1rem;
+  color: #fff;
+}
+
+body.dark-mode .skip-link,
+body.dark-mode .skip-link:focus {
+  background: #9ab8aa;
+  color: #202421;
+}
+
+#main-content:focus {
+  outline: none;
+}
+
 
 /* HOMEPAGE — HERO CARD */
 
@@ -1276,7 +1313,7 @@ body.dark-mode .poster-embed {
   // no margin-bottom here — the parent ".row.g-5.mb-5" wrapper already contributes 3rem below this block
 }
 
-.page-title-row h3 {
+.page-title-row h1 {
   margin: 0 !important;
   padding: 0 !important;
   line-height: 1.25; // matches the site-wide h3 rule — no longer overridden to 1.2

@@ -2,9 +2,27 @@
 <html lang="{{ site.lang | default: "en-US" }}">
   {% include head.html %}
   <body>
+    {% comment %} Theme before first paint: the saved choice from the toggle, else the device's light/dark setting. Runs here (not in dark-mode.js, which is deferred) so dark-mode visitors never see the light page flash first. {% endcomment %}
+    <script>
+      (function () {
+        var saved = null;
+        try { saved = localStorage.getItem("darkMode"); } catch (e) {}
+        var dark = saved ? saved === "enabled" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        window.siteSetTheme = function (on) {
+          document.body.classList.toggle("dark-mode", on);
+          document.documentElement.style.colorScheme = on ? "dark" : "light";
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", on ? "#202421" : "#f7f6f1");
+        };
+        window.siteSetTheme(dark);
+      })();
+    </script>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="col-lg-10 mx-auto p-3 py-md-5">
       {% include header.html %}
-      {{ content }}
+      <main id="main-content" tabindex="-1">
+        {{ content }}
+      </main>
       {% include contact.html %}
       {% include footer.html %}
     </div>
@@ -13,7 +31,7 @@
       <span class="back-to-top-text">Back to top </span>
       <i class="fas fa-arrow-up back-to-top-icon"></i>
     </a>
-  
+
     <script src="{{ '/assets/js/back-to-top.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/footer-links.js' | relative_url }}"></script>
     <script src="{{ '/assets/js/media-carousel.js' | relative_url }}"></script>

@@ -27,6 +27,29 @@ not assumption or a fresh `npm install` without force-removing any existing
 `node_modules/@fortawesome` first — a stale cached version will silently
 satisfy an unpinned install and give a false read.
 
+## Page structure, theme and head tags (`_layouts/default.html`, `head.html`)
+
+- Every page has exactly one `<h1>`. Inner-page titles are
+  `<h1 class="fw-bold page-title">` (sized 1.2rem by `h1.page-title`, the
+  size the old `<h3>` titles had); section headings below stay h3/h4.
+  `.page-title-row h1` styles the title row with filters.
+- `default.html` wraps `{{ content }}` in `<main id="main-content"
+  tabindex="-1">`; the first element in `<body>` is a `.skip-link` to it
+  (off screen until focused). Contact and footer sit outside `<main>`.
+- Theme: an inline script at the top of `<body>` picks dark or light
+  before first paint (saved `localStorage.darkMode`, else
+  `prefers-color-scheme`) and defines `window.siteSetTheme(on)`, which sets
+  `body.dark-mode`, `html` `color-scheme` and the `theme-color` meta
+  together. `dark-mode.js` only syncs the toggles, saves the visitor's
+  choice and follows live system changes while nothing is saved. Always
+  switch the theme through `siteSetTheme`, never by toggling the class
+  alone.
+- `head.html` emits `<link rel="canonical">` (page URL without
+  `index.html`, also used for `og:url`), `theme-color` and
+  `color-scheme: light dark`.
+- Engagement thumbnails: resize to 640px wide before committing (see
+  `assets/img/README.md`); full-size photos made the Engagements page 9 MB.
+
 ## Root font-size is scaled
 
 `html { font-size: 85%; }` — 1rem ≈ 13.6px, not 16px. Relevant any time a rem
@@ -366,8 +389,8 @@ leaks into other pages. Consequences worth remembering:
 - JS reads colours with `getComputedStyle(.rfd-wrap)` — reading off `<html>`
   returns empty strings. Dark mode overrides the variables under
   `body.dark-mode .rfd-wrap`; a `MutationObserver` on `body`'s class redraws
-  the SVGs, because `dark-mode.js` applies the saved preference *after* the
-  inline script has drawn.
+  the SVGs when the theme changes (toggle or a live system switch; the
+  starting theme is set before the demo draws).
 - SVG node labels are appended to the `<svg>`, not inside `.rfd-node`, so
   label styles target `svg.rfd-network text` / `svg.rfd-rel text`.
 - Outlined (not-diagnosed) nodes are `fill:none`; they need
