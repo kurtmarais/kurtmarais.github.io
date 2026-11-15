@@ -16,8 +16,11 @@ is the baseline. Add new entries at the top.
   on the Teaching page, "Prospective students" on Supervision, "Research
   collaboration" on Publications, the English summaries on the
   Engagements page, the World Mental Health Day video page and the DPR
-  lexicon description. Published abstracts, student thesis abstracts and
-  Afrikaans texts are unchanged. Also fixes "their won mental health".
+  lexicon description, and the reinforcement demo (intro, disclaimer, panel
+  descriptions, "How this works" and the longer on-screen notes; the bold
+  run-in labels became bold key terms within the sentence). Published
+  abstracts, student thesis abstracts and Afrikaans texts are unchanged.
+  Also fixes "their won mental health".
 
 ## 2026-11-15
 

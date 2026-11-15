@@ -482,6 +482,10 @@ leaks into other pages. Consequences worth remembering:
   the panels down when an extra colourblind line appeared.
 - Editable wording: HTML between `EDITABLE TEXT` comments, plus the `TEXT`
   object at the top of the page's `<script>`. No em dashes in page copy.
+  Copy follows the owner's academic writing style (no colons in prose, no
+  serial comma, no ", so" clauses, no positional words such as "below").
+  "How this works" paragraphs have no bold run-in labels ending in a full
+  stop; the key term is bolded inside the first sentence instead.
   `TEXT` messages are single-quoted JS strings: apostrophes inside them must
   be the curly `’`. A straight `'` (e.g. `agent's`) is a syntax error that
   kills the whole script, so the network never renders. Check with
