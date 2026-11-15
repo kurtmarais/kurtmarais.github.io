@@ -15,8 +15,7 @@ Things that catch people out:
   .foo i,
   .foo svg { … }
   ```
-  Targeting only `i` compiles and silently does nothing. A new icon also
-  needs `node tools/fa-subset.js` (see `assets/libs/README.md`).
+  Targeting only `i` compiles and silently does nothing.
 - **`html { font-size: 85%; }`** — `1rem` ≈ 13.6px, not 16px.
 - **Palette** (light / dark):
   - background `#f7f6f1` / `#202421`

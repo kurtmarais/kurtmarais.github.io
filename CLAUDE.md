@@ -6,9 +6,10 @@ way it does (no generator plugin available to auto-create pages from data).
 
 ## Critical gotcha: Font Awesome icons are JS-rendered, not CSS
 
-Icons load via `assets/libs/fontawesome/icons.min.js`, a subset of **Font
-Awesome Free 6.7.2** (`all.min.js`) holding only the icons the site uses
-(~87 KB instead of 1.5 MB). This script scans the page after load and **replaces every
+Icons load via `assets/js/fa-loader.js`, which loads
+`assets/libs/fontawesome/icons.min.js`, a subset of **Font Awesome Free
+6.7.2** (`all.min.js`) holding only the icons the site uses (~87 KB instead
+of 1.5 MB). The icon script scans the page after load and **replaces every
 `<i class="fas fa-x">` with an inline `<svg>`**. By the time the page finishes
 rendering, the `<i>` tag no longer exists in the DOM.
 
@@ -23,15 +24,22 @@ Targeting only `i` compiles fine and silently does nothing. This has broken
 things twice already. There is no separate `all.min.css` in use — the JS
 bundle injects its own base styles.
 
-**Adding or changing an icon: run `node tools/fa-subset.js` and commit the
-regenerated `icons.min.js`.** Otherwise the new icon is not in the subset and
-renders as nothing (no error, the `<i>` just stays empty). The script scans
-`_includes`, `_layouts`, `_data`, `_posters`, `_videos`, `_publications`,
-`assets/js` and root pages for `fa-<name>`, keeps those icons (and their
-aliases, e.g. `fa-home` = `house`) and prints any name it can't find. An icon
-whose name is built at run time, never written out in full, goes in `EXTRA`
-in the script. The full `all.min.js` stays in the repo as the script's source
-and is excluded from the build (`_config.yml`), as is `tools/`.
+**Adding an icon needs no extra step** (the owner edits through the GitHub
+web UI and must never have to run anything). Two layers handle it:
+- `fa-loader.js` checks the page's icon classes against the subset's list;
+  if any is missing it loads the full `all.min.js` instead, so a new icon
+  always shows (that page is just heavier until the subset catches up).
+- `.github/workflows/icon-subset.yml` runs `node tools/fa-subset.js` on every
+  push to main that touches templates, data, pages or scripts, and commits
+  the regenerated `icons.min.js` and `fa-loader.js` if they changed.
+The script scans `_includes`, `_layouts`, `_data`, `_posters`, `_videos`,
+`_publications`, `assets/js` and root pages for `fa-<name>`, keeps those
+icons (and their aliases, e.g. `fa-home` = `house`) and prints any name it
+can't find. Output is deterministic, so a rerun with no icon change commits
+nothing. Gap: an icon whose name is only assembled in JS (never written out
+as `fa-<name>`) and inserted after load is invisible to both layers; list it
+in `EXTRA` in the script. The full `all.min.js` stays in the repo and is
+served (it's the fallback); `tools/` is excluded from the build.
 
 **When verifying whether an icon name exists**, check the full bundled file
 (`all.min.js`), not assumption or a fresh `npm install` without force-removing any existing
