@@ -6,8 +6,9 @@ way it does (no generator plugin available to auto-create pages from data).
 
 ## Critical gotcha: Font Awesome icons are JS-rendered, not CSS
 
-Icons load via `assets/libs/fontawesome/all.min.js` (currently **Font Awesome
-Free 6.7.2**). This script scans the page after load and **replaces every
+Icons load via `assets/libs/fontawesome/icons.min.js`, a subset of **Font
+Awesome Free 6.7.2** (`all.min.js`) holding only the icons the site uses
+(~87 KB instead of 1.5 MB). This script scans the page after load and **replaces every
 `<i class="fas fa-x">` with an inline `<svg>`**. By the time the page finishes
 rendering, the `<i>` tag no longer exists in the DOM.
 
@@ -22,8 +23,18 @@ Targeting only `i` compiles fine and silently does nothing. This has broken
 things twice already. There is no separate `all.min.css` in use — the JS
 bundle injects its own base styles.
 
-**When verifying whether an icon name exists**, check the actual bundled file,
-not assumption or a fresh `npm install` without force-removing any existing
+**Adding or changing an icon: run `node tools/fa-subset.js` and commit the
+regenerated `icons.min.js`.** Otherwise the new icon is not in the subset and
+renders as nothing (no error, the `<i>` just stays empty). The script scans
+`_includes`, `_layouts`, `_data`, `_posters`, `_videos`, `_publications`,
+`assets/js` and root pages for `fa-<name>`, keeps those icons (and their
+aliases, e.g. `fa-home` = `house`) and prints any name it can't find. An icon
+whose name is built at run time, never written out in full, goes in `EXTRA`
+in the script. The full `all.min.js` stays in the repo as the script's source
+and is excluded from the build (`_config.yml`), as is `tools/`.
+
+**When verifying whether an icon name exists**, check the full bundled file
+(`all.min.js`), not assumption or a fresh `npm install` without force-removing any existing
 `node_modules/@fortawesome` first — a stale cached version will silently
 satisfy an unpinned install and give a false read.
 

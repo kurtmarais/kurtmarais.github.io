@@ -7,6 +7,10 @@ is the baseline. Add new entries at the top.
 ## 2026-11-15
 
 ### Changed
+- Icons load from a 87 KB file holding only the icons the site uses,
+  instead of the full 1.5 MB Font Awesome set. Every page is about
+  1.4 MB lighter; the icons look the same. After adding an icon, run
+  `node tools/fa-subset.js`.
 - The three blog-post thumbnails on the Engagements page are resized from
   full camera size to 640px wide (6.7 MB down to 91 KB). The page now
   loads about 2 MB instead of about 9 MB.

@@ -28,6 +28,10 @@ exclude:
   - CHANGELOG.md
   - README.md
   - "**/README.md"
+  - tools
+  # Full Font Awesome bundle: source for tools/fa-subset.js, not served
+  # (pages load the subset, icons.min.js).
+  - assets/libs/fontawesome/all.min.js
 show_media: true
 
 # Publications: your name is bold in author lines. Matched against each
