@@ -4,6 +4,24 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-16
+
+### Changed
+- Light mode is the default again, and a visitor who turns dark mode on
+  keeps it on every page and visit, as before 2026-11-15. The device's
+  light/dark setting is no longer followed. A saved dark choice still
+  applies before the page first appears, without a light flash.
+- Longer texts rewritten in the site's academic writing style: the About
+  page (biography, research interests, collaboration), the guest lecture
+  on the Teaching page, "Prospective students" on Supervision, "Research
+  collaboration" on Publications, the English summaries on the
+  Engagements page, the World Mental Health Day video page and the DPR
+  lexicon description, and the reinforcement demo (intro, disclaimer, panel
+  descriptions, "How this works" and the longer on-screen notes; the bold
+  run-in labels became bold key terms within the sentence). Published
+  abstracts, student thesis abstracts and Afrikaans texts are unchanged.
+  Also fixes "their won mental health".
+
 ## 2026-11-15
 
 ### Changed

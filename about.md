@@ -6,13 +6,13 @@ permalink: /about/
 
 <h3 class="fw-bold mb-4">Biography</h3>
 
-I am currently a lecturer at Stellenbosch University in the field of Operations Research and Business Analytics. My teaching has been focused on linear programming, decision theory, social network analytics and information systems. My postgraduate teaching involves supervising students on short-term projects in collaboration with industry partners. This allows for students to apply their optimisation and mathematical modelling knowledge to real-world problems and gain industry experience during their studies.
+I am a lecturer in Operations Research and Business Analytics at Stellenbosch University, where my teaching has focused on linear programming, decision theory, social network analytics and information systems. At postgraduate level, I supervise students on short-term projects in collaboration with industry partners, which allow them to apply their knowledge of optimisation and mathematical modelling to real-world problems and to gain industry experience during their studies.
 
-My research focus relates to natural language processing tasks and simulation frameworks applied to information spread, affective computing and mental health research. I supervise students on research applying machine learning, emotion detection, data science and data analysis, all towards improved decision-making and optimisation in an ever-evolving technological space. I have an interest in language models and advancements in natural language processing for domain-specific tasks, as well as for improving digital health and well-being within an expanding information economy.
+In my research, I focus on natural language processing and simulation frameworks applied to information spread, affective computing and mental health. I supervise student research that applies machine learning, emotion detection, data science and data analysis to support decision-making and optimisation in a technological landscape that continues to change. I am also interested in language models and advances in natural language processing for domain-specific tasks, as well as their use in improving digital health and well-being within an expanding information economy.
 
 <h3 class="fw-bold mb-4 mt-5">Research interests</h3>
 
-My research sits at the intersection of Operations Research and Computational Social Science. Both fields are domains in their own right, and the specific techniques I work with draw from one, the other, or both. I enjoy the challenge of applying an optimisation mindset to behavioural research and data, which has led me to explore natural language processing and understanding. As my research continues, I hope to include more techniques that bridge the Operations Research and Computational Social Sciences domains.
+My research lies at the intersection of Operations Research and Computational Social Science, two fields that are domains in their own right, and the techniques I use draw from one, the other or both. I enjoy the challenge of applying an optimisation mindset to behavioural research and data, an interest that has led me to explore natural language processing and understanding. As my research continues, I hope to include more techniques that bridge the domains of Operations Research and Computational Social Science.
 
 
 <br class="d-none d-md-block">
@@ -54,7 +54,7 @@ My research sits at the intersection of Operations Research and Computational So
 
 <h3 class="fw-bold mb-4 mt-5">Collaboration</h3>
 
-I am always interested in hearing from researchers working in related areas, particularly within natural language processing, sentiment and affect diffusion in online networks, agent-based simulation of social systems, and machine learning applications. I am open to co-authorship, joint grant applications, and sharing of methods, models or datasets, and happy to discuss opportunities regardless of institution or location. If you think our work overlaps, get in touch with a short note on what you are working on. I am particularly keen to hear from anyone tackling information spread as it relates to mis- and disinformation, as I would like to explore the role of affective information in that research space.
+I welcome contact from researchers working in related areas, particularly natural language processing, sentiment and affect diffusion in online networks, agent-based simulation of social systems and applications of machine learning. I am open to co-authorship, joint grant applications and the sharing of methods, models or datasets, and I am happy to discuss opportunities regardless of institution or location. If our work appears to overlap, please get in touch with a short note on what you are working on. I would particularly like to hear from anyone studying the spread of misinformation and disinformation, given that I intend to explore the role of affective information in that research space.
 
 <h3 class="fw-bold mb-4 mt-5">Academic position</h3>
 

@@ -2,12 +2,12 @@
 <html lang="{{ site.lang | default: "en-US" }}">
   {% include head.html %}
   <body>
-    {% comment %} Theme before first paint: the saved choice from the toggle, else the device's light/dark setting. Runs here (not in dark-mode.js, which is deferred) so dark-mode visitors never see the light page flash first. {% endcomment %}
+    {% comment %} Theme before first paint: light by default, dark only when the visitor turned it on with the toggle (remembered in localStorage). Runs here (not in dark-mode.js, which is deferred) so a saved dark choice never flashes light first. {% endcomment %}
     <script>
       (function () {
         var saved = null;
         try { saved = localStorage.getItem("darkMode"); } catch (e) {}
-        var dark = saved ? saved === "enabled" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var dark = saved === "enabled";
         window.siteSetTheme = function (on) {
           document.body.classList.toggle("dark-mode", on);
           document.documentElement.style.colorScheme = on ? "dark" : "light";
