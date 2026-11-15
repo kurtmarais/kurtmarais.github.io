@@ -56,17 +56,19 @@ satisfy an unpinned install and give a false read.
   (screen readers can jump to it as a landmark). Contact and footer sit
   outside `<main>`. A visible "Skip to content" link was added and then
   removed at the owner's request; don't add one back.
-- Theme: an inline script at the top of `<body>` picks dark or light
-  before first paint (saved `localStorage.darkMode`, else
-  `prefers-color-scheme`) and defines `window.siteSetTheme(on)`, which sets
+- Theme: **light by default; dark only when the visitor turns it on with
+  the toggle, remembered in `localStorage.darkMode`.** The device's
+  light/dark setting is deliberately ignored (following it was tried and
+  reverted at the owner's request). An inline script at the top of
+  `<body>` applies the saved choice before first paint, so a dark choice
+  never flashes light, and defines `window.siteSetTheme(on)`, which sets
   `body.dark-mode`, `html` `color-scheme` and the `theme-color` meta
-  together. `dark-mode.js` only syncs the toggles, saves the visitor's
-  choice and follows live system changes while nothing is saved. Always
+  together. `dark-mode.js` syncs the toggles and saves the choice. Always
   switch the theme through `siteSetTheme`, never by toggling the class
   alone.
 - `head.html` emits `<link rel="canonical">` (page URL without
   `index.html`, also used for `og:url`), `theme-color` and
-  `color-scheme: light dark`.
+  `color-scheme: light` (the script switches it to dark with the theme).
 - Engagement thumbnails: resize to 640px wide before committing (see
   `assets/img/README.md`); full-size photos made the Engagements page 9 MB.
 
@@ -409,7 +411,7 @@ leaks into other pages. Consequences worth remembering:
 - JS reads colours with `getComputedStyle(.rfd-wrap)` — reading off `<html>`
   returns empty strings. Dark mode overrides the variables under
   `body.dark-mode .rfd-wrap`; a `MutationObserver` on `body`'s class redraws
-  the SVGs when the theme changes (toggle or a live system switch; the
+  the SVGs when the theme changes (toggle; the
   starting theme is set before the demo draws).
 - SVG node labels are appended to the `<svg>`, not inside `.rfd-node`, so
   label styles target `svg.rfd-network text` / `svg.rfd-rel text`.

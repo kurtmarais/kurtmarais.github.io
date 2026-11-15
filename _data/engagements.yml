@@ -74,7 +74,7 @@
   year: 2026
   type: "blog_post"
   featured: false
-  description: "In this edition of Get to Know the Members of ORSSA, we introduce Kurt, who is a Lecturer at Stellenbosch University. In this short interview, we get to know more about Kurt, what drew him to the field of OR, and how his research interests connect analytical thinking with some of the complex challenges facing society today."
+  description: "Kurt Marais, a lecturer at Stellenbosch University, is introduced in this edition of Get to Know the Members of ORSSA. The short interview covers what drew him to Operations Research and the ways in which his research interests connect analytical thinking with some of the complex challenges facing society today."
   keywords:
     - operations research
     - ORSSA
@@ -141,17 +141,13 @@
   end_date: "2026-10-10"
   image: "https://d1yqwmn8pjyrsu.cloudfront.net/varsity/logos/WnkSviMxm1Clkv5cE57Woj87Pw6T3Q5RYtLUZJHe.jpg"
   url: "/videos/world-mental-health-day-2026/"
-  description: "Can online interactions reinforce negative emotions? Dr Kurt Marais discusses his research into depression-related content on Reddit and simulated interactions on Twitter (now X), shared for Mental Health Awareness Month and World Mental Health Day."
+  description: "Dr Kurt Marais discusses his research on whether online interactions can reinforce negative emotions, drawing on depression-related content on Reddit and simulated interactions on Twitter, now known as X. The video was shared for Mental Health Awareness Month and World Mental Health Day."
   page_text: |   # shown above the video on its page only (Markdown); not an `abstract`, so the Engagements card has no Abstract toggle
-    Can online interactions reinforce negative emotions? And how can we better measure the relationship between social media and mental health?
+    Online interactions may reinforce negative emotions, while the relationship between social media and mental health remains difficult to measure. Dr Kurt Marais, a lecturer in the Department of Logistics who recently earned his doctorate in Operations Research at Stellenbosch University, investigated these issues through research on depression-related content on Reddit and simulated interactions on Twitter, now known as X.
 
-    Dr Kurt Marais, a lecturer in the Department of Logistics who recently earned his doctorate in operations research at Stellenbosch University, investigated these questions through research into depression-related content on Reddit and simulated interactions on Twitter (now X).
+    He developed a depression-specific sentiment lexicon, designed to identify language associated with depression more accurately than general sentiment analysis tools. Using an agent-based simulation model, he also explored the way in which repeated exposure to similar negative emotions may reinforce and intensify these feelings over time, particularly among people experiencing depression.
 
-    His study produced a depression-specific sentiment lexicon, designed to identify language associated with depression more accurately than general sentiment analysis tools. Using an agent-based simulation model, he also explored how repeated exposure to similar negative emotions can reinforce and intensify these feelings over time, particularly among people experiencing depression.
-
-    The findings highlight the importance of understanding emotional dynamics in digital spaces, and provide insights that could help researchers, mental health practitioners and platform developers promote online well-being.
-
-    Shared for Mental Health Awareness Month in South Africa and World Mental Health Day (10 October).
+    The findings point to the importance of understanding emotional dynamics in digital spaces and may help researchers, mental health practitioners and platform developers to promote online well-being. The video was shared for Mental Health Awareness Month in South Africa and for World Mental Health Day on 10 October.
   embed_url: "https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7514319500067000320?compact=1"
   source_url: "https://www.linkedin.com/feed/update/urn:li:activity:7514320484583395329/"
   source_name: "LinkedIn"
@@ -181,7 +177,7 @@
   start_date: "2026-08-16"
   end_date: "2026-08-16"
   image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQJZXdhDZ8cOkEerp1mdWCWNbZtZpW8pA1GDQCI7iO59Q&s=10"
-  description: "Dr. Kurt Marais of Stellenbosch University explains the concept of emotional reinforcement online, describing how negative sentiments can amplify among individuals with depression. The study analysed over twelve thousand posts, identified patterns of activity between 10pm and 5am, and highlighted the importance of anonymity in online mental health communities. He discusses the broader implications for social media research and the need for careful consumption of digital content."
+  description: "Dr Kurt Marais of Stellenbosch University explains the concept of emotional reinforcement online, describing the way in which negative sentiment may be amplified among people with depression. More than 12 000 posts were analysed in the study, in which patterns of activity between 10 pm and 5 am were identified and the importance of anonymity in online mental health communities was noted. He also discusses the broader implications for social media research and the need for careful consumption of digital content."
   url: "https://s3.eu-west-1.wasabisys.com/clientclipsr/20260816/20644238-0_1352A52.html"
   #description: "Shown under the title on the compact card, same as today."
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
@@ -212,7 +208,7 @@
   start_date: "2026-08-11"
   end_date: "2026-08-11"
   image: "https://biz-file.com/c/2608/819101-700x525.jpg"
-  description: "The addictive nature of social media, particularly platforms like Instagram and TikTok, leads users to spend excessive amounts of time doomscrolling. A lecturer from Stellenbosch University examined depression-related content on social media platforms such as Reddit and Twitter (now known as X) and found that by reinforcing negative emotions, users can exacerbate and deepen each other’s depression."
+  description: "The addictive nature of social media, particularly platforms such as Instagram and TikTok, leads users to spend excessive time doomscrolling. A lecturer from Stellenbosch University examined depression-related content on platforms such as Reddit and Twitter, now known as X, and found that users who reinforce negative emotions in one another may deepen each other’s depression."
   url: "https://www.bizcommunity.com/article/can-doomscrolling-on-reddit-and-x-deepen-depression-523940a"  
   keywords: ["social media", "twitter", "depression", "Stellenbosch University", "anxiety", "University of Stellenbosch", "Reddit", "digital health", "PTSD", "SU", "mental wellness", "Stellies"]   # hidden, search-only on media cards
   #description: "Shown under the title on the compact card, same as today."
@@ -228,7 +224,7 @@
   start_date: "2026-08-11"
   end_date: "2026-08-11"
   image: "https://files.su.ac.za/public/styles/responsive_3_1_1600w/public/stellenbosch-university/images/2026-08/social-media-2026png.png?itok=J3WQGyBs"
-  description: "Study highlights ‘emotional reinforcement’ – when people amplify each other’s emotions online. Effect stronger among people with depression. Researcher developed reliable depression-specific lexicon."
+  description: "Emotional reinforcement, namely the amplification of emotions between people online, was examined in the study and found to be stronger among people with depression. A reliable depression-specific lexicon was also developed as part of the research."
   url: "https://www.su.ac.za/en/news/study-explores-emotional-content-and-depressive-symptoms-social-media"
   #description: "Shown under the title on the compact card, same as today."
   #abstract: "Optional — if present, adds a collapsible Abstract toggle beneath the card's description."
@@ -372,7 +368,7 @@
   year: 2023
   type: "blog_post"                               # becomes a filter option automatically
   featured: false
-  description: "Ten university staff members at Stellenbosch University and the University of Fort Hare were selected to join the new doctoral training consortium launched with South African partners in 2021. Kurt Marais, a member of staff from Stellenbosch University, is a student on the programme and with support from University of Bath co-supervisors, Kurt is studying towards a PhD degree focusing on research in mathematical optimisation within the field of mental health and social network analysis in a South African context. These are Kurt's reflections after visiting Bath to work closely with his co-supervisor and continue his research. "
+  description: "A total of 10 staff members from Stellenbosch University and the University of Fort Hare were selected to join a new doctoral training consortium, launched with South African partners in 2021. Kurt Marais, a staff member at Stellenbosch University, is a student on the programme and, with the support of co-supervisors at the University of Bath, is studying towards a PhD in mathematical optimisation applied to mental health and social network analysis in a South African context. The post contains his reflections after visiting Bath to work closely with his co-supervisor and continue his research."
   keywords:
     - culture 
     - mobility

@@ -56,7 +56,7 @@ permalink: /teaching/
 
 <div class="course-item mb-4">
   <h4 class="mb-1">Global Service Learning · Faculty of Education, Stellenbosch University <span class="course-years">(2026)</span></h4>
-  <p class="mb-0 course-description">A conversation with international undergraduate students about mental health and teaching, framed by Education for Sustainable Development; the lectures were related to how mental health shapes learning and teaching, common stressors for young people, protective factors and support, and how students can support learner well-being and their won mental health within appropriate role boundaries</p>
+  <p class="mb-0 course-description">The lectures took the form of a conversation with international undergraduate students about mental health and teaching, framed by Education for Sustainable Development. They addressed the influence of mental health on learning and teaching, common stressors for young people and the protective factors and support available to them, together with the ways in which students can support the well-being of learners and their own mental health within appropriate role boundaries.</p>
 </div>
 
 <div class="course-item mb-4">
