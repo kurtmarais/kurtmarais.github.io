@@ -207,6 +207,13 @@ h4 {
   font-size: 1.05rem;
 }
 
+// Inner-page titles are the page's h1 (one per page, for screen readers and
+// search engines) but keep the size the old h3 titles had.
+h1.page-title {
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+
 
 /* HOMEPAGE — HERO CARD */
 
@@ -1276,7 +1283,7 @@ body.dark-mode .poster-embed {
   // no margin-bottom here — the parent ".row.g-5.mb-5" wrapper already contributes 3rem below this block
 }
 
-.page-title-row h3 {
+.page-title-row h1 {
   margin: 0 !important;
   padding: 0 !important;
   line-height: 1.25; // matches the site-wide h3 rule — no longer overridden to 1.2

@@ -15,7 +15,10 @@ In use:
   transparent); kept so any outside link to it still works.
 - `blogpost-usdp.jpg`, `bluesky_yohan-marion_unsplash.jpg`,
   `reddit_appshunter.io_unsplash.jpg` — thumbnails for blog-post entries in
-  `_data/engagements.yml`.
+  `_data/engagements.yml`. Resized to 640px wide (they show at most 128px
+  wide). Resize any new thumbnail the same way before adding it, e.g.
+  `convert in.jpg -resize '640x>' -strip -quality 82 -interlace JPEG out.jpg`;
+  a full-size camera photo is 2-3 MB each.
 - `engagements/` — poster thumbnails (`poster-thumb.jpg`,
   `predac-thumb.jpg`). New poster thumbnails go here as `<slug>-thumb.jpg`.
 
