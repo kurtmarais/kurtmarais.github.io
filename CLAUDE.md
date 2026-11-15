@@ -33,9 +33,10 @@ satisfy an unpinned install and give a false read.
   `<h1 class="fw-bold page-title">` (sized 1.2rem by `h1.page-title`, the
   size the old `<h3>` titles had); section headings below stay h3/h4.
   `.page-title-row h1` styles the title row with filters.
-- `default.html` wraps `{{ content }}` in `<main id="main-content"
-  tabindex="-1">`; the first element in `<body>` is a `.skip-link` to it
-  (off screen until focused). Contact and footer sit outside `<main>`.
+- `default.html` wraps `{{ content }}` in `<main id="main-content">`
+  (screen readers can jump to it as a landmark). Contact and footer sit
+  outside `<main>`. A visible "Skip to content" link was added and then
+  removed at the owner's request; don't add one back.
 - Theme: an inline script at the top of `<body>` picks dark or light
   before first paint (saved `localStorage.darkMode`, else
   `prefers-color-scheme`) and defines `window.siteSetTheme(on)`, which sets

@@ -20,8 +20,8 @@ is the baseline. Add new entries at the top.
   and search engines; they look the same.
 
 ### Added
-- "Skip to content" link for keyboard users (appears on the first Tab
-  press) and a `<main>` region around each page's content.
+- A `<main>` region around each page's content, so screen readers can
+  jump straight to it.
 - Canonical link on every page, a browser-bar colour that matches the
   site theme, and dark scrollbars and form controls in dark mode.
 

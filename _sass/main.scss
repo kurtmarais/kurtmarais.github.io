@@ -214,36 +214,6 @@ h1.page-title {
   line-height: 1.25;
 }
 
-/* SKIP LINK (first focusable element; hidden until keyboard focus) */
-
-.skip-link {
-  position: absolute;
-  left: 1rem;
-  top: -4rem;
-  z-index: 2000;
-  padding: 0.5rem 0.9rem;
-  border-radius: $textPillRadius;
-  background: $linkColor;
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.skip-link:focus {
-  top: 1rem;
-  color: #fff;
-}
-
-body.dark-mode .skip-link,
-body.dark-mode .skip-link:focus {
-  background: #9ab8aa;
-  color: #202421;
-}
-
-#main-content:focus {
-  outline: none;
-}
-
 
 /* HOMEPAGE — HERO CARD */
 
