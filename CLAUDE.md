@@ -69,6 +69,10 @@ satisfy an unpinned install and give a false read.
 - `head.html` emits `<link rel="canonical">` (page URL without
   `index.html`, also used for `og:url`), `theme-color` and
   `color-scheme: light` (the script switches it to dark with the theme).
+- Footer page links (`_includes/footer.html`) loop over the header's
+  `site.data.settings.menu`, so they follow the header's order: Home, then
+  each menu page (anchor links like `#contact` skipped; `cv` shown as
+  "CV", other names capitalised). Reorder pages in `settings.yml` only.
 - Engagement thumbnails: resize to 640px wide before committing (see
   `assets/img/README.md`); full-size photos made the Engagements page 9 MB.
 
