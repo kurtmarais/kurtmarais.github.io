@@ -474,11 +474,12 @@ leaks into other pages. Consequences worth remembering:
   this tick" card. Stat-card headings live in `TEXT` (`streakTitle`,
   `reinforcedBy`, `propTitle`) and are written as plain phrases, not
   clipped labels.
-- Accent boxes use a solid outline all round, never a one-sided thick
-  edge (owner's rule, same as the homepage demo card): the disclaimer is
-  `border:2px solid var(--rfd-note)`; a reinforced agent card in the tick
-  inspector is the 1px border recoloured plus `inset 0 0 0 1px` ring
-  (2px look, no size change as cards gain or lose reinforcement).
+- No one-sided thick accent edges anywhere (the owner sees them as an
+  AI-generated tell). The disclaimer is a tinted block only
+  (`--rfd-note-bg`, no border); a reinforced agent card in the tick
+  inspector has a gold outline all round: the 1px border recoloured plus
+  `inset 0 0 0 1px` ring (2px look, no size change as cards gain or lose
+  reinforcement). The "Beta" pill under the intro stays as it is.
 - Starting states: User 03 neutral and User 08 positive, so every directed
   reinforcement combination this network allows (influencer attribute ->
   influenced attribute x shared state x tie type, 18 in total) occurs in ticks 1-24 of the deployed
