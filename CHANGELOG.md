@@ -4,6 +4,13 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-18
+
+### Changed
+- The footer's page links follow the header's order (Home, About,
+  Teaching, Supervision, Engagements, Publications, CV) and are read from
+  the same list, so reordering the menu updates both.
+
 ## 2026-11-16
 
 ### Changed
