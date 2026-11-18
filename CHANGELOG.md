@@ -6,6 +6,11 @@ is the baseline. Add new entries at the top.
 
 ## 2026-11-18
 
+### Changed
+- Reinforcement demo: the disclaimer is a plain tinted block (its thick
+  left edge is gone), and reinforced agent cards in "All agents at tick N"
+  have a gold outline all round instead of a thick left edge.
+
 ### Added
 - On screens 1440px wide and up, a faint, still dot grid fills the empty
   space beside the homepage's three centred cards, fading towards the page
