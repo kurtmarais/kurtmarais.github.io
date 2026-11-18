@@ -249,6 +249,30 @@ Scopus). Text sits in one inner `<span>` so the badge's flex gap doesn't
 space it out. Replaced the live OpenAlex impact badge and `impact_factor`
 (both removed). Open access marking was considered and left out.
 
+## Homepage margin dots (wide screens, `HOMEPAGE MARGIN DOTS` in `main.scss`)
+
+From 1440px wide only (narrower screens and phones get nothing), the hero,
+demo and "In the Media" cards each get a faint, still dot lattice in the
+empty space beside them. The page (header, Research focus row, footer) is
+83% of the window while the cards stop at 960px, so that space grows with
+screen width. Pure CSS: each card's `::before` is as wide as the page
+content (`calc(83.3333vw - 2rem)`), centred, `z-index: -1`; a mask hides
+the card's own 960px plus a 14px gap and fades the dots from the card edge
+outwards (to 12% at the page edge). 22px grid (`$marginDotStep`), 1.3px
+dots, mint `rgba(110,164,145,.62)`, dark mode `rgba(154,184,170,.36)`.
+All layers share one centre, so dot columns line up across cards. The mask
+assumes the cards are exactly 960px wide (true from 1440px); change both
+together. The demo card's hover lift creates a stacking context, which is
+harmless here because the masked layer is transparent over the card.
+
+Tried and turned down by the owner (don't re-propose without a reason):
+capping the page width (they want it full width); network "threads" or
+clusters beside the cards; an animated network behind the whole homepage
+(read as a busy constellation; if revisited: very slow, 1440/1500px+,
+fading out after "In the Media", solid fills behind text sections,
+reduced-motion still, lightweight); a dot grid behind every page like a
+bullet journal (distracting behind text); full-width colour bands.
+
 ## Homepage card text width (`fit-to-title.js`)
 
 The hero intro is capped at the rendered width of the title's longest

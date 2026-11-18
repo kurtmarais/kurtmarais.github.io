@@ -6,6 +6,11 @@ is the baseline. Add new entries at the top.
 
 ## 2026-11-18
 
+### Added
+- On screens 1440px wide and up, a faint, still dot grid fills the empty
+  space beside the homepage's three centred cards, fading towards the page
+  edges. Smaller screens and phones are unchanged.
+
 ### Changed
 - The homepage demo card has a solid green border all round instead of a
   grey border with a thick green left edge. The light that travels around

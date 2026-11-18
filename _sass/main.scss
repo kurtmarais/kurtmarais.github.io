@@ -498,6 +498,62 @@ h1.page-title {
 }
 
 
+/* HOMEPAGE MARGIN DOTS — wide screens only (1440px and up).
+   On wide screens the hero, demo and "In the Media" cards (960px) leave
+   empty space beside them, because the page (header, Research focus row,
+   footer) keeps widening. Each card gets a faint, still dot lattice in that
+   space: a ::before layer as wide as the page content (the .col-lg-10
+   wrapper: 83.333% of the window minus its 1rem side padding each side),
+   centred on the card and drawn behind it. The mask hides the card's own
+   960px (plus a 14px gap) and fades the dots from the card edge outwards.
+   All three layers share the same centre, so their dot columns line up.
+   Narrower screens and phones get nothing. Pure CSS, no JS. */
+$marginDotStep: 22px;
+
+@media (min-width: 1440px) {
+  .hero,
+  .demo-teaser,
+  .media-strip {
+    position: relative;
+  }
+  .hero::before,
+  .demo-teaser::before,
+  .media-strip::before {
+    --dot: rgba(110, 164, 145, 0.62);
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    top: 6px;
+    bottom: 6px;
+    left: 50%;
+    width: calc(83.3333vw - 2rem);
+    transform: translateX(-50%);
+    background-image: radial-gradient(circle, var(--dot) 1.3px, transparent 1.7px);
+    background-size: $marginDotStep $marginDotStep;
+    background-position: center top;
+    -webkit-mask-image: linear-gradient(to right,
+      rgba(0, 0, 0, 0.12) 0,
+      #000 calc(50% - 494px),
+      transparent calc(50% - 494px),
+      transparent calc(50% + 494px),
+      #000 calc(50% + 494px),
+      rgba(0, 0, 0, 0.12) 100%);
+    mask-image: linear-gradient(to right,
+      rgba(0, 0, 0, 0.12) 0,
+      #000 calc(50% - 494px),
+      transparent calc(50% - 494px),
+      transparent calc(50% + 494px),
+      #000 calc(50% + 494px),
+      rgba(0, 0, 0, 0.12) 100%);
+  }
+  body.dark-mode .hero::before,
+  body.dark-mode .demo-teaser::before,
+  body.dark-mode .media-strip::before {
+    --dot: rgba(154, 184, 170, 0.36);
+  }
+}
+
 /* DEMO TEASER — homepage card linking to /reinforcement-demo/.
    Reuses .research-item's language (eyebrow, muted body text) inside a
    solid forest-green border of even weight all round; the glowing rim
