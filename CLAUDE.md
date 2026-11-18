@@ -539,13 +539,19 @@ appends an SVG path (rebuilt on resize, corners match the 10px radius) that
 starts mid bottom-left corner and runs anticlockwise; `.is-tracing` animates
 `stroke-dashoffset` 100 -> 0 on `pathLength="100"` over 2.6s, while a second
 animation fades opacity 0.8 -> 0 from 60% onward, so it dissolves before it
-closes the loop. Never retraces or erases along the path. Stroke is
-`$linkColor` (the card's left-border green) in both themes, 1.5px, faint
-2px halo only. First trace 30s after the page opens
+closes the loop. Never retraces or erases along the path. Card border:
+solid, even all round, `$teaserBorder` (2px, top of `main.scss`) in
+`$linkColor` (dark mode `#9ab8aa`); the old grey border with a 3px green
+left edge was replaced. The trace is the "glowing rim": it runs down the
+middle of that border at the same width (SVG offset by `-$teaserBorder`
+to cover the border box; `BORDER` in the JS must equal `$teaserBorder`),
+in a lighter colour with a soft double glow (`--rim-light` / `--rim-glow`:
+mint `#6ea491` light, `#d4e4dc` dark). Keep the border a whole number of
+pixels: Chrome rounds fractional borders down (1.5px drew as 1px), which
+left the trace wider than the rim. First trace 30s after the page opens
 (`FIRST_MS`; if the card is off screen then, it waits until the card is in
 view), then every 60s (`EVERY_MS`).
-Skipped for reduced motion and while the tab is hidden. The SVG is offset
-`left: -3px` because the card's left border is 3px (others 1px);
+Skipped for reduced motion and while the tab is hidden.
 `pointer-events: none` keeps the stretched link clickable.
 
 ## Conference map (Engagements page)

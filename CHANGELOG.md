@@ -7,6 +7,10 @@ is the baseline. Add new entries at the top.
 ## 2026-11-18
 
 ### Changed
+- The homepage demo card has a solid green border all round instead of a
+  grey border with a thick green left edge. The light that travels around
+  the card every minute now runs along that border as a glowing rim, in a
+  lighter mint (near-white in dark mode) with a soft glow.
 - The footer's page links follow the header's order (Home, About,
   Teaching, Supervision, Engagements, Publications, CV) and are read from
   the same list, so reordering the menu updates both.
