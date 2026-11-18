@@ -6,6 +6,7 @@ $serifFont: "Source Serif 4", Georgia, serif;
 // Corner of every pill that contains text (badges, keyword badges, Cite
 // tabs and Copy). Icon-only bubbles stay round.
 $textPillRadius: 6px;
+$teaserBorder: 2px; // homepage demo card border and its rim-light trace
 
 html {
   font-size: 85%;
@@ -498,9 +499,10 @@ h1.page-title {
 
 
 /* DEMO TEASER — homepage card linking to /reinforcement-demo/.
-   Reuses .research-item's language (border, eyebrow, muted body text);
-   the forest-green left border is the only new visual device. The whole
-   card is clickable: the link's ::after stretches over the card. */
+   Reuses .research-item's language (eyebrow, muted body text) inside a
+   solid forest-green border of even weight all round; the glowing rim
+   trace (below) runs exactly on that border. The whole card is clickable:
+   the link's ::after stretches over the card. */
 
 .demo-teaser {
   max-width: 960px; // same width as the hero card and the "In the Media" card
@@ -510,16 +512,14 @@ h1.page-title {
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  // Right padding is 2px wider than the left to make up for the 3px left
-  // border (vs 1px right), so content sits the same distance from both edges.
-  padding: 1.5rem calc(1.75rem + 2px) 1.5rem 1.75rem;
-  border: 1px solid #d9d9d1;
-  border-left: 3px solid $linkColor;
+  padding: 1.5rem 1.75rem;
+  // Solid border, the same weight on every side. The rim trace
+  // (demo-teaser-trace.js) is drawn on top of it at the same width.
+  border: $teaserBorder solid $linkColor;
   border-radius: 10px;
   transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
 .demo-teaser:hover {
-  border-color: $linkColor;
   box-shadow: 0 0.5rem 1.25rem rgba(32, 36, 33, 0.07);
   transform: translateY(-1px);
 }
@@ -590,28 +590,34 @@ h1.page-title {
   min-width: 0;
 }
 
-/* Border trace (assets/js/demo-teaser-trace.js): every 60s a line draws itself
-   around the card from the bottom-left corner, anticlockwise, and once it's
-   back at the start the whole outline fades out quickly. dasharray 100/100 on
-   a pathLength of 100: offset 100 is nothing drawn, 0 is the full outline. */
+/* Glowing rim (assets/js/demo-teaser-trace.js): every 60s a band of light
+   travels along the card's green border from the bottom-left corner,
+   anticlockwise, and fades out before it closes the loop. The SVG covers the
+   card's border box exactly (offset by the border width) and the path runs
+   down the middle of the border at the border's own width, so the light
+   lies on the rim rather than beside it. It is a lighter mint than the
+   border, with a soft glow. dasharray 100/100 on a pathLength of 100:
+   offset 100 is nothing drawn, 0 is the full outline. */
 .demo-teaser-trace {
   position: absolute;
-  top: -1px;
-  left: -3px;   // the card's left border is 3px, the others 1px
-  width: calc(100% + 4px);
-  height: calc(100% + 2px);
+  top: -$teaserBorder;
+  left: -$teaserBorder;
+  width: calc(100% + #{2 * $teaserBorder});
+  height: calc(100% + #{2 * $teaserBorder});
   pointer-events: none;
   overflow: visible;
+  --rim-light: #6ea491;
+  --rim-glow: rgba(110, 164, 145, 0.75);
 }
 .demo-teaser-trace path {
   fill: none;
-  stroke: $linkColor;   // same green as the card's left border
-  stroke-width: 1.5;
+  stroke: var(--rim-light);
+  stroke-width: $teaserBorder;
   stroke-linecap: round;
   stroke-dasharray: 100 100;
   stroke-dashoffset: 100;
   opacity: 0;
-  filter: drop-shadow(0 0 2px rgba(54, 91, 82, 0.3));   // a faint halo only
+  filter: drop-shadow(0 0 2.5px var(--rim-glow)) drop-shadow(0 0 6px var(--rim-glow));
 }
 .demo-teaser-trace.is-tracing path {
   animation: teaserTrace 2.6s forwards, teaserTraceFade 2.6s forwards;
@@ -624,7 +630,7 @@ h1.page-title {
   to   { stroke-dashoffset: 0; }
 }
 @keyframes teaserTraceFade {
-  0%, 60% { opacity: 0.8; }
+  0%, 60% { opacity: 1; }
   100%    { opacity: 0; }
 }
 .demo-teaser .eyebrow {
@@ -669,7 +675,7 @@ h1.page-title {
   .demo-teaser {
     flex-direction: column;
     gap: 1rem;
-    padding: 1.25rem calc(1.5rem + 2px) 1.25rem 1.5rem;
+    padding: 1.25rem 1.5rem;
   }
   .demo-teaser-icon {
     width: 44px;
@@ -2010,12 +2016,12 @@ body.dark-mode .publication-item {
 body.dark-mode .demo-teaser-icon { --tap-rest: #9ab8aa; --tap-hot: #d4e4dc; }
 body.dark-mode .demo-teaser-icon .teaser-hand { fill: #202421; }
 body.dark-mode .demo-teaser {
-  border-color: #444943;
-  border-left-color: $linkColor;
+  border-color: #9ab8aa;
 }
 
-body.dark-mode .demo-teaser:hover {
-  border-color: #9ab8aa;
+body.dark-mode .demo-teaser-trace {
+  --rim-light: #d4e4dc;
+  --rim-glow: rgba(212, 228, 220, 0.6);
 }
 
 body.dark-mode .demo-teaser-link:hover,

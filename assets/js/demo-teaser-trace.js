@@ -1,4 +1,5 @@
-/* Homepage demo teaser: every 60 seconds a line traces the card's border,
+/* Homepage demo teaser: every 60 seconds a band of light runs along the
+   card's solid border (the "glowing rim"),
    starting at the bottom-left corner and running anticlockwise (bottom,
    right, top, left), fading out as it nears the bottom-left corner again.
    The outline is an SVG path rebuilt whenever the card resizes, so its
@@ -13,7 +14,8 @@
   var EVERY_MS = 60000;   // time between traces
   var FIRST_MS = 30000;   // first trace, after the homepage is opened
   var RADIUS = 10;        // matches .demo-teaser border-radius
-  var INSET = 1;          // half the trace's stroke width, so it sits on the border
+  var BORDER = 2;         // .demo-teaser border width ($teaserBorder); keep whole pixels, browsers round fractional borders down
+  var INSET = BORDER / 2; // path runs down the middle of the border
 
   var svgNS = "http://www.w3.org/2000/svg";
   var svg = document.createElementNS(svgNS, "svg");
@@ -27,7 +29,7 @@
   // Rounded rectangle starting in the middle of the bottom-left corner and
   // going anticlockwise on screen (sweep flag 0 in SVG's y-down space).
   function build() {
-    var w = card.offsetWidth, h = card.offsetHeight;
+    var w = card.offsetWidth, h = card.offsetHeight;   // border box = the SVG's box
     if (!w || !h) return;
     var i = INSET, r = RADIUS - i, x0 = i, y0 = i, x1 = w - i, y1 = h - i;
     svg.setAttribute("viewBox", "0 0 " + w + " " + h);
