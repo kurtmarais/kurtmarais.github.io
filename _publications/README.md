@@ -24,7 +24,7 @@ field list:
 layout: publication
 title: "Article or item title"
 type: journal-article          # journal-article | conference-paper | book-chapter | dataset | thesis | dissertation
-status:                         # optional: under-review | revise-resubmit | accepted (leave out once published)
+status:                         # optional: in-progress | under-review | revise-resubmit | accepted (leave out once published)
 featured: false                 # true = also shown on the homepage
 authors:                        # full names, in paper order (see "Author names")
   - "Kurt Marais"
@@ -95,6 +95,15 @@ Things worth knowing:
   llms.txt lists it without venue or abstract. `journal` and `abstract` can
   stay in the file ready for publication; they're just not shown. `status: accepted` keeps the item in its
   type's section with an "Accepted" badge. Remove `status` once published.
+- `status: in-progress` is for manuscripts being written and not yet
+  submitted. The item goes in "Work in progress", the last section (after
+  Theses), with a grey "Work in progress" badge, and shows the same reduced
+  view as under-review items: title and authors only, no journal,
+  abstract, Cite, links or Google Scholar / schema.org tags (filter type
+  "Work in progress"). Give it a `year` (the current year) so it sorts
+  with the rest. Change it to `under-review` once submitted. Meant as a
+  short-term way to show the pipeline while the list is short; list only
+  manuscripts the co-authors are happy to have public.
 - Authors containing `publication_author` from `_config.yml` ("Marais, K")
   are bold.
 - SJR badge: "SJR Q3 · 2025", from `sjr_quartile` and `sjr_year`. Look the

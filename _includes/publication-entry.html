@@ -7,13 +7,15 @@
   - SJR badge: "SJR Q3 · 2025" from `sjr_quartile` / `sjr_year`, entered by
     hand from scimagojr.com (journal's best quartile). No badge without it.
   - Abstract / Cite panels: toggled by the action buttons (publications-cite.js).
-  - Under review: title, authors and status badge only (no journal name,
-    abstract, cite or links), since the paper isn't out yet.
+  - Under review, and work in progress (`status: in-progress`, manuscripts
+    not yet submitted): title, authors and status badge only (no journal
+    name, abstract, cite or links), since the paper isn't out yet.
 {% endcomment %}
 {% assign item = include.item %}
 {% assign me = site.publication_author | default: "Marais, K" %}
 {% assign data_type = item.type %}
 {% if include.review %}{% assign data_type = "under-review" %}{% endif %}
+{% if item.status == "in-progress" %}{% assign data_type = "work-in-progress" %}{% endif %}
 {% assign panel_id = item.url | slugify %}
 <div class="publication-entry-wrap">
   <article class="publication-entry pub-entry"
@@ -49,7 +51,9 @@
 
       <div class="pub-badges">
         {% if include.review %}
-          {% if item.status == "revise-resubmit" %}
+          {% if item.status == "in-progress" %}
+            <span class="pub-badge is-progress"><i class="fas fa-pen-to-square" aria-hidden="true"></i>Work in progress</span>
+          {% elsif item.status == "revise-resubmit" %}
             <span class="pub-badge is-rr"><i class="fas fa-rotate" aria-hidden="true"></i>Revise &amp; resubmit</span>
           {% else %}
             <span class="pub-badge is-review"><i class="fas fa-hourglass-half" aria-hidden="true"></i>Under review</span>

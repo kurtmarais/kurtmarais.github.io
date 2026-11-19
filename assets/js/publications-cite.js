@@ -99,7 +99,7 @@
   function doiUrl(d) { return d ? "https://doi.org/" + bareDoi(d) : ""; }
   function enPages(p) { return p ? String(p).replace(/\s*[-–]\s*/, "–") : ""; }
   function endDot(s) { return /[.?!]$/.test(s) ? s : s + "."; }
-  function isReview(d) { return d.status === "under-review" || d.status === "revise-resubmit"; }
+  function isReview(d) { return d.status === "under-review" || d.status === "revise-resubmit" || d.status === "in-progress"; }
   // Italic markers: \u0001 opens, \u0002 closes. Rendered as <em> in HTML, dropped in plain text.
   function it(s) { return "\u0001" + s + "\u0002"; }
   function toHtml(s) { return esc(s).replace(/\u0001/g, "<em>").replace(/\u0002/g, "</em>"); }

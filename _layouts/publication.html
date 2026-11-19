@@ -6,15 +6,15 @@ layout: default
   <div class="col-md-12 publication-page">
 
     {% assign pub_in_review = false %}
-    {% if page.status == "under-review" or page.status == "revise-resubmit" %}{% assign pub_in_review = true %}{% endif %}
+    {% if page.status == "under-review" or page.status == "revise-resubmit" or page.status == "in-progress" %}{% assign pub_in_review = true %}{% endif %}
     <p class="eyebrow">
-      {% if pub_in_review %}{% if page.status == "revise-resubmit" %}Revise and resubmit{% else %}Under review{% endif %}{% else %}{{ page.type | replace: "-", " " | capitalize }}{% endif %}{% if page.featured %} · Featured{% endif %}
+      {% if pub_in_review %}{% if page.status == "revise-resubmit" %}Revise and resubmit{% elsif page.status == "in-progress" %}Work in progress{% else %}Under review{% endif %}{% else %}{{ page.type | replace: "-", " " | capitalize }}{% endif %}{% if page.featured %} · Featured{% endif %}
     </p>
 
     <h1 class="fw-bold mb-3">{{ page.title }}</h1>
 
     <p class="publication-byline text-muted">
-      {% include author-line.html item=page %}{% if pub_in_review %}. Manuscript under review.{% else %} ({{ page.year }}).{% endif %}
+      {% include author-line.html item=page %}{% if pub_in_review %}. {% if page.status == "in-progress" %}Manuscript in progress.{% else %}Manuscript under review.{% endif %}{% else %} ({{ page.year }}).{% endif %}
       {% if pub_in_review %}
       {% elsif page.type == "journal-article" %}
         <em>{{ page.journal }}</em>{% if page.volume %}, {{ page.volume }}{% if page.issue %}({{ page.issue }}){% endif %}{% endif %}{% if page.pages %}, {{ page.pages }}{% endif %}.

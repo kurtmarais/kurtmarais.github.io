@@ -2605,6 +2605,11 @@ body.dark-mode .back-to-top:hover {
   color: #2c5c96;
 }
 
+.pub-badge.is-progress {
+  background: rgba(32, 36, 33, 0.08);
+  color: #555b55;
+}
+
 .pub-badge.is-accepted {
   background: rgba(76, 159, 56, 0.16);
   color: #3a7a2a;
@@ -2772,6 +2777,7 @@ body.dark-mode .pub-badge { background: rgba(154, 184, 170, 0.15); color: #9ab8a
 body.dark-mode .pub-badge.is-type { background: rgba(154, 184, 170, 0.15); color: #9ab8aa; }
 body.dark-mode .pub-badge.is-review { background: rgba(214, 178, 92, 0.16); color: #d9b95e; }
 body.dark-mode .pub-badge.is-rr { background: rgba(120, 165, 225, 0.16); color: #9cc0ee; }
+body.dark-mode .pub-badge.is-progress { background: rgba(232, 233, 229, 0.10); color: #c4c8c3; }
 body.dark-mode .pub-badge.is-accepted { background: rgba(120, 190, 100, 0.16); color: #9fd38c; }
 body.dark-mode .pub-badge.is-metric { border-color: #444943; color: #c9cdc8; }
 body.dark-mode .pub-actions a,
