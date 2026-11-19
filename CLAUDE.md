@@ -226,7 +226,12 @@ the sitemap and the homepage); under-review titles aren't links. `status: under-
 `revise-resubmit` puts an item in "Under review" (filter value
 `under-review`): title, authors and status badge only (no journal,
 abstract, Cite or links, on the list or its own page), and no Scholar /
-schema.org tags. Author line via `_includes/author-line.html` (list, own
+schema.org tags. `status: in-progress` (written but not yet submitted)
+works the same way but goes in its own last section, "Work in progress"
+(after Theses, filter value `work-in-progress`), with a grey "Work in
+progress" badge (`.pub-badge.is-progress`, pen-to-square icon). The
+owner chose this as a short-term way to show the pipeline early in their
+career (advised against at first; their call). Author line via `_includes/author-line.html` (list, own
 page, homepage): always "K Marais, JA Smith, T Ndlovu" (initials, no
 full stops, commas only; own name bold when its "Surname, Given" contains
 `publication_author`). `authors` is entered once with full names (list,

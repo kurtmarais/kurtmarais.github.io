@@ -2,7 +2,7 @@
    Loads icons.min.js (only the icons below) when every icon on the page is
    in it, otherwise the full all.min.js, so a newly added icon always shows. */
 (function () {
-  var HAVE = ["arrow-left","arrow-right","arrow-up","book","book-open","chalkboard-user","check","chevron-down","chevron-left","chevron-right","chevron-up","copy","database","down-left-and-up-right-to-center","earth-africa","film","google-scholar","graduation-cap","grip","home","hourglass-half","id-badge","linkedin","magnifying-glass-minus","magnifying-glass-plus","medium","microphone-lines","newspaper","orcid","panorama","pen-nib","play","podcast","radio","researchgate","rotate","rotate-left","up-right-and-down-left-from-center","users-rectangle","walkie-talkie"];
+  var HAVE = ["arrow-left","arrow-right","arrow-up","book","book-open","chalkboard-user","check","chevron-down","chevron-left","chevron-right","chevron-up","copy","database","down-left-and-up-right-to-center","earth-africa","film","google-scholar","graduation-cap","grip","home","hourglass-half","id-badge","linkedin","magnifying-glass-minus","magnifying-glass-plus","medium","microphone-lines","newspaper","orcid","panorama","pen-nib","pen-to-square","play","podcast","radio","researchgate","rotate","rotate-left","up-right-and-down-left-from-center","users-rectangle","walkie-talkie"];
   var UTIL = /^(solid|regular|brands|light|thin|duotone|sharp|fw|xs|sm|lg|xl|2xs|2xl|\dx|10x|spin|pulse|beat|fade|bounce|flip|shake|stack|stack-1x|stack-2x|inverse|border|pull-left|pull-right|li|ul|rotate-\d+|rotate-by|flip-horizontal|flip-vertical|flip-both|layers|layers-text|layers-counter)$/;
   var me = document.currentScript;
   var full = false;

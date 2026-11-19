@@ -27,11 +27,13 @@ layout: default
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </button>
             <div class="filter-dropdown" hidden>
-              {% comment %} Types present, plus "Under review" when any item has a review status. {% endcomment %}
+              {% comment %} Types present, plus "Under review" / "Work in progress" when any item has that status. {% endcomment %}
               {% assign type_list = "" %}
               {% for item in site.publications %}
                 {% if item.status == "under-review" or item.status == "revise-resubmit" %}
                   {% assign type_list = type_list | append: "under-review;" %}
+                {% elsif item.status == "in-progress" %}
+                  {% assign type_list = type_list | append: "work-in-progress;" %}
                 {% else %}
                   {% assign type_list = type_list | append: item.type | append: ";" %}
                 {% endif %}
@@ -81,11 +83,14 @@ layout: default
 {% comment %}
   Publications list: one section per kind of output, newest first. Items with
   `status: under-review` or `status: revise-resubmit` go in "Under review"
-  (filter type "under-review"); `status: accepted` stays in its type's
+  (filter type "under-review"); `status: in-progress` (manuscripts being
+  written, not yet submitted) goes in "Work in progress", the last section,
+  with the same title-and-authors-only view (filter type "work-in-progress");
+  `status: accepted` stays in its type's
   section with an Accepted badge. Entry markup: _includes/publication-entry.html.
 {% endcomment %}
 {% assign pubs_sorted = site.publications | sort: "year" | reverse %}
-{% assign pub_sections = "journal-article|Journal articles;conference-paper|Conference papers;book-chapter|Book chapters;under-review|Under review;dataset|Datasets;theses|Theses" | split: ";" %}
+{% assign pub_sections = "journal-article|Journal articles;conference-paper|Conference papers;book-chapter|Book chapters;under-review|Under review;dataset|Datasets;theses|Theses;work-in-progress|Work in progress" | split: ";" %}
 
 <div class="publications-list is-by-type">
 
@@ -98,6 +103,7 @@ layout: default
       {% assign cat = item.type %}
       {% if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign cat = "under-review" %}{% endif %}
       {% if cat == "thesis" or cat == "dissertation" %}{% assign cat = "theses" %}{% endif %}
+      {% if item.status == "in-progress" %}{% assign cat = "work-in-progress" %}{% endif %}
       {% if cat == sec_key %}{% assign sec_count = sec_count | plus: 1 %}{% endif %}
     {% endfor %}
 
@@ -110,6 +116,7 @@ layout: default
             {% assign in_review = false %}
             {% if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign cat = "under-review" %}{% assign in_review = true %}{% endif %}
             {% if cat == "thesis" or cat == "dissertation" %}{% assign cat = "theses" %}{% endif %}
+            {% if item.status == "in-progress" %}{% assign cat = "work-in-progress" %}{% assign in_review = true %}{% endif %}
             {% if cat == sec_key %}
               {% include publication-entry.html item=item review=in_review %}
             {% endif %}

@@ -4,6 +4,14 @@ Notable changes to kurtmarais.github.io. Earlier history was uploaded file-by-fi
 through the GitHub web UI and is not itemised; the site as of 2026-09-24
 is the baseline. Add new entries at the top.
 
+## 2026-11-19
+
+### Added
+- Publications: a "Work in progress" status for manuscripts being written
+  but not yet submitted (`status: in-progress`). They appear in their own
+  section after Theses with a grey "Work in progress" badge, showing the
+  title and authors only.
+
 ## 2026-11-18
 
 ### Changed

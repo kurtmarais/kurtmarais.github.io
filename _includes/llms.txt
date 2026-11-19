@@ -72,8 +72,9 @@ He brings expertise in affective information diffusion, depression-specific sent
   {%- else %}{% assign venue = "" %}{% assign kind = item.type %}
 {%- endcase %}
 {%- if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign kind = "Manuscript under review" %}{% assign venue = "" %}{% endif %}
+{%- if item.status == "in-progress" %}{% assign kind = "Work in progress" %}{% assign venue = "" %}{% endif %}
 {%- assign summary = item.abstract | default: item.description | strip_newlines | strip %}
-{%- if item.status == "under-review" or item.status == "revise-resubmit" %}{% assign summary = "" %}{% endif %}
+{%- if item.status == "under-review" or item.status == "revise-resubmit" or item.status == "in-progress" %}{% assign summary = "" %}{% endif %}
 
 ### {{ item.title }}
 
