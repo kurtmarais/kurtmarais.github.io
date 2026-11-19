@@ -43,6 +43,7 @@ layout: default
           <p class="cv-entry mb-3">
             <span class="fw-bold d-block">{{ section.title }}</span>
             <span class="cv-entry-meta">{{ section.description }}</span>
+            {% if section.link %}<a class="text-link cv-entry-link d-block" href="{{ section.link }}" target="_blank" rel="noopener noreferrer">{{ section.link_text | default: "View →" }}</a>{% endif %}
           </p>
         {% endfor %}
       </div>

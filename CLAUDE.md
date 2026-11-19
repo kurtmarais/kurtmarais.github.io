@@ -377,6 +377,13 @@ padding drops to 0.5rem so "Research profile" / "Google Scholar" fit.
 `show_cv_links` — each gates one optional CV section. New sections should
 follow the same pattern.
 
+Section order: Qualifications, Academic Experience, Awards & Honours
+(moved up at the owner's request), Students Graduated, Professional
+associations, Grants, Roles & Service, Professional Development, Online
+Profiles. Awards (`_data/cv/awards.yml`) take an optional `link` /
+`link_text` (shown as a green link under the entry); honour societies such
+as Golden Key go under Awards, not Professional associations.
+
 ## Engagements list (`/engagements/`)
 
 Same entry style as the Publications list (reuses the `.pub-*` classes):

@@ -1,2 +1,11 @@
-- title: '[Award or honour name]'
-  description: '[Awarding body · Year]'
+# Awards and honours, most recent first. Shown on the CV under
+# "Awards & Honours" (show_cv_awards in _config.yml). Optional: link +
+# link_text for a source such as an announcement or booklet.
+- title: 'Postgraduate Student Award, nominee'
+  description: 'Research and Innovation Excellence Awards · Stellenbosch University · October 2026'
+  link: 'https://files.su.ac.za/public/stellenbosch-university/documents/2026-10/research-awards-booklet.pdf'
+  link_text: 'Awards booklet →'
+- title: 'Top student, Operations Research Honours'
+  description: 'Stellenbosch University · 2016'
+- title: 'Golden Key International Honour Society'
+  description: 'Invited member · Stellenbosch University · 2014'
