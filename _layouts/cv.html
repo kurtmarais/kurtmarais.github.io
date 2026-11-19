@@ -33,6 +33,21 @@ layout: default
         {% endfor %}
       </div>
     </div>
+    {% if site.show_cv_awards %}
+    <div class="row g-5 mb-5 cv-section-row">
+      <div class="col-md-2">
+        <h4>Awards &amp; Honours</h4>
+      </div>
+      <div class="col-md-10">
+        {% for section in site.data.cv.awards %}
+          <p class="cv-entry mb-3">
+            <span class="fw-bold d-block">{{ section.title }}</span>
+            <span class="cv-entry-meta">{{ section.description }}</span>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
     {% assign completed_students = site.data.supervision | where_exp: "s", "s.status == 'completed'" %}
     {% assign students_in_progress = site.data.supervision | where_exp: "s", "s.status == 'current'" %}
     {% assign total_students_shown = completed_students.size | plus: students_in_progress.size %}
@@ -82,21 +97,6 @@ layout: default
             <span class="cv-entry-meta">{% if completed_phd.size > 0 %}{{ completed_phd.size }} graduated{% endif %}{% if completed_phd.size > 0 and phd_in_progress.size > 0 %} &middot; {% endif %}{% if phd_in_progress.size > 0 %}{{ phd_in_progress.size }} in progress{% endif %}</span>
           </p>
         {% endif %}
-      </div>
-    </div>
-    {% endif %}
-    {% if site.show_cv_awards %}
-    <div class="row g-5 mb-5 cv-section-row">
-      <div class="col-md-2">
-        <h4>Awards &amp; Honours</h4>
-      </div>
-      <div class="col-md-10">
-        {% for section in site.data.cv.awards %}
-          <p class="cv-entry mb-3">
-            <span class="fw-bold d-block">{{ section.title }}</span>
-            <span class="cv-entry-meta">{{ section.description }}</span>
-          </p>
-        {% endfor %}
       </div>
     </div>
     {% endif %}
