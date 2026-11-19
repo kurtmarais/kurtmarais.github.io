@@ -7,6 +7,11 @@ is the baseline. Add new entries at the top.
 ## 2026-11-19
 
 ### Added
+- CV: "Awards & Honours" is switched on and sits directly after Academic
+  Experience, with three entries: the 2026 Postgraduate Student Award
+  nomination (Research and Innovation Excellence Awards, with a link to
+  the awards booklet), top student in Operations Research Honours (2016)
+  and Golden Key International Honour Society membership (2014).
 - Publications: a "Work in progress" status for manuscripts being written
   but not yet submitted (`status: in-progress`). They appear in their own
   section after Theses with a grey "Work in progress" badge, showing the

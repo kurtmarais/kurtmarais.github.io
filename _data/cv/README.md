@@ -6,8 +6,8 @@ order:
 
 1. Qualifications — `education.yml`
 2. Academic Experience — `academic-experience.yml`
-3. Students Graduated — counted live from `_data/supervision.yml` (no file here)
-4. Awards & Honours — `awards.yml`
+3. Awards & Honours — `awards.yml`
+4. Students Graduated — counted live from `_data/supervision.yml` (no file here)
 5. Professional Associations — `professional-associations.yml`
 6. Grants & Funding — `grants.yml`
 7. Roles & Service — `service.yml`
@@ -54,10 +54,22 @@ Fields:
 - `description` — awarding body and year, using a `·` separator, e.g.
   `'Stellenbosch University · 2026'`
 
+Optional:
+- `link` — a source for the award (announcement, booklet, news item); opens
+  in a new tab
+- `link_text` — the link's wording, default `'View →'`
+
+Nominations and finalist places are labelled in the title (e.g.
+`'Postgraduate Student Award, nominee'`). Invitation-based honour
+societies (e.g. Golden Key) belong here, not under Professional
+Associations.
+
 Example entry to copy:
 ```yaml
 - title: 'Faculty Excellence in Teaching Award'
   description: 'Stellenbosch University · 2026'
+  link: 'https://example.org/announcement'
+  link_text: 'Announcement →'
 ```
 
 ## professional-associations.yml
