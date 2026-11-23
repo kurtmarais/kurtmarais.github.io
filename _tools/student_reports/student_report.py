@@ -972,8 +972,10 @@ def module_rows(mods, enrolled, current_year, bdatsci, honours):
                                                  or any(a["mark"] < PASS_MARK for a in g)) else None,
         })
     for r in rows:   # mirror the sheet: repeated module counts the better final mark
+        r["counted"] = r["mark"]
         if r["mark"] is not None and r["improvement"] is not None:
-            r["result"] = result_of(max(r["mark"], r["improvement"]), r["no_mark"])
+            r["counted"] = max(r["mark"], r["improvement"])
+            r["result"] = result_of(r["counted"], r["no_mark"])
         elif r["mark"] is None:
             r["result"] = outstanding_text(r)
     rows.sort(key=lambda r: (RESULT_ORDER.get(r["result"].split(" (")[0], 2), r["code"]))
@@ -991,8 +993,8 @@ def honours_stats(rows):
     """(OR3 average, status, OR3 modules taken). Mirrors the Status formula."""
     or_rows = [r for r in rows if is_or(r["code"])]
     or3 = [r for r in or_rows if r["code"].startswith(OR3_PREFIX)]
-    marks = [r["mark"] for r in or3 if r["mark"] is not None]
-    taken = sum(1 for r in or3 if r["result"] != "Not taken")
+    marks = [r["counted"] for r in or3 if r.get("counted") is not None]
+    taken = sum(1 for r in or3 if r["result"] != "Not taken" and not r["result"].startswith("Not enrolled"))
     avg = sum(marks) / len(marks) if marks else None
     if any(r["result"] == "Failed" for r in or_rows):
         status = "Not eligible (failed OR module)"
@@ -1506,7 +1508,7 @@ def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
                + [label(c) for c in or3] + ["OR2 average"] + [label(c) for c in or2]
                + ["OR2 + OR3 average", "Mark improvement (earlier mark)", "Repeated OR modules",
                   "Historic module versions"]
-               + info_cols + ["Current programme"]
+               + info_cols + ["Current programme", "Sort order (smallest to largest)"]
                + ["_or3_graded", "_or3_outstanding", "_failed"])
     sh = Sheet(wb, "Honours", headers)
     L = {h: sh.col(h) for h in headers}
@@ -1536,7 +1538,8 @@ def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
             row["OR2 + OR3 average"] = '=IFERROR((%s+%s)/(%s+%s),"")' % (
                 sm(OR2_PREFIX), sm(OR3_PREFIX), n(OR2_PREFIX), n(OR3_PREFIX))
             row["_or3_graded"] = "=" + n(OR3_PREFIX)
-            row["OR3 modules taken"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "<>Not taken"))
+            row["OR3 modules taken"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "<>Not taken"),
+                                                 (M_RES, "<>Not enrolled (required)"))
             row["_failed"] = "=%s+%s" % (cnt(s, (M_CODE, OR2_PREFIX + "*"), (M_RES, "Failed")),
                                          cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Failed")))
             row["_or3_outstanding"] = "=" + cnt(s, (M_CODE, OR3_PREFIX + "*"), (M_RES, "Outstanding*"))
@@ -1552,6 +1555,12 @@ def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
                              '(fewer than {mn} OR3 modules)",IF(AND({g}>0,{av}<{t}),"Below {t:g}%",'
                              'IF({tk}<{full},"Check eligibility","Qualifies"))))').format(
                 fl=fl, tk=tk, mn=HONOURS_MIN_OR3, full=HONOURS_FULL_OR3, g=g, av=av, t=HONOURS_THRESHOLD)
+            # Same order as the initial sort: group, then more OR3 modules, then higher average
+            row["Sort order (smallest to largest)"] = (
+                '=IF(B{r}="Qualifies",IF(ISNUMBER({a}),1,2),IF(B{r}="Check eligibility",3,IF(LEFT(B{r},5)="Below",4,'
+                'IF(LEFT(B{r},20)="Not eligible (failed",5,IF(LEFT(B{r},12)="Not eligible",6,7)))))*100000'
+                '+(9-N({t}))*1000+IF(ISNUMBER({a}),ROUND(100-{a},2)*10,999)').format(
+                r=r, a=av, t=L["OR3 modules taken"] + str(r))
             row["Rank"] = ('=IF(AND(B{r}="Qualifies",ISNUMBER({a})),'
                            'COUNTIFS($B:$B,"Qualifies",${c}:${c},">"&{a})+1,"")').format(
                 r=r, a=av, c=L["OR3 average"])
@@ -1560,6 +1569,7 @@ def write_honours(wb, applied, rows_by_su, current_prog, offers=None):
             row["Historic module versions"] = historic_note(rows_by_su[su])
         else:
             row["Status"] = status
+            row["Sort order (smallest to largest)"] = 7 * 100000 + 9 * 1000 + 999
         sh.add(row)
     for h in headers:
         if "average" in h:
