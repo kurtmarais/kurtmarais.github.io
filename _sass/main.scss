@@ -779,6 +779,13 @@ $marginDotStep: 22px;
   line-height: 1.6;
 }
 
+// "Module coordinator since 20XX" under a course title (Teaching page).
+.course-role {
+  color: #69706b;
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
 
 /* CV — entries (title + meta as one block, single line break between them) */
 
@@ -2135,7 +2142,8 @@ body.dark-mode .ecm-card { background: #202421; }
 
 
 body.dark-mode .course-years,
-body.dark-mode .course-description {
+body.dark-mode .course-description,
+body.dark-mode .course-role {
   color: #aeb3ae;
 }
 

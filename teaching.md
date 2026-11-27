@@ -11,7 +11,8 @@ permalink: /teaching/
 <h3 class="fw-bold mb-4">Undergraduate courses</h3>
 
 <div class="course-item mb-4">
-  <h4 class="mb-1">Business Analytics 214 <span class="course-years">(2020–2025)</span></h4>
+  <h4 class="mb-1">Business Analytics 214 <span class="course-years">(2020–)</span></h4>
+  <p class="mb-1 course-role">Module coordinator since 2020</p>
   <p class="mb-0 course-description">Introduction to decision theory and decision-making under uncertainty, introduction to linear programming and mathematical formulations</p>
 </div>
 
@@ -22,6 +23,7 @@ permalink: /teaching/
 
 <div class="course-item mb-4">
   <h4 class="mb-1">Information Systems 112 <span class="course-years">(2021–)</span></h4>
+  <p class="mb-1 course-role">Module coordinator since 2021</p>
   <p class="mb-0 course-description">Introduction to Microsoft Office Suite, Excel at beginner and intermediate level, logic functions, basic scripting in Visual Basic for Applications</p>
 </div>
 
@@ -49,6 +51,7 @@ permalink: /teaching/
 
 <div class="course-item mb-4">
   <h4 class="mb-1">Methods of Operations Research <span class="course-years">(2020, 2021, 2023–)</span></h4>
+  <p class="mb-1 course-role">Module coordinator since 2023</p>
   <p class="mb-0 course-description">Collaboration with industry, project-based work aimed at solving real-world problems through Operations Research and mathematical optimisation</p>
 </div>
 

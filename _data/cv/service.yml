@@ -1,2 +1,14 @@
+# Roles and service, most recent first (by start date). Shown on the CV under
+# "Roles & Service" (show_cv_service in _config.yml).
+- title: 'Programme Leader, BComHons (Operations Research)'
+  description: 'Stellenbosch University · January 2026–present'
+- title: 'Module Coordinator, Methods of Operations Research'
+  description: 'Stellenbosch University · 2023–present'
+- title: 'Module Coordinator, Information Systems 112'
+  description: 'Stellenbosch University · 2021–present'
+- title: 'Module Coordinator, Business Analytics 214'
+  description: 'Stellenbosch University · 2020–present'
 - title: 'Employment Equity Representative'
-  description: 'Stellenbosch University · 2020–]'
+  description: 'Stellenbosch University · 2020–present'
+- title: 'Chairperson, Stellenbosch University Choir'
+  description: '2018'

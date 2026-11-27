@@ -59,9 +59,14 @@ I welcome contact from researchers working in related areas, particularly natura
 
 <h3 class="fw-bold mb-4 mt-5">Academic position</h3>
 
-<p class="cv-entry mb-0">
+<p class="cv-entry mb-3">
   <span class="fw-bold d-block">Lecturer</span>
   <span class="cv-entry-meta">Stellenbosch University · Department of Logistics · South Africa</span>
+</p>
+
+<p class="cv-entry mb-0">
+  <span class="fw-bold d-block">Programme Leader, BComHons (Operations Research)</span>
+  <span class="cv-entry-meta">Stellenbosch University · 2026–present</span>
 </p>
 
 <script src="{{ '/assets/js/research-network.js' | relative_url }}"></script>

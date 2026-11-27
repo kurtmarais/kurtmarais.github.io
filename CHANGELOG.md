@@ -16,6 +16,17 @@ is the baseline. Add new entries at the top.
   keyword on the dissertation, which now has a keyword list drawn from its
   abstract.
 
+### Added
+- Leadership and service roles. The CV's "Roles & Service" section is
+  switched on: Programme Leader for BComHons (Operations Research) since
+  January 2026, module coordinator of Methods of Operations Research
+  (2023–), Information Systems 112 (2021–) and Business Analytics 214
+  (2020–), Employment Equity Representative (2020–) and Chairperson of the
+  Stellenbosch University Choir (2018). The Teaching page notes the module
+  coordination under each course (Business Analytics 214 is now shown as
+  ongoing, 2020–), and the About page lists the programme leadership under
+  "Academic position".
+
 ## 2026-11-19
 
 ### Added
