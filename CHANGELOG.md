@@ -22,7 +22,7 @@ is the baseline. Add new entries at the top.
   January 2026, module coordinator of Methods of Operations Research
   (2023–), Information Systems 112 (2021–) and Business Analytics 214
   (2020–), Employment Equity Representative (2020–) and Chairperson of the
-  Stellenbosch University Choir (2018). The Teaching page notes the module
+  Stellenbosch University Choir (2017/18). The Teaching page notes the module
   coordination under each course (Business Analytics 214 is now shown as
   ongoing, 2020–), and the About page lists the programme leadership under
   "Academic position".
