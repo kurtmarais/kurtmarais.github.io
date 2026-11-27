@@ -12,7 +12,7 @@ In my research, I focus on natural language processing and simulation frameworks
 
 <h3 class="fw-bold mb-4 mt-5">Research interests</h3>
 
-My research lies at the intersection of Operations Research and Computational Social Science, two fields that are domains in their own right, and the techniques I use draw from one, the other or both. I enjoy the challenge of applying an optimisation mindset to behavioural research and data, an interest that has led me to explore natural language processing and understanding. As my research continues, I hope to include more techniques that bridge the domains of Operations Research and Computational Social Science.
+My research lies at the intersection of Operations Research and Computational Social Science, and much of it falls within behavioural operations research, namely the use of operations research methods to model and understand human behaviour. Both fields are domains in their own right, and the techniques I use draw from one, the other or both. I enjoy the challenge of applying an optimisation mindset to behavioural research and data, an interest that has led me to explore natural language processing and understanding. As my research continues, I hope to include more techniques that bridge the domains of Operations Research and Computational Social Science.
 
 
 <br class="d-none d-md-block">
@@ -26,6 +26,7 @@ My research lies at the intersection of Operations Research and Computational So
     <ul class="legend-list legend-pole">
       <li>Operations Research</li>
       <li>Computational Social Science</li>
+      <li>Behavioural Operations Research</li>
     </ul>
 
     <h5 class="legend-heading">Techniques</h5>
@@ -58,9 +59,14 @@ I welcome contact from researchers working in related areas, particularly natura
 
 <h3 class="fw-bold mb-4 mt-5">Academic position</h3>
 
-<p class="cv-entry mb-0">
+<p class="cv-entry mb-3">
   <span class="fw-bold d-block">Lecturer</span>
   <span class="cv-entry-meta">Stellenbosch University · Department of Logistics · South Africa</span>
+</p>
+
+<p class="cv-entry mb-0">
+  <span class="fw-bold d-block">Programme Leader, BComHons (Operations Research)</span>
+  <span class="cv-entry-meta">Stellenbosch University · 2026–present</span>
 </p>
 
 <script src="{{ '/assets/js/research-network.js' | relative_url }}"></script>

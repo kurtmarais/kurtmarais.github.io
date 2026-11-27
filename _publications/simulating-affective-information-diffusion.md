@@ -8,7 +8,7 @@ authors:
 year: 2026
 institution: "Stellenbosch University"
 publication_url: "https://scholar.sun.ac.za/items/0e580108-6db8-4b17-9619-e5e963df7be0"
-keywords:
+keywords: ["behavioural operations research", "affective information diffusion", "emotional contagion", "emotional reinforcement", "infodemiology", "agent-based modelling", "natural language processing", "depression"]
 abstract: "Social media platforms have fundamentally transformed how information spreads through populations, generating new challenges for understanding their impact on mental health. Anchored in the frameworks of emotional contagion and infodemiology, this dissertation investigates how affective information diffuses through online social networks and its implications for individuals with depression, proposing a novel expansion of infodemiology to encompass non-communicable mental health conditions. 
 
 

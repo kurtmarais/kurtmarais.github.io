@@ -382,7 +382,11 @@ Section order: Qualifications, Academic Experience, Awards & Honours
 associations, Grants, Roles & Service, Professional Development, Online
 Profiles. Awards (`_data/cv/awards.yml`) take an optional `link` /
 `link_text` (shown as a green link under the entry); honour societies such
-as Golden Key go under Awards, not Professional associations.
+as Golden Key go under Awards, not Professional associations. Roles & Service (`service.yml`, heading
+kept as "Roles & Service" by the owner) holds leadership roles too
+(programme leader, module coordinators, choir chairperson); module
+coordination is repeated on the Teaching page as a `.course-role` line
+("Module coordinator since 20XX") under the course title.
 
 ## Engagements list (`/engagements/`)
 

@@ -15,6 +15,11 @@
     { id: "OR", label: ["Operations", "Research"], tier: "pole", x: 110, y: 230, fixed: true },
     { id: "CSS", label: ["Computational", "Social Science"], tier: "pole", x: 790, y: 230, fixed: true },
 
+    // Behavioural OR: a sub-field node (same dark style as the poles, smaller,
+    // free to move), tied to OR and to the behaviour-related techniques and
+    // applications so it settles between the two poles.
+    { id: "BOR", label: ["Behavioural", "Operations", "Research"], tier: "field", x: 300, y: 230 },
+
     { id: "DO", label: ["Discrete", "optimisation"], tier: "tech", x: 450, y: 230 },
     { id: "MO", label: ["Mathematical", "optimisation"], tier: "tech", x: 450, y: 230 },
     { id: "DT", label: ["Decision", "theory"], tier: "tech", x: 450, y: 230 },
@@ -60,11 +65,13 @@
     { s: "DM", t: "SMR", d: 135 }, { s: "NLP", t: "SMR", d: 135 }, { s: "SNA", t: "SMR", d: 135 },
     { s: "ID", t: "SAD", d: 95 }, { s: "ID", t: "SMR", d: 95 }, { s: "SAD", t: "SMR", d: 95 }, { s: "HBD", t: "EC", d: 150 },
     { s: "INF", t: "ID", d: 95 }, { s: "INF", t: "SMR", d: 95 }, { s: "INF", t: "NLP", d: 130 }, { s: "INF", t: "SAD", d: 95 },
-    { s: "SAD", t: "EC", d: 90 }
+    { s: "SAD", t: "EC", d: 90 },
+    { s: "BOR", t: "OR", d: 150 }, { s: "BOR", t: "DT", d: 105 }, { s: "BOR", t: "ABM", d: 115 },
+    { s: "BOR", t: "HBD", d: 110 }, { s: "BOR", t: "CSS", d: 330 }
   ];
 
-  var rad = { pole: 60, tech: 40, app: 34 };
-  var tierClass = { pole: "node-pole", tech: "node-tech", app: "node-app" };
+  var rad = { pole: 60, field: 46, tech: 40, app: 34 };
+  var tierClass = { pole: "node-pole", field: "node-pole node-field", tech: "node-tech", app: "node-app" };
 
   var svgNS = "http://www.w3.org/2000/svg";
   var svg = document.createElementNS(svgNS, "svg");
@@ -91,8 +98,8 @@
     var text = document.createElementNS(svgNS, "text");
     text.setAttribute("text-anchor", "middle");
     text.setAttribute("dominant-baseline", "central");
-    text.setAttribute("font-size", n.tier === "pole" ? "13" : "9.5");
-    text.setAttribute("font-weight", n.tier === "pole" ? "600" : "500");
+    text.setAttribute("font-size", n.tier === "pole" ? "13" : n.tier === "field" ? "10.5" : "9.5");
+    text.setAttribute("font-weight", n.tier === "pole" || n.tier === "field" ? "600" : "500");
     var count = n.label.length;
     n.label.forEach(function (line, i) {
       var tspan = document.createElementNS(svgNS, "tspan");

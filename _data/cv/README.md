@@ -104,7 +104,11 @@ Example entry to copy:
 
 ## service.yml
 
-One entry per committee role or service position, most recent first.
+One entry per leadership, committee or service role, most recent first by
+start date (programme leadership, module coordination, committee roles,
+and earlier leadership such as society chairpersonships). Module
+coordination also appears on the Teaching page as a "Module coordinator
+since 20XX" line under the course.
 
 Fields:
 - `title` — the role/committee name, e.g. `'Postgraduate Coordinator'`
